@@ -5,12 +5,21 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/文档数-46-blue" alt="文档数">
+  <img src="https://img.shields.io/badge/论文覆盖-50+-green" alt="论文覆盖">
+  <img src="https://img.shields.io/badge/字数-约20万-orange" alt="字数">
+  <img src="https://img.shields.io/badge/许可证-MIT-yellow" alt="许可证">
+  <img src="https://img.shields.io/badge/最后更新-2026--05-10-red" alt="最后更新">
+</p>
+
+<p align="center">
   <a href="#项目简介">简介</a> •
   <a href="#学习路线">学习路线</a> •
-  <a href="#文档目录">文档目录</a> •
+  <a href="#文档目录">目录</a> •
   <a href="#核心论文">论文</a> •
   <a href="#如何使用">使用</a> •
-  <a href="#引用">引用</a>
+  <a href="#引用">引用</a> •
+  <a href="CONTRIBUTING.md">贡献</a>
 </p>
 
 ---
