@@ -157,6 +157,7 @@ graph TD
 | [MotionScape 复现指南](docs/07-实践指南/05-复现指南-MotionScape.md) | 无人机视频数据集 |
 | [GeoChat 复现指南](docs/07-实践指南/06-复现指南-GeoChat.md) | 遥感VLM |
 | [DreamerV3-Drone 复现指南](docs/07-实践指南/07-复现指南-DreamerV3-Drone.md) | 模型强化学习无人机飞行 |
+| [可复现项目候选清单](docs/07-实践指南/08-可复现项目候选清单.md) | 10个可单机复现的无人机AI项目 |
 
 ### 思维导图 & 参考资料
 | 文档 | 内容 |
