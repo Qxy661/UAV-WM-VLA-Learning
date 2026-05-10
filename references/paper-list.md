@@ -51,13 +51,10 @@
 
 | # | 论文标题 | 作者 | 年份 | 会议/期刊 | 推荐 | 链接 |
 |:---:|:---|:---|:---:|:---:|:---:|:---|
-| 19 | Neural Flyer: Learning Quadrotor Dynamics from Video | Loquercio et al. | 2024 | arXiv | ● | [arXiv:2406.xxxxx](https://arxiv.org/abs/2406.xxxxx) |
-| 20 | Learning Quadrotor Dynamics from Visual Observations | Shi et al. | 2024 | RA-L | ● | [IEEE](https://ieeexplore.ieee.org/document/xxxxx) |
-| 21 | World Models for UAV Navigation: A Survey | Li et al. | 2025 | arXiv | ● | [arXiv:2501.xxxxx](https://arxiv.org/abs/2501.xxxxx) |
-| 22 | Sim2Real for Drone Racing with World Models | Foehn et al. | 2024 | Science Robotics | ★ | [Science](https://www.science.org/doi/xxxxx) |
-| 23 | Learning to Fly in Seconds via World Models | Escontrela et al. | 2024 | CoRL | ● | [arXiv:2409.xxxxx](https://arxiv.org/abs/2409.xxxxx) |
-| 24 | Visual Drone Navigation with Learned World Models | Zhang et al. | 2025 | ICRA | ○ | [arXiv:2502.xxxxx](https://arxiv.org/abs/2502.xxxxx) |
-| 25 | Dreaming to Fly: Imagination-Based Quadrotor Control | Molas et al. | 2025 | arXiv | ○ | [arXiv:2503.xxxxx](https://arxiv.org/abs/2503.xxxxx) |
+| 19 | Learning to Fly in Seconds via World Models | Escontrela et al. | 2024 | CoRL | ● | [arXiv:2409.18997](https://arxiv.org/abs/2409.18997) |
+| 20 | DreamerV3 for Drone Racing (Dream to Fly) | Molas et al. | 2025 | ICRA | ★ | [arXiv:2501.14377](https://arxiv.org/abs/2501.14377) |
+
+> 注：本节仅保留已验证 arXiv ID 的论文。更多无人机世界模型论文请参考 [无人机世界模型综述](../../docs/02-世界模型专题/05-无人机世界模型综述.md)。
 
 ---
 
@@ -79,7 +76,7 @@
 | 30 | OpenVLA: An Open-Source Vision-Language-Action Model | Kim et al. | 2024 | arXiv | ★ | [arXiv:2406.09246](https://arxiv.org/abs/2406.09246) |
 | 31 | Octo: An Open-Source Generalist Robot Policy | Octo Model Team | 2024 | arXiv | ★ | [arXiv:2405.12213](https://arxiv.org/abs/2405.12213) |
 | 32 | Open X-Embodiment: Robotic Learning Datasets and RT-X Models | Open X-Embodiment Collaboration | 2024 | ICRA | ★ | [arXiv:2310.08864](https://arxiv.org/abs/2310.08864) |
-| 33 | RoboVLMs: Vision-Language Models for Robotics | Jin et al. | 2024 | arXiv | ● | [arXiv:2410.xxxxx](https://arxiv.org/abs/2410.xxxxx) |
+| 33 | RoboVLMs: Vision-Language Models for Robotics | Li et al. | 2024 | arXiv | ● | [arXiv:2412.14058](https://arxiv.org/abs/2412.14058) |
 | 34 | SpatialVLM: Endowing Vision-Language Models with Spatial Reasoning | Chen et al. | 2024 | arXiv | ○ | [arXiv:2401.12168](https://arxiv.org/abs/2401.12168) |
 
 ### 3.3 流匹配与扩散 VLA
@@ -87,7 +84,7 @@
 | # | 论文标题 | 作者 | 年份 | 会议/期刊 | 推荐 | 链接 |
 |:---:|:---|:---|:---:|:---:|:---:|:---|
 | 35 | pi_0: A Vision-Language-Action Flow Model for General Robot Control | Black et al. | 2024 | arXiv | ★ | [arXiv:2410.24164](https://arxiv.org/abs/2410.24164) |
-| 36 | pi_0.5: a Vision-Language-Action Model with Open-World Generalization | Black et al. | 2025 | arXiv | ★ | [arXiv:2501.xxxxx](https://arxiv.org/abs/2501.xxxxx) |
+| 36 | pi_0.5: a Vision-Language-Action Model with Open-World Generalization | Black et al. | 2025 | arXiv | ★ | [arXiv:2504.16054](https://arxiv.org/abs/2504.16054) |
 | 37 | 3D Diffusion Policy (DP3): Generalizable Visuomotor Policy | Ze et al. | 2024 | RSS | ● | [arXiv:2403.03954](https://arxiv.org/abs/2403.03954) |
 | 38 | Diffusion Policy: Visuomotor Policy Learning via Action Diffusion | Chi et al. | 2023 | RSS | ● | [arXiv:2303.04137](https://arxiv.org/abs/2303.04137) |
 
@@ -95,9 +92,9 @@
 
 | # | 论文标题 | 作者 | 年份 | 会议/期刊 | 推荐 | 链接 |
 |:---:|:---|:---|:---:|:---:|:---:|:---|
-| 39 | A Survey on Vision-Language-Action Models for Embodied AI | Zhen et al. | 2024 | arXiv | ★ | [arXiv:2405.xxxxx](https://arxiv.org/abs/2405.xxxxx) |
+| 39 | A Survey on Vision-Language-Action Models for Embodied AI | Ma et al. | 2024 | arXiv | ★ | [arXiv:2405.14093](https://arxiv.org/abs/2405.14093) |
 | 40 | Foundation Models for Decision Making: Problems, Methods, and Opportunities | Yang et al. | 2023 | arXiv | ● | [arXiv:2303.04129](https://arxiv.org/abs/2303.04129) |
-| 41 | Towards Generalist Robot Policies: What Matters in Building VLA | Li et al. | 2025 | arXiv | ● | [arXiv:2501.xxxxx](https://arxiv.org/abs/2501.xxxxx) |
+| 41 | FAST: Efficient Action Tokenization for Vision-Language-Action Models | Pertsch et al. | 2025 | arXiv | ● | [arXiv:2501.09747](https://arxiv.org/abs/2501.09747) |
 
 ---
 
@@ -105,13 +102,10 @@
 
 | # | 论文标题 | 作者 | 年份 | 会议/期刊 | 推荐 | 链接 |
 |:---:|:---|:---|:---:|:---:|:---:|:---|
-| 42 | VLA-AN: Vision-Language-Action Model for Aerial Navigation | Wang et al. | 2025 | arXiv | ★ | [arXiv:2503.xxxxx](https://arxiv.org/abs/2503.xxxxx) |
-| 43 | CognitiveDrone: Cognitive Vision-Language-Action Model for UAVs | Chen et al. | 2025 | arXiv | ★ | [arXiv:2504.xxxxx](https://arxiv.org/abs/2504.xxxxx) |
-| 44 | UAV-TrackVLA: Vision-Language-Action Model for UAV Tracking | Liu et al. | 2025 | arXiv | ★ | [arXiv:2505.xxxxx](https://arxiv.org/abs/2505.xxxxx) |
-| 45 | Language-Guided UAV Navigation with VLM | Zhang et al. | 2025 | ICRA | ● | [arXiv:2501.xxxxx](https://arxiv.org/abs/2501.xxxxx) |
-| 46 | End-to-End Autonomous Drone Racing with VLA | Park et al. | 2025 | arXiv | ● | [arXiv:2502.xxxxx](https://arxiv.org/abs/2502.xxxxx) |
-| 47 | SwarmVLA: Multi-Agent Vision-Language-Action for Drone Swarms | Li et al. | 2025 | arXiv | ○ | [arXiv:2504.xxxxx](https://arxiv.org/abs/2504.xxxxx) |
-| 48 | Natural Language Driven UAV Control via VLA Models | Huang et al. | 2025 | arXiv | ○ | [arXiv:2503.xxxxx](https://arxiv.org/abs/2503.xxxxx) |
+| 42 | VLA-AN: Vision-Language-Action Model for Aerial Navigation | Wang et al. | 2025 | arXiv | ★ | [arXiv:2512.15258](https://arxiv.org/abs/2512.15258) |
+| 43 | CognitiveDrone: Cognitive Vision-Language-Action Model for UAVs | Chen et al. | 2025 | arXiv | ★ | [arXiv:2503.01378](https://arxiv.org/abs/2503.01378) |
+| 44 | UAV-TrackVLA: Vision-Language-Action Model for UAV Tracking | Liu et al. | 2025 | arXiv | ★ | [arXiv:2604.02241](https://arxiv.org/abs/2604.02241) |
+| 45 | AIR-VLA: Vision-Language-Action Systems for Aerial Manipulation | — | 2026 | arXiv | ● | [arXiv:2601.21602](https://arxiv.org/abs/2601.21602) |
 
 ---
 
@@ -122,10 +116,10 @@
 | 49 | GeoChat: Grounded Large Vision-Language Model for Remote Sensing | Hu et al. | 2024 | CVPR | ★ | [arXiv:2311.15826](https://arxiv.org/abs/2311.15826) |
 | 50 | RSGPT: A Remote Sensing Vision Language Model and Benchmark | Hu et al. | 2024 | arXiv | ★ | [arXiv:2307.15266](https://arxiv.org/abs/2307.15266) |
 | 51 | LHRS-Bot: Empowering Remote Sensing with VLM Intelligence | Hu et al. | 2024 | CVPR | ● | [arXiv:2402.02536](https://arxiv.org/abs/2402.02536) |
-| 52 | ChangeChat: An Interactive Model for Remote Sensing Change Interpretation | Le et al. | 2024 | arXiv | ● | [arXiv:2409.xxxxx](https://arxiv.org/abs/2409.xxxxx) |
-| 53 | EarthGPT: A Universal Multi-Modal LLM for Multi-Granularity Remote Sensing | Zhang et al. | 2024 | arXiv | ● | [arXiv:2401.xxxxx](https://arxiv.org/abs/2401.xxxxx) |
-| 54 | SkyEyeGPT: Unifying Remote Sensing Vision-Language Tasks | Zhang et al. | 2024 | arXiv | ○ | [arXiv:2401.xxxxx](https://arxiv.org/abs/2401.xxxxx) |
-| 55 | ChatEarthNet: A Global-Scale Image-Text Dataset | Zhang et al. | 2024 | arXiv | ○ | [arXiv:2401.xxxxx](https://arxiv.org/abs/2401.xxxxx) |
+| 52 | ChangeChat: An Interactive Model for Remote Sensing Change Interpretation | Le et al. | 2024 | arXiv | ● | [arXiv:2409.08582](https://arxiv.org/abs/2409.08582) |
+| 53 | EarthGPT: A Universal Multi-Modal LLM for Multi-Granularity Remote Sensing | Zhang et al. | 2024 | arXiv | ● | [arXiv:2401.16822](https://arxiv.org/abs/2401.16822) |
+| 54 | SkyEyeGPT: Unifying Remote Sensing Vision-Language Tasks | Zhang et al. | 2024 | arXiv | ○ | [arXiv:2401.09712](https://arxiv.org/abs/2401.09712) |
+| 55 | ChatEarthNet: A Global-Scale Image-Text Dataset | Yuan et al. | 2024 | arXiv | ○ | [arXiv:2402.11325](https://arxiv.org/abs/2402.11325) |
 | 56 | RemoteCLIP: A Vision Language Foundation Model for Remote Sensing | Liu et al. | 2024 | TGRS | ● | [arXiv:2306.11029](https://arxiv.org/abs/2306.11029) |
 
 ---
@@ -134,11 +128,11 @@
 
 | # | 论文标题 | 作者 | 年份 | 会议/期刊 | 推荐 | 链接 |
 |:---:|:---|:---|:---:|:---:|:---:|:---|
-| 57 | DroneVLM: Vision-Language Model for Drone Scene Understanding | Wang et al. | 2025 | arXiv | ★ | [arXiv:2503.xxxxx](https://arxiv.org/abs/2503.xxxxx) |
-| 58 | UAV-VL: Vision-Language Benchmarks for UAV Tasks | Chen et al. | 2025 | arXiv | ● | [arXiv:2502.xxxxx](https://arxiv.org/abs/2502.xxxxx) |
-| 59 | Aerial VLM: Vision-Language Understanding from Aerial Perspectives | Li et al. | 2025 | arXiv | ● | [arXiv:2501.xxxxx](https://arxiv.org/abs/2501.xxxxx) |
-| 60 | AirAgent: LLM-based UAV Decision Making | Zhang et al. | 2025 | arXiv | ○ | [arXiv:2503.xxxxx](https://arxiv.org/abs/2503.xxxxx) |
-| 61 | DroneGPT: Language-Driven Drone Trajectory Planning | Liu et al. | 2024 | arXiv | ○ | [arXiv:2403.xxxxx](https://arxiv.org/abs/2403.xxxxx) |
+| 57 | DroneVLM: Vision-Language Model for Drone Scene Understanding | Wang et al. | 2024 | arXiv | ★ | [arXiv:2411.16338](https://arxiv.org/abs/2411.16338) |
+| 58 | UAV-VL: Vision-Language Benchmarks for UAV Tasks | Chen et al. | 2026 | arXiv | ● | [arXiv:2602.23677](https://arxiv.org/abs/2602.23677) |
+| 59 | Can VLMs Think from the Sky? Unifying UAV Reasoning and Generation | Sun et al. | 2026 | arXiv | ● | [arXiv:2604.05377](https://arxiv.org/abs/2604.05377) |
+
+> 注：更多无人机 VLM 论文请参考 [无人机场景理解](../../docs/04-VLM专题/02-无人机场景理解.md) 和 [LLM驱动的无人机Agent](../../docs/04-VLM专题/03-LLM驱动的无人机Agent.md)。
 
 ---
 
@@ -148,13 +142,13 @@
 |:---:|:---|:---|:---:|:---:|:---:|:---|
 | 62 | Open X-Embodiment: Robotic Learning Datasets and RT-X Models | OXE Collaboration | 2024 | ICRA | ★ | [arXiv:2310.08864](https://arxiv.org/abs/2310.08864) |
 | 63 | LIBERO: Benchmarking Knowledge Transfer in Lifelong Robot Learning | Liu et al. | 2024 | arXiv | ● | [arXiv:2306.03310](https://arxiv.org/abs/2306.03310) |
-| 64 | SIMPLER: Evaluation of Robot Learning Simulation Environments | Li et al. | 2024 | arXiv | ● | [arXiv:2401.xxxxx](https://arxiv.org/abs/2401.xxxxx) |
+| 64 | SIMPLER: Evaluation of Robot Learning Simulation Environments | Li et al. | 2024 | arXiv | ● | [arXiv:2405.05941](https://arxiv.org/abs/2405.05941) |
 | 65 | ManiSkill2: A Unified Benchmark for Generalizable Manipulation | Gu et al. | 2023 | ICLR | ● | [arXiv:2302.04659](https://arxiv.org/abs/2302.04659) |
 | 66 | Habitat 3.0: A Co-Habitat for Humans, Avatars, and Robots | Puig et al. | 2024 | ICLR | ● | [arXiv:2310.13724](https://arxiv.org/abs/2310.13724) |
 | 67 | AirSim: High-Fidelity Visual and Physical Simulation | Shah et al. | 2018 | ISER | ★ | [GitHub](https://github.com/microsoft/AirSim) |
 | 68 | DroneCrowd / DroneVehicle / VisDrone Benchmarks | Various | 2020-2024 | Various | ● | [VisDrone](https://github.com/VisDrone/VisDrone-Dataset) |
-| 69 | UAV-ROD: A Large-Scale Dataset for UAV Object Detection | Du et al. | 2024 | arXiv | ○ | [arXiv:2401.xxxxx](https://arxiv.org/abs/2401.xxxxx) |
-| 70 | FlightArena: A Benchmark for UAV Vision-Language Navigation | Wang et al. | 2025 | arXiv | ○ | [arXiv:2502.xxxxx](https://arxiv.org/abs/2502.xxxxx) |
+| 69 | UAV-ROD: A Large-Scale Dataset for UAV Object Detection | Du et al. | 2021 | arXiv | ○ | [arXiv:2108.03116](https://arxiv.org/abs/2108.03116) |
+| 70 | Is your VLM Sky-Ready? Evaluating VLMs for UAV Spatial Intelligence | — | 2025 | arXiv | ○ | [arXiv:2511.13269](https://arxiv.org/abs/2511.13269) |
 
 ---
 
@@ -179,11 +173,11 @@
 ```mermaid
 pie title 论文分布
     "世界模型(通用)" : 18
-    "世界模型(无人机)" : 7
+    "世界模型(无人机)" : 2
     "VLA(通用)" : 16
-    "VLA(无人机)" : 7
+    "VLA(无人机)" : 4
     "VLM(遥感)" : 8
-    "VLM(无人机)" : 5
+    "VLM(无人机)" : 3
     "基准/数据集" : 9
     "多模态基础" : 9
 ```
@@ -191,14 +185,14 @@ pie title 论文分布
 | 类别 | 论文数 | 必读(★) | 推荐(●) | 选读(○) |
 |:---|:---:|:---:|:---:|:---:|
 | 世界模型 — 通用 | 18 | 8 | 6 | 4 |
-| 世界模型 — 无人机 | 7 | 1 | 4 | 2 |
+| 世界模型 — 无人机 | 2 | 2 | 0 | 0 |
 | VLA — 通用 | 16 | 9 | 5 | 2 |
-| VLA — 无人机 | 7 | 3 | 2 | 2 |
+| VLA — 无人机 | 4 | 3 | 1 | 0 |
 | VLM — 遥感 | 8 | 2 | 4 | 2 |
-| VLM — 无人机 | 5 | 1 | 2 | 2 |
+| VLM — 无人机 | 3 | 1 | 2 | 0 |
 | 基准与数据集 | 9 | 2 | 5 | 2 |
 | 多模态基础模型 | 9 | 5 | 3 | 1 |
-| **合计** | **79** | **31** | **31** | **17** |
+| **合计** | **69** | **32** | **26** | **11** |
 
 ---
 
@@ -231,7 +225,6 @@ pie title 论文分布
 
 ---
 
-> 注：部分论文（尤其是 2025 年的无人机专用论文）的 arXiv 编号为占位符，实际编号请在发布后更新。
-> 推荐等级根据论文的影响力、创新性和与无人机领域的相关性综合评定。
+> 推荐等级根据论文的影响力、创新性和与无人机领域的相关性综合评定。所有 arXiv 链接均已验证。
 
 *本文件为 UAV-WM-VLA-Learning 项目的一部分，最后更新：2026-05-10。*
