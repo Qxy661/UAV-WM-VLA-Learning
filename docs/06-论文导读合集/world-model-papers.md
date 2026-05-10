@@ -325,4 +325,4 @@
 - [VLA论文卡片](vla-papers.md) — VLA领域论文导读
 - [VLM论文卡片](vlm-papers.md) — VLM领域论文导读
 - [基准与数据集论文](benchmark-papers.md) — 基准论文导读
-- [完整论文列表](../../references/paper-list.md) — 50+篇论文分类汇总
+- [完整论文列表](../../references/paper-list.md) — 69篇论文分类汇总

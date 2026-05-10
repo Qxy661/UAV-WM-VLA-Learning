@@ -285,4 +285,4 @@
 
 - [世界模型论文卡片](world-model-papers.md) — 世界模型论文导读
 - [VLM论文卡片](vlm-papers.md) — VLM论文导读
-- [完整论文列表](../../references/paper-list.md) — 50+篇论文分类汇总
+- [完整论文列表](../../references/paper-list.md) — 69篇论文分类汇总

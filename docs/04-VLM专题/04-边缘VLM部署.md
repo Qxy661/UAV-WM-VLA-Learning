@@ -541,9 +541,8 @@ graph TB
 - [Edge-Optimized BLIP-2 arXiv](https://arxiv.org/abs/2601.08408)
 - [AVION arXiv](https://arxiv.org/abs/2603.12659)
 - [CARLA-Air arXiv](https://arxiv.org/abs/2603.28032)
-- 相关章节：[../02-架构演进/01-视觉编码器.md](../02-架构演进/01-视觉编码器.md)
-- 相关章节：[../02-架构演进/02-视觉语言连接器.md](../02-架构演进/02-视觉语言连接器.md)
-- 相关章节：[./03-LLM驱动的无人机Agent.md](./03-LLM驱动的无人机Agent.md)
+- 相关章节：[什么是VLM](../01-基础概念/02-什么是VLM.md) — VLM 基础架构
+- 相关章节：[LLM驱动的无人机Agent](./03-LLM驱动的无人机Agent.md)
 
 ---
 
@@ -659,4 +658,4 @@ graph TB
 
 ---
 
-[上一章：LLM驱动的无人机Agent](./03-LLM驱动的无人机Agent.md) | [返回目录](../README.md)
+[上一章：LLM驱动的无人机Agent](./03-LLM驱动的无人机Agent.md) | [返回目录](../../README.md)
