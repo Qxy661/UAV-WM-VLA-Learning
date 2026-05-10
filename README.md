@@ -165,7 +165,7 @@ graph TD
 | [世界模型分类学](mindmaps/world-model-taxonomy.md) | 世界模型分类体系 |
 | [VLA演进路线](mindmaps/vla-evolution.md) | VLA模型发展时间线 |
 | [推荐阅读顺序](mindmaps/reading-order.md) | 论文阅读顺序建议 |
-| [完整论文列表](references/paper-list.md) | 50+ 篇论文分类汇总 |
+| [完整论文列表](references/paper-list.md) | 69 篇论文分类汇总 |
 | [Awesome List 注释](references/awesome-annotations.md) | 对 NTUMARS 仓库的补充 |
 
 ---
