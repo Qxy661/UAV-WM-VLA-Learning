@@ -526,7 +526,7 @@ graph TB
 - [Taking Flight with Dialogue arXiv](https://arxiv.org/abs/2506.07509)
 - [Agentic AI for UAV Swarms arXiv](https://arxiv.org/abs/2601.14437)
 - [Team Xiaomi arXiv](https://arxiv.org/abs/2510.02728)
-- 相关章节：[../01-基础概念/03-VLM.md](../01-基础概念/03-VLM.md)
+- 相关章节：[什么是VLM](../01-基础概念/02-什么是VLM.md)
 - 相关章节：[./02-无人机场景理解.md](./02-无人机场景理解.md)
 - 相关章节：[./04-边缘VLM部署.md](./04-边缘VLM部署.md)
 
