@@ -1,6 +1,6 @@
 # 遥感视觉语言模型（Remote Sensing VLM）
 
-**预计阅读：20 分钟 | 前置知识：Vision-Language Model 基础、遥感图像处理基础**
+> **预计阅读：20 分钟 | 前置知识：Vision-Language Model 基础、遥感图像处理基础**
 
 ---
 
