@@ -398,3 +398,9 @@ model = AutoModelForVision2Seq.from_pretrained(
 - UAV-Flow GitHub: https://github.com/buaa-colalab/UAV-Flow
 - OpenVLA 论文: https://arxiv.org/abs/2406.09246
 - UnrealZoo Gym: https://github.com/UnrealZoo/UnrealZoo_Gym
+
+## 延伸阅读
+
+- [什么是VLA](../01-基础概念/03-什么是VLA.md) — 理解 VLA 的核心概念
+- [语言条件飞行控制](../03-VLA专题/03-语言条件飞行控制.md) — UAV-Flow 的理论背景
+- [VLA架构演进](../03-VLA专题/01-VLA架构演进.md) — OpenVLA 在 VLA 发展中的位置

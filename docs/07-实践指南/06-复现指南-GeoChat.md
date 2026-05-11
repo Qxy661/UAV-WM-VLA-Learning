@@ -485,3 +485,9 @@ for question in multi_turn_questions:
 - Hugging Face GeoChat: https://huggingface.co/MBZUAI/GeoChat
 - LLaMA-2: https://arxiv.org/abs/2307.09288
 - LoRA 论文: https://arxiv.org/abs/2106.09685
+
+## 延伸阅读
+
+- [什么是VLM](../01-基础概念/02-什么是VLM.md) — 理解 VLM 的核心概念
+- [遥感VLM](../04-VLM专题/01-遥感VLM.md) — GeoChat 的理论背景
+- [无人机场景理解](../04-VLM专题/02-无人机场景理解.md) — 无人机 VLM 评估基准

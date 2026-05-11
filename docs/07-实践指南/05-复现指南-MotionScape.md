@@ -503,3 +503,9 @@ loader = DataLoader(
 - MotionScape GitHub: https://github.com/Thelegendzz/MotionScape
 - 四元数与姿态表示: https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
 - PyTorch DataLoader 文档: https://pytorch.org/docs/stable/data.html
+
+## 延伸阅读
+
+- [关键数据集与基准](../02-世界模型专题/06-关键数据集与基准.md) — MotionScape 的理论背景
+- [生成式世界模型](../02-世界模型专题/02-生成式世界模型.md) — 视频生成世界模型详解
+- [可复现项目候选清单](./08-可复现项目候选清单.md) — 更多可复现项目

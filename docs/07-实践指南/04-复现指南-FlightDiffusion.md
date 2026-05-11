@@ -450,6 +450,12 @@ python inference.py --ddim_steps 20  # 从 1000 降到 20
 ## 参考资源
 
 - DDPM 论文: https://arxiv.org/abs/2006.11239
-- DDIM 论文: https://arxiv.org.abs/2010.02502
+- DDIM 论文: https://arxiv.org/abs/2010.02502
 - Diffusers 文档: https://huggingface.co/docs/diffusers
 - Diffuser (Planning with Diffusion): https://arxiv.org/abs/2205.09991
+
+## 延伸阅读
+
+- [什么是世界模型](../01-基础概念/01-什么是世界模型.md) — 理解世界模型的核心概念
+- [生成式世界模型](../02-世界模型专题/02-生成式世界模型.md) — FlightDiffusion 的理论背景
+- [无人机世界模型综述](../02-世界模型专题/05-无人机世界模型综述.md) — 无人机世界模型全景

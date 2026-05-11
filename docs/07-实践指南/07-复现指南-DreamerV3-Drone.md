@@ -597,3 +597,9 @@ import multiprocessing
 - DreamerV3 PyTorch 实现: https://github.com/NM512/dreamerv3-torch
 - gym-pybullet-drones: https://github.com/utiasDSL/gym-pybullet-drones
 - Flightmare: https://github.com/uzh-rpg/flightmare
+
+## 延伸阅读
+
+- [什么是世界模型](../01-基础概念/01-什么是世界模型.md) — 理解世界模型的核心概念
+- [模型强化学习世界模型](../02-世界模型专题/03-模型强化学习世界模型.md) — Dreamer 系列详解
+- [无人机世界模型综述](../02-世界模型专题/05-无人机世界模型综述.md) — 无人机世界模型全景
