@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/文档数-45-blue" alt="文档数">
+  <img src="https://img.shields.io/badge/文档数-46-blue" alt="文档数">
   <img src="https://img.shields.io/badge/论文覆盖-60+-green" alt="论文覆盖">
   <img src="https://img.shields.io/badge/字数-约20万-orange" alt="字数">
   <img src="https://img.shields.io/badge/许可证-MIT-yellow" alt="许可证">
