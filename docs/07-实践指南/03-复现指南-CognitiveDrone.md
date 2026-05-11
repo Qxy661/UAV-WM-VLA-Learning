@@ -425,3 +425,9 @@ with h5py.File("episode_0001.hdf5", "r") as f:
 - CognitiveDrone GitHub: https://github.com/SerValera/docker_CognitiveDrone_DataCollector
 - AirSim: https://github.com/microsoft/AirSim
 - Docker 官方文档: https://docs.docker.com/
+
+## 延伸阅读
+
+- [什么是VLA](../01-基础概念/03-什么是VLA.md) — 理解 VLA 的核心概念
+- [无人机VLA模型](../03-VLA专题/02-无人机VLA模型.md) — CognitiveDrone 的理论背景
+- [机载部署与优化](../03-VLA专题/05-机载部署与优化.md) — VLA 部署到无人机的技术
