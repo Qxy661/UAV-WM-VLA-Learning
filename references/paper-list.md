@@ -54,7 +54,7 @@
 | 19 | Learning to Fly in Seconds via World Models | Escontrela et al. | 2024 | CoRL | ● | [arXiv:2409.18997](https://arxiv.org/abs/2409.18997) |
 | 20 | DreamerV3 for Drone Racing (Dream to Fly) | Molas et al. | 2025 | ICRA | ★ | [arXiv:2501.14377](https://arxiv.org/abs/2501.14377) |
 
-> 注：本节仅保留已验证 arXiv ID 的论文。更多无人机世界模型论文请参考 [无人机世界模型综述](../../docs/02-世界模型专题/05-无人机世界模型综述.md)。
+> 注：本节仅保留已验证 arXiv ID 的论文。更多无人机世界模型论文请参考 [无人机世界模型综述](../docs/02-世界模型专题/05-无人机世界模型综述.md)。
 
 ---
 
@@ -132,7 +132,7 @@
 | 58 | UAV-VL: Vision-Language Benchmarks for UAV Tasks | Chen et al. | 2026 | arXiv | ● | [arXiv:2602.23677](https://arxiv.org/abs/2602.23677) |
 | 59 | Can VLMs Think from the Sky? Unifying UAV Reasoning and Generation | Sun et al. | 2026 | arXiv | ● | [arXiv:2604.05377](https://arxiv.org/abs/2604.05377) |
 
-> 注：更多无人机 VLM 论文请参考 [无人机场景理解](../../docs/04-VLM专题/02-无人机场景理解.md) 和 [LLM驱动的无人机Agent](../../docs/04-VLM专题/03-LLM驱动的无人机Agent.md)。
+> 注：更多无人机 VLM 论文请参考 [无人机场景理解](../docs/04-VLM专题/02-无人机场景理解.md) 和 [LLM驱动的无人机Agent](../docs/04-VLM专题/03-LLM驱动的无人机Agent.md)。
 
 ---
 
