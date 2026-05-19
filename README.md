@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/文档数-49-blue" alt="文档数">
+  <img src="https://img.shields.io/badge/文档数-52-blue" alt="文档数">
   <img src="https://img.shields.io/badge/论文覆盖-60+-green" alt="论文覆盖">
   <img src="https://img.shields.io/badge/字数-约20万-orange" alt="字数">
   <img src="https://img.shields.io/badge/许可证-MIT-yellow" alt="许可证">
@@ -158,7 +158,10 @@ graph TD
 | [MotionScape 复现指南](docs/07-实践指南/05-复现指南-MotionScape.md) | 无人机视频数据集 |
 | [GeoChat 复现指南](docs/07-实践指南/06-复现指南-GeoChat.md) | 遥感VLM |
 | [DreamerV3-Drone 复现指南](docs/07-实践指南/07-复现指南-DreamerV3-Drone.md) | 模型强化学习无人机飞行 |
-| [可复现项目候选清单](docs/07-实践指南/08-可复现项目候选清单.md) | 10个可单机复现的无人机AI项目 |
+| [可复现项目候选清单](docs/07-实践指南/08-可复现项目候选清单.md) | 22个可单机复现的无人机AI项目 |
+| [DeepDrone 复现指南](docs/07-实践指南/09-复现指南-DeepDrone.md) | LLM自然语言控制无人机 |
+| [RemoteCLIP 复现指南](docs/07-实践指南/10-复现指南-RemoteCLIP.md) | 遥感视觉语言基础模型 |
+| [Flightmare 复现指南](docs/07-实践指南/11-复现指南-Flightmare.md) | 高保真无人机仿真器 |
 
 ### Part 8: 研究前沿与开放问题
 | 文档 | 内容 |
