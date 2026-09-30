@@ -2,7 +2,7 @@
 
 > **预计阅读：12 分钟 | 前置知识：Hugging Face Transformers 使用经验、视觉语言模型基本概念、LoRA/PEFT 微调基础**
 
-本指南帮助你从零开始复现 GeoChat 项目。GeoChat 是由 MBZUAI Oryx Lab 提出的遥感领域视觉语言模型（VLM），支持多轮对话、区域级理解和图像级描述等任务。
+GeoChat 是由 MBZUAI Oryx Lab 提出的遥感领域视觉语言模型（VLM），支持多轮对话、区域级理解和图像级描述等任务。
 
 ---
 

@@ -2,7 +2,7 @@
 
 > **预计阅读：12 分钟 | 前置知识：Python 基础、Gymnasium 接口概念、无人机基础**
 
-本指南帮助你安装和使用 Flightmare 仿真器。Flightmare 是苏黎世大学 RPG 实验室开发的高保真四旋翼仿真器，支持 Unity 渲染和 Gymnasium 接口，被大量无人机 RL 论文引用。
+Flightmare 是苏黎世大学 RPG 实验室开发的高保真四旋翼仿真器，支持 Unity 渲染和 Gymnasium 接口，被大量无人机 RL 论文引用。
 
 ---
 

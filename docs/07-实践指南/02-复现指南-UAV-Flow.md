@@ -2,7 +2,7 @@
 
 > **预计阅读：12 分钟 | 前置知识：Python 深度学习基础、PyTorch 使用经验、Hugging Face Transformers 基本操作**
 
-本指南帮助你从零开始复现 UAV-Flow 项目。UAV-Flow 是由北航 CoLA Lab 提出的基于视觉语言动作（VLA）模型的无人机端到端控制方案，通过微调 OpenVLA 模型实现在自然语言指令引导下的无人机飞行控制。
+UAV-Flow 是由北航 CoLA Lab 提出的基于视觉语言动作（VLA）模型的无人机端到端控制方案，通过微调 OpenVLA 模型实现在自然语言指令引导下的无人机飞行控制。
 
 ---
 
