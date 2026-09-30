@@ -1,4 +1,4 @@
-# 04 - 复现指南：FlightDiffusion — 基于扩散模型的飞行动作生成
+# 04 - 复现指南：FlightDiffusion — 条件扩散策略实现与论文更正
 
 > **预计阅读：12 分钟 | 前置知识：扩散模型基本原理（DDPM/DDIM）、PyTorch 深度学习、FPV 无人机飞行概念**
 
