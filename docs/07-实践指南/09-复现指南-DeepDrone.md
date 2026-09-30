@@ -2,7 +2,7 @@
 
 > **预计阅读：10 分钟 | 前置知识：Python 基础、LLM 基本概念、API 调用经验**
 
-本指南帮助你复现 DeepDrone 项目。DeepDrone 是一个用大语言模型（LLM）通过自然语言指令控制无人机的框架，是"ChatGPT 控制无人机"最直观的开源实现。
+DeepDrone 是一个用大语言模型（LLM）通过自然语言指令控制无人机的框架，是"ChatGPT 控制无人机"最直观的开源实现。
 
 ---
 
@@ -119,9 +119,9 @@ python main.py
 
 | 项目 | 区别 |
 |------|------|
-| **UAV-Flow** | UAV-Flow 用 VLA 端到端控制，DeepDrone 用 LLM 函数调用 |
-| **Tello-LLM-ROS** | Tello-LLM-ROS 控制真实无人机，DeepDrone 偏仿真 |
-| **CoDrone** | CoDrone 用云边端架构，DeepDrone 用单 LLM |
+| **UAV-Flow** | VLA 端到端控制；DeepDrone 用 LLM 函数调用 |
+| **Tello-LLM-ROS** | 控制真实无人机；DeepDrone 偏仿真 |
+| **CoDrone** | 云边端架构；DeepDrone 用单 LLM |
 
 ---
 

@@ -2,7 +2,7 @@
 
 > **预计阅读：12 分钟 | 前置知识：扩散模型基本原理（DDPM/DDIM）、PyTorch 深度学习、FPV 无人机飞行概念**
 
-本指南帮助你理解和复现 FlightDiffusion 项目。FlightDiffusion 将去噪扩散模型（Denoising Diffusion Model）应用于无人机飞行动作生成，通过条件扩散过程从 FPV 视频观测生成未来飞行轨迹。
+FlightDiffusion 将去噪扩散模型（Denoising Diffusion Model）应用于无人机飞行动作生成，通过条件扩散过程从 FPV 视频观测生成未来飞行轨迹。
 
 > **注意**：截至本文撰写时，FlightDiffusion 的完整代码可能尚未完全开源。本指南基于论文描述和公开信息编写，部分内容可能需要根据实际代码发布进行调整。
 
