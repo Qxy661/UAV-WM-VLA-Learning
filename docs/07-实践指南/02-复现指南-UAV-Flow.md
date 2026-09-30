@@ -404,3 +404,29 @@ model = AutoModelForVision2Seq.from_pretrained(
 - [什么是VLA](../01-基础概念/03-什么是VLA.md) — 理解 VLA 的核心概念
 - [语言条件飞行控制](../03-VLA专题/03-语言条件飞行控制.md) — UAV-Flow 的理论背景
 - [VLA架构演进](../03-VLA专题/01-VLA架构演进.md) — OpenVLA 在 VLA 发展中的位置
+
+## 思考题
+
+1. **显存预算**：手上只有一张 RTX 4090（24 GB）时，6.3 节的三档配置里哪一档能直接跑？跑不了的那档差在哪里，该按第 8 节的哪一条来降？
+
+2. **排障思路**：训练 loss 一直不收敛，按第 8 节 Q5 的四条应该怎么排顺序、各自查什么？
+
+3. **归一化对齐**：推理输出的动作明显超出数据集样本的量级（样本里 vx 只有 0.32），先怀疑哪一环？
+
+4. **评估协议**：用 scripts/eval.py 跑出来的 Task Success Rate，能不能直接和别的论文表格里的数字比？
+
+5. **迁移边界**：文档给出的评估链路依赖什么环境？如果换到真机上飞，这条链路还能直接用吗？
+
+<details><summary>参考答案</summary>
+
+1. 只有 batch_size=4 + LoRA + fp16 那一档（1x RTX 4090、~18 GB、~24 小时）能直接跑；batch_size=8 那档文档给的是 1x A100 80GB、显存 ~40 GB，24 GB 装不下。差的是显存，可以按 Q2 把 batch_size 继续往下压（文档的示例是从 8 降到 2），并开启 gradient_checkpointing 和 bf16/fp16 混合精度。
+
+2. 先确认学习率没偏大（文档建议从 2e-5 起），再打印几个样本确认数据集加载正确，然后检查 action 归一化是否与训练配置一致，最后确认预训练权重加载正确（即 openvla/openvla-7b 基座确实载入了）。
+
+3. 先怀疑归一化/反归一化口径不一致。数据样本里 action 是 [0.32, 0.01, -0.05, 0.02]、格式标为 vx_vy_vz_yawrate；推理代码靠 unnorm_key="uavflow" 把模型输出反归一化回物理量，这个 key 必须与训练时的归一化对得上——Q5 也把"action 归一化是否与训练配置一致"列为不收敛的常见原因。
+
+4. 不能直接比。第 7 节的五项指标（Task Success Rate、Position Error、Path Efficiency、Collision Rate、Action MSE）都跑在 UnrealZoo Gym 里，场景与参数由 configs/eval_unrealzoo.yaml 决定，episode 数由 --num_episodes 控制（文档示例是 100）；环境、场景配置或 episode 数任一不同，这五个数就不再指同一件事。
+
+5. 评估链路依赖 UnrealZoo Gym：要 clone UnrealZoo_Gym 仓库并 pip install -e .，再通过 configs/eval_unrealzoo.yaml 和 scripts/eval.py 跑满 episode。真机上没有这套 Gymnasium 接口，文档也没有给出真机评估流程，所以照这份指南只能做仿真评估，换真机需要自己另建链路。
+
+</details>

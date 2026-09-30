@@ -6,6 +6,8 @@
 
 > **注意**：截至本文撰写时，FlightDiffusion 的完整代码可能尚未完全开源。本指南基于论文描述和公开信息编写，部分内容可能需要根据实际代码发布进行调整。
 
+> **更正说明（2026-09 核对该论文原文后补）**：本指南正文第 2、5 节给出的是一套**通用的条件扩散策略**实现——条件 U-Net 直接对动作序列去噪——**这不是 FlightDiffusion 论文的方法**。论文原文用扩散模型生成的是**视频**，动作空间是从生成的视频里反解出来的，详见文末 [第 9 节](#9-论文原文的做法视频生成而非动作生成)。正文保持原样，作为"扩散策略怎么写"的入门实现仍然成立，但**不要把它当成该论文的复现**。
+
 ---
 
 ## 目录
@@ -18,6 +20,7 @@
 6. [训练流程](#6-训练流程)
 7. [推理与评估](#7-推理与评估)
 8. [常见问题与解决方案](#8-常见问题与解决方案)
+9. [论文原文的做法](#9-论文原文的做法视频生成而非动作生成)
 
 ---
 
@@ -54,8 +57,14 @@ x_t = sqrt(alpha_t) * x_{t-1} + sqrt(1 - alpha_t) * epsilon
 **反向过程（去噪）**：学习从噪声中恢复数据
 
 ```
-x_{t-1} = (1/sqrt(alpha_t)) * (x_t - (1-alpha_t)/sqrt(1-alpha_t_bar) * eps_theta(x_t, t, c))
+# 由当前噪声样本估计 x_0
+x0_pred = (x_t - sqrt(1 - alpha_bar_t) * eps_theta(x_t, t, c)) / sqrt(alpha_bar_t)
+
+# DDIM 确定性更新
+x_{t-1} = sqrt(alpha_bar_{t-1}) * x0_pred + sqrt(1 - alpha_bar_{t-1}) * eps_theta(x_t, t, c)
 ```
+
+**注意**：上式中的 `alpha_bar_t = prod(alpha_1 ... alpha_t)` 是**累积**乘积，不是单步的 `alpha_t`。把两者混用是扩散模型实现中最常见的错误之一，会让采样结果完全失真——排错时可优先检查这里。
 
 ### 2.2 FlightDiffusion 的条件扩散
 
@@ -210,6 +219,9 @@ import torch.nn as nn
 class ConditionalUNet(nn.Module):
     def __init__(self, action_dim=4, horizon=10, hidden_dim=256):
         super().__init__()
+        self.action_dim = action_dim   # 供 forward 里 reshape 使用，避免硬编码
+        self.horizon = horizon
+
         # 时间步嵌入
         self.time_embed = SinusoidalPosEmb(hidden_dim)
         self.time_mlp = nn.Sequential(
@@ -262,7 +274,7 @@ class ConditionalUNet(nn.Module):
 
         # 预测噪声
         eps_pred = self.output(h)
-        return eps_pred.view(-1, 10, 4)
+        return eps_pred.view(-1, self.horizon, self.action_dim)
 ```
 
 ### 5.2 视觉编码器
@@ -270,10 +282,14 @@ class ConditionalUNet(nn.Module):
 使用预训练的 ResNet-50 或 CLIP 视觉编码器提取特征：
 
 ```python
+from torchvision import models
+
 class VisionEncoder(nn.Module):
     def __init__(self, output_dim=256):
         super().__init__()
-        self.backbone = models.resnet50(pretrained=True)
+        # 新版 torchvision 用 weights= 传预训练权重；
+        # 旧的 pretrained=True 已废弃，会在未来版本移除
+        self.backbone = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
         self.backbone.fc = nn.Linear(2048, output_dim)
         # 对多帧取平均池化
         self.temporal_pool = nn.AdaptiveAvgPool1d(1)
@@ -330,10 +346,13 @@ python train.py --config configs/train_diffusion.yaml \
 """
 训练循环概览（非完整代码）
 """
+import torch.nn.functional as F
+
 def train_step(model, batch, noise_scheduler):
     context_images = batch["context_images"]
     context_actions = batch["context_actions"]
     target_actions = batch["target_actions"]
+    B = target_actions.shape[0]        # 批次大小从数据本身取，不要写成外部变量
 
     # 1. 采样随机时间步
     t = torch.randint(0, noise_scheduler.num_timesteps, (B,))
@@ -447,8 +466,60 @@ python inference.py --ddim_steps 20  # 从 1000 降到 20
 
 ---
 
+## 9. 论文原文的做法：视频生成而非动作生成
+
+> 本节依 [arXiv:2509.14082](https://arxiv.org/abs/2509.14082) v2 全文补写，用于校正前面第 1、2、5 节对论文方法的描述。论文作者来自 Skolkovo 的 Intelligent Space Robotics Laboratory。
+
+### 9.1 真实的管线：三阶段，输入是**一帧**
+
+论文的输入是机载相机拍下的**单张 RGB 图像**，不是视频序列：
+
+| 阶段 | 用什么 | 产出 |
+|---|---|---|
+| ① 视觉推理与任务规划 | **Gemini 2.5 Flash**（Google DeepMind 的多模态 VLM）+ 结构化自然语言提示 | 一段高层指令文本 |
+| ② 视频生成 | **Wan 2.2 I2V Fast**（图生视频） | 一段 FPV 视频，单条耗时约 20–60 s |
+| ③ 轨迹重建 | **ORB-SLAM3**（单目模式）做视觉里程计 | 3D 轨迹、速度、位姿、加速度 |
+
+重建出的轨迹是一串 SE(3) 位姿，转成**速度指令**下发给飞控；同时这些 state-action 对构成监督数据集，用来训下游策略。长时任务按"推理 → 视频生成 → 路径规划 → 执行"分段推进。
+
+**与正文的关键差别**：扩散模型在这里是**视频生成器**，不是动作去噪器。论文自己的说法是 "video diffusion model generates future frames and their corresponding action spaces"——动作空间是生成视频的**副产品**，由视觉里程计反解得到，而不是在动作空间上做去噪。
+
+### 9.2 论文报告的量化结果
+
+| 指标 | 数值 |
+|---|---|
+| 位置误差 | 均值 **0.25 m**（RMSE 0.28 m） |
+| 朝向误差 | 均值 **0.19 rad**（RMSE 0.24 rad） |
+| 长时任务（真机） | **5 分 20 秒**完成，均速约 **1 m/s**；仿真 4 分钟；单条视频生成约 30 s |
+| 仿真 vs 真机 | 成功率 M = 0.628 (SD 0.162) vs M = 0.617 (SD 0.177)，双向 ANOVA **F(1,16) = 0.394, p = 0.541**，无显著差异 |
+
+仿真在 Gazebo 的 small city world 里做；每类机动（前飞、隧道穿行、避障、降落）在仿真与真机各执行 20 次。注意最后一行的正确读法是"**没测出差异**"，不是"真机表现更好"——p = 0.541 意味着这个样本量下两者无法区分。
+
+### 9.3 论文自己承认的局限
+
+- 生成帧里会**出现真实环境中不存在的物体**（hallucination），论文称这是扩散生成模型的预期局限
+- 与 Vicon 动捕真值比对存在小的朝向偏差 Δθ
+- 长时任务会**累积误差**（compounding errors），需要按子任务分段规划
+- 单目 ORB-SLAM3 提供轨迹可靠，但完整建图与重定位能力受限
+
+### 9.4 那正文第 2–7 节还有用吗
+
+有用，但用途要改口径：
+
+| 本文正文 | 论文原文 |
+|---|---|
+| 条件 U-Net 对**动作序列**去噪 | 图生视频模型生成**视频帧** |
+| 输入 5 帧上下文 + 历史动作 | 输入**单帧** + 文本提示 |
+| 输出 `(B, horizon, action_dim)` 动作块 | 输出视频 → SLAM 反解轨迹 |
+| 自己训（有数据就能跑、不依赖外部 API） | 依赖 Gemini / Wan 2.2 等外部大模型 API |
+
+也就是说：正文第 2–7 节是一套**学扩散策略的完整练习**（自己写模型、自己训、自己采样），而论文是**用现成大模型搭系统**（它并不训练自己的扩散模型）。两条路线都值得学，但重点完全不同——想复现论文，功夫花在 VLM 提示工程和 SLAM 接口调通上，而不是训条件 U-Net。
+
+---
+
 ## 参考资源
 
+- FlightDiffusion 论文（本指南对应的论文）: https://arxiv.org/abs/2509.14082
 - DDPM 论文: https://arxiv.org/abs/2006.11239
 - DDIM 论文: https://arxiv.org/abs/2010.02502
 - Diffusers 文档: https://huggingface.co/docs/diffusers
@@ -459,3 +530,29 @@ python inference.py --ddim_steps 20  # 从 1000 降到 20
 - [什么是世界模型](../01-基础概念/01-什么是世界模型.md) — 理解世界模型的核心概念
 - [生成式世界模型](../02-世界模型专题/02-生成式世界模型.md) — FlightDiffusion 的理论背景
 - [无人机世界模型综述](../02-世界模型专题/05-无人机世界模型综述.md) — 无人机世界模型全景
+
+## 思考题
+
+1. **复现起点**：把开头的"注意"和 3.2 节的克隆命令放在一起看，照这份指南动手，最早会在哪一步卡住？
+
+2. **排错优先级**：采样出来的轨迹完全失真，文档明确说应该优先检查哪里？为什么？
+
+3. **形状契约**：把 `preprocess_data.py` 的 `--context_frames` 从 5 改成 8，模型里哪一处必须同步改？为什么？
+
+4. **显存预算**：6.4 节三档配置在 24 GB 的卡上都放得下，该按什么选？真 OOM 时文档又给了哪几条降配手段？
+
+5. **评估口径**：文档只给了 PE/OE/ADE/FDE/Diversity/Collision Rate 六个指标和 evaluate.py，想拿自己的数字去对齐原论文，缺的是什么？
+
+<details><summary>参考答案</summary>
+
+1. 卡在 3.2 节克隆仓库这一步：命令里写的是 `git clone https://github.com/<author>/FlightDiffusion.git`，`<author>` 是占位符，没有真实地址；开头也注明代码"可能尚未完全开源"，本指南基于论文描述和公开信息编写。可行的起点是先按第 3 节把环境搭起来（conda python=3.10、torch 2.1.2/torchvision 0.16.2 cu121、diffusers>=0.25.0、einops/rotary-embedding-torch/ema-pytorch），再按第 4、5 节的格式自己实现数据管线与条件 U-Net。
+
+2. 优先检查 `alpha_bar_t` 是不是被写成了单步的 `alpha_t`。文档说明 `alpha_bar_t = prod(alpha_1 ... alpha_t)` 是累积乘积，把两者混用是扩散模型实现中最常见的错误之一，会让采样结果完全失真；x0_pred 公式和 DDIM 更新式里各有一个 alpha_bar（对应 t 与 t-1），都要用累积量。
+
+3. 要改 `ConditionalUNet` 里的 `self.action_encoder = nn.Linear(action_dim * 5, hidden_dim)`（注释写明"5 帧历史"）。forward 里 `context_actions` 按 (B, 5, action_dim) 传入并 `flatten(1)` 成 action_dim*5 维，帧数改成 8 而不改这层，输入维度就对不上；视觉侧同样写死了 5 帧（context_images 是 (B, 5, 3, 224, 224)，VisionEncoder 按 T 还原后做时序池化）。
+
+4. 三档是 hidden=256/batch=32（~10 GB、~24 小时）、hidden=256/batch=64（~18 GB、~12 小时）、hidden=512/batch=32（~20 GB、~36 小时）；在放得下的前提下 batch=64 那档显存和时间都更划算，hidden=512 只有在判定模型容量不够时才值得多花一倍多时间。真 OOM 时按 Q5：gradient checkpointing、mixed precision（fp16/bf16）、减小 batch_size、DeepSpeed ZeRO Stage 2。
+
+5. 缺的是可比口径。第 9 节给出了原论文报告的数值（位置误差 0.25 m、朝向 0.19 rad、真机长时任务 5 分 20 秒、仿真与真机成功率 F(1,16)=0.394, p=0.541），但这些是**论文那套系统**的端到端成绩，不是某个动作预测模型的指标；本文第 7 节的 PE/OE/ADE/FDE 是另一套口径，两者不能直接比。况且论文没有公开测试集划分和官方评估脚本（数据和代码都待发布/自备：FPV 数据要自采或用公开竞速数据集、AirSim/PX4 仿真生成），也没有与其他方法的对比数字。自己跑 evaluate.py 时用哪个 split（文档示例是 data/processed/val）和多少条采样（--num_samples 20）都要与原论文一致才谈得上对齐。
+
+</details>

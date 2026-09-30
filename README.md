@@ -5,11 +5,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/文档数-52-blue" alt="文档数">
-  <img src="https://img.shields.io/badge/论文覆盖-60+-green" alt="论文覆盖">
-  <img src="https://img.shields.io/badge/字数-约20万-orange" alt="字数">
+  <img src="https://img.shields.io/badge/学习文档-45-blue" alt="学习文档">
+  <img src="https://img.shields.io/badge/论文覆盖-79-green" alt="论文覆盖">
+  <img src="https://img.shields.io/badge/字数-约11万-orange" alt="字数">
   <img src="https://img.shields.io/badge/许可证-MIT-yellow" alt="许可证">
-  <img src="https://img.shields.io/badge/最后更新-2026--05-11-red" alt="最后更新">
+  <img src="https://img.shields.io/badge/最后更新-2026--09--30-red" alt="最后更新">
 </p>
 
 <p align="center">
@@ -38,10 +38,10 @@
 | 维度 | 说明 |
 |------|------|
 | **聚焦无人机** | 不是通用机器人，专门针对 UAV/无人机领域的 VLA、VLM、世界模型 |
-| **保姆级教学** | 每篇文档配有阅读时间、前置知识、核心内容、思考题，适合零基础入门 |
-| **认知导向** | 不跑代码，重点理解原理、架构、演进脉络和论文思想 |
+| **保姆级教学** | 每篇文档配有阅读时间、前置知识、核心内容、思考题与参考答案，适合零基础入门 |
+| **认知优先，代码可选验证** | 主线是把原理、架构、演进脉络和论文思想讲清楚；关键结论另配**可运行的迷你 demo**（`code/`），跑不跑都不影响阅读 |
 | **系统化梳理** | 从基础概念到前沿论文，从理论到实践指南，完整学习路径 |
-| **论文精读** | 30+ 篇关键论文逐篇解读，含一句话总结、核心贡献、方法分析 |
+| **论文精读** | 45 篇关键论文逐篇解读，含一句话总结、核心贡献、方法分析 |
 
 ### 三大核心概念
 
@@ -95,6 +95,13 @@ graph TD
 
 ## 文档目录
 
+`docs/` 下共 44 篇学习文档，另有 4 篇思维导图与 2 篇参考资料。
+
+### 导读
+| 文档 | 内容 | 推荐度 |
+|------|------|--------|
+| [导读与学习路线](docs/00-导读与学习路线.md) | 项目定位、前置知识、六阶段学习路线、术语表 | ★ 必读 |
+
 ### Part 1: 基础概念
 | 文档 | 内容 | 推荐度 |
 |------|------|--------|
@@ -117,7 +124,7 @@ graph TD
 ### Part 3: VLA 专题
 | 文档 | 内容 | 推荐度 |
 |------|------|--------|
-| [VLA架构演进](docs/03-VLA专题/01-VLA架构演进.md) | 从RT-2到OpenVLA到pi-0 | ★ 必读 |
+| [VLA架构演进](docs/03-VLA专题/01-VLA架构演进.md) | 从 RT-2 到 OpenVLA 到 π₀ | ★ 必读 |
 | [无人机VLA模型](docs/03-VLA专题/02-无人机VLA模型.md) | VLA-AN、CognitiveDrone、UAV-TrackVLA | ● 推荐 |
 | [语言条件飞行控制](docs/03-VLA专题/03-语言条件飞行控制.md) | UAV-Flow、VLN-Pilot | ● 推荐 |
 | [基础模型辅助规划](docs/03-VLA专题/04-基础模型辅助规划.md) | CoDrone、FM-Planner、NavFoM | ○ 了解 |
@@ -143,10 +150,10 @@ graph TD
 ### Part 6: 论文导读合集
 | 文档 | 内容 |
 |------|------|
-| [世界模型论文卡片](docs/06-论文导读合集/world-model-papers.md) | 15+ 篇世界模型关键论文逐篇解读 |
-| [VLA论文卡片](docs/06-论文导读合集/vla-papers.md) | 10+ 篇VLA关键论文逐篇解读 |
-| [VLM论文卡片](docs/06-论文导读合集/vlm-papers.md) | 10+ 篇VLM关键论文逐篇解读 |
-| [基准与数据集论文](docs/06-论文导读合集/benchmark-papers.md) | 基准测试与数据集论文解读 |
+| [世界模型论文卡片](docs/06-论文导读合集/world-model-papers.md) | 13 篇世界模型关键论文逐篇解读 |
+| [VLA论文卡片](docs/06-论文导读合集/vla-papers.md) | 11 篇VLA关键论文逐篇解读 |
+| [VLM论文卡片](docs/06-论文导读合集/vlm-papers.md) | 12 篇VLM关键论文逐篇解读 |
+| [基准与数据集论文](docs/06-论文导读合集/benchmark-papers.md) | 9 篇基准测试与数据集论文解读 |
 
 ### Part 7: 实践指南
 | 文档 | 内容 |
@@ -169,6 +176,7 @@ graph TD
 | [研究路线图](docs/08-研究前沿与开放问题/01-研究路线图.md) | 从学习到研究的五步法、FINER标准 |
 | [研究空白与机会](docs/08-研究前沿与开放问题/02-研究空白与机会.md) | 无人机VLA/VLM/世界模型的开放问题 |
 | [论文批判性阅读](docs/08-研究前沿与开放问题/03-论文批判性阅读.md) | CRITIC方法、阅读笔记模板 |
+| [最新进展与团队追踪](docs/08-研究前沿与开放问题/04-最新进展与团队追踪.md) | 浙大高飞团队、北航 Colab，2025–2026 进展与追踪方法 |
 
 ### 思维导图 & 参考资料
 | 文档 | 内容 |
@@ -177,8 +185,19 @@ graph TD
 | [世界模型分类学](mindmaps/world-model-taxonomy.md) | 世界模型分类体系 |
 | [VLA演进路线](mindmaps/vla-evolution.md) | VLA模型发展时间线 |
 | [推荐阅读顺序](mindmaps/reading-order.md) | 论文阅读顺序建议 |
-| [完整论文列表](references/paper-list.md) | 69 篇论文分类汇总 |
+| [完整论文列表](references/paper-list.md) | 79 篇论文分类汇总 |
 | [Awesome List 注释](references/awesome-annotations.md) | 对 NTUMARS 仓库的补充 |
+
+### 可运行代码（可选）
+| 内容 | 说明 |
+|------|------|
+| [code/README.md](code/README.md) | 三个真实 PyTorch demo 的运行方式与对应文档 |
+| [Demo A：RSSM 世界模型](code/a_worldmodel_rssm.py) | 潜空间"想象"能多准地预测回报 |
+| [Demo B：语言条件策略](code/b_lang_cond_policy.py) | 模仿损失低 ≠ 闭环飞得好 |
+| [Demo C：动作头对比](code/c_action_heads.py) | MSE 回归塌到模态平均，扩散头能采样出两个模态 |
+| [Demo D：团队追踪](code/d_track_papers.py) | 从 arXiv 号解析年月画研究时间线，可选联网核对元数据 |
+
+纯 CPU 即可，四个脚本合计三四分钟，出图落在 [`figures/`](figures/)。
 
 ---
 
@@ -198,7 +217,7 @@ graph TD
 |------|------|----------|--------|
 | [VLA-AN](https://arxiv.org/abs/2512.15258) | 2025 | 机载VLA框架，98.1%成功率，8.3x加速 | ★★★ |
 | [CognitiveDrone](https://arxiv.org/abs/2503.01378) | 2025 | 认知无人机VLA，实时4D动作输出 | ★★★ |
-| [UAV-TrackVLA](https://arxiv.org/abs/2604.02241) | 2026 | 基于pi-0.5的无人机跟踪VLA | ★★☆ |
+| [UAV-TrackVLA](https://arxiv.org/abs/2604.02241) | 2026 | 基于 π₀.₅ 的无人机跟踪 VLA | ★★☆ |
 | [UAV-Flow](https://arxiv.org/abs/2505.15725) | 2025 | 语言条件细粒度无人机控制基准 | ★★☆ |
 | [VLN-Pilot](https://arxiv.org/abs/2602.05552) | 2026 | VLM作为室内无人机操作员 | ★★☆ |
 

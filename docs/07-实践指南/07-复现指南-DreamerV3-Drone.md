@@ -23,7 +23,7 @@
 
 ## 1. 项目概述
 
-- **论文标题**: Dream to Fly: Model-Based Drone Racing with a World Model
+- **论文标题**: Dream to Fly: Model-Based Reinforcement Learning for Vision-Based Drone Flight
 - **arXiv**: [2501.14377](https://arxiv.org/abs/2501.14377)
 - **机构**: University of Zurich (UZH), Robotics and Perception Group (RPG)
 - **核心思想**: 使用 DreamerV3 世界模型在"梦境"（想象的轨迹）中学习无人机竞速策略，无需在真实/仿真环境中进行大量试错。
@@ -603,3 +603,29 @@ import multiprocessing
 - [什么是世界模型](../01-基础概念/01-什么是世界模型.md) — 理解世界模型的核心概念
 - [模型强化学习世界模型](../02-世界模型专题/03-模型强化学习世界模型.md) — Dreamer 系列详解
 - [无人机世界模型综述](../02-世界模型专题/05-无人机世界模型综述.md) — 无人机世界模型全景
+
+## 思考题
+
+1. **范式判断**：在无人机竞速这个任务上，世界模型路线相对 model-free RL 和行为克隆，文档给出的优势与代价分别是什么？
+
+2. **复现风险**：指南开头那段加粗提示说明复现的哪个前提不成立？它会改变你动手的第一步吗？
+
+3. **排障顺序**：Actor 在想象里表现不错，一上真实（或仿真）环境就失效，文档给了哪几条改法？
+
+4. **算力取舍**：手上一张 10 GB 左右的卡，64x64 batch=50 与 128x128 batch=50 怎么选？
+
+5. **指标设计**：评估无人机竞速只看 Completion Rate 够不够？为什么 Sample Efficiency 要一起看？
+
+<details><summary>参考答案</summary>
+
+1. 优势是样本效率高（在想象中训练）、安全性好（减少真实交互，探索阶段不必真撞）、泛化性强；代价是要额外训练并维护世界模型，而且存在"想象轨迹与真实轨迹不一致"这一类故障，文档 Q2 专门列了它。数字上，DreamerV3 拿到 82% Completion Rate / 8.2s / 50K steps，对比 PPO 的 45% / 12.3s / 500K steps、SAC 的 52% / 11.1s / 400K steps、BC 的 68% / 9.8s。
+
+2. 提示说"原论文代码可能尚未完全公开，本指南基于论文描述和 DreamerV3 公开实现编写，部分细节可能需要根据实际代码进行调整"，也就是没有唯一的官方仓库可对齐。所以第一步不是直接跑 `train.py`，而是先在文档列的三个实现里（danijar/dreamerv3、NM512/dreamerv3-torch、cleanrl）选一个底座，再按它的实际接口对齐配置项。
+
+3. Q3 给了三条：把 train_every 从 5 降到 2，提高真实环境交互比例；用 Dyna-style 混合训练，每 N 步用真实数据微调世界模型；给观测加噪声增强鲁棒性。
+
+4. 表格里 64x64 + batch=50 是 ~6 GB / ~12 小时，128x128 + batch=50 是 ~10 GB / ~24 小时，64x64 + batch=100 也是 ~10 GB 但只 ~8 小时。10 GB 卡上后两档都装得下，本质是在"更高分辨率、时间翻倍"和"同样显存下加大 batch、8 小时跑完"之间取舍；配置里的 action_repeat=2 本身就是在用动作重复减少仿真步数。
+
+5. 不够。BC 的完成率 68% 已接近 DreamerV3 的 82%，但它依赖 100K 条专家演示，泛化性在文档的对比表里被标为"差"；而 DreamerV3 的 82% 是用 50K 环境交互步换来的，比 PPO 的 500K 少一个数量级。Sample Efficiency 正是这个世界模型路线的核心卖点，单看完成率会把这个差别抹掉。
+
+</details>

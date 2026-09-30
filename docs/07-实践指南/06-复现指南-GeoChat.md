@@ -491,3 +491,29 @@ for question in multi_turn_questions:
 - [什么是VLM](../01-基础概念/02-什么是VLM.md) — 理解 VLM 的核心概念
 - [遥感VLM](../04-VLM专题/01-遥感VLM.md) — GeoChat 的理论背景
 - [无人机场景理解](../04-VLM专题/02-无人机场景理解.md) — 无人机 VLM 评估基准
+
+## 思考题
+
+1. **架构理解**：GeoChat 是怎么把遥感图像接进语言模型的？如果不用 LLaMA-2 而改用 Mistral 7B，链路上哪些环节可以原样保留？
+
+2. **复现卡点**：完全照这份指南从零走一遍，最可能在哪一步被挡住？文档给的绕行方案是什么？
+
+3. **显存规划**：只有一张 24 GB 的卡，想上 LoRA r=128、batch=4，按文档该怎么配？还有哪些降配手段？
+
+4. **指标选型**：要衡量模型对图像中指定区域的定位精度，该看哪类指标？为什么不能用 BLEU-4 代替？
+
+5. **排障顺序**：微调完发现效果不升反降，文档建议先排查哪几件事？
+
+<details><summary>参考答案</summary>
+
+1. 链路由三段组成：CLIP ViT-L/14-336 视觉编码器 → MLP 视觉投影层 → 语言模型（LLaMA-2 7B 或 Mistral 7B）。训练配置里 `freeze_vision_encoder: true`，LoRA 只挂在语言模型的 q_proj/k_proj/v_proj/o_proj/gate_proj/up_proj/down_proj 上，所以换语言模型时视觉编码器和投影层的做法不变，需要重新准备的是语言模型权重本身。
+
+2. 最可能卡在下载 LLaMA-2 7B：`meta-llama/Llama-2-7b-hf` 要先去 Hugging Face 申请访问权限并 `huggingface-cli login`，否则下载会被拒。文档给的绕行方案是改用 `mistralai/Mistral-7B-v0.1`，明确说它无需特殊权限。
+
+3. 表格里 "LoRA r=128, batch=4, 1 GPU" 一行标的是 ~24 GB 显存、约 16 小时，也就是刚好卡满这张卡。要留余量可以按 Q2 的三条走：改 4-bit 量化加载（BitsAndBytesConfig，nf4）、减小 LoRA 的 batch_size、启用 gradient_checkpointing；或者用 6.3 的 accelerate 多卡（4 卡同配置约 4 小时，但显存仍是 ~24 GB/卡）。
+
+4. 定位对应 IoU、GIoU 这一对指标。BLEU-4 属于描述任务的文本生成质量指标（与 METEOR、CIDEr 同组），衡量的是生成文本与参考描述的 n-gram 重合度，对"框得准不准"没有区分力。
+
+5. Q5 给了四条：学习率是否过大（建议从 2e-5 起步）、训练轮数是否偏多（2–3 轮通常足够）、训练数据标注是否正确，以及用验证集监控性能、发现过拟合及时停止。
+
+</details>

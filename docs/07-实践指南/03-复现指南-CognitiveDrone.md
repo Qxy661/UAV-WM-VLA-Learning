@@ -431,3 +431,29 @@ with h5py.File("episode_0001.hdf5", "r") as f:
 - [什么是VLA](../01-基础概念/03-什么是VLA.md) — 理解 VLA 的核心概念
 - [无人机VLA模型](../03-VLA专题/02-无人机VLA模型.md) — CognitiveDrone 的理论背景
 - [机载部署与优化](../03-VLA专题/05-机载部署与优化.md) — VLA 部署到无人机的技术
+
+## 思考题
+
+1. **环境验证**：容器里 `python -c "import torch; print(torch.cuda.is_available())"` 返回 False，按第 8 节 Q1 该查什么、改哪个文件？
+
+2. **复现风险**：4.4 节让你跑 `collector/preprocess.py`，但第 2 节仓库结构里 `collector/` 下只有 data_collector.py、sensor_interface.py、annotation_tool.py。照这份指南动手会撞上什么，怎么处理？
+
+3. **时间尺度**：采集配置是 `fps: 30` + `save_interval: 10`，相邻样本之间隔多久？这个间隔对 4D 动作的"位移增量"含义有什么约束？
+
+4. **配置权衡**：`loss.action_weight: [1.0, 1.0, 1.0, 0.5]` 里最后那个 0.5 对应哪个维度？为什么它可以和前三项不一样？
+
+5. **评估协议**：要让基线表里 CognitiveDrone 的 ADE 0.62 和 PID 的 1.45 并排可比，评估环节至少要固定什么？
+
+<details><summary>参考答案</summary>
+
+1. 先在宿主机上确认 NVIDIA Container Toolkit：跑 `docker run --rm --gpus all nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi`。若失败，把 Docker daemon 的默认 runtime 指到 nvidia——在 /etc/docker/daemon.json 里设 `"default-runtime": "nvidia"` 并注册 nvidia runtime（path 为 /usr/bin/nvidia-container-runtime），然后 `sudo systemctl restart docker`。
+
+2. 说明第 2 节的结构图和正文对不上：按列出的文件，collector/ 下没有 preprocess.py，它要么在别的位置、要么需要自己补。动手时应以实际克隆到的仓库为准（先看目录里到底有什么），缺的预处理步骤按文档给出的参数自己补：`--input_dir`、`--output_dir`、`--image_size 224`、`--normalize_actions true`。
+
+3. 每 10 帧存一次、30 fps，所以相邻样本间隔 10/30 ≈ 1/3 秒。而 4D 动作是这一间隔内的位移增量：dx/dy 限 [-5, 5] 米、dz 限 [-3, 3] 米、dyaw 限 [-π, π] 弧度——帧间隔一变，同一套量程对应的单步位移也就跟着变，采集与标注必须用同一个间隔。
+
+4. 对应最后一维 dyaw（偏航角增量）。前三项 dx/dy/dz 的单位是米（范围 ±5、±5、±3），dyaw 的单位是弧度且范围 [-π, π]，量纲和取值范围都不同；loss 用 smooth_l1、把 dyaw 权重压到 0.5，就是让位置误差在总损失里占更大比重。
+
+5. 至少固定数据划分和指标口径：config 里 train/val/test 是 0.8/0.1/0.1，评估要用 /workspace/data/processed/test；指标是 ADE/FDE（米）、Yaw Error（度）、Collision Rate 与 Task Completion（百分比）。划分或指标定义一换，0.62 和 1.45 就不再指同一件事。
+
+</details>
