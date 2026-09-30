@@ -121,7 +121,7 @@ graph TD
 
     C7 --> C8["26. VLA-AN<br/>(2025)"]
     C7 --> C9["27. CognitiveDrone<br/>(2025)"]
-    C7 --> C10["28. UAV-TrackVLA<br/>(2025)"]
+    C7 --> C10["28. UAV-TrackVLA<br/>(2026)"]
 
     style C0 fill:#ffcdd2
     style C8 fill:#c8e6c9
@@ -142,7 +142,7 @@ graph TD
 | 25 | π₀.₅ (2025) | 世界模型增强 VLA | ★★★★★ |
 | 26 | VLA-AN (2025) | 无人机专用 VLA | ★★★★ |
 | 27 | CognitiveDrone (2025) | 认知无人机 | ★★★★★ |
-| 28 | UAV-TrackVLA (2025) | 跟踪任务 VLA | ★★★★ |
+| 28 | UAV-TrackVLA (2026) | 跟踪任务 VLA | ★★★★ |
 
 ### 路径 D：实用项目导向（4-8 周）
 

@@ -140,7 +140,7 @@ graph LR
 
 ```mermaid
 graph LR
-    A[自然语言描述<br/>"环绕建筑缓慢上升"] --> B[LLM: 意图解析]
+    A["自然语言描述<br/>'环绕建筑缓慢上升'"] --> B[LLM: 意图解析]
     B --> C[镜头语言转换]
     C --> D[轨迹生成]
     D --> E[飞行控制器]
@@ -222,7 +222,7 @@ LLM 在生成飞行轨迹时必须满足这些约束，确保飞行安全。
 ```mermaid
 graph TB
     subgraph 用户层
-        A[自然语言指令<br/>"飞到建筑A上方并悬停"]
+        A["自然语言指令<br/>'飞到建筑A上方并悬停'"]
     end
     
     subgraph LLM层
@@ -416,7 +416,7 @@ sequenceDiagram
 
 ```mermaid
 graph LR
-    A[自然语言描述<br/>"红色屋顶旁的白色SUV"] --> B[VLM 特征提取]
+    A["自然语言描述<br/>'红色屋顶旁的白色SUV'"] --> B[VLM 特征提取]
     C[航拍图像] --> D[区域提议]
     D --> E[区域特征提取]
     B --> F[语义相似度计算]

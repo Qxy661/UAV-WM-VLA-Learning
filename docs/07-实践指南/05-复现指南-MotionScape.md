@@ -509,3 +509,29 @@ loader = DataLoader(
 - [关键数据集与基准](../02-世界模型专题/06-关键数据集与基准.md) — MotionScape 的理论背景
 - [生成式世界模型](../02-世界模型专题/02-生成式世界模型.md) — 视频生成世界模型详解
 - [可复现项目候选清单](./08-可复现项目候选清单.md) — 更多可复现项目
+
+## 思考题
+
+1. **对齐陷阱**：视频帧和轨迹对不上时，文档给的解法是什么？为什么不能直接用 0, 1, 2, ... 这样的连续索引取帧？
+
+2. **复现风险**：2.4 节让你跑 `scripts/verify_checksums.py`、4.3 节让你跑 `scripts/extract_features.py`，但第 2 节的仓库结构里 `scripts/` 只有 download_dataset.sh、preprocess.py、visualize.py、evaluate_trajectory.py。照这份指南动手会撞上什么？
+
+3. **存储权衡**：磁盘扛不住 4K 时，文档给的降级路径是什么？能一路降到什么程度，凭什么说够用？
+
+4. **姿态陷阱**：如果直接把 `orientation` 原样喂给 `Rotation.from_quat()` 会发生什么？正确写法是什么？
+
+5. **集成缺口**：6.3 节转 DreamerV3 格式时，哪个字段必须自己定义？数据集本身为什么给不了？
+
+<details><summary>参考答案</summary>
+
+1. 用轨迹文件里的 `frame_indices` 字段取帧：`frame_indices[i]` 对应视频的第 `frame_indices[i]` 帧，文档明确要求"使用 frame_indices 而非连续索引"。因为轨迹文件里 position/orientation/timestamp 与 frame_indices 是各自独立的序列，连续索引只在两者恰好一一对应时才碰巧成立。
+
+2. 会撞上结构图和正文对不上：这两个脚本都不在结构图列出的文件里，可能不存在或路径不同。下载解压后先核对实际的 scripts/ 目录，缺的校验和特征提取步骤要自己补（文档给出的特征类型示例是 `--feature_type "optical_flow"`）；结构里那个 evaluate_trajectory.py 全文也没给用法，同样得自己看。
+
+3. 降级路径是用 `scripts/preprocess.py --input_dir data/videos --output_dir data/videos_720p --target_resolution 1280x720` 离线转一份低分辨率副本（还可加 `--target_fps 15`），MotionScapeDataset 也支持 `resolution` 取 "4k"/"1080p"/"720p"。文档明确说 720p 对模型训练已经足够，4K 主要用于高质量可视化和展示——言下之意训练侧没有非用 4K 的理由（但下载仍需预留 500 GB+ 磁盘）。
+
+4. 会得到错误的姿态。数据集的 orientation 是四元数 `[qw, qx, qy, qz]`（w 在前），而 scipy 的 `Rotation.from_quat` 期望 `[x, y, z, w]`，所以必须先换序：`Rotation.from_quat([qx, qy, qz, qw])`，再 `as_euler("xyz", degrees=True)` 转欧拉角。Q4 专门提示"注意四元数顺序"，就是这个坑。
+
+5. `reward` 要自己定义。转换函数里写的是 `"reward": compute_reward(sample)`，注释就是"自定义奖励函数"，`done` 则直接写死 False。数据集提供的是 position/orientation/velocity/angular_velocity/timestamp/frame_indices 和语言描述（scene_description、flight_intent、segment_descriptions），里面没有任何奖励信号，奖励必须按下游任务设计。
+
+</details>

@@ -303,7 +303,7 @@ L_total = α₁ * L_feat1 + α₂ * L_feat2 + β * L_attn + γ * L_logit
 
 ### 4.3 CARLA-Air — 仿真测试平台
 
-**论文**: *CARLA-Air: A Simulation Platform for UAV VLM Deployment Evaluation* (2026)
+**论文**: *CARLA-Air: Fly Drones Inside a CARLA World — A Unified Infrastructure for Air-Ground Embodied Intelligence* (2026)
 **arXiv**: [2603.28032](https://arxiv.org/abs/2603.28032)
 
 #### 核心问题

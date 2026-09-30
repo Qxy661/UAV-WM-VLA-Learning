@@ -24,7 +24,7 @@
 
 ## 2. VLA-AN：安全约束下的高效无人机 VLA
 
-> **论文**：VLA-AN: Vision-Language-Action Model with Adaptive Safety Correction for UAV Navigation
+> **论文**：VLA-AN: An Efficient and Onboard Vision-Language-Action Framework for Aerial Navigation in Complex Environments
 > **来源**：arXiv:2512.15258, 2024
 > **关键成果**：98.1% 任务成功率，8.3× 推理加速
 
@@ -125,7 +125,7 @@ VLA-AN 的贡献在于证明了 VLA 模型可以通过轻量级的安全后处�
 
 ## 3. CognitiveDrone：面向认知飞行的 VLA
 
-> **论文**：CognitiveDrone: A Vision-Language-Action Model for UAV Autonomous Flight
+> **论文**：CognitiveDrone: A VLA Model and Evaluation Benchmark for Real-Time Cognitive Task Solving and Reasoning in UAVs
 > **来源**：arXiv:2503.01378, 2025
 > **关键成果**：4D 动作输出，8000+ 飞行轨迹数据集，CognitiveDrone-R1 引入 VLM 推理
 
@@ -394,10 +394,10 @@ graph TB
 
 | 论文 | 来源 | 关键贡献 | 链接 |
 |------|------|---------|------|
-| VLA-AN: Adaptive Safety Correction | arXiv:2512.15258 | GSC 安全校正，8.3× 加速 | arXiv:2512.15258 |
+| VLA-AN（机载高效 VLA 框架） | arXiv:2512.15258 | GSC 安全校正，8.3× 加速 | arXiv:2512.15258 |
 | CognitiveDrone | arXiv:2503.01378 | 4D 动作，8000+ 轨迹，R1 推理 | arXiv:2503.01378 |
 | UAV-TrackVLA | arXiv:2604.02241 | π₀.₅ 基座，时间压缩，双分支 | arXiv:2604.02241 |
-| π₀.₅ (基座模型) | arXiv:2502.01494 | 原生动作 VLM | arXiv:2502.01494 |
+| π₀.₅ (基座模型) | arXiv:2504.16054 | 原生动作 VLM | arXiv:2504.16054 |
 
 ---
 

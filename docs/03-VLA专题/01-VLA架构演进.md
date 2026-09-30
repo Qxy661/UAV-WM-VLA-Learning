@@ -34,7 +34,7 @@ timeline
     2024.10 : π₀ (Physical Intelligence)
               : Flow Matching
               : 连续动作生成
-    2025.01 : π₀.₅ (Physical Intelligence)
+    2025.04 : π₀.₅ (Physical Intelligence)
               : VLM 原生架构
               : 跨具身泛化
 ```
@@ -267,7 +267,7 @@ graph LR
 
 | 特性 | RT-2 | OpenVLA | π₀ | π₀.₅ |
 |------|------|---------|-----|------|
-| 发表时间 | 2023.07 | 2024.06 | 2024.10 | 2025.01 |
+| 发表时间 | 2023.07 | 2024.06 | 2024.10 | 2025.04 |
 | 发表机构 | Google DeepMind | Stanford | Physical Intelligence | Physical Intelligence |
 | 参数量 | 55B | 7B | 未公开 | 未公开 |
 | VLM 基座 | PaLI-X / PaLM-E | Llama 2 + SigLIP/DINOv2 | 定制 VLM | 原生动作 VLM |
@@ -339,12 +339,134 @@ VLA 模型为无人机领域带来了新的可能性，但也面临独特挑战�
 | RT-2: Vision-Language-Action Models | Google DeepMind | 2023 | 首个 VLA，动作 tokenization | arXiv:2307.15818 |
 | OpenVLA: An Open-Source Vision-Language-Action Model | Stanford | 2024 | 开源 7B VLA | arXiv:2406.09246 |
 | π₀: A Vision-Language-Action Flow Model | Physical Intelligence | 2024 | Flow Matching 连续动作 | arXiv:2410.24164 |
-| π₀.₅: a Vision-Language-Action Model | Physical Intelligence | 2025 | 原生动作 VLM | arXiv:2502.01494 |
+| π₀.₅: a Vision-Language-Action Model with Open-World Generalization | Physical Intelligence | 2025 | 原生动作 VLM | arXiv:2504.16054 |
 | RT-1: Robotics Transformer | Google | 2023 | Transformer 动作预测基础 | arXiv:2212.06817 |
 
 ---
 
-## 10. 延伸阅读
+## 10. 动手验证：动作头为什么必须建模"分布"？
+
+第 5 节讲 π₀ 用 Flow Matching 生成连续动作。这一节把**为什么不能直接用 MSE 回归**量出来：同一个观测下"左绕"和"右绕"都合理时，回归头会输出两者的平均 —— 而那个平均动作两条路都不像。
+
+### 10.1 两个动作头
+
+```python
+import torch, torch.nn as nn, torch.nn.functional as F, math
+
+H, D, NS = 8, 4, 100          # 动作块 8 步 × 4 维；扩散 100 步
+
+def cosine_schedule(ns, s=0.008):
+    """余弦噪声调度。100 步线性 beta 在 t=99 时 alpha_bar 仍有 0.36，
+    前向过程根本没到纯噪声，而采样却从 N(0,I) 起步，两者不一致 ——
+    去噪器会输出弥散到 ±8 的垃圾。换余弦调度后 alpha_bar_99 ≈ 2e-4。"""
+    f = lambda u: math.cos(((u / ns) + s) / (1 + s) * math.pi / 2) ** 2
+    ab = torch.tensor([f(t) / f(0) for t in range(ns)]).clamp(1e-5, 0.9999)
+    alphas = (ab / torch.cat([torch.ones(1), ab[:-1]])).clamp(1e-8, 0.9999)
+    return alphas, ab, 1 - alphas
+
+class RegHead(nn.Module):
+    """① MSE 回归：直接映射到一整块动作。"""
+    def __init__(self, cond_dim=12, h=128):
+        super().__init__()
+        self.net = nn.Sequential(nn.Linear(cond_dim, h), nn.SiLU(),
+                                 nn.Linear(h, h), nn.SiLU(), nn.Linear(h, H * D))
+    def forward(self, cond): return self.net(cond).view(-1, H, D)
+
+class Denoiser(nn.Module):
+    """② 预测噪声 eps_theta(x_t, t, cond)，标准 DDPM 目标。"""
+    def __init__(self, cond_dim=12, h=256):
+        super().__init__()
+        self.emb = SinusoidalEmb(64)          # 时间步正弦编码，别直接喂标量 t
+        self.net = nn.Sequential(nn.Linear(H * D + cond_dim + 64, h), nn.SiLU(),
+                                 nn.Linear(h, h), nn.SiLU(), nn.Linear(h, H * D))
+    def forward(self, x, t, cond):
+        return self.net(torch.cat([x.flatten(1), cond, self.emb(t)], -1)).view(-1, H, D)
+
+# DDPM 祖先采样：从纯噪声逐步去噪
+x = torch.randn(n, H, D)
+for t in reversed(range(NS)):
+    eps = den(x, torch.full((n,), t), cond)
+    x = (x - (1 - alphas[t]) / (1 - ab[t]).sqrt() * eps) / alphas[t].sqrt()
+    if t > 0:
+        x = x + (betas[t] * (1 - ab[t - 1]) / (1 - ab[t])).sqrt() * torch.randn_like(x)
+```
+
+数据是一个 8 步动作块，侧向通道只有两种走法，终点真值 ±0.80。
+
+### 10.2 本地实测结果
+
+```text
+① 回归头预测的侧向轨迹: [-0.01, -0.01, -0.01, -0.01, -0.01, -0.01, -0.01, -0.02]
+   -> 全部落在 -0.01，两个模态都不像 —— 这就是模态平均
+
+  step        扩散损失
+  2000      0.04902
+  4000      0.04368
+  6000      0.04558
+  8000      0.05571
+
+② 扩散头采样 400 条：
+   均值 -0.07  标准差 0.80  范围 [-0.9, 0.9]
+   落在两个模态附近（±0.80±0.3）的比例：98.5%
+   左绕 211 条 | 中间（两不像）3 条 | 右绕 186 条
+   -> 中间只有 3 条，说明扩散头几乎不做模态平均
+```
+
+对照很干净。回归头输出的是**一个确定值** `-0.01`，正好卡在两个模态正中间；扩散头采样出 400 个**互不相同**的动作，其中 397 个落在一个模态附近，只有 3 个掉在中间。
+
+> **一个容易骗自己的指标**：如果按"采样值 `<0` 算左、`>0` 算右"去统计，**任何**连续分布都会得到接近 50/50 的"两簇"（中位数分割的必然结果）。真正能说明模态是否分开的，是**落在中间（两不像）的比例** —— 这里是 3/400。第一版 demo 就栽在这个指标上：噪声调度写错导致去噪器根本没学会，输出弥散在 ±8，而"93/107"的分割看上去依然漂亮。
+
+![回归头 vs 扩散头](../../figures/c_multimodal.png)
+
+### 10.3 【待验证】接入 PX4 SITL：动作头要跑在控制频率上
+
+> **未在本地验证**：本节代码需要 Ubuntu + PX4 + MicroXRCEAgent 才能运行，本仓库的验证环境是 Windows，没有跑过。**字段名请以你安装的 `px4_msgs` 版本为准。**
+
+扩散头每出一个动作块要跑 `NS=100` 次去噪前向 —— 放进 50 Hz 的控制回路是实打实的开销。真机上有两条常用退路：**动作分块**（一次推理管 H 步）和**更少步数的采样器**（DDIM / DPM-Solver，20 步甚至 4 步）。这正是 π₀ 转向 Flow Matching 的动机之一。
+
+```python
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
+from px4_msgs.msg import OffboardControlMode, VehicleCommand, VehicleLocalPosition
+
+def px4_qos(depth=1):
+    """PX4 话题统一用 BEST_EFFORT + TRANSIENT_LOCAL，否则收不到数据。"""
+    return QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT,
+                      durability=DurabilityPolicy.TRANSIENT_LOCAL,
+                      history=HistoryPolicy.KEEP_LAST, depth=depth)
+
+class ChunkedPolicyNode(Node):
+    """动作分块：每 H 步推理一次，中间各控制周期只做插值下发。"""
+    def __init__(self, chunk=H):
+        super().__init__('chunked_policy')
+        self.chunk, self.buf, self.k = chunk, None, 0
+        self.create_subscription(VehicleLocalPosition, '/fmu/out/vehicle_local_position',
+                                 self.on_pos, px4_qos())
+
+    def on_pos(self, m):
+        if self.buf is None or self.k >= self.chunk:      # 动作块用完了才再推理一次
+            with torch.no_grad():
+                self.buf = sample_action_chunk(self.pol, build_obs(m))   # 一次 100 步去噪
+            self.k = 0
+        thrust, wx, wy, wz = self.buf[self.k].tolist()
+        self.k += 1
+        # 注意：推理耗时若超过控制周期 dt，这里必须对齐时间戳或降级到上一块，
+        # 否则会发出时间上错位的 setpoint —— 表现为高频抖动
+        self.pub_rates.publish(to_rates_setpoint((thrust + 1) / 2, wx, wy, wz))
+```
+
+另外两点：**坐标系**（PX4 用 NED/FRD，训练用 ENU/对角约定，必须变换）、**降级链路**（推理超时或输出越界时切回位置保持，别让扩散采样单独决定生死）。
+
+### 10.4 运行完整脚本
+
+```bash
+py -3.9 code/c_action_heads.py     # 约 60 秒，CPU 即可
+```
+
+完整脚本（含双模态数据构造、两个动作头、DDPM 采样、出图）：[`code/c_action_heads.py`](../../code/c_action_heads.py)
+
+---
+
+## 11. 延伸阅读
 
 - [02-世界模型专题](../02-世界模型专题/) — 理解 VLA 的"感知"基础：世界模型如何为 VLA 提供环境先验
 - [02-无人机VLA模型](./02-无人机VLA模型.md) — 深入了解 VLA-AN、CognitiveDrone 等无人机专用 VLA
@@ -353,7 +475,7 @@ VLA 模型为无人机领域带来了新的可能性，但也面临独特挑战�
 
 ---
 
-## 11. 思考题
+## 12. 思考题
 
 **题目 1：动作 Tokenization vs. Flow Matching**
 
