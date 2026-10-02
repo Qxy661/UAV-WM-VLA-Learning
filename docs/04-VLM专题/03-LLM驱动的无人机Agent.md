@@ -519,7 +519,116 @@ graph TB
 
 ---
 
-## 6. 扩展阅读
+## 6. 动手验证：LLM 慢一秒，无人机偏几米？
+
+4.1 节把"LLM 推理延迟 1-4 秒"列为实时控制的主要瓶颈，"无法满足实时控制需求"（4.1 节表格）。瓶颈是个定性说法，这一节把它换成一个数。
+
+做法是内环固定 50 Hz 正常跑，外环每 τ 秒重新下发一个目标点，从 0 扫到 4 秒。参考轨迹是一条半径 2 m 的圆，8 秒一圈。外环用的是**离散航点**而不是连续轨迹：LLM agent 给的是"去哪儿"，不是每一步的速度，内环收到航点后就地悬停。
+
+### 6.1 慢外环 + 定点悬停内环
+
+```python
+import torch, math
+from common.quad_sim import QuadSim
+
+N, DT, R, OM, H = 64, 0.02, 2.0, 2 * math.pi / 8.0, 1.5
+ph = 2 * math.pi * torch.arange(N) / N
+
+def ref(t):
+    a = OM * t + ph
+    return torch.stack([R * torch.cos(a), R * torch.sin(a), torch.full_like(a, H)], -1)
+
+def hold(env, goal):                 # 定点悬停控制器：D 项作用于绝对速度
+    e = goal[:, :2] - env.p[:, :2]
+    tilt = torch.stack([torch.clamp(0.9 * e[:, 0] - 0.7 * env.v[:, 0], -0.6, 0.6),
+                        torch.clamp(0.9 * e[:, 1] - 0.7 * env.v[:, 1], -0.6, 0.6)], -1)
+    a = torch.zeros(env.n, 4)
+    a[:, 0] = 0.5 + 0.10 * (H - env.p[:, 2]) - 0.30 * env.v[:, 2]
+    a[:, 1:3] = 3.0 * (tilt - env.rpy[:, :2])
+    return a.clamp(-1, 1)
+
+torch.manual_seed(0)
+for tau in (0, 1, 2, 4):
+    k = round(tau / DT)              # 外环每 k 步更新一次航点
+    env = QuadSim(N); env.reset()
+    env.p = ref(0.0).clone(); env.v.zero_()
+    goal = ref(0.0)
+    err = 0.0
+    for t in range(800):
+        if t % max(k, 1) == 0:       # <- LLM 只在此时重新规划一次
+            goal = ref(DT * t)
+        env.step(hold(env, goal))
+        if t >= 200:
+            err += float(((env.p[:, :2] - ref(DT * t)[:, :2]).norm(dim=-1) ** 2).sum())
+    print(f"τ={tau} s  跟踪 RMSE {math.sqrt(err / (600 * N)):.2f} m")
+```
+
+### 6.2 本地实测结果
+
+```text
+τ=0 s  跟踪 RMSE 1.09 m
+τ=1 s  跟踪 RMSE 1.85 m
+τ=2 s  跟踪 RMSE 2.52 m
+τ=4 s  跟踪 RMSE 3.15 m
+```
+
+4 秒的规划周期对应 3.15 m 的路径偏差，已经超过无人机的机身尺度，在半径 2 m 的圆上等于跑到了圆周的另一侧。这就把"无法满足实时控制需求"落成了一个数。
+
+值得注意的是 τ=0 那一行：外环每一步都更新，误差仍有 1.09 m。这部分与延迟无关，是定点悬停的固有代价——内环收到航点就停在那儿，而参考点在持续移动，两次规划之间"世界已经变了"。换句话说，慢外环的代价由两部分组成：延迟本身，加上"悬停"这个动作与移动任务之间的错配。
+
+这与连续轨迹指令的对照很有意思：连续轨迹那套（内环带速度前馈）基准只有 0.12 m，但延迟一上来就陡增，4 秒时 4.11 m；航点这套基准高出一大截（1.09 m），增长却平缓得多。两条曲线的对照见 [机载部署与优化](../03-VLA专题/05-机载部署与优化.md) 第 10 节。
+
+> **单次实验，固定种子**：这里用的是周期轨迹，τ 等于整圈时长（8000 ms）时旧目标会绕回原位、误差假性归零。本节 τ 最大 4000 ms（半圈），在单调区间内。换成非周期任务时趋势不变，但具体数值会随任务曲率变化。
+
+![外环延迟与跟踪误差](../../figures/f_latency.png)
+
+### 6.3 【待验证】接入 PX4 SITL：LLM 迟到时谁来兜底
+
+> **未在本地验证**：本节代码需要 Ubuntu + PX4 + MicroXRCEAgent 才能运行，本仓库的验证环境是 Windows，没有跑过。**字段名请以你安装的 `px4_msgs` 版本为准。**
+
+航点式架构有一个连续轨迹没有的好处：LLM 迟到时，无人机只是停在原地，不会执行一条过时的轨迹。代价是 6.2 节量出来的高基准误差。真要上机，关键是在这条慢链路上加一个**超时兜底**。
+
+```python
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
+from px4_msgs.msg import OffboardControlMode, TrajectorySetpoint, VehicleLocalPosition
+import rclpy
+
+def px4_qos(depth=1):
+    """PX4 话题统一用 BEST_EFFORT + TRANSIENT_LOCAL，否则收不到数据。"""
+    return QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT,
+                      durability=DurabilityPolicy.TRANSIENT_LOCAL,
+                      history=HistoryPolicy.KEEP_LAST, depth=depth)
+
+class WaypointAgent(Node):
+    """LLM 给航点，飞控执行；LLM 迟到超过 timeout 就地悬停。"""
+    def __init__(self, timeout=5.0):
+        super().__init__('waypoint_agent')
+        self.timeout, self.wp, self.t_wp = timeout, None, 0.0
+        self.create_subscription(VehicleLocalPosition, '/fmu/out/vehicle_local_position',
+                                 self.on_pos, px4_qos())
+
+    def on_pos(self, m):
+        now = self.get_clock().now().nanoseconds / 1e9
+        if self.wp is None or now - self.t_wp > self.timeout:
+            # 兜底：LLM 超时就用当前位置当航点，等价于原地悬停
+            self.wp = (m.x, m.y, m.z)
+            self.get_logger().warn('LLM 超时，切换到原地悬停')
+        self.pub_setpoint.publish(to_enu_setpoint(self.wp))
+```
+
+三点补充：**航点要用世界坐标而不是机体坐标**（LLM 输出"向前 10 米"时必须先用当前航向换算，否则一转机头目标就飘了）、**兜底阈值要与任务匹配**（悬停 5 秒安全，但"穿越移动目标"这类任务必须换成重新规划）、**把 LLM 的延迟打进日志**（它是 6.2 节那条曲线唯一的自变量，不测就不知道什么时候会出事）。
+
+### 6.4 运行完整脚本
+
+```bash
+py -3.9 code/f_control_loop.py     # 约 12 秒，CPU 即可
+```
+
+完整脚本（含连续轨迹与阶梯航点两种外环的对照、9 个延迟档位、出图）：[`code/f_control_loop.py`](../../code/f_control_loop.py)
+
+---
+
+## 7. 扩展阅读
 
 - [CityNavAgent arXiv](https://arxiv.org/abs/2505.05622)
 - [ACDC arXiv](https://arxiv.org/abs/2509.16176)
@@ -532,7 +641,7 @@ graph TB
 
 ---
 
-## 7. 思考题
+## 8. 思考题
 
 ### 题目 1：CityNavAgent 的层次化规划相比端到端方法有什么优势？在什么场景下端到端方法可能更好？
 
