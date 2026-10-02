@@ -117,6 +117,8 @@ else:
 
 VLA-AN 通过 GSC 机制将碰撞率从 18.7% 降低到 1.2%，同时通过模型优化实现了 8.3 倍的推理加速（从 100ms 降低到 12ms）。
 
+> **口径提示**：这里的 12 ms 是**网络前向**的延迟，不含图像采集、预处理和 GSC 后处理。端到端整环达不到 50 Hz —— [研究空白与机会](../08-研究前沿与开放问题/02-研究空白与机会.md) 2.1 节说的「仍未达到 50Hz」指的是整环。两个说法不矛盾，但引用时要把口径带上，别拿 12 ms 去和端到端预算比较。
+
 ### 2.5 对无人机 VLA 的启示
 
 VLA-AN 的贡献在于证明了 VLA 模型可以通过轻量级的安全后处理机制获得安全保障，而无需完全放弃端到端学习的优势。这种"学习+安全校正"的混合范式为后续工作提供了重要参考。
@@ -298,7 +300,7 @@ UAV-TrackVLA 实现了跟踪与控制的紧密耦合：
 | 安全机制 | 几何安全校正 (GSC) | 无显式安全层 | 跟踪-控制耦合 |
 | 推理范式 | 直接映射 | 显式推理 (R1) | 时序推理 |
 | 数据规模 | 未公开 | 8000+ 轨迹 | 未公开 |
-| 最高成功率 | 98.1% | 未报告具体数值 | 未报告具体数值 |
+| 最高成功率 | 98.1% | 59.6%（R1 版 77.2%） | 61.76% |
 | 推理加速 | 8.3× | 无特殊优化 | 时间压缩 |
 
 ### 5.2 技术路线对比
@@ -401,7 +403,124 @@ graph TB
 
 ---
 
-## 8. 延伸阅读
+## 8. 动手验证：GSC 在什么形状的障碍物上会失效？
+
+2.3 节那条公式只有一句"把指向障碍物的动作分量减掉"。这一节把它放进闭环里量出来。
+
+两个场景的任务结构完全相同：目标都在障碍物正后方，都得从障碍物旁边过去。唯一的变量是障碍物的形状——凸形是一个球，绕过去的路只有一条；凹形是两个球，中间留一道 0.8 m 的缝，缝够一架半径 0.15 m 的无人机穿过去。
+
+### 8.1 过滤器与它唯一看到的那个障碍物
+
+```python
+import torch
+from common.quad_sim import QuadSim        # code/common/quad_sim.py：四旋翼质点模型
+N, T = 256, 400                            # 256 架并行，400 步 = 8 秒
+KV, V_MAX, KT, KA, TILT_MAX = 0.8, 3.0, 1.2, 3.0, 0.6
+D_THRESH, DRONE_R, REACH_TOL = 1.5, 0.15, 0.8   # 触发距离须盖过 0.85 m 的刹车距离
+GOAL = torch.tensor([7.0, 0.0, 1.5])       # 两个场景目标相同：都在障碍物正后方
+# 唯一变量是形状。凹形是两个球留一道 0.8 m 的缝：够穿过去，但滤波器只看到最近的那个球。
+SCENES = {"凸形": (torch.tensor([[3.0, 0.0]]), torch.tensor([1.2])),
+          "凹形": (torch.tensor([[3.0, 1.15], [3.0, -1.15]]), torch.full((2,), 0.75))}
+def gsc_filter(a_raw, p_xy, obstacles, d_thresh):
+    """a_safe = a_raw - max(0, a_raw · n_obs) · n_obs。n_obs 须从无人机指向障碍物，
+    写反成"障碍 -> 无人机"时 a_raw·n_obs 恒为负，clamp 到 0 后整段校正静默失效。"""
+    cen, rad = obstacles; d = cen[None, :, :] - p_xy[:, None, :]            # 无人机 -> 球心 (N,M,2)
+    d_obs = d.norm(dim=-1) - rad[None, :]             # 到球面的距离 (N,M)
+    idx = d_obs.argmin(dim=1)                         # 只取最近的障碍，失效的根源
+    ar = torch.arange(p_xy.shape[0]); n = d[ar, idx]; d_min = d_obs[ar, idx]
+    n = n / (n.norm(dim=-1, keepdim=True) + 1e-8)
+    proj = (a_raw * n).sum(-1, keepdim=True)          # a_raw · n_obs
+    return a_raw - (d_min < d_thresh).unsqueeze(-1) * proj.clamp(min=0.) * n
+def policy(env, goal, obstacles, use_gsc):
+    """位置误差 -> 期望速度 ->[GSC 在速度层]-> 倾角 -> 角速率。"""
+    v_des = torch.clamp(KV * (goal[:, :2] - env.p[:, :2]), -V_MAX, V_MAX)
+    if use_gsc:
+        v_des = gsc_filter(v_des, env.p[:, :2], obstacles, D_THRESH)
+    tilt = torch.clamp(KT * (v_des - env.v[:, :2]), -TILT_MAX, TILT_MAX)
+    a = torch.zeros(env.n, 4)
+    a[:, 0] = 0.5 + 0.10 * (goal[:, 2] - env.p[:, 2]) - 0.30 * env.v[:, 2]   # 高度 -> 推力
+    a[:, 1:3] = KA * (tilt - env.rpy[:, :2])                                # 倾角误差
+    return a.clamp(-1, 1)
+torch.manual_seed(0)
+for name, (cen, rad) in SCENES.items():
+    for use_gsc in (False, True):
+        env = QuadSim(N); env.reset()
+        env.p[:, 0] = -2.5 + 0.3 * torch.randn(N)     # 起点铺在障碍前一条横线上
+        env.p[:, 1] = 3.0 * (torch.rand(N) * 2 - 1); env.p[:, 2] = 1.5   # 横向铺开
+        hit = torch.zeros(N, dtype=torch.bool)
+        for _ in range(T):
+            env.step(policy(env, GOAL.repeat(N, 1), (cen, rad), use_gsc))
+            hit |= (((env.p[:, :2].unsqueeze(1) - cen).norm(dim=-1) < rad + DRONE_R).any(1))
+        ok = ((env.p - GOAL).norm(dim=-1) < REACH_TOL) & ~hit
+        print(f"{name}  GSC {'开' if use_gsc else '关'}  碰撞 {hit.float().mean()*100:5.1f}%  到达 {ok.float().mean()*100:5.1f}%")
+```
+
+`idx = d_obs.argmin(dim=1)` 是关键的一行：整段校正只看**最近的一个**障碍物，用的是纯局部信息。凸形场景里这不成问题，球面的切向分量会带着无人机滑过去。凹形场景里两个球的法向量各指一边，只取最近的那个，等于用一个球的法向量去决定另一个球附近该怎么走。
+
+### 8.2 本地实测结果
+
+```text
+凸形  GSC 关  碰撞 100.0%  到达   0.0%
+凸形  GSC 开  碰撞   0.0%  到达  97.3%
+凹形  GSC 关  碰撞  51.6%  到达  48.4%
+凹形  GSC 开  碰撞  77.3%  到达  22.7%
+```
+
+同一个凸形场景上，GSC 把碰撞率从 100% 压到 0；同一个凹形场景上，它把碰撞率从 51.6% 抬到 77.3%。差别不在代码，在几何。
+
+原因是无人机对准那道缝时，最近的那个球给出的法向量带横向分量。`a_raw - (a_raw · n_obs) · n_obs` 减掉朝前的分量之后，剩下的那个横向分量指向另一个球——校正量把无人机推进了陷阱。左图里 GSC 开启的那组蓝线在缝口挤成一束、随后擦上球面，就是这个过程。
+
+> **触发距离不能小于刹车距离**：倾角限幅 0.6 rad 对应最大水平加速度 5.27 m/s²，3 m/s 巡航的刹车距离是 0.85 m。`D_THRESH` 调到 1.0 m 时凸形场景同样刹不住，碰撞率仍有 83.6%。上面这组数是在 `D_THRESH = 1.5` m 下跑的。
+
+![GSC 在凸形与凹形障碍上的对比](../../figures/e_gsc_scene.png)
+
+### 8.3 【待验证】接入 PX4 SITL：GSC 要跑在多少 Hz 上
+
+> **未在本地验证**：本节代码需要 Ubuntu + PX4 + MicroXRCEAgent 才能运行，本仓库的验证环境是 Windows，没有跑过。**字段名请以你安装的 `px4_msgs` 版本为准。**
+
+50 Hz 控制周期是 20 ms，VLA-AN 的推理占 12 ms，留给安全层的不到 8 ms。就计算量而言这不是问题：`gsc_filter` 对每个障碍物做一次模长和一次点积，障碍物数量在几十的量级，是微秒级的运算。真正的开销在别处——它需要一张**世界坐标系下的障碍物表**，而这张表来自感知与建图，那一步的延迟和误差都不在安全层里。
+
+```python
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
+from px4_msgs.msg import OffboardControlMode, TrajectorySetpoint, VehicleLocalPosition
+
+def px4_qos(depth=1):
+    """PX4 话题统一用 BEST_EFFORT + TRANSIENT_LOCAL，否则收不到数据。"""
+    return QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT,
+                      durability=DurabilityPolicy.TRANSIENT_LOCAL,
+                      history=HistoryPolicy.KEEP_LAST, depth=depth)
+
+class GscNode(Node):
+    """安全层本身很便宜，贵的是喂给它的那张障碍物表。"""
+    def __init__(self):
+        super().__init__('gsc_safety')
+        self.cen, self.rad, self.a_raw = None, None, None
+        self.create_subscription(VehicleLocalPosition, '/fmu/out/vehicle_local_position',
+                                 self.on_pos, px4_qos())
+
+    def on_pos(self, m):
+        if self.a_raw is None:
+            return
+        p_xy = torch.tensor([[m.y, m.x]])      # PX4 用 NED、训练用 ENU：x/y 互换且 y 取反
+        a = self.a_raw if self.cen is None else gsc_filter(
+            self.a_raw, p_xy, (self.cen, self.rad), D_THRESH)
+        # 障碍物表为空时 gsc_filter 退化成直通，此时应降级到位置保持而不是继续飞
+        self.pub_setpoint.publish(to_enu_setpoint(a))
+```
+
+三点补充：**坐标系**（`m.x/m.y` 是 NED 的北/东，直接当 ENU 的水平坐标用会得到一个镜像过的世界）、**障碍物表失效时的降级**（表为空或过期就切位置保持，别让一个空表伪装成"没有障碍"）、**只对最近障碍生效**（8.2 节量出来的失效模式在真机上是实打实的：窄缝、门框、走廊拐角都属这一类，需要换成 SDF 或把多个约束一起解）。
+
+### 8.4 运行完整脚本
+
+```bash
+py -3.9 code/e_gsc_safety.py     # 约 4 秒，CPU 即可
+```
+
+完整脚本（含出生区自检、四组对照、出图）：[`code/e_gsc_safety.py`](../../code/e_gsc_safety.py)
+
+---
+
+## 9. 延伸阅读
 
 - [01-VLA架构演进](./01-VLA架构演进.md) — 理解 VLA 从 RT-2 到 π₀.₅ 的架构演进历程
 - [03-语言条件飞行控制](./03-语言条件飞行控制.md) — 深入了解如何用自然语言控制无人机
@@ -410,7 +529,7 @@ graph TB
 
 ---
 
-## 9. 思考题
+## 10. 思考题
 
 **题目 1：GSC 的适用性边界**
 
@@ -421,7 +540,7 @@ VLA-AN 的几何安全校正（GSC）假设障碍物可以用法向量描述，�
 
 **(1) GSC 假设失效的场景：**
 - **动态障碍物**：移动的物体没有固定的法向量，需要预测其运动轨迹
-- **非凸障碍物**：凹形障碍物（如 U 形槽）的法向量可能指向"陷阱"内部
+- **非凸障碍物**：凹形障碍物（如 U 形槽）的法向量可能指向"陷阱"内部（第 8 节量了同一个机制：两个球之间留一道够穿过去的缝，只取最近障碍的法向量会把无人机推向另一个球，碰撞率从 51.6% 涨到 77.3%）
 - **软约束场景**：有些区域不是绝对不能进入（如草坪），而是应该尽量避免
 - **多约束耦合**：同时有碰撞约束、动力学约束、地理围栏等，GSC 难以统一处理
 

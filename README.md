@@ -191,13 +191,24 @@ graph TD
 ### 可运行代码（可选）
 | 内容 | 说明 |
 |------|------|
-| [code/README.md](code/README.md) | 三个真实 PyTorch demo 的运行方式与对应文档 |
+| [code/README.md](code/README.md) | 十五个 demo 的运行方式与对应文档 |
 | [Demo A：RSSM 世界模型](code/a_worldmodel_rssm.py) | 潜空间"想象"能多准地预测回报 |
 | [Demo B：语言条件策略](code/b_lang_cond_policy.py) | 模仿损失低 ≠ 闭环飞得好 |
 | [Demo C：动作头对比](code/c_action_heads.py) | MSE 回归塌到模态平均，扩散头能采样出两个模态 |
 | [Demo D：团队追踪](code/d_track_papers.py) | 从 arXiv 号解析年月画研究时间线，可选联网核对元数据 |
+| [Demo E：几何安全校正](code/e_gsc_safety.py) | 同一个过滤器，凸形障碍上把碰撞率压到 0，凹形上反而抬高 |
+| [Demo F：外环延迟](code/f_control_loop.py) | 外环慢 1 秒，闭环跟踪误差从 12 cm 涨到 1.62 m |
+| [Demo G：导航指标](code/g_eval_metrics.py) | 七个指标排出七套名次，动作 MSE 把最差策略排到第二 |
+| [Demo H：symlog 尺度统一](code/h_symlog.py) | 不加 symlog 时总体 MSE 更小，那是被大尺度组独占的假象 |
+| [Demo I：Plücker 坐标](code/i_plucker.py) | 纯前向平移下中心射线严格不动，透视扩张全由边缘贡献 |
+| [Demo J：体渲染 vs 溅射](code/j_render_cost.py) | 同一条前向合成公式，残差不随采样密度收敛，只随深度次序收敛 |
+| [Demo K：物理残差先验](code/k_physics_prior.py) | 只对它写死的那几路管用；单步精度不等于长期精度 |
+| [Demo L：ATE / RPE / SSIM / FID](code/l_seq_metrics.py) | ATE 对全局漂移最敏感，RPE 最看不见 |
+| [Demo M：误差累积](code/m_exposure_bias.py) | 喂自己的输出后第 60 步误差是第 1 步的 1084 倍 |
+| [Demo N：量化位宽](code/n_quant_bits.py) | 位宽不是均匀打折：基准波动就能淹掉高位量化的效应 |
+| [Demo O：显存预算](code/o_budget.py) | 三项精确算术 + 一项实测，反解出九张表都没写的那个自变量 |
 
-纯 CPU 即可，四个脚本合计三四分钟，出图落在 [`figures/`](figures/)。
+纯 CPU 即可，十五个脚本合计九分钟左右，出图落在 [`figures/`](figures/)。
 
 ---
 

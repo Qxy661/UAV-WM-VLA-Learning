@@ -21,8 +21,8 @@
 
 | # | 论文标题 | 作者 | 年份 | 会议/期刊 | 推荐 | 链接 |
 |:---:|:---|:---|:---:|:---:|:---:|:---|
-| 6 | IRIS: Transformers Are Sample-Efficient World Models | Micheli et al. | 2023 | ICLR | ★ | [arXiv:2211.00542](https://arxiv.org/abs/2211.00542) |
-| 7 | DIAMOND: Diffusion as a World Model | Alonso et al. | 2024 | NeurIPS | ★ | [arXiv:2401.04081](https://arxiv.org/abs/2401.04081) |
+| 6 | Transformers are Sample-Efficient World Models (IRIS) | Micheli et al. | 2023 | ICLR | ★ | [arXiv:2209.00588](https://arxiv.org/abs/2209.00588) |
+| 7 | Diffusion for World Modeling: Visual Details Matter in Atari (DIAMOND) | Alonso et al. | 2024 | NeurIPS | ★ | [arXiv:2405.12399](https://arxiv.org/abs/2405.12399) |
 | 8 | GameNGen: Diffusion Models are Real-Time Game Engines | Valevski et al. | 2024 | arXiv | ● | [arXiv:2408.14837](https://arxiv.org/abs/2408.14837) |
 | 9 | Learning Universal Policies via Text-Guided Video Generation | Du et al. | 2024 | NeurIPS | ● | [arXiv:2302.00111](https://arxiv.org/abs/2302.00111) |
 | 10 | Genie 2: A Large-Scale Foundation World Model | DeepMind | 2024 | Technical Report | ● | [blog](https://deepmind.google/discover/blog/genie-2/) |
@@ -31,7 +31,7 @@
 
 | # | 论文标题 | 作者 | 年份 | 会议/期刊 | 推荐 | 链接 |
 |:---:|:---|:---|:---:|:---:|:---:|:---|
-| 11 | Generating Interactive Worlds from Text | Bruce et al. (Genie) | 2024 | arXiv | ★ | [arXiv:2402.07157](https://arxiv.org/abs/2402.07157) |
+| 11 | Genie: Generative Interactive Environments | Bruce et al. | 2024 | arXiv | ★ | [arXiv:2402.15391](https://arxiv.org/abs/2402.15391) |
 | 12 | UniSim: Learning Interactive Real-World Simulators | Yang et al. | 2023 | arXiv | ★ | [arXiv:2310.06114](https://arxiv.org/abs/2310.06114) |
 | 13 | Cosmos World Foundation Model Platform | NVIDIA | 2025 | Technical Report | ★ | [arXiv:2501.03575](https://arxiv.org/abs/2501.03575) |
 | 14 | GAIA-2: Generative AI for Autonomous Driving | Wayve | 2025 | Technical Report | ● | [blog](https://wayve.ai/thinking/gaia-2/) |
@@ -42,8 +42,8 @@
 | # | 论文标题 | 作者 | 年份 | 会议/期刊 | 推荐 | 链接 |
 |:---:|:---|:---|:---:|:---:|:---:|:---|
 | 16 | World Models for Autonomous Driving: An Initial Survey | Hu et al. | 2024 | IEEE T-ITS | ● | [arXiv:2403.02622](https://arxiv.org/abs/2403.02622) |
-| 17 | A Survey on Diffusion Models for Reinforcement Learning and Planning | Cai et al. | 2024 | arXiv | ○ | [arXiv:2403.12133](https://arxiv.org/abs/2403.12133) |
-| 18 | Understanding World Models via Multi-Game Decision Transformers | Robine et al. | 2024 | arXiv | ○ | [arXiv:2404.06612](https://arxiv.org/abs/2404.06612) |
+| 17 | Diffusion Models for Reinforcement Learning: A Survey | Zhu et al. | 2023 | arXiv | ○ | [arXiv:2311.01223](https://arxiv.org/abs/2311.01223) |
+| 18 | Multi-Game Decision Transformers | Lee et al. | 2022 | NeurIPS | ○ | [arXiv:2205.15241](https://arxiv.org/abs/2205.15241) |
 
 ---
 
@@ -51,7 +51,7 @@
 
 | # | 论文标题 | 作者 | 年份 | 会议/期刊 | 推荐 | 链接 |
 |:---:|:---|:---|:---:|:---:|:---:|:---|
-| 19 | Learning to Fly in Seconds via World Models | Escontrela et al. | 2024 | CoRL | ● | [arXiv:2409.18997](https://arxiv.org/abs/2409.18997) |
+| 19 | Learning to Fly in Seconds | Eschmann et al. | 2024 | IEEE RA-L | ● | [arXiv:2311.13081](https://arxiv.org/abs/2311.13081) |
 | 20 | Dream to Fly: Model-Based Reinforcement Learning for Vision-Based Drone Flight | Romero et al. | 2025 | ICRA | ★ | [arXiv:2501.14377](https://arxiv.org/abs/2501.14377) |
 | 21 | Aerial World Model for Long-horizon Visual Generation and Navigation in 3D Space | Zhang et al. | 2025 | arXiv | ★ | [arXiv:2512.21887](https://arxiv.org/abs/2512.21887) |
 | 22 | FlightDiffusion: Revolutionising Autonomous Drone Training with Diffusion Models Generating FPV Video | Serpiva et al. | 2025 | arXiv | ● | [arXiv:2509.14082](https://arxiv.org/abs/2509.14082) |
@@ -121,7 +121,7 @@
 |:---:|:---|:---|:---:|:---:|:---:|:---|
 | 47 | GeoChat: Grounded Large Vision-Language Model for Remote Sensing | Hu et al. | 2024 | CVPR | ★ | [arXiv:2311.15826](https://arxiv.org/abs/2311.15826) |
 | 48 | RSGPT: A Remote Sensing Vision Language Model and Benchmark | Hu et al. | 2024 | arXiv | ★ | [arXiv:2307.15266](https://arxiv.org/abs/2307.15266) |
-| 49 | LHRS-Bot: Empowering Remote Sensing with VLM Intelligence | Hu et al. | 2024 | CVPR | ● | [arXiv:2402.02536](https://arxiv.org/abs/2402.02536) |
+| 49 | LHRS-Bot: Empowering Remote Sensing with VGI-Enhanced Large Multimodal Language Model | Muhtar et al. | 2024 | ECCV | ● | [arXiv:2402.02544](https://arxiv.org/abs/2402.02544) |
 | 50 | ChangeChat: An Interactive Model for Remote Sensing Change Interpretation | Le et al. | 2024 | arXiv | ● | [arXiv:2409.08582](https://arxiv.org/abs/2409.08582) |
 | 51 | EarthGPT: A Universal Multi-Modal LLM for Multi-Granularity Remote Sensing | Zhang et al. | 2024 | arXiv | ● | [arXiv:2401.16822](https://arxiv.org/abs/2401.16822) |
 | 52 | SkyEyeGPT: Unifying Remote Sensing Vision-Language Tasks | Zhang et al. | 2024 | arXiv | ○ | [arXiv:2401.09712](https://arxiv.org/abs/2401.09712) |
@@ -134,8 +134,8 @@
 
 | # | 论文标题 | 作者 | 年份 | 会议/期刊 | 推荐 | 链接 |
 |:---:|:---|:---|:---:|:---:|:---:|:---|
-| 55 | DroneVLM: Vision-Language Model for Drone Scene Understanding | Wang et al. | 2024 | arXiv | ★ | [arXiv:2411.16338](https://arxiv.org/abs/2411.16338) |
-| 56 | UAV-VL: Vision-Language Benchmarks for UAV Tasks | Chen et al. | 2026 | arXiv | ● | [arXiv:2602.23677](https://arxiv.org/abs/2602.23677) |
+| 55 | DVGBench: Implicit-to-Explicit Visual Grounding Benchmark in UAV Imagery with Large Vision-Language Models | Zhou et al. | 2026 | arXiv | ★ | [arXiv:2601.00998](https://arxiv.org/abs/2601.00998) |
+| 56 | UAVBench and UAVIT-1M: Benchmarking and Enhancing MLLMs for Low-Altitude UAV Vision-Language Understanding | Zhan et al. | 2026 | arXiv | ● | [arXiv:2603.14336](https://arxiv.org/abs/2603.14336) |
 | 57 | Can VLMs Think from the Sky? Unifying UAV Reasoning and Generation | Sun et al. | 2026 | arXiv | ● | [arXiv:2604.05377](https://arxiv.org/abs/2604.05377) |
 | 58 | CoDrone: Autonomous Drone Navigation Assisted by Edge and Cloud Foundation Models | Chen et al. | 2025 | arXiv | ● | [arXiv:2512.19083](https://arxiv.org/abs/2512.19083) |
 | 59 | FM-Planner: Foundation Model Guided Path Planning for Autonomous Drone Navigation | Xiao et al. | 2025 | arXiv | ● | [arXiv:2505.20783](https://arxiv.org/abs/2505.20783) |
@@ -152,13 +152,13 @@
 |:---:|:---|:---|:---:|:---:|:---:|:---|
 | 62 | Open X-Embodiment: Robotic Learning Datasets and RT-X Models | OXE Collaboration | 2024 | ICRA | ★ | [arXiv:2310.08864](https://arxiv.org/abs/2310.08864) |
 | 63 | LIBERO: Benchmarking Knowledge Transfer in Lifelong Robot Learning | Liu et al. | 2024 | arXiv | ● | [arXiv:2306.03310](https://arxiv.org/abs/2306.03310) |
-| 64 | SIMPLER: Evaluation of Robot Learning Simulation Environments | Li et al. | 2024 | arXiv | ● | [arXiv:2405.05941](https://arxiv.org/abs/2405.05941) |
+| 64 | Evaluating Real-World Robot Manipulation Policies in Simulation (SIMPLER) | Li et al. | 2024 | arXiv | ● | [arXiv:2405.05941](https://arxiv.org/abs/2405.05941) |
 | 65 | ManiSkill2: A Unified Benchmark for Generalizable Manipulation | Gu et al. | 2023 | ICLR | ● | [arXiv:2302.04659](https://arxiv.org/abs/2302.04659) |
 | 66 | Habitat 3.0: A Co-Habitat for Humans, Avatars, and Robots | Puig et al. | 2024 | ICLR | ● | [arXiv:2310.13724](https://arxiv.org/abs/2310.13724) |
 | 67 | AirSim: High-Fidelity Visual and Physical Simulation | Shah et al. | 2018 | ISER | ★ | [GitHub](https://github.com/microsoft/AirSim) |
 | 68 | DroneCrowd / DroneVehicle / VisDrone Benchmarks | Various | 2020-2024 | Various | ● | [VisDrone](https://github.com/VisDrone/VisDrone-Dataset) |
-| 69 | UAV-ROD: A Large-Scale Dataset for UAV Object Detection | Du et al. | 2021 | arXiv | ○ | [arXiv:2108.03116](https://arxiv.org/abs/2108.03116) |
-| 70 | Is your VLM Sky-Ready? Evaluating VLMs for UAV Spatial Intelligence | — | 2025 | arXiv | ○ | [arXiv:2511.13269](https://arxiv.org/abs/2511.13269) |
+| 69 | TS4Net: Two-Stage Sample Selective Strategy for Rotating Object Detection（提出 UAV-ROD 无人机数据集） | Feng et al. | 2021 | arXiv | ○ | [arXiv:2108.03116](https://arxiv.org/abs/2108.03116) |
+| 70 | Is your VLM Sky-Ready? A Comprehensive Spatial Intelligence Benchmark for UAV Navigation | — | 2025 | arXiv | ○ | [arXiv:2511.13269](https://arxiv.org/abs/2511.13269) |
 
 ---
 

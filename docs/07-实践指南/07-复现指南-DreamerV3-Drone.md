@@ -589,6 +589,85 @@ import multiprocessing
 
 ---
 
+## 动手验证：6.4 那张表自己解出来的 2 GB 是什么？
+
+6.4 的三行里，第 1 行和第 3 行只差 batch（50 → 100）：6 GB 和 10 GB。两行相减解出每样本 **0.08 GB**、固定项 **2.00 GB**。第 2 行没有改 batch，只把分辨率从 64 提到 128 —— 按上面这个式子，它应该是 `2.00 + 50 × 0.08 = 6.00 GB`，可表里写的是 10 GB。**多出来的 4 GB 就是分辨率那一项**，也是这张表唯一没被算进去的变量。
+
+DreamerV3 的世界模型不大（配置里 `batch_size: 50`、`sequence_length: 64`，输入才 64x64），正好可以把这笔账真算一遍。
+
+### 建一个同规模的世界模型，量它的激活
+
+```python
+import torch, torch.nn as nn
+GB = 2 ** 30
+def activation_bytes(m, x):        # 只数激活；参数按 storage 指针剔掉
+    ps = {p.untyped_storage().data_ptr() for p in m.parameters()}
+    tot = [0]
+    def pack(t):
+        if t.untyped_storage().data_ptr() not in ps:
+            tot[0] += t.numel() * t.element_size()
+        return t
+    with torch.autograd.graph.saved_tensors_hooks(pack, lambda t: t):
+        m(x).sum()
+    return tot[0] / GB
+class WorldModel(nn.Module):       # 缩小的 DreamerV3：卷积编码器 + GRU 序列模型 + 解码器
+    def __init__(self, h=512, z=32, ch=48):
+        super().__init__()
+        self.z = z
+        f = 4 * ch * 64                                 # 池到 8x8 再展平：参数量不随分辨率变
+        self.enc = nn.Sequential(
+            nn.Conv2d(3, ch, 4, 2, 1), nn.ReLU(), nn.Conv2d(ch, 2 * ch, 4, 2, 1), nn.ReLU(),
+            nn.Conv2d(2 * ch, 4 * ch, 4, 2, 1), nn.ReLU(), nn.AdaptiveAvgPool2d(8),
+            nn.Flatten(), nn.Linear(f, h))
+        self.core = nn.GRUCell(h + z, h)
+        self.post = nn.Linear(h, 2 * z)
+        self.dec = nn.Linear(h + z, f)
+    def forward(self, obs):                             # obs: (B, T, 3, res, res)
+        h = torch.zeros(obs.shape[0], self.core.hidden_size)
+        z = torch.zeros(obs.shape[0], self.z)
+        outs = []
+        for t in range(obs.shape[1]):                   # 序列模型逐步展开，激活按 T 累加
+            h = self.core(torch.cat([self.enc(obs[:, t]), z], -1), h)
+            mu, logvar = self.post(h).chunk(2, -1)
+            z = mu + torch.randn_like(mu) * (0.5 * logvar).exp()
+            outs.append(self.dec(torch.cat([h, z], -1)))
+        return torch.stack(outs, 1)
+torch.manual_seed(0)
+for res in (64, 128):
+    wm = WorldModel()
+    n = sum(p.numel() for p in wm.parameters())
+    a = activation_bytes(wm, torch.randn(50, 64, 3, res, res, requires_grad=True))
+    print(f"{res}x{res}  batch=50 x 64 步  参数 {n/1e6:>5.1f}M  静态 {12*n/GB:>4.2f}G  "
+          f"激活 {a:>6.2f}G  合计 {12*n/GB + a:>6.2f}G")
+```
+
+### 本地实测结果
+
+```text
+64x64  batch=50 x 64 步  参数  15.0M  静态 0.17G  激活   2.41G  合计   2.58G
+128x128  batch=50 x 64 步  参数  15.0M  静态 0.17G  激活   9.00G  合计   9.17G
+```
+
+**第一，分辨率才是这个模型显存的杠杆。** 像素数翻 4 倍（64² → 128²），激活从 2.41 GB 涨到 9.00 GB，**3.7 倍** —— 卷积和逐像素解码的激活都正比于像素数。表里第 1 行到第 2 行写的却是 6 → 10 GB，只有 1.67 倍。实测的 9.17 GB 和第 2 行那个 10 GB 很接近（差 9%），对不上的是第 1 行：实测 2.58 GB，表里 6 GB，大了 2.3 倍。
+
+**第二，那个固定的 2.00 GB，比整个静态账大十几倍。** 15.0M 参数的模型，权重加梯度加 Adam 一共 **0.17 GB** —— 也就是说 6 GB 那一行里只有 2.8% 是模型本身。反解出来的 2.00 GB 固定项占 33%。这一项不是模型，是框架和显存碎片；而这个数在 07/03（ResNet-50 表）、07/04（FlightDiffusion 表）里解出来也是 **2.00**。三个不同项目、三种不同模型，解出同一个两位有效数字的整数——**这更像是估表时的同一个习惯，而不是三次独立测量**。
+
+**第三，这个模型的激活是三个因子相乘，没有藏起来的自变量。** batch、`sequence_length`、像素数——三个都在配置里写着。batch 是线性的（第 1、3 两行解出的每样本项一致），序列长度是真循环展开（`sequence_length: 64` 直接把激活乘 64 倍），像素数是 3.7 倍对 4 倍。所以这张表要外推到别的配置，只需要这三个数；不像 7B 那几张表，还得先补一个没人写出来的序列长度。
+
+> **限制**：这里的 `WorldModel` 是按本文 6.x 的结构缩比搭的（`h=512`、`z=32`、`ch=48`、三次步长 2 卷积），不是原版 DreamerV3 的实现，参数量 15.0M 也和原论文各个 size 档不一致。量的是 PyTorch eager 模式保留到反向的激活，不含框架开销、cuDNN workspace 与显存碎片；GRU 逐步展开的循环是真循环，所以 `sequence_length` 是线性乘在激活上的。
+> 
+> 反解出的 2.00 GB 固定项只有在两行确实是同一模型、同一输入分辨率时才成立。第 2 行改了分辨率，所以它和第 1 行之间**不能**做这个减法。
+
+![显存的三项是精确算术，第四项激活随规模走，而序列长度是那些表从没写过的自变量](../../figures/o_budget.png)
+
+### 运行完整脚本
+
+```bash
+py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torchvision
+```
+
+---
+
 ## 参考资源
 
 - Dream to Fly 论文: https://arxiv.org/abs/2501.14377

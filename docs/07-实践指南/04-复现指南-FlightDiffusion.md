@@ -517,6 +517,85 @@ python inference.py --ddim_steps 20  # 从 1000 降到 20
 
 ---
 
+## 动手验证：6.4 里调 hidden_dim，为什么调不动显存？
+
+6.4 那张表有三行，其实动了两个自变量：前两行只动 `batch`（32→64），第三行动了 `hidden_dim`（256→512），batch 回到 32。前两行能解——每样本 0.25 GB、固定项 2.00 GB，和 01-环境搭建 里那三张表解出来的是同一个 2.00。
+
+第三行是这张表真正的断言：**hidden_dim 翻倍，显存从 10 GB 涨到 20 GB**。这个断言可以单独验，因为 `hidden_dim` 只是动作头的宽度，而这个模型有两个部分：动作头（第 5 节的 `ConditionalUNet`）和视觉编码器（5.2 的 `VisionEncoder`）。编码器每帧都要过一次 ResNet-50，而 `context_frames=5` 意味着一次前向要处理 `5 × batch` 张 `224x224` 的图。
+
+### 把两部分拆开量
+
+```python
+import torch, torch.nn as nn, torchvision
+GB = 2 ** 30
+def activation_bytes(m, x):        # 只数激活；参数按 storage 指针剔掉
+    ps = {p.untyped_storage().data_ptr() for p in m.parameters()}
+    tot = [0]
+    def pack(t):
+        if t.untyped_storage().data_ptr() not in ps:
+            tot[0] += t.numel() * t.element_size()
+        return t
+    with torch.autograd.graph.saved_tensors_hooks(pack, lambda t: t):
+        m(x).sum()
+    return tot[0] / GB
+class Head(nn.Module):             # 6.1 的动作扩散头：10 步 x 4 维，DiT 式 6 层
+    def __init__(self, hidden, layers=6):
+        super().__init__()
+        self.inp = nn.Linear(4, hidden)
+        self.temb = nn.Linear(256, hidden)
+        self.blocks = nn.TransformerEncoder(
+            nn.TransformerEncoderLayer(hidden, 8, 4 * hidden, batch_first=True, dropout=0.0),
+            num_layers=layers)
+        self.out = nn.Linear(hidden, 4)
+    def forward(self, x):
+        h = self.inp(x) + self.temb(torch.zeros(x.shape[0], 256)).unsqueeze(1)
+        return self.out(self.blocks(h))
+class Encoder(nn.Module):          # 5.2 的视觉编码器：ResNet-50 换掉 fc
+    def __init__(self):
+        super().__init__()
+        self.backbone = torchvision.models.resnet50(weights=None)
+        self.backbone.fc = nn.Linear(2048, 256)
+    def forward(self, x):
+        return self.backbone(x)
+torch.manual_seed(0)
+head_gb = {}
+for hidden in (256, 512):
+    head_gb[hidden] = activation_bytes(Head(hidden), torch.randn(32, 10, 4, requires_grad=True))
+    print(f"动作头 hidden={hidden:<4} 激活 bs=32 {head_gb[hidden]:>6.3f}G")
+enc = Encoder()
+a32 = activation_bytes(enc, torch.randn(32 * 5, 3, 224, 224, requires_grad=True))
+a64 = activation_bytes(enc, torch.randn(64 * 5, 3, 224, 224, requires_grad=True))
+print(f"编码器     32x5 帧 {a32:>6.2f}G   64x5 帧 {a64:>6.2f}G   每样本 {a32 / 32:>6.3f}G")
+print(f"动作头占编码器的 {head_gb[256] / a32:.2%}")
+```
+
+### 本地实测结果
+
+```text
+动作头 hidden=256  激活 bs=32  0.032G
+动作头 hidden=512  激活 bs=32  0.063G
+编码器     32x5 帧  19.43G   64x5 帧  38.85G   每样本  0.607G
+动作头占编码器的 0.16%
+```
+
+`hidden_dim` 从 256 到 512，动作头确实翻倍了：0.032 GB → 0.063 GB。**但动作头只占编码器的 0.16%。** 它翻倍给总量加了 0.03 GB，而同一行里编码器那一项一动没动、还是 19.43 GB。
+
+所以 6.4 第三行的 10 GB → 20 GB 不可能是 `hidden_dim` 造成的：这个变量的全部杠杆只有 0.03 GB。三行真正的差别在 `batch`（编码器是 `5 × batch` 张图，每样本 0.607 GB），而第三行恰好把 batch 调回了 32，于是它和第一行应该几乎一样——表里却是 10 和 20。
+
+**要省显存，杠杆不在 `hidden_dim`。** 按大小排：把编码器冻住（`requires_grad_(False)` 加 `no_grad`）能让它的激活直接归零，只剩动作头那 0.03 GB；其次是 `context_frames`，它和显存是严格的正比（0.607 GB/样本 ÷ 5 帧 = 0.121 GB/帧）；再其次是输入分辨率，ResNet-50 的激活和 `H × W` 成正比。`hidden_dim` 排在最后。
+
+> **限制**：这里量的是 PyTorch eager 模式保留到反向的激活，不含 cuDNN workspace、显存碎片和 CUDA context；编码器按 5.2 的写法用的是可训练的 `ResNet50_Weights.DEFAULT`，没有冻结。真机上数字会更大，所以 6.4 那张表的 `hidden=256, batch=64`（~18 GB）在 24 GB 卡上未必放得下——编码器一项实测就是 38.85 GB。思考题 4 的前提「三档在 24 GB 的卡上都放得下」，只在编码器被冻结时成立。
+
+![显存的三项是精确算术，第四项激活随规模走，而序列长度是那些表从没写过的自变量](../../figures/o_budget.png)
+
+### 运行完整脚本
+
+```bash
+py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torchvision
+```
+
+---
+
 ## 参考资源
 
 - FlightDiffusion 论文（本指南对应的论文）: https://arxiv.org/abs/2509.14082

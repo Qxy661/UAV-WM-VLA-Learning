@@ -478,6 +478,70 @@ for question in multi_turn_questions:
 
 ---
 
+## 动手验证：LoRA 到底省下了什么？
+
+6.4 那张表四行，前三行讲 LoRA，第四行是全量微调。表里没有说 LoRA 省在哪儿，只给了总数。把四项拆开就能看出来：**LoRA 省的几乎全是优化器状态，不是权重。**
+
+原因是可训练参数要付三份钱（fp16 权重 + fp16 梯度 + fp32 两份动量，12 字节/参数），冻结的只付一份（fp16 权重，2 字节/参数）。LoRA 把可训练参数从 70 亿压到一亿多，压掉的是那三份里的后两份。
+
+### 把静态三项按 6.2 的配置算出来
+
+```python
+GB = 2 ** 30
+P = 7.0e9                                  # LLaMA-2 7B / Mistral 7B 的参数量
+def lora_params(r, d=4096, layers=32, targets=7):
+    """q/k/v/o/gate/up/down 七个模块，每个挂一对 A(r,d) 与 B(d,r)，加在冻结权重之上。"""
+    return layers * targets * 2 * d * r
+def static_gb(n_frozen, n_trainable):
+    """冻住的只占 fp16 权重；可训练的还要加 fp16 梯度与两份 fp32 Adam 动量。"""
+    return (2 * n_frozen + 12 * n_trainable) / GB
+print("配置                     权重     梯度    Adam     合计")
+for r in (0, 16, 64, 128):
+    tr, fro = (lora_params(r), P) if r else (P, 0)   # LoRA 加在冻结权重之上，不是替换
+    w, g, o = 2 * (fro + tr) / GB, 2 * tr / GB, 8 * tr / GB
+    print(f"{'全量' if not r else f'LoRA r={r}':<22} {w:>5.1f}G {g:>6.1f}G {o:>6.1f}G {w + g + o:>7.1f}G")
+per_tok = 8.5 * 2 ** 20                    # 实测：7B / 32 层 / d=4096，每 token 的激活
+for name, r, bs, doc in (("LoRA r=64, bs=2", 64, 2, 18.0),
+                         ("LoRA r=128, bs=4", 128, 4, 24.0),
+                         ("Full FT, 4 卡", 0, 1, 80.0)):
+    st = static_gb(P, lora_params(r)) if r else static_gb(0, P)
+    print(f"{name:<16} 文档 {doc:>4.1f}G  静态 {st:>5.1f}G  余额 {doc - st:>4.1f}G"
+          f"  反解 {(doc - st) * GB / (bs * per_tok):>4.0f} token")
+```
+
+### 本地实测结果
+
+```text
+配置                     权重     梯度    Adam     合计
+全量                      13.0G   13.0G   52.2G    78.2G
+LoRA r=16               13.1G    0.1G    0.2G    13.4G
+LoRA r=64               13.3G    0.2G    0.9G    14.4G
+LoRA r=128              13.5G    0.4G    1.8G    15.7G
+LoRA r=64, bs=2  文档 18.0G  静态  14.4G  余额  3.6G  反解  220 token
+LoRA r=128, bs=4 文档 24.0G  静态  15.7G  余额  8.3G  反解  251 token
+Full FT, 4 卡     文档 80.0G  静态  78.2G  余额  1.8G  反解  213 token
+```
+
+**第一，LoRA 省下的是优化器状态，而且是压倒性的。** 权重那一列从 13.0 GB 只涨到 14.4 GB —— 因为低秩矩阵是**加在**冻结权重之上的，7B 那 13 GB 一分没少。真正塌下去的是 Adam：52.2 GB → 0.9 GB。全量微调那 78.2 GB 里，有 52.2 GB 只是为了存两份动量。
+
+**第二，4 卡并没有让每卡省下显存，这张表是对的。** 第 2 行和第 3 行是同一个配置（LoRA r=128、batch=4），只差 1 卡还是 4 卡，表里两行都写 ~24 GB/卡。这不是笔误：数据并行复制整个模型，切开的只是 batch。第 4 行的 80 GB/卡 几乎就是静态账 78.2 GB —— 也印证了同一件事。想让每卡少装东西要靠 ZeRO 那类分片，配置里的 `accelerate` 走的是数据并行，没有分片。
+
+**第三，这三行反解出来落在 220 / 251 / 213 token，跨度只有 1.2 倍。** 这是全仓九张表里最齐的一组 —— 意味着这三行确实是同一套口径、同一类输入的测量。对比 07/02 那两行反解出 139 和 401（差 2.9 倍）：那两行同时换了精度（fp16 → bf16）和硬件（4090 → A100），所以差额不全在序列长度上。**反解值越齐，说明两行之间除了 batch 和 token 数没动别的变量。**
+
+> **限制**：`lora_params` 按 6.2 的 `target_modules` 列出的 7 个投影模块算（q/k/v/o/gate/up/down），换成只挂 q/v 或只挂注意力四个投影，静态账会小一截。激活那一项用的是 8.5 MB/token 这把尺子，它是在 512 token 上标定的；再长的话 SDPA 融合核仍是一次方，外推安全，但手写注意力就不是了。
+> 
+> 本节只算单卡静态账。真机上 nvidia-smi 还会多出框架开销、cuDNN workspace 和显存碎片，所以账面 14.4 GB 不等于 nvidia-smi 显示 14.4 GB —— 差的那部分不该记在算法需求里。
+
+![显存的三项是精确算术，第四项激活随规模走，而序列长度是那些表从没写过的自变量](../../figures/o_budget.png)
+
+### 运行完整脚本
+
+```bash
+py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torchvision
+```
+
+---
+
 ## 参考资源
 
 - GeoChat GitHub: https://github.com/mbzuai-oryx/GeoChat

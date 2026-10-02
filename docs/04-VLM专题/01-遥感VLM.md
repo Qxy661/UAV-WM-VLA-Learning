@@ -87,6 +87,8 @@ GeoChat 构建了 318K 遥感指令数据，数据来源包括：
 | Grounded Description | 71.6 IoU | N/A | — |
 | Change Detection | 82.1% F1 | 54.3% F1 | +51.2% |
 
+> **口径提示**：[复现指南-GeoChat](../07-实践指南/06-复现指南-GeoChat.md) 的 7.3 节有另一张 LLaVA-1.5 / GeoChat 的对比表，数字与上表不同（GeoChat VQA 61.8、CIDEr 78.9；LLaVA-1.5 VQA 52.3）。两张表的 LLaVA-1.5 CIDEr 都是 62.1，说明**描述任务用的是同一个基准**；而 LLaVA-1.5 的 VQA 一个是 61.3、一个是 52.3，说明**问答那一列不是同一套评测**。引用时请连同表的出处一起引，不要把两张表的数字混着用。
+
 ---
 
 ### 3.2 RSGPT — 遥感图文对话先驱
