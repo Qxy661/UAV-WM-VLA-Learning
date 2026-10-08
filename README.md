@@ -230,7 +230,6 @@ graph TD
 | [自动追踪台账](references/vla-watch-2026-10.md) | 按专题分节的 arXiv 检索记录 |
 | [Awesome List 注释](references/awesome-annotations.md) | 对 NTUMARS 仓库的补充 |
 | [引用核查报告](references/citation-audit.md) | 全仓 arXiv 编号与标题的一致性核查 |
-| [加粗密度实测](references/bold-density.md) | 正文段落加粗密度的逐篇实测，口径见 [`tools/bold_density.py`](tools/bold_density.py) |
 
 ---
 
