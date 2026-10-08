@@ -20,6 +20,13 @@ check_citations.py — 全仓 arXiv 引用核查
   3. 从上下文猜出来的「文档声称的标题」只是线索，不是判据。表格里的第一列、
      链接文字、引号里的字符串都可能是标题，也可能是描述。最终以 API 为准，
      相似度低只代表「值得人看一眼」。
+  4. **条目式的标题认不出来，等于没查。** 清单层（`paper-list.md`、各卷「关键论文」
+     节、`docs/06` 卡片）的条目写成 `- **[会议'年月] 名称** — *English Title*`，
+     标题只在斜体里，号在下一行的徽章 URL 里。两头都要堵：不认斜体就大批
+     「无标题可判」（实测 195 处降到 140 处就是它的功劳），不滤徽章就会被
+     `[![arXiv](https://img.shields.io/…)](…)` 截出 `![arXiv` 这种「链接文字」，
+     于是每个条目都报标题不符。另：`*Nature Communications*` 这类出处名也是斜体，
+     收进来会把号判成配错（2602.00708、2405.07736 就这么被顶上去过），见 `is_venue`。
 
 只依赖标准库。
 """
@@ -49,6 +56,10 @@ RE_ID = re.compile(r"\b(\d{4}\.\d{4,5})\b")
 RE_OLD = re.compile(r"\b([a-z-]+(?:\.[A-Z]{2})?/\d{7})\b")
 RE_LINK = re.compile(r"\[([^\]]*)\]\(([^)]*)\)")
 RE_QUOTED = re.compile(r"[\"“]([^\"”]{8,200})[\"”]")
+# 斜体标题：`- **[arXiv'26.04] MotionScape** — *Motion-Stratified UAV Video ...*`。
+# 前后各一个 `*`，用环视把 `**加粗**` 排除掉（加粗内部的首字符就是 `*`，
+# 从那里起步会撞上第二条环视）。
+RE_ITALIC = re.compile(r"(?<!\*)\*([^*\n]{8,220})\*(?!\*)")
 
 
 # ---------------------------------------------------------------- 抽取
@@ -73,14 +84,45 @@ def looks_like_authors(t):
     return all(w.lower() in PARTICLE or (w[:1].isupper() and len(w) <= 12) for w in words)
 
 
+VENUE_WORD = {
+    "nature", "science", "ieee", "acm", "cell", "pnas", "arxiv", "elife",
+    "transactions", "journal", "proceedings", "letters", "magazine",
+    "robotics", "automation", "communications", "on", "and", "the", "of", "for",
+}
+
+
+def is_venue(t):
+    """「Nature Communications」「Science Robotics」这类出处名，不是标题。
+
+    本仓的斜体有两种用法：标标题（`*"..."*` 与条目式的 `*English Title*`），
+    以及标出处（表格里的 `*Science Robotics*`、正文里的 `*Nature Communications*`）。
+    后者收进来只会把号判成配错——实测就是它把 2602.00708、2405.07736 两个号
+    顶上了「对不上」名单，而原文其实写对了。
+
+    判据取「**整串都由出处词组成**」而不是「以 Nature 开头」：后者会把
+    「Nature-Inspired ...」这种真标题一并误杀。
+    """
+    s = t.strip().strip("*_\"“”")
+    if re.search(r"子刊|期刊|学报|会议|出版社|预印本", s):
+        return True
+    w = [x.lower() for x in re.findall(r"[A-Za-z][A-Za-z-]*", s)]
+    return bool(w) and len(w) <= 4 and all(x in VENUE_WORD for x in w)
+
+
 def plausible(t, src):
     """判断一个候选串像不像「论文标题」。
 
     这一层专治误报：从散文、本地链接、作者单元格里抽出来的串如果不滤掉，
     会被当成「文档声称的标题」，于是每一行都报成不符。宁可漏，不可滥。
     """
-    lo = 4 if src in ("table", "link", "quote", "prefix") else 10
+    lo = 4 if src in ("table", "link", "quote", "prefix", "italic") else 10
     if not (lo <= len(t) <= 160):
+        return False
+    # 徽章行 `[![arXiv](https://img.shields.io/badge/arXiv-2604.07991-b31b1b.svg)](...)`
+    # 会被 RE_LINK 截出 `![arXiv` 这个「链接文字」——它不是标题，而且因为它
+    # 含号（号在 shields 的 URL 里），会让每个条目都报成标题不符。清单层
+    # 改条目式后每个条目都带徽章，这一条不滤掉就是满屏误报。
+    if "shields.io" in t or "[!" in t:
         return False
     if not re.search(r"[A-Za-z一-鿿]", t):               # 纯数字/标点，如年份单元格
         return False
@@ -95,7 +137,7 @@ def plausible(t, src):
         return False
     if re.match(r"^\d{4}\s*年|^\d+\.\d+\s*$", t):         # 「2025 年 4 月」这类
         return False
-    if looks_like_authors(t):
+    if looks_like_authors(t) or is_venue(t):
         return False
     # 中文散文：汉字多且没有英文词
     if len(re.findall(r"[一-鿿]", t)) > 6 and not re.search(r"[A-Za-z]{3}", t):
@@ -141,8 +183,19 @@ def claimed_titles(lines, i, aid):
         if any(a <= m.start() < b for a, b in spans):
             continue
         out.append((m.group(1), "quote"))
+    if not multi:                       # 一行多个号时，斜体分不清属于谁
+        for m in RE_ITALIC.finditer(line):                # 斜体标题
+            if any(a <= m.start() < b for a, b in spans):
+                continue
+            out.append((m.group(1), "italic"))
 
-    has_link = any(s == "link" for _, s in out)           # 必须在 clean 前判定
+    # 必须在 clean 前判定，且判据是「有没有指向这个号的链接」而不是「链接文字像不像
+    # 标题」。表格行 `| ... | [2604.02241](url) | ... |` 的链接文字就是号本身，
+    # 按后者判会把它划进「裸 URL」分支，于是把整行前半截当成标题、凭空报不符。
+    # 徽章行不受影响：`[![arXiv](https://img.shields.io/...)](arxiv.org/abs/号)`
+    # 确实有链接，此处为真、跳过裸 URL 分支；而它的链接文字会被上面滤掉，clean 后
+    # `out` 为空，照样落到「往上看两行」去取上一行的斜体标题。
+    has_link = any(s == "link" for _, s in out)
     out = clean(out)
 
     # 裸 URL（无链接文字）时，取 URL 前面那段当标签，如「- DDPM 论文: <url>」。
@@ -172,12 +225,21 @@ def claimed_titles(lines, i, aid):
         # 本行的号头上，凭空造出不符。
         for j in range(i - 1, max(-1, i - 3), -1):
             prev = lines[j]
-            if len(set(RE_ID.findall(prev))) > 1:
+            # 上一行若带着**别的**号，它的标题属于那篇，不是本篇。原先只挡
+            # 「一行多个号」，于是「一行一个号」的文献列表（`2405.07736  [主题] 标题`
+            # 这种）会把上一条的标题算到本条的号头上——本条自己那行才是对的。
+            ids_prev = set(RE_ID.findall(prev)) | set(RE_OLD.findall(prev))
+            if any(x != aid for x in ids_prev):
                 break
-            q = [m.group(1) for m in RE_QUOTED.finditer(prev)]
-            if q:
-                out = clean([(m, "quote") for m in q])
-                break
+            # 条目式的标题行：`- **[arXiv'26.04] MotionScape** — *Motion-Stratified UAV ...*`。
+            # 徽章与标题常分占两行，号在徽章那行，标题在上一行——斜体与引号都是
+            # 明确的标题位，优先取；两个都取不到才退到「整行」。
+            cand = [(m.group(1), "quote") for m in RE_QUOTED.finditer(prev)]
+            cand += [(m.group(1), "italic") for m in RE_ITALIC.finditer(prev)]
+            if cand:
+                out = clean(cand)
+                if out:
+                    break
             if prev.strip() and \
                     not prev.lstrip().startswith(("|", "#", "---")):
                 out = clean([(prev.strip(), "nearby")])

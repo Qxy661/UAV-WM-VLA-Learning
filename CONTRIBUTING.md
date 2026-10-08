@@ -245,6 +245,28 @@ py -3.9 tools/check_citations.py --write    # 额外写出 references/citation-a
 相似度低只代表「值得人看一眼」，**不是「这篇论文不存在」**。请求失败的号会
 单独列出来，重跑即可——**绝不能把请求失败当成论文不存在**。
 
+工具认三种在文档里写标题的写法：链接文字、引号、**斜体**（条目式的
+`**[会议'年月] 名称** — *English Title*`）。所以清单层改条目式之后，核查不会
+因为「标题不在表格里了」而失效。
+
+### 前沿追踪
+
+三卷各有词表，共用同一个内核：
+
+```bash
+py -3.9 tools/watch.py --list                 # 看各卷的节
+py -3.9 tools/watch.py --volume wm --write    # 世界模型卷
+py -3.9 tools/watch.py --volume vlm --write   # VLM 卷
+py -3.9 tools/watch.py --volume vla --write   # VLA 卷
+```
+
+词表在 `tools/watchlists.py`，节 id 就是文档编号，`uav` 节是全场主线。
+写出的 `references/<卷>-watch-<年-月>.md` 是**生成物**，重跑即可刷新，
+不要手改。三条纪律写在内核的 docstring 里，最要紧的一条是：
+**429 / 超时 / 非 200 记 `NULL`，绝不记 0**——把请求失败当成「没有命中」
+会凭空造出一个空白。命中 0 的查询，复核过之后把结论钉进
+`watchlists.py` 的 `VERIFIED_ZEROS`，否则它只活在对话里，下次重跑又变成裸的 0。
+
 ---
 
 ## 行为准则
