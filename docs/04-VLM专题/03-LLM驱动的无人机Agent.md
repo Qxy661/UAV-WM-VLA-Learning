@@ -42,7 +42,7 @@ graph TB
 
 ### 2.1 CityNavAgent — 层次化语义导航
 
-**论文**: *CityNavAgent: Large Language Model-Empowered Urban Navigation Agent with Hierarchical Semantic Planning and Topological Memory* (ACL 2025)
+**论文**: *CityNavAgent: Aerial Vision-and-Language Navigation with Hierarchical Semantic Planning and Global Memory* (ACL 2025, [arXiv:2505.05622](https://arxiv.org/abs/2505.05622))
 **arXiv**: [2505.05622](https://arxiv.org/abs/2505.05622)
 
 #### 核心问题

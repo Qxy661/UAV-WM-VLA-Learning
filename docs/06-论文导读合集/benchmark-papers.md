@@ -12,7 +12,7 @@
 
 | 项目 | 内容 |
 |------|------|
-| **标题** | MotionScape: A Large-Scale Real-World Highly Dynamic UAV Video Dataset for World Models |
+| **标题** | MotionScape: A Motion-Stratified UAV Video Benchmark for World Modeling and Future Video Generation |
 | **arXiv** | [2604.07991](https://arxiv.org/abs/2604.07991) |
 | **GitHub** | [Thelegendzz/MotionScape](https://github.com/Thelegendzz/MotionScape) |
 | **年份** | 2026 |
@@ -183,8 +183,6 @@
 
 ## 基准对比表
 
-九个基准全部开源：
-
 | 基准 | 类型 | 规模 | 任务 |
 |------|------|------|------|
 | MotionScape | 视频数据 | 30+小时 | 世界模型训练 |
@@ -202,7 +200,7 @@
 ## 延伸阅读
 
 - [关键数据集与基准](../02-世界模型专题/06-关键数据集与基准.md) — 数据集详解
-- [完整论文列表](../../references/paper-list.md) — 79篇论文分类汇总
+- [完整论文列表](../../references/paper-list.md) — 81 篇论文分类汇总
 
 ## 思考题
 
