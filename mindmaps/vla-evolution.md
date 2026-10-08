@@ -1,6 +1,8 @@
 # VLA 演进时间线
 
-> 本文以 Mermaid 时间线与思维导图，追踪视觉-语言-动作模型（VLA）从 2023 年至 2025 年的演进历程，并专门梳理无人机领域的 VLA 研究进展。
+> 本文以 Mermaid 时间线与思维导图，追踪视觉-语言-动作模型（VLA）从 2023 年至 2026 年的演进历程，并专门梳理无人机领域的 VLA 研究进展。
+>
+> 架构代际止于第四代（π₀.₅）。2026 年之后不再产出"下一代架构"，而是拆成五个各自独立的方向 —— 这条线见 [01-VLA架构演进 §7.3](../docs/03-VLA专题/01-VLA架构演进.md)。
 
 ---
 
@@ -8,7 +10,7 @@
 
 ```mermaid
 timeline
-    title VLA 模型演进历程 (2023-2025)
+    title VLA 模型演进历程 (2023-2026)
     2023-03 : PaLM-E
              : 首个具身多模态大模型
              : 562B 参数
@@ -28,15 +30,27 @@ timeline
     2024-10 : π₀
              : 流匹配 VLA
              : 连续动作扩散
+    2025-01 : FAST
+             : 动作 token 化提速
+             : 离散与连续之间的第三条路
+    2025-02 : OpenVLA-OFT
+             : 并行解码 + 连续动作头
+             : 推理频率抬到 25 倍以上
+    2025-03 : CognitiveDrone
+             : 认知无人机 VLA
+             : 自建双任务基准
     2025-04 : π₀.₅
              : 世界模型增强 VLA
              : 推理能力
     2025-12 : VLA-AN
              : 无人机专用 VLA
-    2025-03 : CognitiveDrone
-             : 认知无人机 VLA
     2026-04 : UAV-TrackVLA
              : 跟踪任务 VLA
+    2026-09 : 动作头进入受控对比阶段
+             : GR00T N1.7 单步头 45.3 ms 降到 5.0 ms
+             : 世界动作模型（WAM）独立成族
+    2026-10 : 动作分块的稳定性假设被检验
+             : 只在收缩态成立
 ```
 
 ---
@@ -309,7 +323,7 @@ graph LR
 
 ---
 
-## 六、无人机专用 VLA (2025)
+## 六、无人机专用 VLA（2025–2026）
 
 ### 6.1 无人机 VLA 的挑战
 
@@ -422,49 +436,82 @@ graph LR
 - 搜索与救援
 - 安防巡逻
 
+### 6.5 AutoFly (2025)
+
+前三者的共同前提是"先给一条指令，再去执行"。AutoFly 换了一个入口：只给粗粒度的位置或方向提示，**连续规划与避障由无人机自己完成**。
+
+```mermaid
+graph TB
+    subgraph AutoFlyP["AutoFly"]
+        PseudoDepth["伪深度编码<br/>补几何线索"]
+        TwoStage["两阶段渐进训练"]
+    end
+
+    Cam["无人机相机"] --> PseudoDepth
+    PseudoDepth --> Policy["动作输出"]
+    TwoStage --> Policy
+
+    style AutoFlyP fill:#fce4ec
+```
+
+**与前三者的差别：**
+
+| 维度 | VLA-AN / CognitiveDrone / UAV-TrackVLA | AutoFly |
+|:---|:---|:---|
+| 任务形式 | 给定指令，执行 | 只有粗粒度提示，自主探索 |
+| 核心任务 | 通用导航 / 认知飞行 / 视觉跟踪 | 野外自主导航 |
+| 数据 | 用已有数据集（CognitiveDrone 8000+ 轨迹） | 自建自主导航数据集（数量未公开） |
+| 推理范式 | 直接映射 / 显式推理 / 时序推理 | 端到端（伪深度 + 两阶段） |
+
+三者到 AutoFly 的转折点是**指令粒度**：语言指令描述的是"去哪"，而探索任务里没有"哪"可描述。详见 [02-无人机VLA模型 §5](../docs/03-VLA专题/02-无人机VLA模型.md)。
+
 ---
 
 ## 七、VLA 架构演进对比
 
-### 7.1 五代 VLA 的架构对比
+### 7.1 四代架构 + 一条领域轴
 
 ```mermaid
 graph TB
-    subgraph Gen1["第一代: VLM+Token"]
-        RT2["RT-2<br/>离散token"]
+    subgraph Gen1["第一代: VLM+Token（2023）"]
+        RT2["RT-2<br/>离散 token"]
         PaLME["PaLM-E<br/>文本描述"]
     end
 
-    subgraph Gen2["第二代: 开源基线"]
+    subgraph Gen2["第二代: 开源基线（2024 上）"]
         OpenVLA["OpenVLA<br/>SigLIP+LLaMA"]
         Octo["Octo<br/>通用策略"]
     end
 
-    subgraph Gen3["第三代: 流匹配"]
+    subgraph Gen3["第三代: 连续动作与流匹配（2024 下）"]
         Pi0["π₀<br/>Flow Matching"]
     end
 
-    subgraph Gen4["第四代: WM增强"]
-        Pi05["π₀.₅<br/>WM+推理"]
+    subgraph Gen4["第四代: 世界模型增强（2025）"]
+        Pi05["π₀.₅<br/>WM + 推理"]
     end
 
-    subgraph Gen5["第五代: 无人机专用"]
+    subgraph Domain["领域轴: 无人机专用（跨代，不是第五代）"]
         VLAAN["VLA-AN"]
         CogDrone["CognitiveDrone"]
         TrackVLA["UAV-TrackVLA"]
+        AutoFly["AutoFly"]
     end
 
     Gen1 --> Gen2
     Gen2 --> Gen3
     Gen3 --> Gen4
-    Gen4 --> Gen5
+    Gen3 -.->|"动作接口移植"| Domain
+    Gen4 -.->|"世界模型移植"| Domain
 
     style Gen1 fill:#ffcdd2
     style Gen2 fill:#fff9c4
     style Gen3 fill:#c8e6c9
     style Gen4 fill:#bbdefb
-    style Gen5 fill:#e1bee7
+    style Domain fill:#e1bee7
 ```
+
+**"无人机专用"不是第五代。** 把它排在 π₀.₅ 后面，是把**架构轴**和**领域轴**混在了一条线上：这条线上的"代"由动作表示与架构设计决定，而 VLA-AN、CognitiveDrone、UAV-TrackVLA、AutoFly 之间的差别不在动作表示上，在**应用领域与任务形式**上 —— 语言指令能给的是目标，探索任务里连目标都没有。所以无人机是一条**横跨各代的领域轴**，不是代际往下走的一步。同一个架构可以被搬到空中，搬过去之后失效的那部分另有原因（4 维 50–200 Hz 的动作空间、飞行数据量少一到两个数量级），见 [01-VLA架构演进 §7.3](../docs/03-VLA专题/01-VLA架构演进.md)。
 
 ### 7.2 关键指标对比
 
@@ -474,10 +521,14 @@ graph TB
 | Octo | 2024 | 93M | 离散/连续 | 是 | 否 | 否 |
 | OpenVLA | 2024 | 7B | 离散 | 是 | 否 | 否 |
 | π₀ | 2024 | 3B | 连续(流匹配) | 部分 | 否 | 否 |
+| OpenVLA-OFT | 2025 | 7B | 连续(并行解码) | 是 | 否 | 否 |
 | π₀.₅ | 2025 | 3B+ | 连续(流匹配) | 部分 | 是 | 否 |
 | VLA-AN | 2025 | ~3B | 连续(6DoF) | 是 | 否 | 是 |
 | CognitiveDrone | 2025 | ~7B | 分层控制 | 部分 | 是 | 是 |
+| AutoFly | 2025 | 未公开 | 连续 | 未公开 | 未公开 | 是 |
 | UAV-TrackVLA | 2026 | ~3B | 连续跟踪 | 是 | 否 | 是 |
+
+表里的"参数量"一列在 2025 年之后逐渐失去区分度（多数不公开），真正区分这些工作的是**动作接口、数据来源、后训练方式、评测口径和世界模型的接法** —— 这五个问题 2026 年已经各自独立成方向，见 [01-VLA架构演进 §7.3](../docs/03-VLA专题/01-VLA架构演进.md)。
 
 ---
 
@@ -515,17 +566,17 @@ mindmap
       常识推理
 ```
 
-### 8.2 无人机 VLA 的技术路线预测
+### 8.2 无人机 VLA 的技术路线
 
 ```mermaid
 graph LR
-    Now["2025 当前"] --> Y1["2026 预测"] --> Y2["2027 预测"]
+    Now["2026 现状"] --> Y1["2027 待检验"] --> Y2["2028 待检验"]
 
-    Now --> |"VLA-AN, CognitiveDrone"| N1["专用无人机 VLA"]
-    Now --> |"π₀.₅ 思路"| N2["WM 增强 VLA"]
+    Now --> |"VLA-AN, CognitiveDrone, UAV-TrackVLA, AutoFly"| N1["专用无人机 VLA"]
+    Now --> |"π₀.₅ 与 WAM 思路"| N2["世界模型接进回路"]
 
     N1 --> |"统一架构"| Y1_A["通用空中 VLA"]
-    N2 --> |"深度融合"| Y1_B["端到端 WM-VLA"]
+    N2 --> |"接法收敛"| Y1_B["端到端 WM-VLA"]
 
     Y1_A --> |"集群化"| Y2_A["多机协作 VLA"]
     Y1_B --> |"自主化"| Y2_B["完全自主无人机"]
@@ -535,6 +586,8 @@ graph LR
     style Y2 fill:#64b5f6
 ```
 
+左侧那两个分支在 2026 年都已经有实物（专用无人机 VLA 有四篇，世界模型的四种接法见 [10-世界模型增强VLA](../docs/03-VLA专题/10-世界模型增强VLA.md)），所以 2027 之后的部分是**待检验的方向**而不是预测结论。
+
 ---
 
 ## 九、学习建议
@@ -543,7 +596,8 @@ graph LR
 |:---|:---|:---:|
 | **理解 VLA 基本概念** | PaLM-E → RT-2 → OpenVLA | 1-2 周 |
 | **掌握架构设计** | OpenVLA → π₀ → π₀.₅ | 2-3 周 |
-| **专注无人机 VLA** | π₀.₅ → VLA-AN → CognitiveDrone | 2-3 周 |
+| **专注无人机 VLA** | π₀.₅ → VLA-AN → CognitiveDrone → AutoFly | 2-3 周 |
+| **按自变量深入** | [06 动作头](../docs/03-VLA专题/06-动作头与动作分块.md) → [07 数据](../docs/03-VLA专题/07-数据、预训练与跨具身.md) → [08 后训练](../docs/03-VLA专题/08-强化学习后训练与自我改进.md) → [09 评测](../docs/03-VLA专题/09-评测基准与报告口径.md) → [10 世界模型](../docs/03-VLA专题/10-世界模型增强VLA.md) | 4-6 周 |
 | **全面深入** | 按时间线全部阅读 | 4-6 周 |
 
 > 详细的论文阅读顺序请参考 [reading-order.md](reading-order.md)。
@@ -551,4 +605,4 @@ graph LR
 
 ---
 
-*本文件为 UAV-WM-VLA-Learning 项目的一部分，最后更新：2026-05-10。*
+*本文件为 UAV-WM-VLA-Learning 项目的一部分，最后更新：2026-10-08。*
