@@ -95,7 +95,7 @@
 
 | 项目 | 内容 |
 |------|------|
-| **标题** | UAV-Flow Colosseo: Real-World Benchmark for Flying-on-a-Word UAV Imitation Learning |
+| **标题** | UAV-Flow Colosseo: A Real-World Benchmark for Flying-on-a-Word UAV Imitation Learning |
 | **arXiv** | [2505.15725](https://arxiv.org/abs/2505.15725) |
 | **GitHub** | [buaa-colalab/UAV-Flow](https://github.com/buaa-colalab/UAV-Flow) (124 stars) |
 | **HuggingFace** | wangxiangyu0814/UAV-Flow, OpenVLA-UAV |
@@ -182,7 +182,7 @@
 
 | 项目 | 内容 |
 |------|------|
-| **标题** | NavFoM: Embodied Navigation Foundation Model |
+| **标题** | Embodied Navigation Foundation Model（系统名 NavFoM） |
 | **arXiv** | [2509.12129](https://arxiv.org/abs/2509.12129) |
 | **项目页** | [pku-epic.github.io/NavFoM-Web](https://pku-epic.github.io/NavFoM-Web/) |
 | **机构** | 北京大学 |
@@ -273,7 +273,7 @@
 
 - [世界模型论文卡片](world-model-papers.md) — 世界模型论文导读
 - [VLM论文卡片](vlm-papers.md) — VLM论文导读
-- [完整论文列表](../../references/paper-list.md) — 79篇论文分类汇总
+- [完整论文列表](../../references/paper-list.md) — 81 篇论文分类汇总
 
 ## 思考题
 

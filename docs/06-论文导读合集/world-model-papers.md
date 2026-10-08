@@ -99,7 +99,7 @@
 
 | 项目 | 内容 |
 |------|------|
-| **标题** | MotionScape: A Large-Scale Real-World Highly Dynamic UAV Video Dataset for World Models |
+| **标题** | MotionScape: A Motion-Stratified UAV Video Benchmark for World Modeling and Future Video Generation |
 | **arXiv** | [2604.07991](https://arxiv.org/abs/2604.07991) |
 | **GitHub** | [Thelegendzz/MotionScape](https://github.com/Thelegendzz/MotionScape) |
 | **年份** | 2026 |
@@ -327,7 +327,7 @@
 - [VLA论文卡片](vla-papers.md) — VLA领域论文导读
 - [VLM论文卡片](vlm-papers.md) — VLM领域论文导读
 - [基准与数据集论文](benchmark-papers.md) — 基准论文导读
-- [完整论文列表](../../references/paper-list.md) — 79篇论文分类汇总
+- [完整论文列表](../../references/paper-list.md) — 81 篇论文分类汇总
 
 ## 思考题
 
