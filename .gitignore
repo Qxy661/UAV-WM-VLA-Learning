@@ -19,3 +19,12 @@ venv/
 # Misc
 *.log
 *.tmp
+
+# 模型/数据集下载缓存（HF hub 等），本地产生的，不进仓库
+cache/
+
+# 论文工作区（1.1 GB，含 paper/literature/pdfs/ 下的 PDF 与实验产物），只在本地用，不进仓库
+paper/
+
+# 上面那套工作区实验出的配图，与 docs/ 引用的 figures/ph*.png 不是一套
+figures/kh*.png
