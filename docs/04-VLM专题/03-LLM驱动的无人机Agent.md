@@ -129,7 +129,7 @@ graph LR
 
 ### 2.2 ACDC — 自然语言驱动的航拍电影
 
-**论文**: *ACDC: Aerial Cinematography with Natural Language* (2025)
+**论文**: *Agentic Aerial Cinematography: From Dialogue Cues to Cinematic Trajectories* (ACDC, 2025)
 **arXiv**: [2509.16176](https://arxiv.org/abs/2509.16176)
 
 #### 核心问题

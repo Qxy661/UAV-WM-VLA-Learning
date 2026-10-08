@@ -1,18 +1,19 @@
 """
-vla_watch.py — VLA 前沿增量追踪
+watch.py — 专题前沿增量追踪（VLA / 世界模型 / VLM 三卷共用）
 
 按词表查 arXiv，把**最近窗口内新出现、且仓库还没收录**的论文列出来，写成
-`references/vla-watch-<年-月>.md`。词表按 `docs/03-VLA专题/06`–`10` 五篇新文档分节，
-外加一节无人机主线。目的不是"查新"（那是 `paper/literature/_tools/netq.py` 的活），
+`references/<卷>-watch-<年-月>.md`。词表在 `tools/watchlists.py`，按各卷新增文档
+分节，外加一节无人机主线。目的不是"查新"（那是 `paper/literature/_tools/netq.py` 的活），
 而是**让专题不再过期**：过几个月重跑一次，就知道要补哪些。
 
 用法：
-    py -3.9 tools/vla_watch.py                    # 最近 120 天，全部词表，只打印
-    py -3.9 tools/vla_watch.py --days 30          # 缩小窗口
-    py -3.9 tools/vla_watch.py --group 06         # 只跑某一节（06/07/08/09/10/uav）
-    py -3.9 tools/vla_watch.py --write            # 写出 references/vla-watch-YYYY-MM.md
-    py -3.9 tools/vla_watch.py --json out.json    # 另存机器可读结果
-    py -3.9 tools/vla_watch.py --all              # 连已收录的也列出来（默认只列新增）
+    py -3.9 tools/watch.py                        # VLA 卷，最近 120 天，只打印
+    py -3.9 tools/watch.py --volume wm            # 换卷（vla / wm / vlm）
+    py -3.9 tools/watch.py --days 30              # 缩小窗口
+    py -3.9 tools/watch.py --group 08             # 只跑某一节（看 --list 的输出）
+    py -3.9 tools/watch.py --write                # 写出 references/<卷>-watch-YYYY-MM.md
+    py -3.9 tools/watch.py --json out.json        # 另存机器可读结果
+    py -3.9 tools/watch.py --all                  # 连已收录的也列出来（默认只列新增）
 
 三个必须守住的点（都是这个仓库踩过的坑）：
 
@@ -42,90 +43,22 @@ import xml.etree.ElementTree as ET
 from datetime import date, timedelta
 from pathlib import Path
 
+from watchlists import VERIFIED_ZEROS, VOLUMES
+
 ROOT = Path(__file__).resolve().parent.parent
 API = "https://export.arxiv.org/api/query"
 NS = {"a": "http://www.w3.org/2005/Atom",
       "os": "http://a9.com/-/spec/opensearch/1.1/"}
-UA = "uav-wm-vla-learning-vla-watch/1.0"
+UA = "uav-wm-vla-learning-watch/1.0"
 
 RETRY = 4          # 单条查询失败重试次数（照抄 check_citations.py）
 SLEEP = 4.0        # 查询间隔，arXiv 建议 3 秒以上
 PER_QUERY = 30     # 每条查询取回的条目数上限
 
-# 末尾的 `(?:v\d+)?` 是必须的：paper/ 里存的是带版本号的 arXiv 链接
+# 末尾的 `(?:v\d+)?` 是必须的：`paper/` 里存的是带版本号的 arXiv 链接
 # （`.../abs/2606.11618v1`），而 `\b` 在 `11618v` 之间不成立，旧写法会**整条漏掉**。
 # 用 `(?!\d)` 而不是 `\b` 收尾，既容忍 `vN` 又不把长数字串切成两半。
 RE_ID = re.compile(r"\b(\d{4}\.\d{4,5})(?:v\d+)?(?!\d)")
-
-# 词表。每节对应一篇新文档；`uav` 节是全场主线，不单独成篇。
-# 写法说明：用 abs: 而不是 all:，避开作者名/注释里的偶然命中。
-QUERIES = {
-    "06": ("动作头与动作分块", [
-        'abs:"action chunking"',
-        'abs:"action head" AND abs:"vision-language"',
-        'abs:"flow matching" AND abs:"robot policy"',
-        'abs:"diffusion policy" AND abs:"manipulation"',
-        'abs:"action tokenization"',
-        'abs:"receding horizon" AND abs:"imitation learning"',
-    ]),
-    "07": ("数据、预训练与跨具身", [
-        'abs:"cross-embodiment"',
-        'abs:"robot dataset" AND abs:"pretraining"',
-        'abs:"co-training" AND abs:"robot"',
-        'abs:"latent action" AND abs:"robot"',
-        'abs:"Open X-Embodiment"',
-        'abs:"human video" AND abs:"robot policy"',
-    ]),
-    "08": ("强化学习后训练与自我改进", [
-        'abs:"reinforcement learning" AND abs:"vision-language-action"',
-        'abs:"GRPO" AND abs:"robot"',
-        'abs:"reward model" AND abs:"robot policy"',
-        'abs:"self-improvement" AND abs:"robot"',
-        'abs:"world model" AND abs:"policy improvement"',
-        'abs:"online fine-tuning" AND abs:"robot policy"',
-    ]),
-    "09": ("评测基准与报告口径", [
-        'abs:"LIBERO"',
-        'abs:"SimplerEnv"',
-        'abs:"VLA benchmark"',
-        'abs:"real robot" AND abs:"evaluation protocol"',
-        'abs:"success rate" AND abs:"robot policy" AND abs:"evaluation"',
-        'abs:"reproducibility" AND abs:"robot learning"',
-    ]),
-    "10": ("世界模型增强 VLA", [
-        'abs:"world model" AND abs:"vision-language-action"',
-        'abs:"video prediction" AND abs:"robot policy"',
-        'abs:"imagined rollout"',
-        'abs:"latent dynamics" AND abs:"policy learning"',
-        'abs:"model-based" AND abs:"vision-language-action"',
-    ]),
-    "uav": ("无人机主线", [
-        'abs:"aerial" AND abs:"vision-language-action"',
-        'abs:"UAV" AND abs:"vision-language-action"',
-        'abs:"drone" AND abs:"vision-language navigation"',
-        'abs:"aerial" AND abs:"language model" AND abs:"control"',
-        'abs:"quadrotor" AND abs:"foundation model"',
-        'abs:"aerial" AND abs:"embodied" AND abs:"policy"',
-    ]),
-}
-
-
-# 命中 0 的查询，按纪律 F 复核过之后把结论钉在这里，随生成一起写出去。
-# 不写这个表的话，复核结论只活在对话里，下次重跑又变成一个裸的 0。
-VERIFIED_ZEROS = {
-    'abs:"receding horizon" AND abs:"imitation learning"':
-        "**复核过：这是词汇层面的假空白。**换提法 `abs:\"execution horizon\"` 命中 **22**、"
-        "`abs:\"action horizon\"` 命中 **11**（同 120 天窗口）。"
-        "「receding horizon」是控制论的说法，VLA 社区写「action / execution horizon」。"
-        "**不得记录为「这个方向没人做」。**",
-    'abs:"quadrotor" AND abs:"foundation model"':
-        "**复核过：零落在术语上，不落在领域上。**"
-        "`aerial` / `UAV` / `drone foundation model`、`aerial foundation models` "
-        "四种提法命中全为 **0**（两套词表交集为空，够得上「事实级空白」的判据）；"
-        "但同窗口 `abs:\"aerial\" AND abs:\"vision-language-action\"` 命中 **11**。"
-        "结论只能写到这一步：**空中领域不用「foundation model」自我描述，而用 VLA/VLN**。"
-        "**不得写成「空中没有基础模型工作」。**",
-}
 
 
 # ---------------------------------------------------------------- 取数
@@ -188,7 +121,11 @@ def known_ids():
     2026-10-08 修：原先漏了 `paper/`，而那里有 4500+ 条 ID 的文献台账，导致
     484 条"新增"里有 86 条其实早已收录，头部的"仓库尚未收录"就是假的。
     凡是本仓库里写过的 ID 一律算已收录——宁可少报新增，也不制造假信号。
+
+    三卷共用一份台账：排除的是**全部** `<卷>-watch-*.md`，不只是当前卷的。
+    否则跑 wm 卷时，VLA 台账里的几十个号会被当成"仓库尚未收录"再报一遍。
     """
+    self_made = tuple(f"{v['slug']}-watch" for v in VOLUMES.values())
     ids = set()
     targets = list((ROOT / "docs").rglob("*.md"))
     targets += list((ROOT / "references").glob("*.md"))
@@ -197,7 +134,7 @@ def known_ids():
     targets += [ROOT / "README.md", ROOT / "CONTRIBUTING.md",
                 ROOT / "code" / "README.md"]
     for p in targets:
-        if not p.exists() or p.name.startswith("vla-watch"):
+        if not p.exists() or p.name.startswith(self_made):
             continue
         try:
             ids |= set(RE_ID.findall(p.read_text(encoding="utf-8")))
@@ -208,7 +145,8 @@ def known_ids():
 
 # ---------------------------------------------------------------- 主流程
 
-def run(groups, days, show_all):
+def run(volume, groups, days, show_all):
+    sections = VOLUMES[volume]["sections"]
     since = (date.today() - timedelta(days=days)).strftime("%Y%m%d")
     until = date.today().strftime("%Y%m%d")
     window = f"submittedDate:[{since}0000 TO {until}2359]"
@@ -216,7 +154,7 @@ def run(groups, days, show_all):
     known = known_ids()
     results, n_q, n_fail, n_new = [], 0, 0, 0
 
-    for gid, (gname, queries) in QUERIES.items():
+    for gid, (gname, queries) in sections.items():
         if groups and gid not in groups:
             continue
         block = []
@@ -245,21 +183,25 @@ def run(groups, days, show_all):
             time.sleep(SLEEP)
         results.append({"id": gid, "name": gname, "queries": block})
 
-    return {"window": window, "days": days, "n_queries": n_q,
+    return {"volume": volume, "window": window, "days": days, "n_queries": n_q,
             "n_failed": n_fail, "n_new": n_new, "groups": results}
 
 
 def to_markdown(res):
+    vol = VOLUMES[res["volume"]]
     d = date.today().strftime("%Y-%m")
     since, until = res["window"].split("[")[1].split(" TO ")
     since = f"{since[:4]}-{since[4:6]}-{since[6:8]}"
     until = f"{until[:4]}-{until[4:6]}-{until[6:8]}"
     L = [
-        f"# VLA 前沿增量 · {d}",
+        f"# {vol['title']} 前沿增量 · {d}",
         "",
-        f"> 生成：`py -3.9 tools/vla_watch.py --write`｜窗口 {since} ~ {until}"
+        f"> 生成：`py -3.9 tools/watch.py --volume {res['volume']} --write`"
+        f"｜窗口 {since} ~ {until}"
         f"（{res['days']} 天）｜词表 {res['n_queries']} 条｜请求失败 {res['n_failed']} 条"
         f"｜新增 {res['n_new']} 条",
+        "",
+        f"词表按 {vol['about']} 分节。",
         "",
         "**读法**（纪律 F 的镜像规则）：TOTAL 是**题摘层面的命中数，不是相关论文数**。"
         "一条宽查询命中几百条不含任何信息，所以下表只列**仓库尚未收录**的条目。"
@@ -272,9 +214,10 @@ def to_markdown(res):
         "加 `README.md` / `CONTRIBUTING.md` / `code/README.md`。"
         "`paper/` 下的 `_work*/` 取数缓存（json/xml/html/pdf）**不算收录**，故不计入——"
         "那里放的是原始查询结果，不是读过的文献。"
-        "所以某条 ID 不在本表，只能推出**整仓没写过**，推不出\"VLA 专题没有\"。",
+        "所以某条 ID 不在本表，只能推出**整仓没写过**，推不出\"这个专题没有\"。",
         "（2026-10-08 修：`paper/` 原先漏扫，加上 ID 正则不吃 `v1` 版本号后缀，"
-        "两条合起来让 27 条早已在 `paper/` 笔记里读过的论文被标成\"新增\"。）",
+        "两条合起来让 27 条早已在 `paper/` 笔记里读过的论文被标成\"新增\"。"
+        "三卷的台账互为已收录，故 `<卷>-watch-*.md` 一律排除。）",
         "",
     ]
     for g in res["groups"]:
@@ -303,31 +246,44 @@ def to_markdown(res):
                 L.append(f"| {it['date']} | `{it['id']}` | {it['title'][:110]} |")
             L.append("")
     L += ["---", "",
-          "*本文件由 `tools/vla_watch.py` 生成，重跑即可刷新。"
+          "*本文件由 `tools/watch.py` 生成，重跑即可刷新。"
           "收录进正文前，ID 与标题一律以 arXiv API 为准。*", ""]
     return "\n".join(L)
 
 
 def main():
-    ap = argparse.ArgumentParser(description="VLA 前沿增量追踪")
+    ap = argparse.ArgumentParser(description="专题前沿增量追踪（三卷共用）")
+    ap.add_argument("--volume", default="vla", choices=sorted(VOLUMES),
+                    help="跑哪一卷，默认 vla")
     ap.add_argument("--days", type=int, default=120, help="回溯天数，默认 120")
     ap.add_argument("--group", action="append",
-                    help="只跑指定节（06/07/08/09/10/uav），可重复")
-    ap.add_argument("--write", action="store_true", help="写出 references/vla-watch-YYYY-MM.md")
+                    help="只跑指定节（如 06/07/08/09/10/uav），可重复")
+    ap.add_argument("--write", action="store_true",
+                    help="写出 references/<卷>-watch-YYYY-MM.md")
     ap.add_argument("--json", help="另存机器可读 JSON")
     ap.add_argument("--all", action="store_true", help="已收录的也列出来")
+    ap.add_argument("--list", action="store_true", help="列出各卷的节，跑完即退")
     args = ap.parse_args()
 
-    unknown = set(args.group or []) - set(QUERIES)
-    if unknown:
-        sys.exit(f"未知分组：{sorted(unknown)}；可选 {sorted(QUERIES)}")
+    if args.list:
+        for v, cfg in VOLUMES.items():
+            print(f"{v:4} {cfg['title']}  ({cfg['about']})")
+            for gid, (gname, qs) in cfg["sections"].items():
+                print(f"       {gid:4} {gname}  （{len(qs)} 条查询）")
+        return
 
-    print(f"窗口：最近 {args.days} 天｜分组：{args.group or '全部'}")
-    res = run(args.group, args.days, args.all)
+    sections = VOLUMES[args.volume]["sections"]
+    unknown = set(args.group or []) - set(sections)
+    if unknown:
+        sys.exit(f"未知分组：{sorted(unknown)}；可选 {sorted(sections)}")
+
+    print(f"卷：{args.volume}｜窗口：最近 {args.days} 天｜分组：{args.group or '全部'}")
+    res = run(args.volume, args.group, args.days, args.all)
     print(f"\n完成：{res['n_queries']} 条查询，失败 {res['n_failed']}，新增 {res['n_new']}")
 
+    slug = VOLUMES[args.volume]["slug"]
     if args.write:
-        out = ROOT / "references" / f"vla-watch-{date.today().strftime('%Y-%m')}.md"
+        out = ROOT / "references" / f"{slug}-watch-{date.today().strftime('%Y-%m')}.md"
         out.write_text(to_markdown(res), encoding="utf-8")
         print(f"已写出 {out.relative_to(ROOT)}")
     if args.json:
