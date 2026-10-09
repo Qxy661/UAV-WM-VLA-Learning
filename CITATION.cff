@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "如果本项目对你的学习或研究有帮助，请按下面的格式引用。"
+title: "UAV World Model & VLA & VLM Learning"
+abstract: >-
+  一个通用的世界模型 / VLA / VLM 学习库：59 篇中文文档、195 篇逐条核对 arXiv 号的论文清单、
+  24 个纯 CPU 可跑 demo，无人机作为贯穿 9 卷的专章。
+authors:
+  - name: "Qxy661"
+    website: "https://github.com/Qxy661"
+type: software
+license: MIT
+repository-code: "https://github.com/Qxy661/UAV-WM-VLA-Learning"
+url: "https://qxy661.github.io/UAV-WM-VLA-Learning/"
+version: 1.0.0
+date-released: "2026-10-10"
+keywords:
+  - world models
+  - vision-language-action
+  - vision-language models
+  - embodied AI
+  - UAV
+  - reinforcement learning
+  - paper list

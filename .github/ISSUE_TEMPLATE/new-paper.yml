@@ -1,0 +1,28 @@
+name: 建议新增论文
+description: 推荐一篇应该收录进论文清单的论文
+title: "[论文] "
+body:
+  - type: input
+    id: arxiv
+    attributes:
+      label: arXiv 号
+      description: 形如 2501.14377。本仓库只收能从 arXiv 核到标题的条目，没有号的请说明来源。
+      placeholder: "2501.14377"
+    validations:
+      required: true
+
+  - type: input
+    id: title
+    attributes:
+      label: 论文标题
+      description: 照 arXiv 页面原文抄，不要自己改写成中文
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: 为什么该收录
+      description: 它属于哪一卷？和清单里已有的条目相比，它多说明了什么？
+    validations:
+      required: true
