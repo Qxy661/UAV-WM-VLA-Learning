@@ -171,4 +171,42 @@ VERIFIED_ZEROS = {
         "但同窗口 `abs:\"aerial\" AND abs:\"vision-language-action\"` 命中 **11**。"
         "结论只能写到这一步：**空中领域不用「foundation model」自我描述，而用 VLA/VLN**。"
         "**不得写成「空中没有基础模型工作」。**",
+
+    # ---- 以下四条是 2026-10-08 跑 wm 卷时出现的 0 命中，逐条换提法复核过 ----
+
+    'abs:"video prediction" AND abs:"evaluation metrics"':
+        "**复核过：词汇层面的假空白。**同窗口换提法 —— "
+        "`abs:\"video prediction\" AND abs:\"benchmark\"` 命中 **14**、"
+        "`abs:\"video generation\" AND abs:\"evaluation metrics\"` 命中 **6**、"
+        "`abs:\"video prediction\" AND abs:\"metrics\"` 命中 **2**。"
+        "不限窗口时原提法本身也只有 **3** 条，且全部止于 2021 年。"
+        "「evaluation metrics」是评测论文的写法，生成类论文写 benchmark / metric（单数）。"
+        "**不得记录为「视频预测没有评测工作」。**",
+
+    'abs:"energy-based" AND abs:"world model"':
+        "**复核过：低频真线，只是这 120 天恰好空窗。**不限窗口命中 **8**，"
+        "且集中在 2026 上半年：`2605.07199`（Three-in-One World Model，能量一致性）、"
+        "`2602.23058`（GeoWorld）。同族提法 `abs:\"EBM\" AND abs:\"world model\"` "
+        "不限窗口命中 **1**（`2406.08862` Cognitively Inspired Energy-Based World Models）。"
+        "对照：`abs:\"energy-based model\"` 不限窗口 **630**、同窗口 **35**，"
+        "说明词本身不冷，是「energy-based + world model」这个组合少。"
+        "**可以写「这一线稀疏」，不得写「没有」。**",
+
+    'abs:"aerial" AND abs:"video generation"':
+        "**复核过：纯粹是窗口假象。**不限窗口命中 **6**，最近三条就在窗口外几周："
+        "`2605.19728`（Aero-World，2026-05-19）、`2605.15964`（WorldVLN，2026-05-15）、"
+        "`2604.07991`（MotionScape，2026-04-09）。同窗口换提法 "
+        "`abs:\"drone\" AND abs:\"video generation\"` 命中 **1**（`2606.24152`）、"
+        "`abs:\"UAV\" AND abs:\"video generation\"` 命中 **1**（`2610.02451`）。"
+        "**这是本轮最该记的一条：窗口起点卡在 6 月 10 日，"
+        "把 2026 年 4–5 月空中世界模型那一批整批切掉了**——"
+        "写「近期空白」之前必须先看不限窗口的命中。",
+
+    'abs:"UAV" AND abs:"video prediction"':
+        "**复核过：同上是窗口假象。**不限窗口命中 **2**："
+        "`2606.06147`（WorldFly，2026-06-04，比窗口起点早 6 天）、"
+        "`2512.21710`（RAPTOR，2025-12-25）。同窗口换提法 "
+        "`abs:\"aerial\" AND abs:\"video prediction\"`、"
+        "`abs:\"aerial\" AND abs:\"future frame prediction\"` 也都命中 **0**。"
+        "**不得写成「无人机不做视频预测」。**",
 }
