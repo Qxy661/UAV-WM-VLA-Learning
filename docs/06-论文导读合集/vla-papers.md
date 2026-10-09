@@ -96,8 +96,6 @@
 
 **结果亮点**：VLA模型在细粒度无人机控制上显著优于VLN基线
 
-> **勘误（2026-10）**：本卡片早先写「UnrealZoo Gym评估环境」。arXiv:2505.15725 原文用的是 *"We utilize UnrealCV as the simulation environment for the UAV"*，全文无 "gym" 命中。
-
 ---
 
 ## 5. VLN-Pilot — VLM作为室内无人机操作员

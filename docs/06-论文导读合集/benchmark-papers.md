@@ -26,8 +26,6 @@
 
 **关键发现**：对齐的标注有效提升现有世界模型模拟复杂3D动态和处理大视角变化的能力
 
-> **勘误（2026-10）**：本卡片早先写作「30+小时4K视频 / 4.5M+帧 / 6-DoF相机轨迹 / 细粒度自然语言描述」，管线写成「CLIP相关性过滤 / 时间分割 / 鲁棒视觉SLAM轨迹恢复 / LLM驱动语义标注」。arXiv:2604.07991 摘要的实际规模是 *"228 high-resolution video clips totaling 62,700 frames, with semantic annotations of weather and illumination conditions, scene environment, and camera-viewpoint motion"*，构建方式是 *"manual source selection, CLIP-assisted inspection, and human verification"*。**帧数被夸大约 70 倍；6-DoF 轨迹、SLAM、LLM 标注在原文中均不存在（全文 0 命中）。**
-
 ---
 
 ## 2. AeroVerse — 航空航天世界模型基准
@@ -44,8 +42,6 @@
 3. 导航探索（navigational exploration）
 4. 任务规划（task planning）
 5. 运动决策（motion decision）
-
-> **勘误（2026-10）**：本卡片早先写机构「哈尔滨工业大学」、五大任务「场景认知 / 导航规划 / 目标跟踪 / 避障控制 / 降落评估」。原文署名为 *"Fanglong Yao is with the Aerospace Information Research Institute, Chinese Academy of Sciences, Beijing"*（中科院空天信息创新研究院），任务定义是 *"aerospace embodied scene awareness, spatial reasoning, navigational exploration, task planning, and motion decision"*。**机构与后三项任务均写错，已按原文改正。**
 
 ---
 
@@ -94,8 +90,6 @@
 4. 工具使用（tool utilization）
 5. 任务规划（task planning）
 6. 动作生成（action generation）
-
-> **勘误（2026-10）**：本卡片早先的六项是「语义感知 / 空间感知 / 运动控制 / 任务理解 / 规划推理 / 安全约束」，其中**后三项原文里没有**。arXiv:2505.18229 原文写的是 *"six core sub-skills: semantic perception, spatial perception, motion control, tool utilization, task planning and action generation"*，已按原文改正。
 
 ---
 

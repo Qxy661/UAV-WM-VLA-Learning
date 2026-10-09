@@ -4,7 +4,7 @@
 
 UAV-Flow 出自北航 CoLA Lab，是一篇**基准论文**：它定义了 Flying-on-a-Word（Flow）任务——无人机根据**原子化的语言指令**执行短程、反应式的飞行动作——并配套发布数据集、可部署的控制框架与仿真评测套件。仓库里给出的基线是在 **OpenVLA** 与 **Pi-0** 上微调得到的。
 
-> **本指南的可复现边界（2026-10）**：论文的实机部分**不可复现**（需要真机、空域与飞手）。本指南覆盖的是仓库能跑通的那部分：数据下载、权重加载、微调与离线评测（nDTW）。看到"直接部署、无 sim-to-real gap"这类表述时，那是论文对自身框架的陈述，不是你可以照文档复现出来的结果。
+> **本指南的可复现边界**：论文的实机部分**不可复现**（需要真机、空域与飞手）。本指南覆盖的是仓库能跑通的那部分：数据下载、权重加载、微调与离线评测（nDTW）。看到"直接部署、无 sim-to-real gap"这类表述时，那是论文对自身框架的陈述，不是你可以照文档复现出来的结果。
 
 ---
 
@@ -42,8 +42,6 @@ UAV-Flow 出自北航 CoLA Lab，是一篇**基准论文**：它定义了 Flying
    batch_run_act_all.py 汇总轨迹 → metric.py 算 nDTW
 ```
 
-> **勘误（2026-10）**：本节早先写「论文标题: UAV-Flow: Learning Dense Optical Flow for UAVs with a Vision-Language-Action Model」「Hugging Face 模型: wangxiangyu0814/UAV-Flow」「124 stars」，并画了一张"跨模态融合 Transformer → 动作解码器"的技术路线图。逐条：**题名** arXiv:2505.15725 逐字是 *"UAV-Flow Colosseo: A Real-World Benchmark for Flying-on-a-Word UAV Imitation Learning"*，arXiv 检索"Dense Optical Flow UAV Vision-Language-Action"**零命中**，那个题名是拿仓库名想出来的；**权重仓库**是 `wangxiangyu0814/OpenVLA-UAV`（`wangxiangyu0814/UAV-Flow` 是**数据集**，不是模型）；**star 数**实测 173（时间漂移）；那张技术路线图**不是论文的**——论文采用 OpenVLA 与 Pi-0 作基础模型，没有描述"跨模态融合 Transformer + 动作解码器"这套结构。
-
 ---
 
 ## 2. 仓库结构
@@ -62,8 +60,6 @@ UAV-Flow/
 ```
 
 真实入口是 `bash vla-scripts/finetune_uav.sh`（微调）、`python vla-scripts/openvla_act.py`（推理服务）、`python batch_run_act_all.py`（批量推理）、`python metric.py`（算 nDTW）。**没有 `configs/`、`models/`、`scripts/`、`envs/`、`utils/` 这些目录。**
-
-> **勘误（2026-10）**：本节早先给了一整套"标准复现工程"目录树（`configs/train_openvla.yaml`、`models/openvla_uav.py`、`scripts/train.py|eval.py|inference.py`、`envs/unrealzoo_gym/` 等）。实测仓库 git tree 里**这些文件一个都不存在**——顶层只有 `OpenVLA-UAV/`（内含 `prismatic/`、`vla-scripts/`）、`UAV-Flow-Eval/`、`dataset_tools/`。那张树是照"一个 VLA 项目大概长什么样"画出来的。
 
 ---
 
@@ -103,8 +99,6 @@ cd OpenVLA-UAV
 pip install -e .
 ```
 
-> **勘误（2026-10）**：本节早先写 `pip install prismatic-vla`。PyPI 上 `prismatic-vla` 与 `prismatic-vlms` **均返回 404**——OpenVLA 的用法从来是 `pip install -e .` 装仓库内的 `prismatic` 包。同节早先列的 `transformers / accelerate / peft / gymnasium` 那份依赖清单也**没有出处**（仓库未公开固定版本清单），已删；真实要点是 `pytorch-cuda=12.4` 与 `flash-attn==2.5.5`。
-
 ---
 
 ## 4. 数据集下载
@@ -137,8 +131,6 @@ snapshot_download(
 
 `image` 是帧图像，`log` 是**原始遥测序列**——指令文本与动作都编码在这条 log 里，而不是抽成独立的 `instructions.jsonl` 或 `trajectories/` 目录。
 
-> **勘误（2026-10）**：本节早先给了一棵 `train|val|test/{images,trajectories,instructions.jsonl}` 的目录树，以及一条样本 JSON `{"image_path": ..., "instruction": ..., "action": [0.32,0.01,-0.05,0.02], "action_format": "vx_vy_vz_yawrate"}`。HF 数据集的实际 schema 里**没有 `action` 字段、也没有 `instruction` 字段**，更没有那些目录——只有 54 个 parquet 分片与上面四个字段。那条样本 JSON 是按"一个 VLA 数据集应该长什么样"编出来的。
-
 ### 4.3 下载 OpenVLA 预训练权重
 
 ```bash
@@ -168,8 +160,6 @@ python vla-scripts/openvla_act.py
 python batch_run_act_all.py
 ```
 
-> **勘误（2026-10）**：本节早先写 `huggingface-cli download wangxiangyu0814/UAV-Flow --local-dir ./models/uavflow` 与 `python scripts/inference.py --model_path ... --image_path ... --instruction ...`。**两处的仓库名与入口都不对**：HF **模型**仓库是 `wangxiangyu0814/OpenVLA-UAV`（`.../UAV-Flow` 是数据集），真实推理入口是 `vla-scripts/openvla_act.py` + `batch_run_act_all.py`，仓库里没有 `scripts/inference.py`，也没有按 `--image_path/--instruction` 单张推理的 CLI。
-
 ### 5.3 动作归一化的 key
 
 推理时有一个容易踩的点：OpenVLA 会把动作按数据集统计量归一化，反归一化时要给出对应的 key。仓库 README 的配置里写的是：
@@ -179,8 +169,6 @@ python batch_run_act_all.py
 ```
 
 用错 key 会让输出的动作量级整体跑偏（思路见第 8 节 Q5）。
-
-> **勘误（2026-10）**：本节早先给了 30 行"推理逻辑演示"代码，其中 `model.predict_action(**inputs, unnorm_key="uavflow")` 的 key 是编的。README 里的真实 key 是 `"sim"`。同时那段代码用 `AutoModelForVision2Seq.from_pretrained(".../uavflow")` 加载模型也与真实入口不符（见上一条勘误），整段已删。
 
 ---
 
@@ -203,9 +191,7 @@ bash vla-scripts/finetune_uav.sh
 
 ### 6.3 训练资源需求
 
-**仓库与论文都没有给出训练资源表。** 这一节早先那张"18 GB / 40 GB / 12 小时 / 24 小时"的表**没有出处**，已删除——见下方勘误。要在自己的机器上估算，只能按第 7 节末尾那把"显存四笔账"的尺子自己量。
-
-> **勘误（2026-10）**：本节早先给了三段编造内容。**（一）训练配置 YAML**：`configs/train_openvla.yaml` 这个文件不存在，仓库里没有 `configs/` 目录；那段 YAML（`num_epochs: 10`、`learning_rate: 2.0e-5`、`lora.r: 32` 等）没有任何出处。**（二）训练命令**：真实入口是 `bash vla-scripts/finetune_uav.sh`，不是 `python scripts/train.py --config ...` 或 `accelerate launch ... scripts/train.py`。**（三）资源表**：那张三行的显存/时长表在仓库与论文里都查不到；本文件第 7 节末尾的"显存四笔账"演示正是拿这两行做反解，结果它们**互相矛盾**（同一个物理量解出 1.15 GB 与 3.33 GB 两个值）——一份自相矛盾的表，说明它是编的而不是量出来的。表已删，那个演示保留，因为它教的正是"怎么看出这类表有问题"。
+**仓库与论文都没有给出训练资源表。** 要在自己的机器上估算，只能按第 7 节末尾那把"显存四笔账"的尺子自己量。
 
 ---
 
@@ -227,8 +213,6 @@ python metric.py               # 算 nDTW
 ### 7.3 评估指标：为什么只有 nDTW
 
 论文自己承认，在真实场景里采用定量评测指标**本身就很困难**（*"it remains challenging to adopt quantitative evaluation metrics in real-world scenarios"*）。所以这条链路给出的不是"完成率 / 位置误差"这类绝对量，而是**轨迹相似度**——一个相对量：只回答"生成的轨迹与参考轨迹有多像"。
-
-> **勘误（2026-10）**：本节早先的评估链路整块对不上。**（一）环境**：写成 UnrealZoo Gym，真实是 **UnrealCV**。**（二）评测入口**：写成 `python scripts/eval.py --model_path ... --env_config configs/eval_unrealzoo.yaml --num_episodes 100`，真实是 `batch_run_act_all.py` + `metric.py`，仓库里没有 `scripts/eval.py`，也没有 `configs/eval_unrealzoo.yaml`。**（三）评估指标**：早先那张五项指标表（Task Success Rate / Position Error / Path Efficiency / Collision Rate / Action MSE）在仓库与论文里**都没有对应实现**，已删；真实指标是 nDTW。顺带一提，早先给出的 UnrealZoo Gym 仓库地址 `UnrealZoo/UnrealZoo_Gym` 也返回 404，正确的写法的仓库名是小写连字符形式。
 
 ### 7.4 一条容易被误读的对比
 
@@ -287,7 +271,7 @@ model = AutoModelForVision2Seq.from_pretrained(
 
 这一节把动作 MSE 和几个闭环指标摆在一起量：**构造一组策略，让动作 MSE 给出和完成率相反的结论**。三个策略是随机动作、标准串级 PID、把位置环增益调大 6 倍的 PID。
 
-> 本节实验跑在 `quad_sim` 的简化质点模型上，不是 UnrealCV，场景里也没有障碍物（Collision Rate 这一列量不到）。要证的是**离线指标和闭环指标的关系**，不是复现那张已删的五项指标表的具体数值。
+> 本节实验跑在 `quad_sim` 的简化质点模型上，不是 UnrealCV，场景里也没有障碍物（Collision Rate 这一列量不到）。要证的是**离线指标和闭环指标的关系**，不是复现某一组具体数值。
 
 ### 三个策略与七个指标
 
@@ -350,7 +334,7 @@ PID  完成率 100.0%  平均位置误差  2.54m  终端误差   0.26m  动作MS
 
 **完成率这一列同样分不开东西**：PID 和高增益都是 100%。能分开的是 Path Efficiency——0.97× 对 2.00×。
 
-顺带一提，标准 PID 那个 0.97× 小于 1，按 7.4 节的定义（实际路径 / 最短路径）这不该发生。原因是它的实际路程是在 XY 平面上按步累加的，而 8 秒回合结束时它还差 0.26 m 没到，走的路自然比起点到终点的直线短。这个 0.97 说明的是"没走完"，不是"路径更优"；把它当成一条效率指标读数就会看反。
+标准 PID 那个 0.97× 小于 1，按 7.4 节的定义（实际路径 / 最短路径）这不该发生。原因是它的实际路程是在 XY 平面上按步累加的，而 8 秒回合结束时它还差 0.26 m 没到，走的路自然比起点到终点的直线短。这个 0.97 说明的是"没走完"，不是"路径更优"；把它当成一条效率指标读数就会看反。
 
 > 全部数字来自 `quad_sim` 的简化质点模型（无风、无传感器噪声、无视觉），128 架并行、8 秒固定回合、到达容差 1.0 m。回合长度是硬的：标准 PID 在 8 秒里还没收敛完，那个 0.26 m 是 P 控制的稳态余差，换个回合长度这几个数都会动。
 
@@ -407,7 +391,7 @@ py -3.9 code/g_eval_metrics.py     # 约 4 秒，CPU 即可
 
 ## 动手验证：batch 翻倍，显存为什么不止翻一倍？
 
-本节早先有一张"训练资源需求"表（6.3 节），里面有两行是同一个模型、同一套 LoRA，只改了 batch：`batch_size=4` 是 18 GB，`batch_size=8` 是 40 GB。那张表**没有出处，已删**——但把它当例子的价值还在：它演示了怎么用一把算术尺子看出这类表不成立。batch 涨 1 倍、显存涨 1.22 倍，看着比线性还省，但把四项拆开就不是这么回事了。
+假设有一张常见的训练资源表，里面两行是同一个模型、同一套 LoRA，只改了 batch：`batch_size=4` 是 18 GB，`batch_size=8` 是 40 GB。batch 涨 1 倍、显存涨 1.22 倍，看着比线性还省，但把四项拆开就不是这么回事了。
 
 显存是四笔账：权重 / 梯度 / 优化器状态 / 激活。前三笔和 batch 完全无关 —— 7B 冻结主干加 LoRA r=16，这三笔加起来 13.4 GB，不管你喂多少数据都不动。**会随 batch 变的只有激活那一笔。**
 
@@ -466,12 +450,12 @@ bs=4  单层激活   544.3MB  每样本  136.1MB
 
 每样本那一列三个数一模一样 —— 激活对 batch 是一次方，没有常数项，也没有二次项。32 层乘上去，512 个 token 时每样本 4.25 GB，256 个 token 时 2.13 GB。
 
-于是文档那两行：
+于是这两行：
 
 ```text
-  出处                配置             表里写的   静态   余额 反解 token
-  07/02（已删的表）   LoRA, bs=4, fp16       18G  13.4G   4.6G        139
-  07/02（已删的表）   LoRA, bs=8, bf16       40G  13.4G  26.6G        401
+  来源                配置             表里写的   静态   余额 反解 token
+  示例表              LoRA, bs=4, fp16       18G  13.4G   4.6G        139
+  示例表              LoRA, bs=8, bf16       40G  13.4G  26.6G        401
 ```
 
 **第一，这两行不是同一个配置下的两个点，不能拿来插值。** 反解出的序列长度一个是 139、一个是 401，差 2.9 倍。这两行还同时换了精度（fp16 → bf16）和硬件（4090 → A100）—— 所以差额不能只记在序列长度头上。但至少能确定：**拿那张表在两个 batch 之间做线性外推是会错的**，因为除了 batch，还有别的东西在动。这也正是"这张表不是量出来的"的一条旁证。

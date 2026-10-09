@@ -4,11 +4,10 @@
 
 MotionScape 是**真实拍摄**的无人机第一人称视频基准，用途是**评测**世界模型与未来视频生成——不是训练用的数据集。它给 228 段固定长度的片段、每段配语义标注与运动强度分级，再用一套统一协议去量各种生成模型的输出质量。
 
-> **本指南的可复现边界（2026-10）**
+> **本指南的可复现边界**
 > - **能跑通的**：仓库克隆、源视频重建、运动分层、语义标注。这几步只要有 Python、ffmpeg 和网络就能做，**不需要 GPU**。
 > - **跑不动的**：基线推理与 FVD。五个基线里最小的是 Cosmos-Predict2.5-**2B**，最大的是 MAGI-1-**24B**，加一个独立的 TensorFlow 环境算 I3D-FVD。**8 GB 显存的机器到运动分层为止。**
 > - **一个绕不开的限制**：原作者**不分发原视频**（README 原文：*"The original audiovisual content is not redistributed"*）。你拿到的是元数据与标注，视频要按 manifest 里的 URL 自己去抓。源被下架，对应样本就重建不出来。
-> - **本指南早先的版本几乎每一处具体规格都是错的**：说它有「6-DoF 轨迹」、总时长「数十小时」、视频编码是 H.264、每段「30 秒–5 分钟」、还给了 `.npz` 轨迹文件与 `MotionScapeDataset` 类。这些在发布里**一项都不存在**。本版按仓库 README、manifest 与论文原文重写，改动处留 `> **勘误（2026-10）**`。
 
 ---
 
@@ -54,16 +53,13 @@ MotionScape 是**真实拍摄**的无人机第一人称视频基准，用途是*
 
 它也**不给位姿**。没有相机轨迹、没有 GPS/IMU 真值，能评的是**生成得像不像、动力学对不对**，不能评定位精度——这一点在设计下游任务时会先撞上。
 
-> **勘误（2026-10）**：本节早先写「面向无人机世界模型训练的大规模运动场景数据集」，核心特点列了「**6-DoF 轨迹**：完整的位置和姿态信息」，统计表里写「总视频时长 **数十小时**」「帧率 30 FPS」「轨迹精度 6-DoF（位置 + 姿态）」「场景类型 城市/郊区/森林/沙漠/水上」「光照 白天/黄昏/夜晚」。
-> **「6-DoF 轨迹」整块是编的。** 发布的全部内容是：帧图像、`source_manifest.json`、`annotations/`、`dynamicity_buckets.json`——**没有任何 position/orientation 轨迹文件**。时长也不是数十小时而是 228 × 275 / 29.97 ≈ **34.9 分钟**（论文给的正是这个数）。「城市/森林/沙漠/水上」「白天/黄昏/夜晚」这两组枚举同样查不到：`weather` 与 `environment` 是**自由文本**字段，实际值形如 `Sunny | Park with buildings`、`Overcast | Urban parking structure`。
-
 ---
 
 ## 2. 仓库与数据获取
 
 ### 2.1 仓库结构
 
-真实顶层（比早先版本短得多，但每一个目录都有用）：
+真实顶层（每个目录都有用）：
 
 ```text
 MotionScape/
@@ -97,9 +93,6 @@ MotionScape/
     └── clip_assisted_inspection.txt
 ```
 
-> **勘误（2026-10）**：本节早先给的结构是 `scripts/{download_dataset.sh, preprocess.py, visualize.py, evaluate_trajectory.py}`、`src/{dataset.py, transforms.py, utils.py}`、`configs/default.yaml`、`examples/{load_data.py, visualize_sample.py}`。
-> **一个都不存在。** 真实顶层只有 README 里写明的六个目录：`reconstruction/`、`motion_stratification/`、`annotation/`、`evaluation/`、`inference/`、`prompts/`。早先版本里出现的 `scripts/verify_checksums.py`、`scripts/preprocess.py`、`scripts/extract_features.py`、`scripts/visualize.py`、`examples/visualize_sample.py`、`src.dataset.MotionScapeDataset` 全部随之作废。
-
 ### 2.2 环境准备
 
 ```bash
@@ -125,7 +118,7 @@ python reconstruction/download_sources.py \
   --output-dir /path/to/MotionScape_raw
 ```
 
-> **旧版指南给的两条下载命令都不成立**：`bash scripts/download_dataset.sh` 那个脚本不存在；`huggingface-cli download --repo-type dataset Thelegendzz/MotionScape` 下到的也只是标注，**没有视频**——发布方明确不分发视听内容，版权与可用性仍归源平台与版权方。
+> **下载**：仓库里没有 `scripts/download_dataset.sh`；`huggingface-cli download --repo-type dataset Thelegendzz/MotionScape` 下到的也只是标注，**没有视频**——发布方明确不分发视听内容，版权与可用性仍归源平台与版权方。
 
 `download_sources.py` 按 manifest 记录的**分辨率、标称帧率、编码**去选流，并且会在记录的流不可用时**直接报错，而不是悄悄换一个编码**。可选参数里比较有用的是 `--proxy`、`--cookies-from-browser`、`--limit`、`--dry-run`。**已存在的源文件不会被覆盖。**
 
@@ -164,7 +157,7 @@ python reconstruction/download_sources.py \
 | `resolution` | 3840×2160 **170** · 1920×1080 **43** · 2560×1440 **12** · 3840×1634 2 · 7680×3268 1 |
 | `fps`（源） | 30/1 **92** · 30000/1001 **50** · 50/1 **40** · 60/1 **34** · 60000/1001 **12** |
 
-这张表解释了两件事。**一是「编码是 H.264」不成立**：H.264 只占 39/228，主力是 VP9。**二是源帧率很杂**（30 / 29.97 / 50 / 60 / 59.94），统一到 29.97 是重建阶段做的重采样，不是源本身就整齐。
+这张表解释了两件事。**一是编码不只有 H.264**：H.264 只占 39/228，主力是 VP9。**二是源帧率很杂**（30 / 29.97 / 50 / 60 / 59.94），统一到 29.97 是重建阶段做的重采样，不是源本身就整齐。
 
 `start_s` 是**每段在源视频时间轴上的定点**（例如 `44.0`、`15.047`），不是随机取。
 
@@ -196,8 +189,6 @@ MotionScape_reconstructed/
 ```
 
 最后一步会**校验帧数正是 275 / 200 / 75**，对不上就报错。评测时 `--gt-dir` 指的就是 `last_75_videos`。
-
-> **勘误（2026-10）**：本节早先描述了三类文件。**（一）轨迹**：说 `data/trajectories/scene_00X/flight_0X.npz` 里存 `position / orientation / velocity / angular_velocity / timestamp / frame_indices` 六个数组。**没有这种文件，也没有这些字段**。**（二）描述 JSON**：说有 `scene_description / flight_intent / segment_descriptions / weather / time_of_day`。真实标注只有 `sample_id / weather / environment / caption` 四个字段。**（三）视频目录**：说视频按 `videos/scene_00X/flight_0X.mp4` 组织、编码 H.264、每段 30 秒–5 分钟。真实是**每段固定 275 帧 ≈ 9.2 秒**，编码以 VP9 为主。三处都是照着一个「无人机数据集应该长什么样」的模板写出来的。
 
 ---
 
@@ -248,9 +239,6 @@ python -m motion_stratification.compute_motion_strata \
 最终 228 段的分档是 **Low 75 / Medium 75 / High 78**。
 
 > 一个反直觉的地方：降采样到「每 3 帧取 1」后，等效帧率只有约 9.99 FPS。**分层的分辨率与帧率都比评测时低得多**——这是刻意的，运动强度只需要一个相对排序，不需要精细的流场。
-
-> **勘误（2026-10）**：本节早先给的「预处理」是 `python scripts/preprocess.py --target_resolution 1280x720 --target_fps 15` 与 `python scripts/extract_features.py --feature_type "optical_flow"`，以及一个从仓库导入的 `MotionScapeDataset(data_dir, split, context_length=5, prediction_length=10, resolution="720p", include_language=True)`。
-> **这两个脚本和这个类都不存在。** 仓库里做运动分析的是 `motion_stratification/compute_motion_strata.py` 与 `motion_scoring.py`，参数如上表（854×480、每 3 帧取 1、Farnebäck 光流、75 分位），与「720p / 15 fps / 特征提取」无关。另外「500 GB+ 磁盘建议」也没有出处：真实数据量是 228 段 4K 片段加 67 个源视频，具体占用取决于你按 `format_selector` 抓下来的版本。
 
 ---
 
@@ -424,7 +412,7 @@ ffmpeg -version && ffprobe -version    # 两个都要有
 
 2. **分层的分辨率**：运动分层把帧缩到 854×480、每 3 帧取 1，等效约 9.99 FPS。评测时的图像处理却是 1280×704、各模型原生帧率。**为什么两处的分辨率差这么多还能用同一套分层结果？**
 
-3. **旧版残留**：早先的指南让你跑 `python scripts/preprocess.py --target_resolution 1280x720`。按本版给出的真实仓库结构，这个「降分辨率」的需求应该落在哪一步、由谁负责？
+3. **步骤归属**：仓库里没有 `scripts/preprocess.py`。按上面给出的真实仓库结构，降低分辨率这个需求应该落在哪一步、由谁负责？
 
 4. **FVD 的口径**：为什么 FVD 要在每个运动档内把片段嵌入**合起来比一次**，而不是算每个片段的 FVD 再平均？这两种算法在什么情况下会给出一致的结论？
 

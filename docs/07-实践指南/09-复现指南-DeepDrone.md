@@ -81,8 +81,6 @@ ollama pull llama3.1
 
 `drone/config.py` 里 `llama3.1` 这条的 `provider="ollama"`、`base_url="http://localhost:11434"`，Ollama 这条链路**不走 LiteLLM**（`drone/llm_interface.py` 里对 `provider == "ollama"` 单独走直连客户端）。
 
-> **勘误（2026-10）**：本节早先写了两条「方式」——`export OPENAI_API_KEY` 后 `python main.py`，以及改 config 里的 `base_url` 后 `python main.py`。**仓库里没有 `main.py`**，入口是 `run.py`，而且并不是「先设环境变量再跑一个 CLI」，而是**跑起 Web 界面后在里面选提供商与机型**（`python3 run.py` → http://localhost:8000 → Settings）。早先只提了 OpenAI 与 Ollama 两家，漏掉了 Anthropic 与 Google（三家都经 LiteLLM）；`ollama pull` 的模型名也与 `config.py` 预置的不一致（预置的是 `llama3.1`，不是 `llama3`）。
-
 ---
 
 ## 核心架构
@@ -105,8 +103,6 @@ ollama pull llama3.1
 - `static/` — Web UI（HTML/CSS/JS）
 - `tools/` — 辅助脚本（启动器、仿真器、Webots 测试）
 - `misc/` — 遗留脚本
-
-> **勘误（2026-10）**：本节早先的关键文件里写了 `main.py`（主入口）与 `prompts/`（Prompt 模板，定义 LLM 可调用的飞行动作）。**这两个路径都不存在**：仓库顶层只有 `run.py`，没有 `prompts/` 目录，也没有单独的 prompt 模板文件——工具定义在 `drone/function_tools.py` 与 `drone/drone_tools.py` 里。那张清单是照「一个 LLM Agent 项目大概长什么样」写的。
 
 ---
 
@@ -172,7 +168,7 @@ ollama pull llama3.1
 
 2. 两条路共用一个入口：都是装完依赖跑 `python3 run.py`，然后**在 Web 界面（http://localhost:8000）的 Settings 里选提供商**。云端那条选 OpenAI / Anthropic / Google，Key 从环境变量来，统一经 LiteLLM 转发；本地那条选 Ollama，模型在 `drone/config.py` 里登记（`base_url="http://localhost:11434"`，预置模型 `llama3.1`），这条链路不走 LiteLLM。完全不依赖云端走本地 Ollama 那条。安装步骤两条路相同：`pip3 install -r requirements.txt`。
 
-3. 文档指向工具定义，让检查其中的函数描述是否清晰（真实位置是 `drone/function_tools.py` 与 `drone/drone_tools.py`，不是早先写的 `prompts/`）。因为整条链路靠 Function Calling 把 LLM 输出解析成飞行动作，工具定义含糊，模型就更容易给出解析不了的动作描述。
+3. 文档指向工具定义，让检查其中的函数描述是否清晰（真实位置是 `drone/function_tools.py` 与 `drone/drone_tools.py`，仓库顶层没有 `prompts/` 目录）。因为整条链路靠 Function Calling 把 LLM 输出解析成飞行动作，工具定义含糊，模型就更容易给出解析不了的动作描述。
 
 4. 有道理。这一步同时压住了 FAQ 里排前两位的失败点——"API 调用失败"（Key 与网络）和"LLM 输出格式错误"（工具定义与模型对不上）。先用最简动作集把提供商接入与函数调用两环打通，之后换 provider 或机型时，行为变化才能归因到模型，而不是被配置问题污染。
 

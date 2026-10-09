@@ -38,8 +38,6 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2406.10100-b31b1b.svg)](https://arxiv.org/abs/2406.10100) [![GitHub](https://img.shields.io/badge/GitHub-SkySenseGPT-181717.svg?logo=github)](https://github.com/Luo-Z13/SkySenseGPT) · 武汉大学 · 推荐度 ★★☆
 
-> **勘误（2026-10）**：本卡片早先写的机构是「深圳大学」。arXiv:2406.10100 正文署名为 Wuhan University（武汉大学）。
-
 ---
 
 ## 4. EarthGPT — 多传感器遥感理解
@@ -109,8 +107,6 @@
 4. 工具使用（tool utilization）
 5. 任务规划（task planning）
 6. 动作生成（action generation）
-
-> **勘误（2026-10）**：本卡片早先的六项是「语义感知 / 空间感知 / 运动控制 / 任务理解 / 规划推理 / 安全约束」，其中**后三项原文里没有**。arXiv:2505.18229 原文写的是 *"six core sub-skills: semantic perception, spatial perception, motion control, tool utilization, task planning and action generation"*，已按原文改正。
 
 ---
 

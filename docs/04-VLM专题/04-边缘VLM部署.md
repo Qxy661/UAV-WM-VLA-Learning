@@ -18,8 +18,6 @@ VLM 通常包含数十亿参数，需要强大的 GPU 进行推理。然而，�
 
 > **口径说明**：算力一行两侧单位不同——云侧是 **FP16 稠密 TFLOPS**，边侧是 **INT8 稀疏 TOPS**（NVIDIA 对 Jetson Orin 的官方口径）。INT8 相对 FP16 大约有 2 倍吞吐，稀疏又再翻一倍，所以「约 3–8x」只是个量级，不要当精确比值用。**跨口径直接比大小是这一行最容易出错的地方。**
 
-> **勘误（2026-10）**：本行早先写作「0.5-20 TFLOPS (Jetson)」，与第 6.1 节同一份文档里的「Orin NX = 100 TOPS」互相打架，且没标 INT8/FP16 与稀疏/稠密口径。已按官方口径统一并加注。
-
 边缘部署 VLM 的核心动机：
 
 1. **低延迟**：实时应用（避障、跟踪）需要毫秒级响应
@@ -117,7 +115,7 @@ VLM 包含视觉编码器和语言模型两个主要组件，剪枝策略需要�
 | INT8 | 0.25x | 3-4x | 97-99% | 边缘推理 |
 | INT4 | 0.125x | 5-8x | 93-97% | 极端压缩 |
 
-> **注意（2026-10）**：**前两列（模型大小、推理速度）是确定的算术与硬件事实**——模型大小 = 位宽比，推理速度随硬件与算子支持变化。**后两列（精度保持）是经验区间，没有统一来源**，不应作为选型依据。本卷第 9 节的动手验证正是要说明这一点：在可分辨的任务上，「精度保持 97-99%」这类数字**根本量不出来**，不同任务、不同标定集能差出十几个点。要判断某一档能不能用，只能拿你自己的任务集测——这张表能告诉你的只有「INT8 的权重占地是 FP16 的一半」这种算术。
+> **注意**：**前两列（模型大小、推理速度）是确定的算术与硬件事实**——模型大小 = 位宽比，推理速度随硬件与算子支持变化。**后两列（精度保持）是经验区间，没有统一来源**，不应作为选型依据。本卷第 9 节的动手验证正是要说明这一点：在可分辨的任务上，「精度保持 97-99%」这类数字**根本量不出来**，不同任务、不同标定集能差出十几个点。要判断某一档能不能用，只能拿你自己的任务集测——这张表能告诉你的只有「INT8 的权重占地是 FP16 的一半」这种算术。
 
 #### VLM 量化的挑战
 
@@ -170,8 +168,6 @@ graph TB
 **论文**: *Edge-Optimized Multimodal Learning for UAV Video Understanding via BLIP-2*（DMBD 2025）
 **arXiv**: [2601.08408](https://arxiv.org/abs/2601.08408)
 
-> **勘误（2026-10）**：本节题名早先写作 *"Edge-Optimized BLIP-2: A Lightweight Multimodal Platform for UAV Applications"*，这不是该 arXiv 号的题名。原文题名是 *"Edge-Optimized Multimodal Learning for UAV Video Understanding via BLIP-2"*，发表于 DMBD 2025（**2025 年**，不是 2026）。
-
 #### 核心做法
 
 这篇论文**不做架构替换**。它保留原版 BLIP-2（冻结视觉编码器 + Q-Former + LLM），在**外面挂两个检测器**（YOLO-World 与 YOLOv8-Seg）来补上无人机视频里小目标与实例分割的短板。
@@ -190,13 +186,9 @@ graph LR
     F --> G[描述 / 问答 / 检测结果]
 ```
 
-> **勘误（2026-10）**：本节早先有一张「原始 BLIP-2 → Edge-Optimized」的组件压缩表（`ViT-G/14 1.9B → EfficientViT-L 0.3B`、`Q-Former 188M → Lite-Q-Former 32M`、`FlanT5-XL 3B → TinyLLaMA-1.1B`、总计 `~5.1B → ~1.4B`）与配套的架构对比图、关键优化技术表（EfficientViT / Lite-Q-Former / INT8 / 稀疏注意力）。**这些压缩方案论文里一项都没有**：全文零次出现 `EfficientViT`、`TinyLlama`、`FlanT5`、`INT8`、`Lite-Q-Former`、`1.4`。已整段删除。
-
 #### BLIP-2 基线的真实规模
 
 若要对照原版 BLIP-2 的体量，应按 BLIP-2 原文（arXiv:2301.12597）表 2：`ViT-g + FlanT5-XL` 配置**总参数约 4.1B**，其中 Q-Former 188M、FlanT5-XL 约 3B，而 ViT-g/14 由差值反推约 **1.0B**。
-
-> **勘误（2026-10）**：本段早先写的是「ViT-G/14 (1.9B)」与「总计 ~5.1B」。两个数都不对：BLIP-2 原文给的是 **4.1B**，ViT-g/14 约 **1.0B**。1.9B 这个数疑似是 BEIT-3 的参数被记串了。Q-Former = 188M 一项与原文相符。
 
 #### 论文自报的开销
 
@@ -206,16 +198,12 @@ graph LR
 
 论文只有两张表——Table 1 是「载入 / 速度 / 显存 / GPU 占用」的消融，Table 2 是 LVIS minival 上的零样本检测 AP。
 
-> **勘误（2026-10）**：本节早先有一张「部署性能」表（`Jetson Orin NX 85ms / 4.2GB / 15W`、`Jetson AGX Orin 42ms`、`Jetson Nano 320ms`、`Raspberry Pi 5 850ms`）和一张「精度对比」表（CIDEr 121.4→112.8 保持率 92.9%、VQA 78.2%→72.6% 等）。**两张表都不存在**：论文全文零次出现 `Jetson`、`Orin`、`Raspberry`、`FPS`、`CIDEr`、`SPICE`、`BLEU`，没有毫秒级延迟表，也没有 VQA 精度表。两张表已删除。原「部署性能」一列的数字与论文自报的 17GB 相差约 4 倍——**这篇论文不能用来支持「BLIP-2 能跑在 Jetson 上」这个判断**。
-
 ---
 
 ### 4.2 AVION — 遥感视觉-语言模型的提示微调式蒸馏
 
 **论文**: *AVION: Aerial Vision-Language Instruction from Offline Teacher to Prompt-Tuned Network* (CVPR 2026)
 **arXiv**: [2603.12659](https://arxiv.org/abs/2603.12659)
-
-> **勘误（2026-10）**：本节题名早先写作 *"AVION: Adaptive Vision-Language Distillation for Remote Sensing"*。原文题名是 *"AVION: Aerial Vision-Language Instruction from Offline Teacher to Prompt-Tuned Network"* —— 论文自述缩写为 **Aerial Vision–Language InstructiON**，不是文档重新解释的那个词。会议 CVPR 2026 一项无误。
 
 #### 核心思路
 
@@ -229,8 +217,6 @@ AVION 的框架确实是「冻结的大 teacher → 轻量 student」，但**「
 | Student | GeoRSCLIP (ViT-B/32) + 可学习 deep prompt（约 98K 参数，<1% backbone） |
 | 蒸馏策略 | LLM 生成文本原型 + 选择性原型聚合 + 三方面对齐（Tri-Aspect Alignment） |
 | 适用任务 | 遥感分类与跨模态检索的 PEFT 适配 |
-
-> **勘误（2026-10）**：本表早先是「Teacher 大规模遥感 VLM (7B+) / Student 轻量级模型 (0.5-1B) / 自适应多层次蒸馏 / 目标平台 Jetson 系列、手机端」。前两行与原文不符（全文零次出现 `7B`、`billion`）；第四行是**凭空的边缘硬件**——全文零次出现 `Jetson`、`phone`，这篇论文做的是遥感分类/检索，**不涉及任何边缘硬件**，把它当作边缘部署案例是本节的错位。
 
 #### 蒸馏架构
 
@@ -258,8 +244,6 @@ graph TB
 
 论文原句：*"we set the final weights to λ_img = 0.5, λ_text = 0.5, and λ_logit = 1.0 ... The distillation temperature τ is fixed at 2"*。
 
-> **勘误（2026-10）**：本节早先有一段 `MetaLearner(student_performance)` 的伪代码和一句「AVION 的核心创新在于自适应学习蒸馏权重」。**论文的权重是手设常数**，`MetaLearner` / `meta-learn` 只在相关工作里点评别人的方法（MVP），不是本文机制。已删除。
-
 #### 论文报告的真实增幅
 
 这篇的提升落在分类与检索指标上，量级是「几个百分点」，不是两位数百分比：
@@ -271,8 +255,6 @@ graph TB
 | RESISC-45 | 准确率 | +5.46% / +2.88% |
 
 论文原句：*"AVION improves mR by +1.11 pp (RSITMD) and +0.93 pp (RSICD)"*。
-
-> **勘误（2026-10）**：本表早先是「多尺度特征对齐 → 小目标检测提升 8%」「光谱感知蒸馏 → 多光谱理解提升 12%」「空间关系蒸馏 → 空间推理提升 6%」。**三项优化不存在**，论文零次出现 `12%`，任务也不是检测/多光谱/空间推理。已按论文真实指标替换。
 
 ---
 
@@ -286,8 +268,6 @@ graph TB
 在真实无人机上测试 VLM 部署方案成本高、风险大。CARLA-Air 把 CARLA 的**高保真城市驾驶仿真**与**物理精确的多旋翼飞行**统一到同一个世界里，为 air-ground 具身智能提供一套仿真基础设施。
 
 论文原句：*"unifies high-fidelity urban driving and physics-accurate multirotor flight"*；覆盖的工作负载是 *"cooperation, embodied navigation and vision-language action, multi-modal perception and dataset construction"*。
-
-> **勘误（2026-10）**：本段早先写的是「可以在虚拟环境中评估 VLM 的**部署效果**」。CARLA-Air 不是评测 VLM 部署效果的平台，它是**仿真基础设施**——其中一项用途是给 VLA 生成数据（`vision-language action`、`dataset construction`），而不是评测已经部署好的 VLM。
 
 #### 平台架构
 
@@ -343,11 +323,7 @@ CARLA-Air 的性能评估只有三项：
 
 论文原句：*"three experiments: frame-rate and resource scaling ..., memory stability under sustained operation ..., and communication latency"*。
 
-> **勘误（2026-10）**：本表早先是五个「评测维度」——「推理性能（ms/FPS/GB）」「任务精度（mAP/CIDEr/Acc）」「能耗效率（功耗、电池续航）」「鲁棒性（不同天气、光照的精度下降率）」「实时性」。**五项都不在论文里**：全文零次出现 `CIDEr`、`VQA`、`battery`、`energy`，`power` 只在「GPU 功耗限制保持出厂默认」一句里出现一次。天气在论文里也不是精度维度，而是 14 个 preset 的**一致性校验**。已替换为论文实际的三项。
-
 #### 关于 Sim-to-Real
-
-> **勘误（2026-10）**：本节早先写「CARLA-Air 支持 Sim-to-Real 迁移测试」，并配了一张「仿真 → 性能评估 → 真实部署 → 真实环境验证」的流程图。**论文没有任何 sim-to-real 流程或迁移验证**：全文 `sim-to-real`、`sim2real`、`real world` 零命中，它的定位是**纯仿真基础设施**。最接近的一句只是泛论：*"Simulation is essential for advancing all three frontiers, as real-world deployment is costly, safety-critical, and difficult to scale."* 流程图已删除。
 
 ---
 
@@ -441,8 +417,6 @@ graph TB
 | Raspberry Pi 5 | 无 NPU；加 AI HAT+ 后 13 / 26 / 40 TOPS | 8GB | ~12W | $80（主板） | 轻量推理 |
 | 手机 NPU | 10–30 TOPS | 8–16GB | ~5W | — | 移动端 |
 
-> **勘误（2026-10）**：本表早先有三处价格/算力对不上官方口径 ——「Orin NX $699」（16GB 模组首发 **$599**，8GB 为 $399，没有 $699 这一档）、「Jetson Nano $149」（2019 发布价 **$99**，量产模组 $129）、「Raspberry Pi 5 ~2 TOPS」（**Pi 5 本体没有 NPU**，TOPS 数字全部来自可加装的 AI HAT+/AI Kit：13 TOPS Hailo-8L / 26 TOPS Hailo-8 / 40 TOPS Hailo-10H；裸机的 CPU 算力没有官方 TOPS 口径，`~2 TOPS` 找不到出处）。Orin NX / Orin Nano / Jetson Nano 三行的算力、内存、功耗本身无误。已按官方口径修正。
-
 ### 6.2 压缩技术选型
 
 | 需求 | 推荐技术 | 预期效果 |
@@ -518,8 +492,6 @@ graph TB
 
 
 ---
-
-> **勘误（2026-10）**：本表早先三行的题名与贡献都不对 ——「Edge-Optimized BLIP-2 | 2026 | 轻量化多模态平台，3.6x 压缩」（真实题名不同、年份是 2025、且**没有任何 3.6x 压缩**）、「AVION | CVPR 2026 | 自适应知识蒸馏」（题名错、也不是自适应蒸馏）、「CARLA-Air | 2026 | 仿真测试平台，Sim-to-Real 迁移」（**无 sim-to-real**）。已按各篇原文同步。
 
 ---
 
@@ -647,7 +619,7 @@ py -3.9 code/n_quant_bits.py    # 约 1 分 40 秒，CPU 即可，只需 torch
 
 ## 10. 动手验证：模型那一侧的账，换板子压不动
 
-4.1 节那张「部署性能」表已经删了（理由见该节勘误）。删掉它之后留下一个更有用的问题：**一个模型的显存占用里，哪些值换板子能变，哪些换了也带不走？**
+论文没有给出 Jetson 上的实测数据，4.1 节因此不给部署性能表。这里换一个更基本的问题：**一个模型的显存占用里，哪些值换板子能变，哪些换了也带不走？**
 
 先把能溯源的部分算清楚。BLIP-2 的 `ViT-g + FlanT5-XL` 配置共约 **4.1B** 参数（`arXiv:2301.12597` 表 2），权重单独一项在各精度下是：
 
@@ -661,11 +633,9 @@ py -3.9 code/n_quant_bits.py    # 约 1 分 40 秒，CPU 即可，只需 torch
 
 这张表只回答「权重放不放得进去」，不回答「跑不跑得动」。论文自己在离散 GPU 上量到的**峰值是约 17 GB**——权重按 fp16 只有 7.6 GB，多出来的约 9 GB 是激活、KV cache 和框架开销。**这一块换板子不会变小。**
 
-> **勘误（2026-10）**：本节早先的题名是「换平台，为什么内存那一列几乎不动？」，正文以一张「延迟 42→850 ms 差 20.2 倍、内存 4.2→3.5 GB 只差 1.20 倍」的对账为核心，结论是「要压内存只能动模型」。**那张输入表已整段删除（论文无此表）**，20.2 倍、1.20 倍、2.7–3.2 字节/参数、以及「4.2 GB 里约 1.6 GB 与权重无关」全部随之失效，已删除。上面这张按 BLIP-2 原文参数量自算的精度-占用表取而代之。
-
 ### 10.1 正确的读法
 
-把显存拆成两截看：**权重那一截是模型的属性**（换板子压不动，只能动精度或动结构）；**剩下那一截是运行时与任务规模的属性**（换板子同样压不动，只能动序列长度和 batch）。两张表里唯一能靠「换硬件」改变的是**延迟本身**，而延迟恰恰是本卷三篇论文都没有测的东西——所以 4.1 节原表把一列没测过的延迟和一列拼出来的内存并排放，问题不在数字大小，在于**两列都不可溯源**。
+把显存拆成两截看：**权重那一截是模型的属性**（换板子压不动，只能动精度或动结构）；**剩下那一截是运行时与任务规模的属性**（换板子同样压不动，只能动序列长度和 batch）。而能靠「换硬件」改变的只有**延迟本身**，延迟恰恰是本卷三篇论文都没有测的东西——这也正是 4.1 节不给部署性能表的原因：论文没有端侧的延迟与内存数字，任何把两者并排的对比都无源可溯。
 
 ### 10.2 这笔账怎么算出来
 
@@ -718,8 +688,6 @@ py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torch
 
 </details>
 
-> **勘误（2026-10）**：本题早先的题干是「Edge-Optimized BLIP-2 将模型从 5.1B 压缩到 1.4B，精度保持率约 92%，这个精度损失是否可以接受？」。**前提全部不成立**：论文没有做任何模型压缩，5.1B→1.4B 与 92% 保持率都无来源，`CIDEr`/VQA 精度表也不存在。整道题已改成一个可以用论文真数字回答、且能练出「不越界推论」能力的问题。
-
 ### 题目 2：AVION 的蒸馏权重是手设常数（λ_img=0.5、λ_text=0.5、λ_logit=1.0，τ=2），不是学出来的。什么情况下值得改成自适应权重，什么情况下不值得？
 
 <details>
@@ -740,8 +708,6 @@ py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torch
 **关键判据**：先问「这套常数是不是已经在多个数据集上都成立」。AVION 的答案是「是」——那就说明这一层的任务**不需要**自适应，加机制只是加复杂度。
 
 </details>
-
-> **勘误（2026-10）**：本题早先的题干建立在「AVION 的核心创新在于自适应学习蒸馏权重」之上，答案也在比较「自适应蒸馏 vs 手动调参」。**论文的权重是固定常数**，`MetaLearner` / `meta-learn` 只在相关工作里点评别人的方法。题干与答案已重写。
 
 ### 题目 3：设计一个无人机 VLM 边缘部署方案，需要考虑哪些关键因素？画出系统架构图。
 
