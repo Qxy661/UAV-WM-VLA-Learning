@@ -1,30 +1,35 @@
 # UAV World Model & VLA & VLM Learning
 
 <p align="center">
-  <b>无人机领域的世界模型、视觉语言动作模型(VLA)、视觉语言模型(VLM) — 从认知到理解的完整学习项目</b>
+  <a href="README.md">中文</a> | <a href="README.en.md">English</a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/学习文档-59-blue" alt="学习文档">
-  <img src="https://img.shields.io/badge/论文覆盖-195-green" alt="论文覆盖">
-  <img src="https://img.shields.io/badge/可运行demo-24-orange" alt="demo">
-  <img src="https://img.shields.io/badge/正文-约28万字-red" alt="字数">
-  <img src="https://img.shields.io/badge/许可证-MIT-yellow" alt="许可证">
-  <img src="https://img.shields.io/badge/最后更新-2026--10--09-lightgrey" alt="最后更新">
+  <img src="figures/hero.png" alt="世界模型 · VLA · VLM 学习库 —— 面向无人机与具身智能" width="840">
 </p>
 
 <p align="center">
-  <a href="https://arxiv.org/abs/2605.00080"><img src="https://img.shields.io/badge/arXiv-2605.00080-b31b1b.svg" alt="arXiv"></a>
-  <a href="https://github.com/NTUMARS/Awesome-World-Model-for-Robotics-Policy"><img src="https://img.shields.io/badge/参考%20仓库-Awesome%20World%20Model-181717.svg?logo=github" alt="参考仓库"></a>
+  <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning/stargazers"><img src="https://img.shields.io/github/stars/Qxy661/UAV-WM-VLA-Learning?style=social&label=Star" alt="Star"></a>
+  <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning/network/members"><img src="https://img.shields.io/github/forks/Qxy661/UAV-WM-VLA-Learning?style=social&label=Fork" alt="Fork"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/Qxy661/UAV-WM-VLA-Learning?color=yellow" alt="License"></a>
+  <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning/commits/main"><img src="https://img.shields.io/github/last-commit/Qxy661/UAV-WM-VLA-Learning" alt="Last commit"></a>
+</p>
+
+<p align="center">
   <a href="docs/00-导读与学习路线.md"><img src="https://img.shields.io/badge/从这里开始-导读与学习路线-0A66C2.svg" alt="导读"></a>
+  <a href="references/paper-list.md"><img src="https://img.shields.io/badge/论文清单-195%20篇-b31b1b.svg" alt="论文清单"></a>
+  <a href="https://arxiv.org/abs/2605.00080"><img src="https://img.shields.io/badge/arXiv-2605.00080-b31b1b.svg" alt="arXiv"></a>
 </p>
 
 <p align="center">
   <a href="#项目简介">简介</a> •
+  <a href="#这个仓库有什么不一样">有什么不一样</a> •
+  <a href="#快速开始">快速开始</a> •
   <a href="#学习路线">学习路线</a> •
   <a href="#文档目录">目录</a> •
   <a href="#核心论文">论文</a> •
   <a href="#可运行代码">代码</a> •
+  <a href="#路线图">路线图</a> •
   <a href="#引用">引用</a> •
   <a href="CONTRIBUTING.md">贡献</a>
 </p>
@@ -35,18 +40,20 @@
 
 ## 项目简介
 
-> 当无人机学会"看"、"说"、"想"、"飞" — 它就不再只是飞行器，而是一个空中智能体。
+> 世界模型、VLA、VLM 是当下具身智能的三块地基。本项目把它们讲成一条能从头走完的路径，无人机作为贯穿始终的专章。
 
-本项目是一个**面向无人机领域的 VLA/VLM/世界模型综述学习项目**，基于以下核心参考资料：
+这是一个**通用的「世界模型 / VLA / VLM」学习库**：主干是通用方法与论文脉络，无人机不是一个孤立小节，而是几乎每一卷都留了一章。选无人机做专章不是缩小范围——空中恰是最严苛的具身场景（4 维动作、坠机不可逆、机载算力受限），通用方法在这里的失效点最能说明它们各自的边界。
+
+主要参考：
 
 - [arXiv:2605.00080](https://arxiv.org/abs/2605.00080) — *"World Model for Robot Learning: A Comprehensive Survey"*（43 页，6 图，2026 年最新综述）
 - [NTUMARS/Awesome-World-Model-for-Robotics-Policy](https://github.com/NTUMARS/Awesome-World-Model-for-Robotics-Policy) — 机器人策略学习世界模型论文合集
 
-**本项目的独特价值**：
+**这个仓库的独特价值**：
 
 | 维度 | 说明 |
 |------|------|
-| **聚焦无人机** | 不是通用机器人，专门针对 UAV/无人机领域的 VLA、VLM、世界模型 |
+| **通用为骨、无人机为肉** | 主干是通用的世界模型/VLA/VLM 方法与论文脉络，无人机作为专章贯穿 9 卷 |
 | **保姆级教学** | 每篇文档配有阅读时间、前置知识、核心内容、思考题与参考答案，适合零基础入门 |
 | **认知优先，代码可选验证** | 主线是把原理、架构、演进脉络和论文思想讲清楚；关键结论另配**可运行的迷你 demo**（[`code/`](code/)），跑不跑都不影响阅读 |
 | **系统化梳理** | 从基础概念到前沿论文，从理论到实践指南，完整学习路径 |
@@ -68,11 +75,52 @@ VLM (视觉语言模型)          VLA (视觉语言动作模型)        World Mo
 
 ---
 
+<a id="这个仓库有什么不一样"></a>
+
+## 这个仓库有什么不一样
+
+> 论文列表类仓库很多。本仓库想多做四件事：**能跑、能核、能追、能自测**。
+
+| 资产 | 说明 |
+|------|------|
+| **24 个纯 CPU 可跑 demo** | 全部不训模型、不占显存、两分钟内出图；每个只验证正文里的一条结论，量不出来时直接写「不作为结论」。见下方 [可运行代码](#可运行代码)。 |
+| **可复现的引用纪律** | [`tools/check_citations.py`](tools/check_citations.py) 把全仓 arXiv 号逐条对官方 API 核对标题，结果落在 [`references/citation-audit.md`](references/citation-audit.md)。 |
+| **三卷前沿增量台账** | [`tools/watch.py`](tools/watch.py) 按月对世界模型 / VLA / VLM 三卷做增量检索，产出 [`references/*-watch-2026-10.md`](references/vla-watch-2026-10.md)。 |
+| **三卷自测** | [`docs/09-专题自测与考察/`](docs/09-专题自测与考察/)：正文只给指针、答案不许脱离材料，末尾是跨篇综合题。 |
+| **诚实的硬件边界** | 所有数字来自实跑；硬件上限是单张 8 GB 显卡，因此本仓库不训大模型，只讲跑得动的部分。 |
+
+**正文里的结论，长这样**（每张图都出自 `code/` 下一个能重跑的脚本）：
+
+<table>
+  <tr>
+    <td align="center"><img src="figures/g_metrics.png" width="290"><br><sub>七个导航指标排出七套名次</sub></td>
+    <td align="center"><img src="figures/m_exposure_bias.png" width="290"><br><sub>喂自己的输出，第 60 步误差是第 1 步的 1084 倍</sub></td>
+    <td align="center"><img src="figures/o_budget.png" width="290"><br><sub>显存预算：三项精确算术 + 一项实测</sub></td>
+  </tr>
+</table>
+
+---
+
+<a id="快速开始"></a>
+
+## 快速开始
+
+```bash
+git clone https://github.com/Qxy661/UAV-WM-VLA-Learning.git
+cd UAV-WM-VLA-Learning
+py -3.9 code/a_worldmodel_rssm.py     # 纯 CPU，数秒出图到 figures/
+```
+
+Windows 用 `py -3.9`，macOS / Linux 换成 `python3`。24 个 demo 都只依赖 `numpy` + `matplotlib`。
+只想读不想跑：直接进 [导读与学习路线](docs/00-导读与学习路线.md)。
+
+---
+
 <a id="学习路线"></a>
 
 ## 学习路线
 
-> 从零基础到能读懂前沿论文的九阶段路线；每阶段约 1–2 周，但不必按序走完才开始自测。
+> 从零基础到能读懂前沿论文的七阶段路线；每阶段约 1–2 周，但不必按序走完才开始自测。
 
 建议按以下顺序阅读，每阶段约 1-2 周：
 
@@ -356,7 +404,7 @@ graph TD
 
 > 两种用法：想入门就按顺序读，只想解决某个具体问题就按需跳读。
 
-### 快速开始
+### 阅读起步
 
 1. 阅读 [00-导读与学习路线](docs/00-导读与学习路线.md) 了解整体结构
 2. 从 [基础概念](docs/01-基础概念/) 开始建立认知框架
@@ -406,6 +454,18 @@ graph TD
 | [Demo S：世界模型当数据源](code/s_wm_data_source.py) | 单步 0.0058 m 的模型开环 60 步放大 16.1 倍；想象数据先救的是训崩的种子，不是均值 |
 
 完整对应表与运行说明见 [`code/README.md`](code/README.md)。
+
+---
+
+<a id="路线图"></a>
+
+## 路线图
+
+- [x] 59 篇文档、195 篇论文清单、24 个可跑 demo、28.7 万字
+- [x] 三卷前沿增量台账（2026-10）
+- [ ] 文档站 + 中文全文检索（mkdocs-material）
+- [ ] 英文门面（`README.en.md` + 英文文档总览）
+- [ ] 引用存档 DOI
 
 ---
 
