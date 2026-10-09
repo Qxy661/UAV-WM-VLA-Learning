@@ -30,7 +30,7 @@ MD = re.compile(r'[^\s:\'"]+\.md')
 
 def expected_files():
     """仓库里应该出现在站点上的 .md（相对仓库根）。"""
-    files = {'README.md', 'CONTRIBUTING.md'}
+    files = {'README.md', 'README.en.md', 'CONTRIBUTING.md', 'CHANGELOG.md'}
     for pat in ('docs/**/*.md', 'references/*.md', 'mindmaps/*.md', 'code/README.md'):
         files.update(glob.glob(pat, recursive=True))
     return {f.replace(os.sep, '/') for f in files}

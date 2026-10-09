@@ -16,12 +16,14 @@
 </p>
 
 <p align="center">
+  <a href="https://qxy661.github.io/UAV-WM-VLA-Learning/"><img src="https://img.shields.io/badge/在线文档-mkdocs--material-0A66C2.svg" alt="在线文档"></a>
   <a href="docs/00-导读与学习路线.md"><img src="https://img.shields.io/badge/从这里开始-导读与学习路线-0A66C2.svg" alt="导读"></a>
   <a href="references/paper-list.md"><img src="https://img.shields.io/badge/论文清单-195%20篇-b31b1b.svg" alt="论文清单"></a>
   <a href="https://arxiv.org/abs/2605.00080"><img src="https://img.shields.io/badge/arXiv-2605.00080-b31b1b.svg" alt="arXiv"></a>
 </p>
 
 <p align="center">
+  <a href="https://qxy661.github.io/UAV-WM-VLA-Learning/">在线文档</a> •
   <a href="#项目简介">简介</a> •
   <a href="#这个仓库有什么不一样">有什么不一样</a> •
   <a href="#快速开始">快速开始</a> •
@@ -113,6 +115,10 @@ py -3.9 code/a_worldmodel_rssm.py     # 纯 CPU，数秒出图到 figures/
 
 Windows 用 `py -3.9`，macOS / Linux 换成 `python3`。24 个 demo 都只依赖 `numpy` + `matplotlib`。
 只想读不想跑：直接进 [导读与学习路线](docs/00-导读与学习路线.md)。
+
+**在线阅读**：<https://qxy661.github.io/UAV-WM-VLA-Learning/> —— 全文检索（中文分词）、明暗双主题、mermaid 图渲染。
+GitHub Pages 在国内访问不稳，若打不开，clone 之后本地起站：`pip install "mkdocs-material==9.7.*" "mkdocs<2" jieba`
+再 `py -3.9 tools/build_docs.py && mkdocs serve`（详见 [CONTRIBUTING](CONTRIBUTING.md) 的「文档站」一节）。
 
 ---
 
@@ -463,9 +469,9 @@ graph TD
 
 - [x] 59 篇文档、195 篇论文清单、24 个可跑 demo、28.7 万字
 - [x] 三卷前沿增量台账（2026-10）
-- [ ] 文档站 + 中文全文检索（mkdocs-material）
-- [ ] 英文门面（`README.en.md` + 英文文档总览）
-- [ ] 引用存档 DOI
+- [x] 文档站 + 中文全文检索（mkdocs-material）：<https://qxy661.github.io/UAV-WM-VLA-Learning/>
+- [x] 英文门面（[`README.en.md`](README.en.md) + [英文文档总览](docs/en/index.md)）
+- [ ] 引用存档 DOI（Zenodo 集成待开）
 
 ---
 
