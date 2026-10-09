@@ -1,8 +1,13 @@
-# 03 - 复现指南：CognitiveDrone — 认知无人机数据采集与 4D 动作输出
+# 03 - 复现指南：CognitiveDrone — 认知任务的无人机 VLA 数据采集与基准
 
-> **预计阅读：12 分钟 | 前置知识：Docker 基本操作、Python 深度学习基础、ROS 基本概念**
+> **预计阅读：14 分钟 | 前置知识：Docker 基本操作、ROS 1 概念、Gazebo 仿真**
 
-CognitiveDrone 是一个面向认知无人机任务的数据采集与训练框架，通过 Docker 容器化部署简化环境配置，并使用 4D 动作输出（3D 位置 + 偏航角）实现更精确的飞行控制。
+CognitiveDrone 有两个部分，常被混为一谈：一篇**论文**（模型 + 基准），和一个**数据采集器仓库**。前者给出方法与数字，后者给出可运行的采集环境。分开看，这份指南才知道自己承诺了什么。
+
+> **本指南的可复现边界（2026-10）**
+> - **能复现的**：在 Gazebo + ArduPilot SITL 里搭起认知任务场景、采集并落盘飞行数据、按类别组织验证集。这些都有仓库文件与命令支撑。
+> - **不能复现的**：论文里 59.6% / 77.2% 那两个成功率。论文用的是在 4×A100 上微调的 OpenVLA-7B，**没有发布训练代码**；公开产物只有数据集。
+> - **本指南早先的版本在这三点上都写错了**：它把采集器描述成 AirSim 环境、把数据说成 HDF5、把模型说成自研的 `CognitiveNet`（ResNet-50 + Transformer）。三处都不是采集器的写法，也不是论文的内容。本版按仓库实际文件与论文原文重写，改动处各留 `> **勘误（2026-10）**`。
 
 ---
 
@@ -12,7 +17,7 @@ CognitiveDrone 是一个面向认知无人机任务的数据采集与训练框�
 2. [仓库结构](#2-仓库结构)
 3. [Docker 环境配置](#3-docker-环境配置)
 4. [数据采集](#4-数据采集)
-5. [模型架构](#5-模型架构)
+5. [模型与推理](#5-模型与推理)
 6. [训练流程](#6-训练流程)
 7. [评估基准](#7-评估基准)
 8. [常见问题与解决方案](#8-常见问题与解决方案)
@@ -21,21 +26,40 @@ CognitiveDrone 是一个面向认知无人机任务的数据采集与训练框�
 
 ## 1. 项目概述
 
-- **GitHub**: [SerValera/docker_CognitiveDrone_DataCollector](https://github.com/SerValera/docker_CognitiveDrone_DataCollector) (40 stars)
-- **核心思想**: 将无人机的认知任务（如目标识别、路径规划、避障）建模为统一的 4D 动作预测问题，通过 Docker 容器化实现一键部署和可复现实验。
+- **论文**：*CognitiveDrone: A VLA Model and Evaluation Benchmark for Real-Time Cognitive Task Solving and Reasoning in UAVs* — [arXiv:2503.01378](https://arxiv.org/abs/2503.01378)（2025-03）
+- **项目页**：<https://cognitivedrone.github.io/>
+- **采集器仓库**：[SerValera/docker_CognitiveDrone_DataCollector](https://github.com/SerValera/docker_CognitiveDrone_DataCollector)（46 stars，默认分支 `main`）
+- **数据集**：Hugging Face [`ArtemLykov/CognitiveDrone_dataset`](https://huggingface.co/datasets/ArtemLykov/CognitiveDrone_dataset)
 
-### 4D 动作输出
+论文的贡献是三件：一个无人机 VLA 模型（CognitiveDrone）、它的推理增强版（CognitiveDrone-R1）、以及一个专门评测认知任务的基准（CognitiveDroneBench）。
 
-与传统的速度控制不同，CognitiveDrone 输出 4D 动作：
+**谁提供什么**：
 
-| 维度 | 含义 | 范围 |
+| 产物 | 在哪 | 本指南第几节 |
 |---|---|---|
-| `dx` | X 方向位移增量 | [-5, 5] 米 |
-| `dy` | Y 方向位移增量 | [-5, 5] 米 |
-| `dz` | Z 方向位移增量 | [-3, 3] 米 |
-| `dyaw` | 偏航角增量 | [-π, π] 弧度 |
+| 采集环境（Gazebo + SITL + Realsense 插件） | 采集器仓库 | §3、§4 |
+| 训练数据（RLDS 格式的 TFRecord） | HF 数据集 `data/rlds/train/` | §4.5 |
+| 评测用的场景 JSON | HF 数据集 `data/benchmark/validation/` | §4.6 |
+| 训练好的模型权重 | **未发布** | — |
+| 训练与推理代码 | **未发布** | §6 只能给出论文参数 |
 
-这种输出格式将高层控制意图（"飞到目标点"）与底层执行（电机控制）解耦。
+**任务设定**：无人机沿一条由多个门（gate）串成的赛道飞行。每一段收到一张第一人称图像和一条文本指令，指令里嵌着一个认知任务（认人、认符号、或做一步推理），无人机必须解出答案、从中选出正确的门、并生成 4D 动作命令飞过去。选对了得 1 分。
+
+**4D 动作的四个维度**：论文记作机体速度与机头轮廓 `(Vx, Vy, Vz, omega)`——三个方向的机体速度指令加偏航。采集脚本把它落盘成四列 `dx, dy, dz, angle`。
+
+> **勘误（2026-10）**：本节早先写「与传统无人机控制使用 4 自由度（油门+偏航+俯仰+横滚）不同，CognitiveDrone 输出**位移增量**……`dx/dy` 限 [-5, 5] 米、`dz` 限 [-3, 3] 米、`dyaw` 限 [-π, π] 弧度」，并称「直接输出位移而非速度，更符合高层语义指令」。
+> **这一段是反的，那四组量程也没有出处。** 论文明确写无人机由速度设定值控制：*"the drone in simulation is controlled using velocity setpoints, ensuring consistency with real-world drones running ArduPilot firmware"*，记录的量逐字是 *"the UAV's velocity and the head profile (Vx, Vy, Vz, omega) was continuously logged"*。四个维度本身是真的（采集脚本确实按四列存），但那是**速度量纲的四维指令**，不是位移增量。
+
+### 1.1 三种任务类别
+
+| 类别 | 要求 | 论文原句里的例子 |
+|---|---|---|
+| **Human Recognition** | 按文本描述的外部特征识别人物 | 导航到某位知名人物对应的门 |
+| **Symbol Understanding** | 分辨符号：字母数字、企业标识、动物图案 | — |
+| **Reasoning** | 需要一步逻辑推演 | 飞到数字等于算式解的门；「飞到有甜饮料的门」→ 选汽水标识 |
+
+> **勘误（2026-10）**：本节早先写的是「室内导航 2500+ / 室外飞行 2000+ / 精准降落 1500+ / 编队飞行 1000+ / 紧急机动 1000+」五类，还说这是数据集拆分。
+> **这五类和这五个数量都是编的。** 论文的三类是认知任务类型，不是飞行场景类型；数据集的按类拆分并未公布。原文：*"over 8,000 simulated flight trajectories across three key categories—Human Recognition, Symbol Understanding, and Reasoning"*。
 
 ---
 
@@ -43,34 +67,41 @@ CognitiveDrone 是一个面向认知无人机任务的数据采集与训练框�
 
 ```text
 docker_CognitiveDrone_DataCollector/
-├── Dockerfile                   # Docker 镜像定义
-├── docker-compose.yml           # 多容器编排
+├── Dockerfile                    # 基础镜像 px4io/px4-dev-ros-noetic
 ├── README.md
-├── collector/                   # 数据采集模块
-│   ├── data_collector.py       # 采集主程序
-│   ├── sensor_interface.py     # 传感器接口
-│   └── annotation_tool.py      # 标注工具
-├── model/                       # 模型定义
-│   ├── cognitive_net.py        # 认知网络主体
-│   ├── visual_backbone.py      # 视觉骨干网络
-│   └── action_head.py          # 4D 动作头
-├── training/                    # 训练脚本
-│   ├── train.py
-│   ├── config.yaml
-│   └── losses.py
-├── evaluation/                  # 评估脚本
-│   ├── evaluate.py
-│   ├── benchmarks/
-│   └── metrics.py
-├── data/                        # 数据存储目录
-│   ├── raw/
-│   ├── processed/
-│   └── splits/
-└── scripts/                     # 辅助脚本
-    ├── setup.sh
-    ├── download_assets.sh
-    └── visualize.py
+├── docker-compose.yaml           # 服务 drone_sim，容器名 sim_workspace
+├── config.yaml                   # 采集配置：录哪一类、哪一子类
+├── doc/                          # 三份操作手册
+│   ├── 0_docker.md               #   容器构建与启动
+│   ├── 1_data_sctructure.md      #   数据组织约定（原文件名拼写如此）
+│   └── 2_recording.md            #   启动仿真与录制
+├── catkin_ws/                    # ROS 1 工作空间
+│   └── src/drone_sim/
+│       ├── CMakeLists.txt  package.xml
+│       ├── launch/               #   launch_world.launch / launch_world_drone.launch / record.launch
+│       ├── scripts/              #   spawn_model.py / spawn_model_drone.py / gates_move.py
+│       │                         #   camera_move.py / camera_move_bench.py / spline_traj.py
+│       │                         #   animate_frame_vector.py
+│       ├── objects_tasks/        #   scene_setup.csv（门与标签的位姿清单）
+│       ├── models/               #   门、标签等 Gazebo 模型
+│       └── worlds/
+├── model_for_data_collection/    # 采集用的场景素材
+│   ├── Human Recognition/        #   Celebrities/ + Celebrities.json + Patterns/ + Patterns.json
+│   └── Reasoning/                #   含 celebs_create_file.ipynb
+├── Validation/                   # 一批已采集的验证样本
+│   ├── Celebrities_valid.json
+│   ├── Math_prompt_valid.json
+│   └── Math_prompt_valid/<时间戳>/{setup.json, data.csv, images/image_*.jpg}
+└── eval_after_reasoning/         # 推理模块改写后的评测指令
+    ├── after_reasoning/          #   各子类的 *_valid.json 与 *_updated.json
+    ├── after_reasoning.zip
+    ├── combine.py                #   把各 Setup 目录里的 setup.json 汇总成一个 json
+    ├── Math_prompt_valid/  Validation_Human_recog/  Validation_reasoning/
+    └── ...
 ```
+
+> **勘误（2026-10）**：本节早先给的结构是 `collector/`、`model/`、`training/`、`evaluation/`、`data/`、`scripts/` 六个顶层目录，下面挂着 `data_collector.py`、`cognitive_net.py`、`train.py`、`evaluate.py` 等等。
+> **那整棵树都是编的，一个路径都对不上。** 真实的顶层只有 `Dockerfile`、`README.md`、`Validation/`、`catkin_ws/`、`config.yaml`、`doc/`、`docker-compose.yaml`、`eval_after_reasoning/`、`model_for_data_collection/`。
 
 ---
 
@@ -78,357 +109,367 @@ docker_CognitiveDrone_DataCollector/
 
 ### 3.1 前置要求
 
-- Docker >= 20.10
-- Docker Compose >= 2.0
-- NVIDIA Container Toolkit（GPU 支持）
+- Docker + Docker Compose
+- 一块能被容器访问的 GPU（论文训练用 4×A100，但采集本身不吃多少显存）
+- **一个能开 X11 的桌面环境**：Gazebo 与 RViz 都要往宿主机的 X 服务上画窗口
 
 ```bash
-# 检查 Docker
 docker --version
 docker compose version
-
-# 检查 NVIDIA Container Toolkit
-docker run --rm --gpus all nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi
+xhost +local:docker          # 放行容器连 X11，重启后要重做
 ```
 
-### 3.2 安装 NVIDIA Container Toolkit（如未安装）
-
-```bash
-# Ubuntu/Debian
-distribution=$(. /etc/os-release; echo $ID$VERSION_ID)
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
-curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
-    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-sudo apt-get update
-sudo apt-get install -y nvidia-container-toolkit
-sudo systemctl restart docker
-```
-
-### 3.3 克隆并构建
+### 3.2 克隆并构建镜像
 
 ```bash
 git clone https://github.com/SerValera/docker_CognitiveDrone_DataCollector.git
 cd docker_CognitiveDrone_DataCollector
 
-# 构建 Docker 镜像
-docker compose build
-
-# 或单独构建
-docker build -t cognitive-drone:latest .
+sudo docker-compose build    # 产出镜像 ardupilot_docker-drone_sim
 ```
 
-### 3.4 启动容器
+`Dockerfile` 的基础镜像是 `px4io/px4-dev-ros-noetic`，在它之上装 `ros-noetic-rviz`、`ros-noetic-mavros`、`ros-noetic-gazebo-ros-pkgs`、`python3-opencv` 等。
+
+### 3.3 启动容器
+
+手册 `doc/0_docker.md` 给的是这条（要挂 X11 socket 与 `~/.Xauthority`，并映射 14570/udp 给 Gazebo）：
 
 ```bash
-# 使用 docker compose 启动（推荐）
-docker compose up -d
-
-# 或手动启动
-docker run --gpus all -it \
-    -v $(pwd)/data:/workspace/data \
-    -v $(pwd)/models:/workspace/models \
-    -p 8888:8888 \
-    --name cognitive-drone \
-    cognitive-drone:latest \
-    bash
+sudo docker run -it --privileged --ipc=host --net=host \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+  -v ~/.Xauthority:/home/sim/.Xauthority \
+  -v ./:/home/sim/ardupilot_docker:rw \
+  -e DISPLAY=$DISPLAY -p 14570:14570/udp --name=ardupilot \
+  ardupilot_docker-drone_sim:latest bash
 ```
 
-### 3.5 验证容器环境
+`--privileged --ipc=host --net=host` 三项都不能省：Gazebo 要共享内存，ROS 主节点和 ArduPilot 的 MAVLink 端口要落在同一网络命名空间里。
+
+如果要用 GPU，手册给了第二条带 `--gpus=all --runtime=nvidia` 的版本。之后进入容器用：
 
 ```bash
-# 进入容器
-docker exec -it cognitive-drone bash
-
-# 验证 GPU
-nvidia-smi
-
-# 验证 Python 环境
-python -c "import torch; print(torch.cuda.is_available())"
+docker exec -it ardupilot bash
 ```
+
+`docker-compose.yaml` 里的服务名是 `drone_sim`、容器名 `sim_workspace`，暴露 `14540-14550/udp`、`14570/udp`、`14580/udp` 和 ROS 主节点端口 `11311`。
+
+### 3.4 容器内的一次性安装
+
+`doc/0_docker.md` 把这部分标为「**run ONCE**」，在容器内执行：
+
+```bash
+cd ardupilot_docker
+
+# 1) Realsense 的 Gazebo 插件
+git clone https://github.com/intel/gazebo-realsense
+copy_realsense_plugin
+
+# 2) ArduPilot 本体与依赖
+cd ardupilot
+Tools/environment_install/install-prereqs-ubuntu.sh -y
+. ~/.profile
+git submodule update --init --recursive
+
+# 3) ArduPilot 的 Gazebo 插件
+cd && git clone https://github.com/khancyr/ardupilot_gazebo
+cd ardupilot_gazebo && mkdir build && cd build
+cmake .. && make -j4 && sudo make install
+```
+
+手册随后还让装 `libcanberra-gtk-module`、`libcanberra-gtk3-module`、`dbus-x11`。
+
+> **注意**：`copy_realsense_plugin` 是容器里预置的脚本（不在仓库里），手册假定它已在 `PATH` 上。找不到就说明用的是没重新 build 的旧镜像。
+
+### 3.5 验证环境
+
+```bash
+cd ~/ardupilot_docker
+cat config.yaml          # 能读到就说明挂载成功
+rosversion -d            # 期望 noetic
+```
+
+> **勘误（2026-10）**：本节早先写的是 `docker run --gpus all ... nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi` 加一串 NVIDIA Container Toolkit 的 apt 配置，还有「验证 Python 环境 `python -c "import torch; ..."`」。
+> 那套是通用 GPU 容器的模板，**和这个仓库无关**：它的镜像基于 `px4io/px4-dev-ros-noetic`（Ubuntu 20.04 + ROS Noetic），采集器本身是 ROS 节点，跑 `python3-opencv` 而**不依赖 PyTorch**。torch 只出现在论文那侧的模型微调里，而那部分代码没有公开。
 
 ---
 
 ## 4. 数据采集
 
-### 4.1 启动数据采集器
+### 4.1 配置要录什么
 
-```bash
-# 在容器内运行
-cd /workspace
-python collector/data_collector.py --config collector/collect_config.yaml
-```
-
-### 4.2 采集配置
+编辑容器内的 `config.yaml`（仓库里就这一份，路径按手册是 `/home/sim/ardupilot_docker/config.yaml`）：
 
 ```yaml
-# collector/collect_config.yaml
-environment:
-  type: "airsim"              # 仿真环境类型
-  scene: "neighborhood"       # 场景名称
-  weather: ["clear", "foggy", "rainy"]
-
-sensors:
-  camera:
-    resolution: [640, 480]
-    fov: 90
-    fps: 30
-  depth:
-    enabled: true
-  imu:
-    enabled: true
-
-collection:
-  num_episodes: 1000
-  max_steps_per_episode: 200
-  save_interval: 10           # 每 10 帧保存一次
-  output_dir: "/workspace/data/raw"
+DATA_SET_TO_RECORD_PATH: "/home/sim/ardupilot_docker/model_for_data_collection"
+CATEGORY: "Reasoning"      # Human Recognition / Symbol Understanding / Reasoning
+TYPE: "Animals"            # 该类别下的子类
+IS_MATH: False
 ```
 
-### 4.3 数据格式
+`CATEGORY` 与 `TYPE` 两个字段决定加载 `model_for_data_collection/` 下的哪一组素材与哪份 JSON。`record.launch` 会把这份 `config.yaml` 当 ROS 参数读进去：
 
-采集的数据以 HDF5 格式存储：
-
-```text
-data/raw/
-├── episode_0001.hdf5
-│   ├── rgb          (N, 480, 640, 3)  uint8
-│   ├── depth        (N, 480, 640)     float32
-│   ├── imu          (N, 6)            float32  [ax,ay,az,gx,gy,gz]
-│   ├── pose         (N, 7)            float32  [x,y,z,qw,qx,qy,qz]
-│   ├── action       (N, 4)            float32  [dx,dy,dz,dyaw]
-│   └── metadata     属性组             包含场景、天气等信息
-├── episode_0002.hdf5
-└── ...
+```xml
+<rosparam command="load" file="/home/sim/ardupilot_docker/config.yaml" />
+<node name="spawn" pkg="drone_sim" type="spawn_model.py" output="screen" />
 ```
 
-### 4.4 数据预处理
+### 4.2 启动采集
+
+手册 `doc/2_recording.md` 给的是两个终端（都在容器内）：
 
 ```bash
-python collector/preprocess.py \
-    --input_dir /workspace/data/raw \
-    --output_dir /workspace/data/processed \
-    --image_size 224 \
-    --normalize_actions true
+# 终端 1：起仿真。首次运行要等几秒
+run
+
+# 终端 2：等 Gazebo 完全加载后开始录制
+rec
 ```
+
+`run` 拉起 Gazebo 世界与 SITL ArduPilot，`rec` 开始往磁盘写这一趟飞行的数据。仿真的物理部分由 **Gazebo + ArduPilot Gazebo 插件 + SITL** 承担，视觉部分由 **Realsense 插件**提供。
+
+> **勘误（2026-10）**：本节早先的配置块是 `environment: {type: "airsim", scene: "neighborhood", weather: [...]}` 加 `sensors: {camera, depth, imu}`、`collection: {num_episodes: 1000, ...}`，并让你跑 `python collector/data_collector.py --config collector/collect_config.yaml`。
+> **AirSim、`neighborhood` 场景、`num_episodes`、那个 Python 采集脚本全都不存在。** 仓库 README 逐字写：*"The collector uses a Docker container that integrates ROS1, ArduPilot, Gazebo Classic and the Realsense plugin"*；论文第 III-B 节写 *"The simulation environment is built using Gazebo with the ArduPilot Gazebo plugin and SITL ArduPilot"*。**AirSim 是凭空加进去的**，采集入口是两个 shell 命令 `run` 与 `rec`，不是 Python 脚本。
+
+### 4.3 场景素材怎么组织
+
+`doc/1_data_sctructure.md` 定的约定：一个**类别目录**下放若干个**子类目录**，每个子类目录里放 `.dae` 模型文件，同级的同名 `.json` 提供元数据。
+
+```text
+model_for_data_collection/
+├── Human Recognition/
+│   ├── Celebrities/          # 若干 .dae
+│   ├── Celebrities.json
+│   ├── Patterns/
+│   └── Patterns.json
+└── Reasoning/
+    └── ...
+```
+
+**JSON 里的 `options` 必须与目录里的文件名逐字对上**，手册原话是「Make sure that the items of option parameter of the *.json file have same names from Type folder folder」。例：
+
+```json
+"options": ["ten.dae", "eight.dae", "one.dae"]
+```
+
+场景里每个门与标签的位姿写在 `catkin_ws/src/drone_sim/objects_tasks/scene_setup.csv`：
+
+```csv
+setup,id,model_name,x,y,z,roll,pitch,yaw
+setup1,1,gate,4.0,4.0,0.0,0.0,0.0,2.0
+setup1,2,gate,5.0,0.0,0.0,0.0,0.0,1.57
+setup1,1,label,4.0,4.0,2.75,0.0,0.0,3.57
+```
+
+同一套坐标里 `gate` 是门框、`label` 是贴在门上的标签，标签比门高约 2.75 m。
+
+### 4.4 一次任务长什么样
+
+任务是 JSON 定义的。下面是一份真实样本（`Validation/.../setup.json`，只留结构）：
+
+```json
+{
+    "prompt": "Fly through the gate with number equal 8-8",
+    "prompt_simpler": "Fly through the big square blue gate with 0",
+    "options": ["zero.dae", "four.dae", "nine.dae"],
+    "correct": 1,
+    "gates": [
+        {"gate": "1", "size": "big",   "shape": "square", "color": "blue"},
+        {"gate": "2", "size": "small", "shape": "round",  "color": "red"},
+        {"gate": "3", "size": "small", "shape": "triangle", "color": "green"}
+    ],
+    "background": "room"
+}
+```
+
+四个字段值得停一下：
+
+- **`prompt`** 是给人看的原始指令，认知任务嵌在里面（`8-8` 要算）。
+- **`prompt_simpler`** 是**推理模块改写后的版本**——把「算 8-8 然后选那个数字」压成「选大门里蓝方框上写着 0 的那个」。这正是 CognitiveDrone-R1 里 Qwen2.5-VL 那一步在干的事（§5.2），也是 `eval_after_reasoning/after_reasoning/*_updated.json` 这批文件的内容。
+- **`correct`** 是正确选项在 `options` 里的下标。
+- **`gates`** 给出每扇门的尺寸/形状/颜色，用于自动判定是否飞对了门。
+
+> **勘误（2026-10）**：本节早先写「数据以 HDF5 格式存储」，并给了一份 `episode_0001.hdf5` 的内含（`rgb / depth / imu / pose / action` 五个数据集），还配了 `python collector/preprocess.py --image_size 224 --normalize_actions true`。
+> **HDF5 与那个预处理脚本都不存在。** 数据一是落成 CSV（下一节），二是发到 Hugging Face 时用 **RLDS**（TFRecord）格式。论文原文：*"The collected data was structured in accordance with the Reinforcement Learning Dataset (RLDS) format to ensure seamless compatibility with OpenVLA"*，**RLDS 是 OpenVLA 的输入格式**，不是 HDF5。
+
+### 4.5 落盘的数据长什么样
+
+每一趟飞行在 `Validation/<子类>/<时间戳>/` 下产出三样：`images/image_*.jpg`、`setup.json`（就是上节那份任务定义）、`data.csv`。`data.csv` 的表头是：
+
+```text
+frame_id,dx,dy,dz,angle,x,y,z,qx,qy,qz,qw
+```
+
+前四列是那一步的 4D 动作（三轴机体速度 + 偏航），后七列是当时的位姿（位置 + 四元数），用来核账。`frame_id` 只是帧序号，**文件里没有时间列**——采样间隔由仿真侧的图像发布频率决定。
+
+真实的前两行（同一趟 `Math_prompt_valid` 的 66 帧里的）：
+
+```text
+1,-0.30086071005609044,0.0,0.03553100640177442,0.6682699391985022, ...
+2,-0.2971226389535662,0.0,0.03553100640177442,0.6426387677378069, ...
+```
+
+`dy` 一直是 0、`dz` 只有 0.036 m/帧，是因为这一趟是直线穿门；`angle` 从 0.668 落到 0.643，正是机头在慢慢对正。**这四列就是「4D 动作」在磁盘上的形态**——不是 §1 勘误里那个位移增量的说法。
+
+### 4.6 公开的数据集怎么用
+
+HF 上的 `ArtemLykov/CognitiveDrone_dataset`（2025-03 上传）分两块：
+
+```text
+data/rlds/train/cognitive_drone-train.tfrecord-*-of-00128   # 训练数据，RLDS，128 个分片
+data/benchmark/validation/<类别>/<子类>/<时间戳>/setup.json   # 评测用任务定义，218 份
+```
+
+按类别数一遍验证集：
+
+| 类别 | 子类（份数） | 小计 |
+|---|---|---|
+| Human Recognition | celebrities 26、patterns 30 | 56 |
+| Reasoning | food 29、math 29 | 58 |
+| Symbol Understanding | animal 29、digit 29、letters 24、logo 22 | 104 |
+| **合计** | | **218** |
+
+论文正文写训练集是 **8,062 条连续轨迹样本**（摘要里说「over 8,000」），并按类别均衡地分出了训练子集与测试子集——测试子集就是 CognitiveDroneBench。
+
+> **注意分片数**：文件名里的 `of-00128` 说明训练集共 128 个 TFRecord 分片，别按当前能列出的文件数去估规模。
 
 ---
 
-## 5. 模型架构
+## 5. 模型与推理
 
-### 5.1 认知网络整体结构
+### 5.1 主干：OpenVLA-7B 微调
 
-```text
-输入: RGB 图像 (224x224x3)
-      ↓
-视觉骨干网络 (ResNet-50 / ViT-B/16)
-      ↓
-视觉特征向量 (768-d)
-      ↓
-+ 任务嵌入 (Task Embedding)
-      ↓
-Transformer 编码器 (6 层)
-      ↓
-4D 动作头 → [dx, dy, dz, dyaw]
-```
+论文的模型不是从头设计的网络，是在开源 OpenVLA 上微调的。论文原文：
 
-### 5.2 关键代码结构
+> *"we integrate a VLA model adapted from the open-source OpenVLA model, which comprises 7 billion parameters"*
+> *"The VLA model was fine-tuned using our custom training dataset based on the OpenVLA architecture"*
 
-```python
-"""
-CognitiveNet 模型架构概览（非完整代码）
-"""
-import torch
-import torch.nn as nn
+选 OpenVLA 的理由论文也写了：它擅长捕捉飞行器动力学、以 10 Hz 出高频控制指令；但它对「该选哪扇门」这类任务理解不足——这正是 R1 要补的。
 
-class CognitiveNet(nn.Module):
-    def __init__(self, backbone="resnet50", hidden_dim=768, num_layers=6):
-        super().__init__()
-        # 视觉骨干
-        self.backbone = build_backbone(backbone, pretrained=True)
-        # 任务嵌入
-        self.task_embedding = nn.Embedding(num_tasks, hidden_dim)
-        # Transformer 编码器
-        encoder_layer = nn.TransformerEncoderLayer(
-            d_model=hidden_dim, nhead=12, dim_feedforward=3072
-        )
-        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers)
-        # 4D 动作头
-        self.action_head = nn.Sequential(
-            nn.Linear(hidden_dim, 256),
-            nn.ReLU(),
-            nn.Linear(256, 4)  # dx, dy, dz, dyaw
-        )
+动作侧继承 OpenVLA 的离散化动作 token：论文训练指标里的一项就是 *"Cross-entropy loss measures performance on discretized action tokens"*。
 
-    def forward(self, image, task_id):
-        visual_feat = self.backbone(image)           # (B, 768)
-        task_feat = self.task_embedding(task_id)      # (B, 768)
-        x = visual_feat + task_feat                    # (B, 768)
-        x = self.transformer(x.unsqueeze(0))         # (1, B, 768)
-        action = self.action_head(x.squeeze(0))       # (B, 4)
-        return action
-```
+### 5.2 R1：外挂一个 VLM 做「先想后做」
+
+CognitiveDrone-R1 在 VLA 前面加一级 **Qwen2.5-VL** 推理模块，论文原文是 *"we augment our system with an auxiliary reasoning module based on the VLM model Qwen2.5-VL"*。它的作用**不是**自己输出动作，而是**把指令改写得更明确**再交给 VLA：
+
+> *"This reasoning module … is intended to enhance task comprehension … simplify task directives prior to high-frequency control"*
+
+落到数据上就是 §4.4 那个 `prompt` → `prompt_simpler` 的改写。两级分工带来两个硬约束：
+
+| 量 | 只用 VLA | 加推理模块 |
+|---|---|---|
+| 显存 | 约 10 GB | 约 20 GB |
+| 频率 | 10 Hz（出控制指令） | 推理模块约 2 Hz |
+
+> **勘误（2026-10）**：本节早先画的是「视觉输入 + 语言指令 → VLM 推理模块 → 显式推理输出（场景理解 / 空间推理 / 路径规划 / 规划结果）→ 动作生成模块 → 4D 动作」，指令例子是「飞到红色屋顶后面」，还说这是借鉴 Chain-of-Thought 的显式推理链。
+> **那张图与那个例子都是编的。** 论文里 R1 的输出是**改写后的一句简化指令**，不是三条分析；场景是赛道与门，不是建筑。真凭实据在数据里：`eval_after_reasoning/` 那批 `*_updated.json` 与每条任务自带的 `prompt_simpler` 字段，就是这个模块的产物。另外本节原先完全没提两个数——**显存 10 GB→20 GB、频率 10 Hz / 2 Hz**——它们才是 R1 的真实代价。
+>
+> 本节早先还给过一张「自研 `CognitiveNet`：ResNet-50 + 任务嵌入 + 6 层 TransformerEncoder + Linear 4D 头」的结构图与 Python 伪代码。
+> **那个网络不存在。** 论文全篇没有 `CognitiveNet`、没有 ResNet-50、没有 Transformer 编码器；模型逐字是 *"The VLA model was fine-tuned … based on the OpenVLA architecture"*。
 
 ---
 
 ## 6. 训练流程
 
-### 6.1 训练配置
+**代码没有公开**，所以这一节给的是论文里的配置，供你对比自己的实现——不是一份可执行的指南。
 
-```yaml
-# training/config.yaml
-model:
-  backbone: "resnet50"
-  hidden_dim: 768
-  num_layers: 6
-  pretrained: true
+| 项 | 值 |
+|---|---|
+| 基座 | OpenVLA-7B |
+| 微调方式 | LoRA，**rank-32** 适配器 |
+| batch size | 64 |
+| 学习率 | 5 × 10⁻⁴ |
+| 梯度步数 | 4000 |
+| 图像增强 | **关闭** |
+| 硬件 | 4 × NVIDIA A100 |
+| 训练侧观测指标 | L1 loss、动作准确率、离散动作 token 的交叉熵 |
 
-data:
-  processed_dir: "/workspace/data/processed"
-  train_split: 0.8
-  val_split: 0.1
-  test_split: 0.1
-  batch_size: 32
-  num_workers: 4
+论文对 LoRA 的选择给的理由是「optimize memory usage while adjusting a minimal set of trainable weights」——r=32 是在显存与可训练参数量之间取的折中。
 
-training:
-  num_epochs: 50
-  optimizer: "adamw"
-  learning_rate: 1.0e-4
-  weight_decay: 0.01
-  scheduler: "cosine"
-  warmup_epochs: 5
-
-loss:
-  action_weight: [1.0, 1.0, 1.0, 0.5]  # 各维度权重
-  loss_type: "smooth_l1"
-```
-
-### 6.2 启动训练
-
-```bash
-# 在 Docker 容器内
-cd /workspace
-python training/train.py --config training/config.yaml --gpu 0
-```
-
-### 6.3 训练监控
-
-```bash
-# 启动 TensorBoard
-tensorboard --logdir /workspace/runs --host 0.0.0.0 --port 6006
-
-# 在浏览器中访问 http://localhost:6006
-```
-
-### 6.4 训练资源需求
-
-| 配置 | GPU 显存 | 训练时间（估计） |
-|---|---|---|
-| ResNet-50, batch=16 | ~8 GB | ~12 小时 |
-| ResNet-50, batch=32 | ~14 GB | ~8 小时 |
-| ViT-B/16, batch=16 | ~12 GB | ~18 小时 |
+> **勘误（2026-10）**：本节早先给过一份 `training/config.yaml`（`backbone: resnet50`、`num_epochs: 50`、`optimizer: adamw`、`loss.action_weight: [1.0, 1.0, 1.0, 0.5]`）、`python training/train.py` 的启动命令、TensorBoard 监控，以及一张三行的显存-时间表（`ResNet-50 batch=16 约 8 GB / batch=32 约 14 GB / ViT-B/16 约 12 GB`）。
+> **配置、脚本、表格全是编的**：论文既没有 ResNet-50 这些骨干，也没有那套权重方案，更没有公布任何显存/耗时数字。已整段删除。下面「动手验证」的第一节拿这张表做了一次对账——不是为了复现它，而是为了说明**小模型的显存账为什么算不出来**。
+>
+> 顺带纠正一个容易传开的说法：**这里的训练不是「无需大量试错」的在线学习**。它是在仿真里采完 8,062 条轨迹后离线做模仿学习，没有用强化学习试错。
 
 ---
 
 ## 7. 评估基准
 
-### 7.1 运行评估
+### 7.1 CognitiveDroneBench 怎么算分
 
-```bash
-python evaluation/evaluate.py \
-    --model_path /workspace/models/best_model.pth \
-    --data_dir /workspace/data/processed/test \
-    --output_dir /workspace/results
-```
+赛道由多扇门顺序组成，每段给一张第一人称图像和一条指令。**飞对了那扇门得 1 分**，类别得分 = 该类别累计得分 / 该类别满分数；再加一个跨类别的总平均。判定是自动的：门上有标签、`setup.json` 里有 `correct` 下标与 `gates` 位姿，飞错门就没有分。论文原话：*"passing through the correct gate earns the drone 1 point"*。
 
-### 7.2 评估指标
+### 7.2 论文报告的成绩
 
-| 指标 | 说明 | 单位 |
-|---|---|---|
-| **ADE (Average Displacement Error)** | 平均位移误差 | 米 |
-| **FDE (Final Displacement Error)** | 最终点位移误差 | 米 |
-| **Yaw Error** | 偏航角平均误差 | 度 |
-| **Collision Rate** | 仿真中碰撞率 | 百分比 |
-| **Task Completion** | 任务完成率 | 百分比 |
+评测覆盖三个模型。RaceVLA 是在赛车场景训的模型、CognitiveDrone 是本文的基座、CognitiveDrone-R1 加了推理模块：
 
-### 7.3 基线对比
-
-| 方法 | ADE ↓ | FDE ↓ | Yaw Error ↓ | Task Completion ↑ |
+| 模型 | Reasoning | Human Recognition | Symbol Understanding | **总平均** |
 |---|---|---|---|---|
-| Random | 3.21 | 5.87 | 45.2° | 12.3% |
-| PID Controller | 1.45 | 2.34 | 18.7° | 56.8% |
-| CNN Baseline | 0.98 | 1.67 | 12.3° | 72.1% |
-| **CognitiveDrone** | **0.62** | **1.05** | **8.1°** | **87.6%** |
+| RaceVLA | 36.2% | 23.1% | 34.6% | **31.3%** |
+| CognitiveDrone | 70.7% | 45.2% | 57.7% | **59.6%** |
+| **CognitiveDrone-R1** | **75.9%** | **76.8%** | **78.9%** | **77.2%** |
+
+这张表里有三条读法：
+
+1. **赛车模型会飞，但不会选门**。RaceVLA 能稳稳穿过一排门（论文说它「robust understanding of UAV flight dynamics」），可选门的正确率接近随机。**飞得准和选得对是两种能力**，这是本篇 benchmark 想立的那根轴。
+2. **基座模型的短板在人身上**。CognitiveDrone 在 Reasoning 上已有 70.7%，但 Human Recognition 只有 45.2%。
+3. **推理模块主要补的是人和符号，不是推理**。R1 把 Human Recognition 从 45.2% 提到 76.8%（+31%）、Symbol Understanding 从 57.7% 提到 78.9%（+21%），而 Reasoning 只从 70.7% 到 75.9%（约 +6%）。总平均涨了约 17.6%。**「加个推理模块提升最大的一定是推理任务」这个直觉在这里是错的**——基座的推理本就不弱，被改写指令救回来的是最弱的那两项。
+
+> **勘误（2026-10）**：本节早先给过一张四行的基线对比表，指标是 `ADE / FDE / Yaw Error / Task Completion`，数值是 Random `3.21 / 5.87 / 45.2° / 12.3%`、PID `1.45 / 2.34 / 18.7° / 56.8%`、CNN `0.98 / 1.67 / 12.3° / 72.1%`、CognitiveDrone `0.62 / 1.05 / 8.1° / 87.6%`，还配了一句「先跑 `python evaluation/evaluate.py --model_path ...`」。
+> **整表按「合理数值」编造。** 论文的评测指标是**任务成功率**，不是轨迹误差；报告的对照组也不是 Random/PID/CNN，而是 RaceVLA 这个同领域模型。而且表里给 CognitiveDrone 的 `Task Completion 87.6%` 本身就和论文的 59.6% 打架。已整表删除，换成上面的真实分数。
+> 还有一处连带差错：实验记录里的 `87.6%` 与本仓库另一篇文档里的 `85.6%` 曾互相矛盾——现在两者都不再作为「CognitiveDrone 的成绩」出现。
 
 ---
 
 ## 8. 常见问题与解决方案
 
-### Q1: Docker 容器无法访问 GPU
+### Q1: 容器里看不见 Gazebo 窗口
 
 ```bash
-# 检查 NVIDIA Container Toolkit
-sudo systemctl restart docker
+# 宿主机上先放行 X11
+xhost +local:docker
 
-# 测试 GPU 访问
-docker run --rm --gpus all nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi
-
-# 如果失败，检查 Docker daemon 配置
-sudo tee /etc/docker/daemon.json <<EOF
-{
-    "default-runtime": "nvidia",
-    "runtimes": {
-        "nvidia": {
-            "path": "/usr/bin/nvidia-container-runtime",
-            "runtimeArgs": []
-        }
-    }
-}
-EOF
-sudo systemctl restart docker
+# 确认容器挂上了 DISPLAY 与 socket
+docker exec -it ardupilot bash -c 'echo $DISPLAY; ls /tmp/.X11-unix'
 ```
 
-### Q2: 数据采集时仿真环境崩溃
+拿不到 `DISPLAY` 或 `X0` 不在时，检查 `docker run` 那行有没有带 `-e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:rw -v ~/.Xauthority:/home/sim/.Xauthority`。`xhost` 的重启后失效是常见坑。
 
-- 检查仿真环境（AirSim/Unreal Engine）的系统依赖是否完整
-- 降低图像分辨率以减少内存压力
-- 减少同时运行的采集实例数量
+### Q2: `run` 起来了但 Gazebo 里没有 Realsense 插件
 
-### Q3: HDF5 数据读取缓慢
+`copy_realsense_plugin` 是**镜像里预置**的脚本，来自 `intel/gazebo-realsense`。它是 §3.4 的一次性安装步骤之一——如果直接 `docker-compose up` 而没有重建镜像、也没有在容器里跑过那一步，插件就不会被编译安装。
+
+### Q3: 读 RLDS 训练数据报 TFRecord 错误
+
+`data/rlds/train/` 下是 `*.tfrecord-*-of-00128`，要用 TensorFlow 的 RLDS 加载器读，不能当 pickle 或 numpy 打开：
 
 ```python
-# 使用 chunk 读取而非加载整个文件
-import h5py
-with h5py.File("episode_0001.hdf5", "r") as f:
-    # 只读取第 100 帧
-    frame = f["rgb"][100]
+import tensorflow_datasets as tfds
+
+builder = tfds.builder_from_directory("path/to/cognitive_drone")
+ds = builder.as_dataset(split="train")
 ```
 
-### Q4: 训练中 loss 出现 NaN
+要读的是采集过程中的逐步记录，直接看 `data.csv`（§4.5）更快——十一列，没有嵌套结构。
 
-- 检查数据中是否存在 NaN 值
-- 降低学习率（尝试 `1e-5`）
-- 添加梯度裁剪：`max_grad_norm=1.0`
-- 检查 action 归一化范围是否合理
+### Q4: 微调时 loss 变 NaN
 
-### Q5: 模型在新场景中泛化差
+论文没给调参 troubleshooting，这里只能按通用做法排查：确认 RLDS 里的动作已按 OpenVLA 的离散化口径转好（对不上就会出极端 target）、把 5e-4 的学习率往下调一档试、加梯度裁剪。**注意 5e-4 配 r=32 的 LoRA 不是小学习率**，全参数微调的经验值直接搬过来会偏大。
 
-- 增加训练数据的场景多样性（不同天气、光照、地形）
-- 使用数据增强（随机裁剪、颜色抖动、高斯噪声）
-- 考虑使用更强的视觉骨干（如 ViT + 预训练权重）
+### Q5: 换一个场景后认人这一项掉得厉害
+
+论文的数据里 Human Recognition 是基座模型最弱的一项（45.2%），也是 R1 提升最大的一项（→76.8%）。这说明这一项对**指令是否被改写清楚**高度敏感。改场景时先看 `prompt` 的表述是否含混：如果人肉的你都答不干脆，那不是模型的问题，是 `prompt_simpler` 那一步没做够。
 
 ---
 
-## 动手验证：那张基线表，换一列指标排名会变吗？
+## 动手验证：那张基线表里，换一列指标会不会换一个名次？
 
-7.3 节那张基线表里，四个方法在 ADE、FDE、Yaw Error、Task Completion 四列上一致地往好里走：ADE 从 Random 的 3.21 降到 CognitiveDrone 的 0.62，完成率从 12.3% 升到 87.6%。四列同向，看着让人放心。
+7 节早先有一张四行基线表（已按 §7 的勘误删除）。那张表在 ADE、FDE、Yaw Error、Task Completion 四列上一致地往好里走，看着让人放心。
 
-这一节用一个本地跑得动的实验问一句：这四列**总是**同向吗？答案是不总是。存在两个策略在某一列上完全分不开、在另一列上差一倍的情况；也存在某一列把明显更差的策略排在前面。
+这一节用一个本地跑得动的实验问一句：**这四列总是同向吗？** 答案是不总是。存在两个策略在某一列上完全分不开、在另一列上差一倍的情况；也存在某一列把明显更差的策略排在前面。
 
 三个策略：随机动作、标准串级 PID、把位置环增益调大 6 倍的 PID。第三个是关键，它飞得急，照样到得了目标，但路径是标准 PID 的两倍。
 
-> 本节实验跑在 `quad_sim` 的简化质点模型上，不是 AirSim；PID 增益也是本节自己定的，与 7.3 节表里那个 PID Controller 不是同一套参数。这里要证的是**指标之间的关系**，不是复现那四行数字。
+> 本节实验跑在 `quad_sim` 的简化质点模型上，不是 Gazebo + ArduPilot；PID 增益也是本节自己定的。这里要证的是**指标之间的关系**，不是复现论文里的成功率。
 
 ### 三个策略与七个指标
 
@@ -565,9 +606,9 @@ py -3.9 code/g_eval_metrics.py     # 约 4 秒，CPU 即可
 
 ---
 
-## 动手验证：6.4 那张显存表为什么对不上账面？
+## 动手验证：那三行显存表为什么对不上账面？
 
-6.4 给了三行：ResNet-50 `batch=16` 要 8 GB、`batch=32` 要 14 GB、ViT-B/16 `batch=16` 要 12 GB。这三个数单独看都很合理，但把它们按「固定项 + batch × 每样本项」去解，会发现它们和真的去数一遍差得很远。
+6 节早先给过三行显存表（已按 §6 的勘误删除）：ResNet-50 `batch=16` 要 8 GB、`batch=32` 要 14 GB、ViT-B/16 `batch=16` 要 12 GB。这三个数单独看都很合理，但把它们按「固定项 + batch × 每样本项」去解，会发现它们和真的去数一遍差得很远。
 
 关键在于 **ResNet-50 一共才 25.6M 参数**。fp16 权重加梯度加 Adam 两份动量，12 字节一个参数，一共 **0.29 GB** —— 和 8 GB 比是个零头。所以那张表里的数字几乎全是激活和框架开销，参数量本身说明不了任何事。
 
@@ -618,11 +659,13 @@ bs=32  静态 0.29G + 激活 3.89G = 4.17G
 
 同一张表的第三行也能量。ViT-B/16 有 86.6M 参数，静态 0.97 GB，`batch=16` 的激活是 **1.86 GB**，每样本 0.116 GB —— 和 ResNet-50 的 0.121 GB 几乎一样。所以文档里「ResNet-50 8 GB / ViT-B 12 GB」那一档 4 GB 的差，按账面是算不出来的：两者的激活实测只差 4%，参数差 3.4 倍也只值 0.68 GB。
 
-**结论分两半。** 7B 那几张表（07/02、07/06）能和实测对上，因为大头是权重和优化器状态，那是精确算术。这张表对不上，因为小模型的账里参数只占零头，剩下的是 cuDNN workspace、显存碎片和框架自己的开销 —— 那些东西只能从 nvidia-smi 读出来，不能按算法量算。**所以这两类数不存在谁抄错谁**，但也不能互相换算：`batch=32` 那条的 14 GB 里，只有 4.17 GB 是能算出来的。
+**结论分两半。** 7B 那一类模型（大头是权重和优化器状态）能用精确算术核算，静态账一算就是几十 GB，账面上装不装得下是清楚的。这张表算不出来，因为小模型的账里参数只占零头，剩下的是 cuDNN workspace、显存碎片和框架自己的开销 —— 那些东西只能从 nvidia-smi 读出来，不能按算法量算：`batch=32` 那条的 14 GB 里，只有 4.17 GB 是能算出来的。
+
+> **注意**：这里说「7B 那一类能算」，指的是**账能不能算**，不是说 07/02、07/06 那几张 7B 表本身可信 —— 那两张表已因**无出处**被删除（见各自的勘误块）。**算得通与有出处是两件事**：算得通只说明它内部一致。
 
 > **限制**：这里量的是 PyTorch eager 模式下 autograd 保留的张量，跑的是 torchvision 原版结构、`224x224` 输入，而且没开 AMP、没开梯度检查点。真机上还会多出 cuDNN workspace 和显存碎片，所以账面 4.17 GB 不等于 nvidia-smi 显示 4.17 GB —— 反而文档那 14 GB 更接近后者。
 > 
-> 训练时 BatchNorm 会额外保留统计量，本节测量走的是训练模式，这一部分已计入。反解出的「固定项 2.00 GB」只有在两行确实是同一模型、同一输入尺寸时才成立。
+> 训练时 BatchNorm 会额外保留统计量，本节测量走的是训练模式，这一部分已计入。反解出的「固定项 2.00 GB」只有在两行确实是同一模型、同一输入尺寸时才成立。**顺带一句**：论文的实际配置是 OpenVLA-7B + LoRA r=32，属于 7B 那一类——大头是权重与优化器状态，所以本节这套小模型的账**不能**拿来估论文的显存。
 
 ![显存的三项是精确算术，第四项激活随规模走，而序列长度是那些表从没写过的自变量](../../figures/o_budget.png)
 
@@ -636,8 +679,13 @@ py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torch
 
 ## 参考资源
 
-- CognitiveDrone GitHub: https://github.com/SerValera/docker_CognitiveDrone_DataCollector
-- AirSim: https://github.com/microsoft/AirSim
+- CognitiveDrone 项目页: https://cognitivedrone.github.io/
+- CognitiveDrone 论文: https://arxiv.org/abs/2503.01378
+- 采集器仓库: https://github.com/SerValera/docker_CognitiveDrone_DataCollector
+- 数据集: https://huggingface.co/datasets/ArtemLykov/CognitiveDrone_dataset
+- OpenVLA（基座模型）: https://github.com/openvla/openvla
+- ArduPilot Gazebo 插件: https://github.com/khancyr/ardupilot_gazebo
+- Intel Realsense 的 Gazebo 插件: https://github.com/intel/gazebo-realsense
 - Docker 官方文档: https://docs.docker.com/
 
 ## 延伸阅读
@@ -648,26 +696,26 @@ py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torch
 
 ## 思考题
 
-1. **环境验证**：容器里 `python -c "import torch; print(torch.cuda.is_available())"` 返回 False，按第 8 节 Q1 该查什么、改哪个文件？
+1. **边界判断**：你想复现论文里 CognitiveDrone-R1 的 77.2%，手上有采集器仓库和 HF 数据集。列出你还缺什么，以及缺的东西论文有没有可能给出来。
 
-2. **复现风险**：4.4 节让你跑 `collector/preprocess.py`，但第 2 节仓库结构里 `collector/` 下只有 data_collector.py、sensor_interface.py、annotation_tool.py。照这份指南动手会撞上什么，怎么处理？
+2. **数据格式**：论文说数据按 RLDS 组织是为了 OpenVLA 的兼容性。RLDS 里一条样本包含哪些部分？为什么这个格式直接决定了「能不能用现成的 OpenVLA 微调脚本」。
 
-3. **时间尺度**：采集配置是 `fps: 30` + `save_interval: 10`，相邻样本之间隔多久？这个间隔对 4D 动作的"位移增量"含义有什么约束？
+3. **推理模块的位置**：`prompt` 与 `prompt_simpler` 成对出现在每条任务定义里。R1 的推理模块改写的是哪一个、消耗给哪个模块？如果把它挪到 VLA 输出动作之后，还讲得通吗？
 
-4. **配置权衡**：`loss.action_weight: [1.0, 1.0, 1.0, 0.5]` 里最后那个 0.5 对应哪个维度？为什么它可以和前三项不一样？
+4. **分数读法**：R1 把总平均从 59.6% 提到 77.2%，但 Reasoning 一项只从 70.7% 到 75.9%。这说明了什么样的失败分布？
 
-5. **评估协议**：要让基线表里 CognitiveDrone 的 ADE 0.62 和 PID 的 1.45 并排可比，评估环节至少要固定什么？
+5. **动作维度**：论文的 4D 是 `(Vx, Vy, Vz, omega)` 这类速度量纲的指令，采集脚本落盘成 `dx, dy, dz, angle`。假设你把 `angle` 那一维在训练时冻结不动，飞机会出现什么行为？
 
 <details><summary>参考答案</summary>
 
-1. 先在宿主机上确认 NVIDIA Container Toolkit：跑 `docker run --rm --gpus all nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi`。若失败，把 Docker daemon 的默认 runtime 指到 nvidia——在 /etc/docker/daemon.json 里设 `"default-runtime": "nvidia"` 并注册 nvidia runtime（path 为 /usr/bin/nvidia-container-runtime），然后 `sudo systemctl restart docker`。
+1. **缺训练代码、缺权重、缺评测执行脚本**，而这三样论文都没给——公开产物只有数据集。数据集里的 `data/rlds/train/` 是**数据**不是模型，`data/benchmark/validation/` 是**任务定义**不是评测器。所以能走的路径有两条：自己按 §6 的参数在 OpenVLA 上微调（需要 OpenVLA 的训练侧代码，那是第三方公开的）、再自己写评测循环去跑那 218 份 `setup.json`。论文的 77.2% 是这么来的数字，不是你打开某个脚本就能打印出来的。
 
-2. 说明第 2 节的结构图和正文对不上：按列出的文件，collector/ 下没有 preprocess.py，它要么在别的位置、要么需要自己补。动手时应以实际克隆到的仓库为准（先看目录里到底有什么），缺的预处理步骤按文档给出的参数自己补：`--input_dir`、`--output_dir`、`--image_size 224`、`--normalize_actions true`。
+2. RLDS（Reinforcement Learning Datasets）是 TFDS 之上的一套 episode 组织约定，一条 episode 里按 step 存观测与动作。OpenVLA 的训练侧就吃这个格式，所以论文强调 *"ensure seamless compatibility with OpenVLA"*——**把数据整成 RLDS 省掉的正是「写 dataset 适配层」这一步**。反过来，如果数据是 HDF5 或裸 CSV，就必须自己写 collate 逻辑把图像、指令、离散化动作 token 拼成 OpenVLA 期望的样本。本仓库早先那版指南正是把它错写成了 HDF5。
 
-3. 每 10 帧存一次、30 fps，所以相邻样本间隔 10/30 ≈ 1/3 秒。而 4D 动作是这一间隔内的位移增量：dx/dy 限 [-5, 5] 米、dz 限 [-3, 3] 米、dyaw 限 [-π, π] 弧度——帧间隔一变，同一套量程对应的单步位移也就跟着变，采集与标注必须用同一个间隔。
+3. 改写的是 **`prompt`**，产物是 **`prompt_simpler`**，交给 **VLA** 去出动作。论文的定位是推理模块工作在**控制之前**、频率更低（约 2 Hz 对 10 Hz），作用是「先把任务说清楚」。挪到动作之后就不成立了：动作一旦生成，能做的只剩事后校验，而 R1 的全部收益（Human Recognition +31%）来自**让模型更容易选对门**，那是个前置于决策的动作。顺带说，这也解释了为什么它补得最多的是最弱的两项。
 
-4. 对应最后一维 dyaw（偏航角增量）。前三项 dx/dy/dz 的单位是米（范围 ±5、±5、±3），dyaw 的单位是弧度且范围 [-π, π]，量纲和取值范围都不同；loss 用 smooth_l1、把 dyaw 权重压到 0.5，就是让位置误差在总损失里占更大比重。
+4. 说明**基座模型的失败并不主要发生在推理上**。CognitiveDrone 在 Reasoning 上已有 70.7%，而 Human Recognition 只有 45.2%——短板集中在识别类任务，以及指令本身含混的地方。推理模块的作用主要是「把含混的指令说清楚」，所以它对含混程度最高的两项收益最大，对本来就不弱的推理项只加约 6 个点。**如果只盯着总平均 +17.6%，会误以为这个模块是个通用的推理增强器。**
 
-5. 至少固定数据划分和指标口径：config 里 train/val/test 是 0.8/0.1/0.1，评估要用 /workspace/data/processed/test；指标是 ADE/FDE（米）、Yaw Error（度）、Collision Rate 与 Task Completion（百分比）。划分或指标定义一换，0.62 和 1.45 就不再指同一件事。
+5. `angle` 那一维对应机头朝向。论文的赛道是顺序穿门，机头朝向直接决定**看到的是哪扇门**——冻结它之后，飞机的位置会被前三维带去目标，但相机始终盯着同一个方向，视角不再跟着任务切换，「看哪个门」这件事就失效了。更具体地说：`data.csv` 里 `dy` 恒为 0、`angle` 逐帧从 0.668 降到 0.643 的那趟飞行，正是靠这一维把机头对准门中心的；冻结后这趟飞行会变成侧着穿门。这也说明**四个维度不宜等权重对待**——第四个维度的作用不是「更精细的位移」，而是控制观测。
 
 </details>

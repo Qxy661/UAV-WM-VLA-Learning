@@ -181,50 +181,173 @@ VLA 学的是"看到什么就做什么"：观测加指令进去，动作出来�
 
 ## 10. 关键论文
 
-| 论文 | 机构 | 年份 | 关键贡献 | 链接 |
-|------|------|------|---------|------|
-| WorldVLA: Towards Autoregressive Action World Model | — | 2025 | 自回归动作世界模型，统一动作与图像理解生成 | arXiv:2506.21539 |
-| UniVLA: Learning to Act Anywhere with Task-centric Latent Actions | — | 2025 | 任务中心隐动作，跨具身共享 | arXiv:2505.06111 |
-| Video Prediction Policy: A Generalist Robot Policy with Predictive Visual Representations | — | 2024 | 预测式视觉表示做策略 | arXiv:2412.14803 |
-| Unified Video Action Model | — | 2025 | 视频与动作联合建模 | arXiv:2503.00200 |
-| UP-VLA: A Unified Understanding and Prediction Model for Embodied Agent | — | 2025 | 在 VLM 上加未来预测目标 | arXiv:2501.18867 |
-| DreamVLA: A Vision-Language-Action Model Dreamed with Comprehensive World Knowledge | — | 2025 | 世界知识作为训练目标 | arXiv:2507.04447 |
-| Gate: AeroVerse: UAV-Agent Benchmark Suite | 哈工大 | 2024 | 无人机世界模型基准套件 | arXiv:2408.15511 |
-| WorldGym: World Model as An Environment for Policy Evaluation | — | 2025 | 首个把世界模型当代理环境的方案 | arXiv:2506.00613 |
-| WorldEval: World Model as Real-World Robot Policies Evaluator | — | 2025 | 同上，真机策略评测 | arXiv:2505.19017 |
-| World Models for Cognitive Agents: Transforming Edge Intelligence in Future Networks | — | 2025 | Wireless Dreamer 框架 | arXiv:2506.00417 |
-| How Should World Models Be Evaluated for Embodied Decision-Making? | — | 2026 | 拆词 + L0–L7 证据阶梯 | arXiv:2606.15032 |
-| Do World Models Make Better Robots? A Survey of Evaluation Benchmarks | — | 2026 | 160 个基准里只有 11 个做 VLA 对照 | arXiv:2609.29669 |
-| The Planning Limits of Latent World Models | — | 2026 | 完美预测下 92% → 41%，放大 81 倍无效 | arXiv:2609.39235 |
-| World Models Dream of Success: Diagnosing and Repairing Failure Insensitivity | — | 2026 | 已发布 checkpoint 给失败打高分 | arXiv:2610.09134 |
-| Same World, Different Knowledge: When Isolated Audits Misjudge World-Model Repairs | — | 2026 | 10% 标定误差把成功率从 69% 打到 8% | arXiv:2609.21155 |
-| WoVR: World Models as Reliable Simulators for Post-Training VLA Policies with RL | — | 2026 | 世界模型当 RL 后训练的模拟器 | arXiv:2602.13977 |
-| Imagine-RL: Residual-Confidence-Guided Cross-Attention for World-Model-Augmented VLA RL | — | 2026 | 世界模型当 VLA 的额外信息来源 | arXiv:2609.24033 |
-| RoboCoach: World Models as Active Coaches for Compositional Robot Skills | — | 2026 | 世界模型主动指导技能组合 | arXiv:2609.39685 |
-| Prioritized Rollouts for Efficient World Model-based VLA Policy Optimization | — | 2026 | 想象 rollout 的优先级采样 | arXiv:2609.22879 |
-| Direct Experience World-Model Optimization | — | 2026 | 学到动作模仿之外的世界 | arXiv:2609.37398 |
-| WorldSample: Closed-loop Real-robot RL with World Modelling | — | 2026 | 用世界模型减少真机 rollout | arXiv:2607.02431 |
-| SLIP-VLA: Single-Step Latent Imagination for Policy Learning | — | 2026 | 单步隐空间想象 | arXiv:2609.33575 |
-| DreamFormer: Dream Imitation with a Transformer World Model | — | 2026 | 在隐空间想象内部模仿专家 | arXiv:2610.04540 |
-| JEPA-VLA: Video Predictive Embedding is Needed for VLA Models | — | 2026 | 隐预测嵌入的必要性 | arXiv:2602.11832 |
-| World-Action Models for Robot Learning and Control: A Survey | — | 2026 | 本篇脊柱：WAM 的定义与分类 | arXiv:2609.16074 |
-| World Action Models: A Survey | — | 2026 | 同名综述，WAM 分两族 | arXiv:2606.20781 |
-| World Action Models: The Next Frontier in Embodied AI | — | 2026 | 同名综述，早期的接缝叙述 | arXiv:2605.12090 |
-| ImageWAM: Do WAMs Really Need Video Generation, or Just Image Editing? | — | 2026 | FLOPs 降到 1/6、延迟降到 1/4 | arXiv:2606.19531 |
-| τ₀-WM: A Unified Video-Action World Model for Robotic Manipulation | — | 2026 | 视频-动作统一世界模型 | arXiv:2606.01027 |
-| Magic-W0: A Structured World-Action Foundation Model | — | 2026 | 面向控制的结构化表示 | arXiv:2609.39870 |
-| SplineWAM: Adaptive Action Horizons for World Action Models | — | 2026 | B 样条自适应块长 | arXiv:2609.39873 |
-| Vela: Scaling VLA Models with Adaptive Action Curve Parametrization | — | 2026 | 自适应动作曲线参数化 | arXiv:2610.05230 |
-| AeroAct: Action-Centered World-Action Models for Language-Conditioned Quadrotor Flight | — | 2026 | 语言条件 WAM 上四旋翼 | arXiv:2607.14997 |
-| DroneWAM: Efficient World Action Model for Drone Visual Navigation | — | 2026 | JEPA 式，避开图像生成 | arXiv:2609.33148 |
-| ForeFly: A Dual-Horizon World Action Model for Aerial VLN | — | 2026 | 双时间尺度 | arXiv:2609.33581 |
-| WorldVLN: Autoregressive World Action Model for Aerial VLN | — | 2026 | 空中 VLN 表述成预测驱动 | arXiv:2605.15964 |
-| ImagineUAV: Aerial VLN via World-Action Modeling and Kinodynamic Planning | — | 2026 | 世界动作建模 + 动力学可行规划 | arXiv:2606.01205 |
-| Skytopia: Monocular Drone Navigation with Action-Conditioned Latent World Models | — | 2026 | 丢掉预测器省 59.4% 推理 | arXiv:2609.26007 |
-| AirDreamer: Generalist Drone Navigation with World Models | — | 2026 | 跨未见布局的泛化 | arXiv:2606.03252 |
-| WAM-Nav: Asymmetric Latent World-Action Modeling for Unified Visual Navigation | — | 2026 | 非对称隐空间建模 | arXiv:2606.04907 |
-| SkyJEPA: Learning Long-Horizon World Models for Zero-Shot Sim-to-Real Quadrotors | — | 2026 | 长时程隐空间 + 零样本 sim-to-real | arXiv:2606.23444 |
-| MAD: Mapping-Aware World Models for Agile Quadrotor Flight | — | 2026 | 几何感知的 Dreamer 系 | arXiv:2606.04534 |
+- **[arXiv'25.06] WorldVLA** — *WorldVLA: Towards Autoregressive Action World Model*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2506.21539-b31b1b.svg)](https://arxiv.org/abs/2506.21539)
+  自回归动作世界模型，统一动作与图像理解生成
+
+- **[arXiv'25.05] UniVLA** — *UniVLA: Learning to Act Anywhere with Task-centric Latent Actions*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2505.06111-b31b1b.svg)](https://arxiv.org/abs/2505.06111)
+  任务中心隐动作，跨具身共享
+
+- **[arXiv'24.12] Video Prediction Policy: A Generalist Robot Policy with Predictive Visual Representations**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2412.14803-b31b1b.svg)](https://arxiv.org/abs/2412.14803)
+  预测式视觉表示做策略
+
+- **[arXiv'25.03] Unified Video Action Model**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2503.00200-b31b1b.svg)](https://arxiv.org/abs/2503.00200)
+  视频与动作联合建模
+
+- **[arXiv'25.01] UP-VLA** — *UP-VLA: A Unified Understanding and Prediction Model for Embodied Agent*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2501.18867-b31b1b.svg)](https://arxiv.org/abs/2501.18867)
+  在 VLM 上加未来预测目标
+
+- **[arXiv'25.07] DreamVLA** — *DreamVLA: A Vision-Language-Action Model Dreamed with Comprehensive World Knowledge*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2507.04447-b31b1b.svg)](https://arxiv.org/abs/2507.04447)
+  世界知识作为训练目标
+
+- **[arXiv'24.08] AeroVerse** — *AeroVerse: UAV-Agent Benchmark Suite for Simulating, Pre-training, Finetuning, and Evaluating Aerospace Embodied World Models*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2408.15511-b31b1b.svg)](https://arxiv.org/abs/2408.15511)
+  无人机世界模型基准套件
+
+- **[arXiv'25.06] WorldGym** — *WorldGym: World Model as An Environment for Policy Evaluation*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2506.00613-b31b1b.svg)](https://arxiv.org/abs/2506.00613)
+  首个把世界模型当代理环境的方案
+
+- **[arXiv'25.05] WorldEval** — *WorldEval: World Model as Real-World Robot Policies Evaluator*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2505.19017-b31b1b.svg)](https://arxiv.org/abs/2505.19017)
+  同上，真机策略评测
+
+- **[arXiv'25.06] World Models for Cognitive Agents: Transforming Edge Intelligence in Future Networks**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2506.00417-b31b1b.svg)](https://arxiv.org/abs/2506.00417)
+  Wireless Dreamer 框架
+
+- **[arXiv'26.06] How Should World Models Be Evaluated for Embodied Decision-Making? A Decision-Making-Centric Position**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2606.15032-b31b1b.svg)](https://arxiv.org/abs/2606.15032)
+  拆词 + L0–L7 证据阶梯
+
+- **[arXiv'26.09] Do World Models Make Better Robots? A Survey of Evaluation Benchmarks for Predictive Embodied Intelligence**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.29669-b31b1b.svg)](https://arxiv.org/abs/2609.29669)
+  160 个基准里只有 11 个做 VLA 对照
+
+- **[arXiv'26.09] The Planning Limits of Latent World Models**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.39235-b31b1b.svg)](https://arxiv.org/abs/2609.39235)
+  完美预测下 92% → 41%，放大 81 倍无效
+
+- **[arXiv'26.10] World Models Dream of Success** — *World Models Dream of Success: Diagnosing and Repairing Failure Insensitivity in Robot World Models*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2610.09134-b31b1b.svg)](https://arxiv.org/abs/2610.09134)
+  已发布 checkpoint 给失败打高分
+
+- **[arXiv'26.09] Same World, Different Knowledge** — *Same World, Different Knowledge: When Isolated Audits Misjudge World-Model Repairs*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.21155-b31b1b.svg)](https://arxiv.org/abs/2609.21155)
+  10% 标定误差把成功率从 69% 打到 8%
+
+- **[arXiv'26.02] WoVR** — *WoVR: World Models as Reliable Simulators for Post-Training VLA Policies with RL*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2602.13977-b31b1b.svg)](https://arxiv.org/abs/2602.13977)
+  世界模型当 RL 后训练的模拟器
+
+- **[arXiv'26.09] Imagine-RL** — *Imagine-RL: Residual-Confidence-Guided Cross-Attention for World-Model-Augmented VLA Reinforcement Learning*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.24033-b31b1b.svg)](https://arxiv.org/abs/2609.24033)
+  世界模型当 VLA 的额外信息来源
+
+- **[arXiv'26.09] RoboCoach** — *RoboCoach: World Models as Active Coaches for Compositional Robot Skills*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.39685-b31b1b.svg)](https://arxiv.org/abs/2609.39685)
+  世界模型主动指导技能组合
+
+- **[arXiv'26.09] Prioritized Rollouts for Efficient World Model-based Vision-Language-Action Policy Optimization**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.22879-b31b1b.svg)](https://arxiv.org/abs/2609.22879)
+  想象 rollout 的优先级采样
+
+- **[arXiv'26.09] Direct Experience World-Model Optimization: Learning the World Beyond Action Imitation**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.37398-b31b1b.svg)](https://arxiv.org/abs/2609.37398)
+  学到动作模仿之外的世界
+
+- **[arXiv'26.07] WorldSample** — *WorldSample: Closed-loop Real-robot RL with World Modelling*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2607.02431-b31b1b.svg)](https://arxiv.org/abs/2607.02431)
+  用世界模型减少真机 rollout
+
+- **[arXiv'26.09] SLIP-VLA** — *SLIP-VLA: Single-Step Latent Imagination for Policy Learning in Vision-Language-Action Models*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.33575-b31b1b.svg)](https://arxiv.org/abs/2609.33575)
+  单步隐空间想象
+
+- **[arXiv'26.10] DreamFormer** — *DreamFormer: Dream Imitation with a Transformer World Model for Language-Conditioned Robotic Manipulation*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2610.04540-b31b1b.svg)](https://arxiv.org/abs/2610.04540)
+  在隐空间想象内部模仿专家
+
+- **[arXiv'26.02] JEPA-VLA** — *JEPA-VLA: Video Predictive Embedding is Needed for VLA Models*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2602.11832-b31b1b.svg)](https://arxiv.org/abs/2602.11832)
+  隐预测嵌入的必要性
+
+- **[arXiv'26.09] World-Action Models for Robot Learning and Control: A Survey**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.16074-b31b1b.svg)](https://arxiv.org/abs/2609.16074)
+  本篇脊柱：WAM 的定义与分类
+
+- **[arXiv'26.06] World Action Models: A Survey**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2606.20781-b31b1b.svg)](https://arxiv.org/abs/2606.20781)
+  同名综述，WAM 分两族
+
+- **[arXiv'26.05] World Action Models: The Next Frontier in Embodied AI**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2605.12090-b31b1b.svg)](https://arxiv.org/abs/2605.12090)
+  同名综述，早期的接缝叙述
+
+- **[arXiv'26.06] ImageWAM** — *ImageWAM: Do World Action Models Really Need Video Generation, or Just Image Editing?*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2606.19531-b31b1b.svg)](https://arxiv.org/abs/2606.19531)
+  FLOPs 降到 1/6、延迟降到 1/4
+
+- **[arXiv'26.06] $τ_0$-WM: A Unified Video-Action World Model for Robotic Manipulation**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2606.01027-b31b1b.svg)](https://arxiv.org/abs/2606.01027)
+  视频-动作统一世界模型
+
+- **[arXiv'26.09] Magic-W0** — *Magic-W0: A Structured World-Action Foundation Model for Physical Intelligence*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.39870-b31b1b.svg)](https://arxiv.org/abs/2609.39870)
+  面向控制的结构化表示
+
+- **[arXiv'26.09] SplineWAM** — *SplineWAM: Adaptive Action Horizons for World Action Models via B-Spline Representations*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.39873-b31b1b.svg)](https://arxiv.org/abs/2609.39873)
+  B 样条自适应块长
+
+- **[arXiv'26.10] Vela: Scaling Vision-Language-Action Models with Adaptive Action Curve Parametrization**  
+  [![arXiv](https://img.shields.io/badge/arXiv-2610.05230-b31b1b.svg)](https://arxiv.org/abs/2610.05230)
+  自适应动作曲线参数化
+
+- **[arXiv'26.07] AeroAct** — *AeroAct: Action-Centered World-Action Models for Language-Conditioned Quadrotor Flight*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2607.14997-b31b1b.svg)](https://arxiv.org/abs/2607.14997)
+  语言条件 WAM 上四旋翼
+
+- **[arXiv'26.09] DroneWAM** — *DroneWAM: Efficient World Action Model for Drone Visual Navigation*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.33148-b31b1b.svg)](https://arxiv.org/abs/2609.33148)
+  JEPA 式，避开图像生成
+
+- **[arXiv'26.09] ForeFly** — *ForeFly: A Dual-Horizon World Action Model for Aerial Vision-Language Navigation*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.33581-b31b1b.svg)](https://arxiv.org/abs/2609.33581)
+  双时间尺度
+
+- **[arXiv'26.05] WorldVLN** — *WorldVLN: Autoregressive World Action Model for Aerial Vision-Language Navigation*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2605.15964-b31b1b.svg)](https://arxiv.org/abs/2605.15964)
+  空中 VLN 表述成预测驱动
+
+- **[arXiv'26.06] ImagineUAV** — *ImagineUAV: Aerial Vision-Language Navigation via World-Action Modeling and Kinodynamic Planning*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2606.01205-b31b1b.svg)](https://arxiv.org/abs/2606.01205)
+  世界动作建模 + 动力学可行规划
+
+- **[arXiv'26.09] Skytopia** — *Skytopia: Monocular Drone Navigation with Action-Conditioned Latent World Models*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2609.26007-b31b1b.svg)](https://arxiv.org/abs/2609.26007)
+  丢掉预测器省 59.4% 推理
+
+- **[arXiv'26.06] AirDreamer** — *AirDreamer: Generalist Drone Navigation with World Models*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2606.03252-b31b1b.svg)](https://arxiv.org/abs/2606.03252)
+  跨未见布局的泛化
+
+- **[arXiv'26.06] WAM-Nav** — *WAM-Nav: Asymmetric Latent World-Action Modeling for Unified Visual Navigation*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2606.04907-b31b1b.svg)](https://arxiv.org/abs/2606.04907)
+  非对称隐空间建模
+
+- **[arXiv'26.06] SkyJEPA** — *SkyJEPA: Learning Long-Horizon World Models for Zero-Shot Sim-to-Real Control of Quadrotors*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2606.23444-b31b1b.svg)](https://arxiv.org/abs/2606.23444)
+  长时程隐空间 + 零样本 sim-to-real
+
+- **[arXiv'26.06] MAD** — *MAD: Mapping-Aware World Models for Agile Quadrotor Flight*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2606.04534-b31b1b.svg)](https://arxiv.org/abs/2606.04534)
+  几何感知的 Dreamer 系
 
 ---
 

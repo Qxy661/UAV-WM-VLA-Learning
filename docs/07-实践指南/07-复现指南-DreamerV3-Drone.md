@@ -4,7 +4,7 @@
 
 DreamerV3-Drone 复现的是论文 "Dream to Fly"（arXiv:2501.14377，苏黎世大学 RPG 实验室），将 DreamerV3 世界模型应用于无人机自主竞速任务。
 
-> **注意**：原论文代码可能尚未完全公开。本指南基于论文描述和 DreamerV3 公开实现编写，部分细节可能需要根据实际代码进行调整。
+> **注意**：论文只点名了它用的 DreamerV3 底座（PyTorch 版 `dreamerv3-torch`），**没有放出自己那套无人机竞速环境的代码**（Flightmare + Habitat 的接法、赛道生成、奖励实现都不在仓库里）。本指南据论文描述与 DreamerV3 公开实现编写，凡是没有出处的地方都在下文标注了。
 
 ---
 
@@ -26,20 +26,24 @@ DreamerV3-Drone 复现的是论文 "Dream to Fly"（arXiv:2501.14377，苏黎世
 - **论文标题**: Dream to Fly: Model-Based Reinforcement Learning for Vision-Based Drone Flight
 - **arXiv**: [2501.14377](https://arxiv.org/abs/2501.14377)
 - **机构**: University of Zurich (UZH), Robotics and Perception Group (RPG)
-- **核心思想**: 使用 DreamerV3 世界模型在"梦境"（想象的轨迹）中学习无人机竞速策略，无需在真实/仿真环境中进行大量试错。
+- **核心思想**: 用 DreamerV3 从像素直接学到无人机竞速策略，不依赖中间表征，也不用模仿学习做引导（bootstrapping）。真机只做硬件在环（HIL）验证。
 
 ### 为什么使用世界模型？
 
-| 方法 | 样本效率 | 安全性 | 泛化性 |
-|---|---|---|---|
-| Model-Free RL (PPO, SAC) | 低（需要大量交互） | 差（探索时可能碰撞） | 中 |
-| 模仿学习 (BC) | 中（需要专家数据） | 好 | 差（受限于专家数据） |
-| **世界模型 (DreamerV3)** | **高（在想象中训练）** | **好（减少真实交互）** | **强** |
+论文给的对照不是一张评分表，而是一句样本效率判断加一句代价：
 
-DreamerV3 的优势在于：
-1. 从少量真实交互中学习环境动力学模型
-2. 在学到的"世界模型"中想象未来轨迹
-3. 在想象中优化策略，大幅减少真实环境交互次数
+| 路线 | 论文里的说法 |
+|---|---|
+| Model-Free RL（PPO、SAC） | 在 2000 万次环境交互内**学不出可用机动**，奖励始终很低；两条基线都得先做中间表征或模仿学习引导才能训起来 |
+| 模仿学习（IL）引导 + RL 微调 | 前人工作（论文 [10]）的做法：先把视觉输入压成只含赛道门的二值掩码，再用 IL 引导、再 RL 微调。本文的目的就是绕开这套 |
+| **世界模型（DreamerV3）** | 从像素直接学到策略，三条赛道都收敛，既不要中间表征也不要 IL 引导。**代价是训练时间显著更长——论文自述约 240 小时** |
+
+DreamerV3 的三步是这样接起来的：
+1. 在**仿真环境**里采集交互数据，学到环境动力学
+2. 在学到的「世界模型」里想象未来轨迹
+3. 在想象里训练 Actor-Critic，于是策略梯度不必再花真实交互
+
+> **勘误（2026-10）**：本节早先有一张「Model-Free / 模仿学习 / 世界模型」三行 × 「样本效率 / 安全性 / 泛化性」三列的高低评分表，另有一条「无需在真实/仿真环境中进行大量试错」。两者都对不上原文。**（一）那张评分表没有出处**：论文没有对安全性、泛化性做任何对比评分，只给了样本效率这一条判断。**（二）训练完全在仿真里做**：原文 *"Our experiments were conducted within a high-fidelity simulation environment combining Flightmare and Agilicious for realistic quadrotor dynamics and track generation"*，再接入 Habitat 渲染器让**渲染器在环**跑 *"several thousand frames per second"*；真机只用于 HIL——图像由 Habitat 渲染后喂进网络，指令下发到真实平台。所以「无需在仿真环境中试错」是反的：**试错全在仿真里**。**（三）世界模型不是白拿的**：原文 *"this comes at the cost of a significantly longer training time than the baselines, reaching 240 hours"*。这一条早先整节都没写，才让那张表显得只有优势没有代价。
 
 ---
 
@@ -100,50 +104,45 @@ Critic: h_t → V(h_t)       (隐状态 → 状态价值)
 ### 3.1 基础环境
 
 ```bash
-# 创建环境
-conda create -n dreamerdrone python=3.10 -y
+# 创建环境（dreamerv3-torch 的 README 要求 python 3.11）
+conda create -n dreamerdrone python=3.11 -y
 conda activate dreamerdrone
 
-# 安装 PyTorch
-pip install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu121
+# 安装 PyTorch（对齐 dreamerv3-torch 的 requirements：torch==2.4.1）
+pip install torch==2.4.1 torchvision
 ```
 
 ### 3.2 DreamerV3 框架安装
 
-DreamerV3 有多个开源实现，推荐使用以下之一：
+论文点名的底座是 PyTorch 版 DreamerV3：
 
 ```bash
-# 方法 1: 使用 danijar 的原始实现
-git clone https://github.com/danijar/dreamerv3.git
-cd dreamerv3
-pip install -e .
-
-# 方法 2: 使用 World Models Lab 的实现
 git clone https://github.com/NM512/dreamerv3-torch.git
 cd dreamerv3-torch
 pip install -r requirements.txt
-
-# 方法 3: 使用 cleanrl 的实现
-pip install cleanrl
 ```
+
+> **勘误（2026-10）**：本节早先并列了三个「方法」，底座被写成了三选一。**（一）** `pip install cleanrl` 在本任务上装不到东西——cleanrl 里没有 DreamerV3 无人机竞速的实现。**（二）** `danijar/dreamerv3` 是 **JAX** 实现，它的 `requirements.txt` 装的是 `jax[cuda12]`，与论文不对路。论文写明 *"We implemented DreamerV3 in PyTorch, leveraging the dreamerv3-torch open-source implementation and building on top of the stable-baselines3 library"*，所以**唯一对得上论文的是 PyTorch 版**。**（三）** 环境版本：早先写的 `python=3.10` 与 `torch==2.1.2` 都对不上仓库，dreamerv3-torch 的 README 逐字是 *"Get dependencies with python 3.11"*，其 `requirements.txt` 钉的是 `torch==2.4.1`。
+>
+> 另需注意：dreamerv3-torch 的 README 现在挂着一条 *"Notice: Outdated Implementation"*，说明它的实现早于 DreamerV3 后续更新，并指向维护者新仓库 `NM512/r2dreamer`（自称约快 5 倍）。照论文原样复现仍用 dreamerv3-torch，但要知道它是旧版实现。
 
 ### 3.3 无人机竞速环境
 
 ```bash
-# 安装 gym-pybullet-drones（PyBullet 无人机仿真）
-pip install gym-pybullet-drones
-
-# 或安装 Flightmare（如果论文使用）
+# 动力学与赛道生成：Flightmare（论文用的那一层）
 git clone https://github.com/uzh-rpg/flightmare.git
 cd flightmare
 pip install -e .
 
-# 安装通用依赖
-pip install gymnasium
+# 渲染器在环：Habitat（论文把它的图像流直接接进训练循环）
+# 平台参数与真机平台来自 Agilicious：https://github.com/uzh-rpg/agilicious
+
+# 训练侧依赖
 pip install stable-baselines3
 pip install tensorboard
-pip install wandb
 ```
+
+> **勘误（2026-10）**：本节早先装的是 `gym-pybullet-drones`，并把 `gymnasium`、`wandb` 列为通用依赖。**论文没有用 PyBullet**，它的仿真栈是原文那句 *"combining Flightmare and Agilicious for realistic quadrotor dynamics and track generation"*，外加 Habitat 做渲染器在环。`gym-pybullet-drones` 那份依赖已删。`gymnasium` 也不对：dreamerv3-torch 的 `requirements.txt` 钉的是老 API 的 `gym==0.22.0`。`wandb` 在仓库依赖里同样不存在，日志走 tensorboard。
 
 ### 3.4 验证环境
 
@@ -151,15 +150,14 @@ pip install wandb
 import torch
 print(f"PyTorch: {torch.__version__}")
 print(f"CUDA: {torch.cuda.is_available()}")
-
-import gymnasium as gym
-import gym_pybullet_drones
-# 测试无人机环境
-env = gym.make("hover-aviary-v0")
-obs, info = env.reset()
-print(f"Observation shape: {obs.shape}")
-env.close()
 ```
+
+```bash
+# 先跑通底座自带的最小任务，确认入口能起来（上游 README 的冒烟测试就是这条）
+python3 dreamer.py --configs dmc_vision --task dmc_walker_walk --logdir ./logdir/smoke
+```
+
+> 无人机竞速任务要自己把 Flightmare + Habitat 接成环境再注册 config，没有现成的 pip 包可装——早先那段 `gym.make("hover-aviary-v0")` 的「测试无人机环境」是编的，`hover-aviary-v0` 属于 `gym-pybullet-drones`，与本文栈无关，已删。
 
 ---
 
@@ -167,18 +165,22 @@ env.close()
 
 ### 4.1 环境概述
 
-无人机竞速环境通常包含：
+论文这套环境由三层拼起来：
 
-- **仿真器**: PyBullet / Flightmare / Gazebo
-- **任务**: 穿越赛道门、避开障碍、尽快完成赛道
-- **观测**: 第一人称视角图像（FPV）或状态向量
-- **动作**: 电机推力指令或速度指令
+- **动力学与赛道**: Flightmare 提供四旋翼动力学与赛道生成，物理参数取自 Agilicious——质量 `m = 0.6 kg`、转动惯量 `J = diag([0.002410, 0.001800, 0.003759]) kg·m²`、旋翼力矩常数 `κ = 0.022`、臂长 `0.14 m`，最大旋翼推力限到 `4.0 N`（推重比 2.7）
+- **渲染器**: Habitat，在环跑 *"several thousand frames per second"*，训练时直接拿到图像流
+- **观测**: 相机图像缩放为 **64×64 RGB**（论文原话 *"Input images from the simulated camera were resized to 64×64 RGB pixels"*）
+- **动作**: **集体推力 + 机体角速度**（原文 *"collective thrust and bodyrate commands"*），不是四个电机的推力
+- **赛道**: Circle / Kidney / Figure 8 三条，每条跑 **5 个随机种子**
+- **奖励**: 主项是进度项 `b₁(‖g_k − p_{k−1}‖ − ‖g_k − p_k‖)`（`g` 是目标门中心、`p` 是无人机位置），另含机体角速度项；`b₂` 走课程学习，初始为 `0.0`，总奖励超过 `50.0` 后逐渐加大
 
 ### 4.2 环境接口
 
+> **下面这段只是接口示意，不是论文或仓库里的代码。** 真实的观测、动作与奖励如 4.1 所列；`gym.Env` 五元组 `(obs, reward, terminated, truncated, info)` 是新版 Gymnasium 的接口，dreamerv3-torch 用的是老 API（`gym==0.22.0`）的四元组。
+
 ```python
 """
-无人机竞速环境接口（基于 Gymnasium）
+无人机竞速环境接口示意（非论文/仓库代码）
 """
 import gymnasium as gym
 import numpy as np
@@ -186,16 +188,16 @@ import numpy as np
 class DroneRacingEnv(gym.Env):
     def __init__(self, config):
         super().__init__()
-        # 观测空间：FPV 图像
+        # 观测空间：相机图像 64x64 RGB
         self.observation_space = gym.spaces.Box(
             low=0, high=255,
             shape=(3, 64, 64),   # RGB 64x64
             dtype=np.uint8
         )
-        # 动作空间：4 个电机推力
+        # 动作空间：集体推力 + 三轴机体角速度
         self.action_space = gym.spaces.Box(
             low=-1, high=1,
-            shape=(4,),          # 4 个电机
+            shape=(4,),          # [thrust, wx, wy, wz]
             dtype=np.float32
         )
         # 赛道门位置
@@ -250,23 +252,20 @@ class DroneRacingEnv(gym.Env):
 
 ### 4.3 赛道配置
 
-```python
-# 定义赛道门位置
-race_track_config = {
-    "gates": [
-        {"position": [5, 0, 2], "orientation": [0, 0, 0], "type": "square"},
-        {"position": [10, 3, 2.5], "orientation": [0, 0, 45], "type": "square"},
-        {"position": [15, 0, 1.5], "orientation": [0, 0, 0], "type": "square"},
-        {"position": [10, -3, 3], "orientation": [0, 0, -45], "type": "square"},
-    ],
-    "max_steps": 1000,
-    "dt": 0.02,  # 仿真时间步
-}
+```yaml
+# 论文用的三条赛道；门位姿由 Flightmare 的赛道生成器给出
+track: circle      # 另两条：kidney、figure8
+time_limit: 1000   # 单回合计步上限
+seed: 0            # 每条赛道跑 5 个种子：0..4
 ```
+
+> **勘误（2026-10）**：本节早先给了一份四道门的 `position` / `orientation` 坐标表。**论文与仓库都没有公开门的位姿**——只有赛道名（Circle、Kidney、Figure 8），坐标是照「一条赛道应该长什么样」编的，已删。
 
 ---
 
 ## 5. 模型架构
+
+> **本节的代码是结构示意，不是论文或仓库的实现。** 论文对自己那套网络的交代只有一句：*"we adopted the hyperparameters detailed in [13] and used the Large (L) network configuration described in Appendix B of [41]. This configuration consists of four-layer MLPs with 768 units for the decoder, predictors, actor, and critic networks, and 2048 recurrent units for the world model's recurrent component."* 也就是 §5.2 里的 actor / critic 各是**四层 768 单元**（不是下面写的 512），世界模型的循环部分是 **2048 单元**。想象时域 `T = 16`，这是论文自己设的，与 dreamerv3-torch 默认的 `imag_horizon: 15` 不同。
 
 ### 5.1 世界模型（RSSM + 编码器 + 解码器）
 
@@ -379,48 +378,45 @@ class Critic(nn.Module):
 ### 6.1 训练配置
 
 ```yaml
-# configs/dreamer_drone.yaml
-env:
-  name: "DroneRacing-v0"
-  image_size: 64
-  action_repeat: 2
-  max_episode_steps: 1000
-
-world_model:
-  stoch_dim: 32
-  deter_dim: 512
-  obs_encoding_dim: 1024
-  learning_rate: 3e-4
-  grad_clip: 100.0
-
-actor_critic:
-  imagination_horizon: 15        # 想象步数
-  actor_learning_rate: 1e-4
-  critic_learning_rate: 1e-4
-  entropy_coeff: 0.003
-  discount: 0.997
-  lambda_gae: 0.95
-
-training:
-  total_steps: 1_000_000
-  batch_size: 50
-  sequence_length: 64
-  buffer_capacity: 1_000_000
-  prefill_steps: 10_000          # 预填充 Buffer 的随机交互步数
-  train_every: 5                 # 每 5 步训练一次
-  log_every: 1000
-  checkpoint_every: 50000
+# 上游 configs.yaml 的 defaults 段（下面是其中的真实键名与默认值）
+task: drone_racing     # 无人机任务需自己接 Flightmare + Habitat 后注册
+size: [64, 64]         # 观测缩放到 64x64 RGB
+action_repeat: 2
+time_limit: 1000
+seed: 0
+steps: 1e6             # 论文跑到 2e7 量级，见 6.4
+prefill: 2500          # 随机交互预热步数
+batch_size: 16
+batch_length: 64       # 序列长度
+train_ratio: 512
+dyn_hidden: 512
+dyn_deter: 512         # 确定性状态维度
+dyn_stoch: 32          # 随机状态维度
+dyn_discrete: 32
+units: 512             # MLP 单元数（论文用的是 Large 配置的 768）
+imag_horizon: 15       # 想象时域（论文自己设 T = 16）
+actor: {layers: 2, lr: 3e-5, entropy: 3e-4, grad_clip: 100.0}
+critic: {layers: 2, lr: 3e-5, grad_clip: 100.0, slow_target: True}
+kl_free: 1.0
+eval_every: 1e4
+eval_episode_num: 10
+device: 'cuda:0'
+precision: 32
 ```
+
+> **勘误（2026-10）**：本节早先给了一份 `configs/dreamer_drone.yaml`，分组键是 `env / world_model / actor_critic / training`，里面写着 `obs_encoding_dim: 1024`、`learning_rate: 3e-4`、`entropy_coeff: 0.003`、`discount: 0.997`、`lambda_gae: 0.95`、`buffer_capacity`、`train_every`、`checkpoint_every`。**这些没有一个在上游**：dreamerv3-torch 的配置是**单文件 `configs.yaml` + `--configs <名字>` 覆写**，没有 `configs/` 目录、没有按项目分的 YAML，也没有这些键名。上表已换成 `configs.yaml` 里实际存在的键与默认值；其中 `imag_horizon: 15` 是上游默认，论文的想象时域是 **T = 16**；`units: 512` 是上游默认，论文用的是 **768**。另外 `lambda_gae` / `discount` 这类 PPO 式写法也不适用——DreamerV3 的 critic 走 `symlog_disc` 分布加 `slow_target`，不是 GAE。
 
 ### 6.2 训练脚本
 
 ```bash
-# 单 GPU 训练
-python train.py --config configs/dreamer_drone.yaml
+# 单卡训练。入口是 dreamer.py，不是 train.py
+python3 dreamer.py --logdir ./logdir/drone_racing --seed 0 --steps 2e7 --device cuda:0
 
-# 使用 wandb 追踪实验
-python train.py --config configs/dreamer_drone.yaml --wandb_project dreamer-drone
+# 日志直接看 tensorboard
+tensorboard --logdir ./logdir
 ```
+
+> **勘误（2026-10）**：本节早先写的是 `python train.py --config configs/dreamer_drone.yaml` 与一条 `--wandb_project` 变体。**仓库里没有 `train.py`**（入口是 `dreamer.py`），没有 `configs/dreamer_drone.yaml`，`--wandb_project` 这个参数也不存在（日志走 tensorboard，依赖里没有 wandb）。
 
 ### 6.3 训练循环概览
 
@@ -429,52 +425,60 @@ python train.py --config configs/dreamer_drone.yaml --wandb_project dreamer-dron
 DreamerV3 训练循环概览（非完整代码）
 """
 def train(config):
-    env = make_env(config.env)
-    world_model = WorldModel(config.world_model)
-    actor = Actor(config.actor_critic)
-    critic = Critic(config.actor_critic)
-    buffer = ReplayBuffer(config.training.buffer_capacity)
+    env = make_env(config.task)
+    world_model = WorldModel(config)
+    actor = Actor(config)
+    critic = Critic(config)
+    buffer = ReplayBuffer()
 
     # 阶段 1: 预填充随机交互数据
-    obs, _ = env.reset()
-    for _ in range(config.training.prefill_steps):
+    obs = env.reset()
+    for _ in range(config.prefill):
         action = env.action_space.sample()
-        next_obs, reward, terminated, truncated, info = env.step(action)
-        buffer.add(obs, action, reward, terminated)
-        obs = next_obs if not (terminated or truncated) else env.reset()[0]
+        next_obs, reward, done, info = env.step(action)
+        buffer.add(obs, action, reward, done)
+        obs = next_obs if not done else env.reset()
 
     # 阶段 2: 主训练循环
-    obs, _ = env.reset()
-    for step in range(config.training.total_steps):
-        # 1. 使用 Actor 与真实环境交互
+    obs = env.reset()
+    for step in range(int(config.steps)):
+        # 1. 使用 Actor 与仿真环境交互
         state = world_model.obs_to_state(obs)
         action = actor(state).sample()
-        next_obs, reward, terminated, truncated, info = env.step(action)
-        buffer.add(obs, action, reward, terminated)
-        obs = next_obs if not (terminated or truncated) else env.reset()[0]
+        next_obs, reward, done, info = env.step(action)
+        buffer.add(obs, action, reward, done)
+        obs = next_obs if not done else env.reset()
 
         # 2. 训练世界模型
-        if step % config.training.train_every == 0:
-            batch = buffer.sample(config.training.batch_size, config.training.sequence_length)
+        if step % config.train_ratio == 0:
+            batch = buffer.sample(config.batch_size, config.batch_length)
             world_model_loss = world_model.train_step(batch)
 
             # 3. 在想象中训练 Actor-Critic
             initial_states = world_model.encode(batch.observations[:, 0])
-            imagination = world_model.imagine(initial_states, actor, config.actor_critic.imagination_horizon)
-            actor_loss, critic_loss = train_actor_critic(imagination, actor, critic, config.actor_critic)
+            imagination = world_model.imagine(initial_states, actor, config.imag_horizon)
+            actor_loss, critic_loss = train_actor_critic(imagination, actor, critic, config)
 
-        # 4. 日志与检查点
-        if step % config.training.log_every == 0:
+        # 4. 日志与评估
+        if step % config.log_every == 0:
             log_metrics(step, world_model_loss, actor_loss, critic_loss)
 ```
 
 ### 6.4 训练资源需求
 
-| 配置 | GPU 显存 | 训练时间（估计） |
-|---|---|---|
-| 64x64 图像, batch=50 | ~6 GB | ~12 小时 |
-| 128x128 图像, batch=50 | ~10 GB | ~24 小时 |
-| 64x64 图像, batch=100 | ~10 GB | ~8 小时 |
+论文只交代了硬件与总时长，没有按配置分行的显存表：
+
+| 项目 | 论文里的数 |
+|---|---|
+| 硬件 | 单张 **NVIDIA Quadro RTX 8000**（原文 *"All experiments were performed on a single Quadro RTX 8000"*） |
+| 训练时长 | **约 240 小时**收敛（原文 *"requiring approximately 240 hours to converge"*） |
+| 输入分辨率 | 64×64 RGB |
+| 并行种子 | 三条赛道各 5 个随机种子 |
+| 基线规模 | PPO / SAC 各跑到 **2000 万次**环境交互，仍学不出可用机动 |
+
+> **勘误（2026-10）**：本节早先有一张三行的「GPU 显存 / 训练时间（估计）」表——`64x64 batch=50 → ~6 GB / ~12 小时`、`128x128 batch=50 → ~10 GB / ~24 小时`、`64x64 batch=100 → ~10 GB / ~8 小时`。**这张表在论文和仓库里都查不到**：论文全文 `GPU`、`A100` 零命中，唯一写出的硬件是那张 Quadro RTX 8000，唯一写出的时长是约 240 小时。表已删，换成本节上面那五行论文原话。
+>
+> 那张表留下来的价值在下面那个动手验证里：它三行能反解出一个 **2.00 GB 的固定项**，而这个数与 07/03（ResNet-50 表）、07/04（FlightDiffusion 表）解出来的一模一样——三个不同项目、三种不同模型解出同一个两位有效数字的整数，说明它更像估表时的同一个习惯，而不是三次独立测量。那个演示保留，它教的正是怎么看出这类表有问题。
 
 ---
 
@@ -483,22 +487,24 @@ def train(config):
 ### 7.1 运行评估
 
 ```bash
-python evaluate.py \
-    --checkpoint checkpoints/dreamer_drone_500000.pt \
-    --num_episodes 50 \
-    --render True \
-    --output_dir results/
+# 评估挂在训练循环里，没有独立的评估脚本
+python3 dreamer.py --logdir ./logdir/drone_racing --evaldir ./evaldir/drone_racing \
+    --eval_every 1e4 --eval_episode_num 10
 ```
+
+> **勘误（2026-10）**：本节早先写的是 `python evaluate.py --checkpoint ... --num_episodes 50 --render True --output_dir results/`。**仓库里没有 `evaluate.py`**，也没有这套参数——上游的评估是训练时按 `eval_every`（默认 1e4 步）挂 `eval_episode_num`（默认 10 条）回合，结果写进 `--evaldir`。`--render` 也不是它的开关。
 
 ### 7.2 评估指标
 
-| 指标 | 说明 |
+| 指标 | 论文里怎么用 |
 |---|---|
-| **Completion Rate** | 成功通过所有门的百分比 |
-| **Lap Time** | 完成一圈的平均时间（秒） |
-| **Collision Rate** | 发生碰撞的百分比 |
-| **Average Reward** | 平均累积奖励 |
-| **Sample Efficiency** | 达到目标性能所需的环境交互步数 |
+| **Episode Reward** | 主结果：三条赛道 × 5 个种子的奖励曲线（论文 Fig. 3） |
+| **重建观测** | 世界模型质量：0.4M / 1M / 10M 步时的重建对比真值观测（论文 Fig. 4） |
+| **真机-仿真轨迹与速度剖面** | 迁移质量：同一条 Figure 8 赛道上仿真与真机的轨迹、速度剖面与相机指向对比（论文 Fig. 6） |
+| **峰值速度** | 真机 HIL 部署达到 *"speeds of up to 9 m/s"* |
+
+> **勘误（2026-10）**：本节早先列了五项指标——Completion Rate、Lap Time、Collision Rate、Average Reward、Sample Efficiency。**前四项论文里都不存在**：全文检索 `Completion`、`lap time`、`crash`、`success rate` 均**零命中**，评价体系就是奖励曲线加重建图，加真机的轨迹与速度对比。改成了上表。
+
 
 ### 7.3 可视化想象轨迹
 
@@ -521,14 +527,15 @@ def visualize_imagination(world_model, actor, initial_obs):
     save_video(imagined_frames, "imagination.mp4", fps=10)
 ```
 
-### 7.4 DreamerV3 vs 基线对比
+### 7.4 与基线的真实对比
 
-| 方法 | Completion Rate | Avg Lap Time | Sample Efficiency |
-|---|---|---|---|
-| PPO (Model-Free) | 45% | 12.3s | 500K steps |
-| SAC (Model-Free) | 52% | 11.1s | 400K steps |
-| BC (Imitation) | 68% | 9.8s | 100K demos |
-| **DreamerV3** | **82%** | **8.2s** | **50K steps** |
+论文的对比只有一张奖励曲线图（Fig. 3）：三条赛道（Circle、Kidney、Figure 8），每条 **5 个随机种子**，画平均奖励与标准差。结论是 DreamerV3 三条赛道都收敛，PPO 与 SAC **在 2000 万次环境交互内没有任何可观的训练进展**——原文 *"none PPO nor SAC are able to achieve any considerable training in 20 million environment interactions, while DreamerV3 is able to train to convergence for the three tracks"*，并且两者 *"fail to execute any meaningful flight maneuvers, resulting in consistently low reward values"*。两条模型无关基线用的是 CNN + 四层 768 单元的 MLP（actor 与 critic 各一套）。
+
+论文**没有把行为克隆（BC）当基线跑过**，BC 与那套「二值掩码 + 模仿学习引导」的做法只在 Related Work 里作为前人路线出现。
+
+代价要一起看：DreamerV3 在 **10M 步量级**收敛（Fig. 4 的重建对比分别取 0.4M / 1M / 10M 步），训练约 **240 小时**，原文自述这比基线 *"significantly longer"*。样本效率上的优势没有「一个数量级」那么夸张——是 DreamerV3 在 10M 步收敛、基线跑到 20M 步仍学不出东西，**2 倍量级的步数差加基线完全失败**。
+
+> **勘误（2026-10）**：本节早先有一张 Completion Rate 对比表——`PPO 45% / 12.3s / 500K steps`、`SAC 52% / 11.1s / 400K steps`、`BC 68% / 9.8s / 100K demos`、`DreamerV3 82% / 8.2s / 50K steps`。**这十二个数一个都不在论文里**：论文的「完成率」「圈速」两个词零命中，没有把 BC 跑成基线，也没有 50K 步这种样本效率数字（真实量级是 10M 步收敛、约 240 小时）。表已删，换成上面的真实对比。
 
 ---
 
@@ -570,16 +577,21 @@ def visualize_imagination(world_model, actor, initial_obs):
 # 4. 使用 free bits 防止 KL 坍塌
 ```
 
-### Q5: PyBullet 无人机仿真性能差
+### Q5: 训练吞吐上不去
+
+瓶颈几乎总在渲染而不是动力学——论文让渲染器在环，整条流水线跑到 *"several thousand frames per second"* 才够用。可查的方向：
+
+```yaml
+action_repeat: 2        # 用动作重复减少仿真步数（上游默认就是 2）
+size: [64, 64]          # 观测缩放；分辨率是激活与渲染成本的主要杠杆
+```
 
 ```bash
-# 1. 使用 DIRECT 模式而非 GUI 模式（训练时不需要渲染）
-env = gym.make("DroneRacing-v0", gui=False)
-
-# 2. 使用 action_repeat 减少仿真步数
-# 3. 并行化多个环境实例
-import multiprocessing
+# 并行环境实例（上游有 parallel 开关）
+--parallel True
 ```
+
+> **勘误（2026-10）**：本节早先写的是「PyBullet 无人机仿真性能差」，并给了 `env = gym.make("DroneRacing-v0", gui=False)`。**这个项目和这个环境名都不存在**（`DroneRacing-v0` 是编的，PyBullet 也不是本文的仿真器），已删。本文栈是 Flightmare + Habitat。
 
 ### Q6: 如何将仿真策略迁移到真实无人机？
 
@@ -589,9 +601,9 @@ import multiprocessing
 
 ---
 
-## 动手验证：6.4 那张表自己解出来的 2 GB 是什么？
+## 动手验证：6.4 那张已删的表，自己解出来的 2 GB 是什么？
 
-6.4 的三行里，第 1 行和第 3 行只差 batch（50 → 100）：6 GB 和 10 GB。两行相减解出每样本 **0.08 GB**、固定项 **2.00 GB**。第 2 行没有改 batch，只把分辨率从 64 提到 128 —— 按上面这个式子，它应该是 `2.00 + 50 × 0.08 = 6.00 GB`，可表里写的是 10 GB。**多出来的 4 GB 就是分辨率那一项**，也是这张表唯一没被算进去的变量。
+那张已删的表有三行。第 1 行和第 3 行只差 batch（50 → 100）：6 GB 和 10 GB。两行相减解出每样本 **0.08 GB**、固定项 **2.00 GB**。第 2 行没有改 batch，只把分辨率从 64 提到 128 —— 按上面这个式子，它应该是 `2.00 + 50 × 0.08 = 6.00 GB`，可表里写的是 10 GB。**多出来的 4 GB 就是分辨率那一项**，也是这张表唯一没被算进去的变量。
 
 DreamerV3 的世界模型不大（配置里 `batch_size: 50`、`sequence_length: 64`，输入才 64x64），正好可以把这笔账真算一遍。
 
@@ -672,10 +684,11 @@ py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torch
 
 - Dream to Fly 论文: https://arxiv.org/abs/2501.14377
 - DreamerV3 论文: https://arxiv.org/abs/2301.04104
-- DreamerV3 原始实现: https://github.com/danijar/dreamerv3
-- DreamerV3 PyTorch 实现: https://github.com/NM512/dreamerv3-torch
-- gym-pybullet-drones: https://github.com/utiasDSL/gym-pybullet-drones
-- Flightmare: https://github.com/uzh-rpg/flightmare
+- DreamerV3 JAX 实现（论文未用）: https://github.com/danijar/dreamerv3
+- DreamerV3 PyTorch 实现（论文用的底座）: https://github.com/NM512/dreamerv3-torch
+- 同作者的新 PyTorch 版: https://github.com/NM512/r2dreamer
+- Flightmare（动力学与赛道生成）: https://github.com/uzh-rpg/flightmare
+- Agilicious（平台与物理参数）: https://github.com/uzh-rpg/agilicious
 
 ## 延伸阅读
 
@@ -685,26 +698,26 @@ py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torch
 
 ## 思考题
 
-1. **范式判断**：在无人机竞速这个任务上，世界模型路线相对 model-free RL 和行为克隆，文档给出的优势与代价分别是什么？
+1. **范式判断**：在无人机竞速这个任务上，论文给出的世界模型路线的优势与代价分别是什么？这些说法各自踩在哪一条证据上？
 
 2. **复现风险**：指南开头那段加粗提示说明复现的哪个前提不成立？它会改变你动手的第一步吗？
 
 3. **排障顺序**：Actor 在想象里表现不错，一上真实（或仿真）环境就失效，文档给了哪几条改法？
 
-4. **算力取舍**：手上一张 10 GB 左右的卡，64x64 batch=50 与 128x128 batch=50 怎么选？
+4. **算力取舍**：手上一张 10 GB 左右的卡，训练时该先定分辨率还是先定 batch？依据是什么？
 
-5. **指标设计**：评估无人机竞速只看 Completion Rate 够不够？为什么 Sample Efficiency 要一起看？
+5. **指标设计**：论文用什么结果说明 DreamerV3 比 PPO/SAC 强？只看其中一个够不够？
 
 <details><summary>参考答案</summary>
 
-1. 优势是样本效率高（在想象中训练）、安全性好（减少真实交互，探索阶段不必真撞）、泛化性强；代价是要额外训练并维护世界模型，而且存在"想象轨迹与真实轨迹不一致"这一类故障，文档 Q2 专门列了它。数字上，DreamerV3 拿到 82% Completion Rate / 8.2s / 50K steps，对比 PPO 的 45% / 12.3s / 500K steps、SAC 的 52% / 11.1s / 400K steps、BC 的 68% / 9.8s。
+1. 优势只有一条能落到证据上：样本效率。论文的对照是奖励曲线——PPO 与 SAC 在 2000 万次环境交互内学不出可用机动，DreamerV3 三条赛道都收敛（Fig. 3，每条 5 个随机种子）。代价有两条，一是训练时间显著更长（论文自述约 240 小时），二是要额外训练并维护世界模型，随之带来「想象轨迹与真实轨迹不一致」这类故障，Q2 列了它。文档开头那张安全性/泛化性评分表没有出处，论文没有对这两项做对比评分；论文也没把行为克隆当基线跑过，所以早先那个「BC 68%」的对照本来就不存在。
 
-2. 提示说"原论文代码可能尚未完全公开，本指南基于论文描述和 DreamerV3 公开实现编写，部分细节可能需要根据实际代码进行调整"，也就是没有唯一的官方仓库可对齐。所以第一步不是直接跑 `train.py`，而是先在文档列的三个实现里（danijar/dreamerv3、NM512/dreamerv3-torch、cleanrl）选一个底座，再按它的实际接口对齐配置项。
+2. 开头那段提示说的是：论文点名了底座（PyTorch 版 `dreamerv3-torch`），但**没有放出自己那套无人机环境的代码**——Flightmare + Habitat 怎么接、赛道怎么生成、奖励怎么实现，都要自己补。所以第一步不是跑训练脚本，而是先把环境接起来并把任务注册成上游的一个 config；在那之前可以拿上游自带的 `dmc_vision` 任务做冒烟测试，确认底座能跑通。顺带一提，早先这条答案说的「在三个实现里选一个底座」已经作废：`cleanrl` 里没有本项目可用的实现，`danijar/dreamerv3` 是 JAX 版，只有 `dreamerv3-torch` 与论文一致。
 
 3. Q3 给了三条：把 train_every 从 5 降到 2，提高真实环境交互比例；用 Dyna-style 混合训练，每 N 步用真实数据微调世界模型；给观测加噪声增强鲁棒性。
 
-4. 表格里 64x64 + batch=50 是 ~6 GB / ~12 小时，128x128 + batch=50 是 ~10 GB / ~24 小时，64x64 + batch=100 也是 ~10 GB 但只 ~8 小时。10 GB 卡上后两档都装得下，本质是在"更高分辨率、时间翻倍"和"同样显存下加大 batch、8 小时跑完"之间取舍；配置里的 action_repeat=2 本身就是在用动作重复减少仿真步数。
+4. 6.4 那张三行表已经删了（勘误里有原因），不能照着它选。留下的可算结论来自动手验证：**分辨率是显存的杠杆**——像素数从 64² 到 128² 翻 4 倍，激活实测从 2.41 GB 涨到 9.00 GB（3.7 倍）；batch 则是线性的。10 GB 卡上先定分辨率（论文自己就用 64×64），再按剩余预算加 batch。`action_repeat: 2` 本身也是在减少仿真步数。
 
-5. 不够。BC 的完成率 68% 已接近 DreamerV3 的 82%，但它依赖 100K 条专家演示，泛化性在文档的对比表里被标为"差"；而 DreamerV3 的 82% 是用 50K 环境交互步换来的，比 PPO 的 500K 少一个数量级。Sample Efficiency 正是这个世界模型路线的核心卖点，单看完成率会把这个差别抹掉。
+5. 这个问题本身要改：论文里根本没有 Completion Rate 这个指标，也没有圈速，全文这两个词零命中。它的主结果是奖励曲线，配合重建图（Fig. 4）看世界模型质量、真机轨迹与速度剖面（Fig. 6）看迁移。真要比，可比的是**同样的交互预算下基线能不能学出东西**：论文给的是 PPO/SAC 跑到 2000 万步仍学不出可用机动，DreamerV3 在 10M 步量级收敛。这才是世界模型路线的卖点，也必须和约 240 小时的训练时间一起看。
 
 </details>

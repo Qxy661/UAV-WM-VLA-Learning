@@ -1,508 +1,416 @@
-# 05 - 复现指南：MotionScape — 运动场景数据集使用指南
+# 05 - 复现指南：MotionScape — 无人机视角的未来视频生成评测基准
 
-> **预计阅读：12 分钟 | 前置知识：Python 数据处理基础、视频处理基础、3D 坐标系与变换基本概念**
+> **预计阅读：16 分钟 | 前置知识：Python 与 ffmpeg 使用、光流基本概念**
 
-MotionScape 是一个面向无人机世界模型训练的大规模运动场景数据集，包含 4K 视频、6-DoF 轨迹和语言描述。
+MotionScape 是**真实拍摄**的无人机第一人称视频基准，用途是**评测**世界模型与未来视频生成——不是训练用的数据集。它给 228 段固定长度的片段、每段配语义标注与运动强度分级，再用一套统一协议去量各种生成模型的输出质量。
+
+> **本指南的可复现边界（2026-10）**
+> - **能跑通的**：仓库克隆、源视频重建、运动分层、语义标注。这几步只要有 Python、ffmpeg 和网络就能做，**不需要 GPU**。
+> - **跑不动的**：基线推理与 FVD。五个基线里最小的是 Cosmos-Predict2.5-**2B**，最大的是 MAGI-1-**24B**，加一个独立的 TensorFlow 环境算 I3D-FVD。**8 GB 显存的机器到运动分层为止。**
+> - **一个绕不开的限制**：原作者**不分发原视频**（README 原文：*"The original audiovisual content is not redistributed"*）。你拿到的是元数据与标注，视频要按 manifest 里的 URL 自己去抓。源被下架，对应样本就重建不出来。
+> - **本指南早先的版本几乎每一处具体规格都是错的**：说它有「6-DoF 轨迹」、总时长「数十小时」、视频编码是 H.264、每段「30 秒–5 分钟」、还给了 `.npz` 轨迹文件与 `MotionScapeDataset` 类。这些在发布里**一项都不存在**。本版按仓库 README、manifest 与论文原文重写，改动处留 `> **勘误（2026-10）**`。
 
 ---
 
 ## 目录
 
-1. [数据集概述](#1-数据集概述)
-2. [仓库与下载](#2-仓库与下载)
+1. [基准概述](#1-基准概述)
+2. [仓库与数据获取](#2-仓库与数据获取)
 3. [数据格式详解](#3-数据格式详解)
-4. [数据加载与预处理](#4-数据加载与预处理)
-5. [数据可视化](#5-数据可视化)
-6. [与世界模型训练管线集成](#6-与世界模型训练管线集成)
+4. [重建与运动分层](#4-重建与运动分层)
+5. [语义标注与生成提示词](#5-语义标注与生成提示词)
+6. [基线推理与评测](#6-基线推理与评测)
 7. [常见问题与解决方案](#7-常见问题与解决方案)
 
 ---
 
-## 1. 数据集概述
+## 1. 基准概述
 
-- **GitHub**: [Thelegendzz/MotionScape](https://github.com/Thelegendzz/MotionScape)
-- **核心特点**:
-  - **4K 分辨率视频**: 高质量视觉观测
-  - **6-DoF 轨迹**: 完整的位置和姿态信息
-  - **语言描述**: 自然语言描述的飞行意图和场景语义
-  - **多场景覆盖**: 城市、郊区、森林、沙漠等多种地形
+- **GitHub**：[Thelegendzz/MotionScape](https://github.com/Thelegendzz/MotionScape)（8 stars）
+- **数据集（元数据与标注）**：[HF `thelegendzz/MotionScape`](https://huggingface.co/datasets/thelegendzz/MotionScape) · [Zenodo DOI 10.5281/zenodo.21954342](https://doi.org/10.5281/zenodo.21954342)
+- **论文**：arXiv:2604.07991
+- **定位**（README 原句）：*"a real-world first-person UAV-view benchmark for evaluating world models and future video generation under different conditioning settings and visual-motion intensities"*
 
-### 数据集统计
+### 1.1 关键数字
 
-| 属性 | 数值 |
-|---|---|
-| 总视频时长 | 数十小时 |
-| 视频分辨率 | 3840 x 2160 (4K) |
-| 帧率 | 30 FPS |
-| 轨迹精度 | 6-DoF（位置 + 姿态） |
-| 语言描述 | 每段视频配有场景描述 |
-| 场景类型 | 城市、郊区、森林、沙漠、水上等 |
-| 光照条件 | 白天、黄昏、夜晚 |
+| 属性 | 数值 | 出处 |
+|---|---|---|
+| 片段数 | **228** | 论文 Table 1 / manifest |
+| 每段帧数 | **275**（固定，无例外） | manifest 全部 228 项的 `frame_count` |
+| 总帧数 | **62,700** | 228 × 275 |
+| 总时长 | **约 34.9 分钟** | 论文 |
+| 每段时长 | **约 9.2 秒** | 论文（275 帧 @ 29.97 FPS） |
+| 统一帧率 | **30000/1001 ≈ 29.97 FPS** | manifest `benchmark_specification` |
+| 分段 | 观测前缀 **1–200 帧** + 未来目标 **201–275 帧** | 同上 |
+| 前缀/目标总帧数 | 45,600 / 17,100 | 论文 |
+| 源视频 | **67 个**，平均每源取 3.4 段 | 论文 |
+| 源分辨率 | **≥ 1080p**；manifest 里 170/228 是 3840×2160 | 论文 Table 1 + manifest |
+| 位姿真值 | **无** | 论文与发布内容 |
+| 运动分级 | Low / Medium / High = **75 / 75 / 78** | 论文 + `dynamicity_buckets.json` |
+
+### 1.2 它是「评测」不是「训练」
+
+这个区分决定了整份指南的用法。228 段、34.9 分钟的体量**不足以训练一个世界模型**，它的角色是**考卷**：每段都切好了「看 200 帧、预测后 75 帧」，条件可以是文本、图像或视频，评测时用同一套协议跑所有模型。
+
+它也**不给位姿**。没有相机轨迹、没有 GPS/IMU 真值，能评的是**生成得像不像、动力学对不对**，不能评定位精度——这一点在设计下游任务时会先撞上。
+
+> **勘误（2026-10）**：本节早先写「面向无人机世界模型训练的大规模运动场景数据集」，核心特点列了「**6-DoF 轨迹**：完整的位置和姿态信息」，统计表里写「总视频时长 **数十小时**」「帧率 30 FPS」「轨迹精度 6-DoF（位置 + 姿态）」「场景类型 城市/郊区/森林/沙漠/水上」「光照 白天/黄昏/夜晚」。
+> **「6-DoF 轨迹」整块是编的。** 发布的全部内容是：帧图像、`source_manifest.json`、`annotations/`、`dynamicity_buckets.json`——**没有任何 position/orientation 轨迹文件**。时长也不是数十小时而是 228 × 275 / 29.97 ≈ **34.9 分钟**（论文给的正是这个数）。「城市/森林/沙漠/水上」「白天/黄昏/夜晚」这两组枚举同样查不到：`weather` 与 `environment` 是**自由文本**字段，实际值形如 `Sunny | Park with buildings`、`Overcast | Urban parking structure`。
 
 ---
 
-## 2. 仓库与下载
+## 2. 仓库与数据获取
 
-### 2.1 克隆仓库
+### 2.1 仓库结构
+
+真实顶层（比早先版本短得多，但每一个目录都有用）：
+
+```text
+MotionScape/
+├── Dockerfile
+├── LICENSE                       # MIT（evaluate_video_metrics.py 保留 NVIDIA 的 Apache-2.0）
+├── README.md
+├── requirements.txt
+├── reconstruction/               # 源视频下载 + 基准重建
+│   ├── download_sources.py
+│   └── reconstruct_benchmark.py
+├── motion_stratification/        # 光流运动分层
+│   ├── compute_motion_strata.py
+│   └── motion_scoring.py
+├── annotation/                   # 语义标注生成
+│   └── generate_semantic_annotations.py
+├── evaluation/                   # 最终评测实现
+│   ├── evaluate_video_metrics.py
+│   ├── i3d_fvd.py
+│   ├── regroup_metrics_by_motion.py
+│   ├── requirements-frame-metrics.txt
+│   └── requirements-i3d-fvd.txt
+├── inference/                    # 五个基线的适配器 + 权重下载器
+│   ├── cosmos/  cogvideox/  wan/  longcat/  magi/
+│   ├── docker/                   # 统一基线容器
+│   ├── download_model_weights.py
+│   └── requirements-download.txt
+└── prompts/                      # 语义标注与四套生成提示词
+    ├── semantic_annotation.txt
+    ├── text2world.txt  image2world.txt
+    ├── video2world_task_level.txt  video2world_clip_level.txt
+    └── clip_assisted_inspection.txt
+```
+
+> **勘误（2026-10）**：本节早先给的结构是 `scripts/{download_dataset.sh, preprocess.py, visualize.py, evaluate_trajectory.py}`、`src/{dataset.py, transforms.py, utils.py}`、`configs/default.yaml`、`examples/{load_data.py, visualize_sample.py}`。
+> **一个都不存在。** 真实顶层只有 README 里写明的六个目录：`reconstruction/`、`motion_stratification/`、`annotation/`、`evaluation/`、`inference/`、`prompts/`。早先版本里出现的 `scripts/verify_checksums.py`、`scripts/preprocess.py`、`scripts/extract_features.py`、`scripts/visualize.py`、`examples/visualize_sample.py`、`src.dataset.MotionScapeDataset` 全部随之作废。
+
+### 2.2 环境准备
 
 ```bash
 git clone https://github.com/Thelegendzz/MotionScape.git
 cd MotionScape
+
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-### 2.2 下载数据集
+README 推荐 **Python 3.10 或更新**。系统侧还需要 **`ffmpeg` 与 `ffprobe`** 两个可执行文件——重建脚本靠它们做时间重采样与抽帧，缺了会在第一步就报错。下载侧固定 `yt-dlp==2026.03.17`（manifest 里记录的就是这个版本）。
 
-MotionScape 数据集较大，请确保磁盘空间充足（建议 500 GB+）。
+### 2.3 拿到的是标注，不是视频
+
+Hugging Face 与 Zenodo 上发布的是**元数据与标注**：`source_manifest.json`、`annotations/`、`dynamicity_buckets.json`。原视频**不分发**。
+
+所以要还原基准，路径只有一条：
 
 ```bash
-# 方法 1：通过仓库提供的下载脚本
-bash scripts/download_dataset.sh --output_dir ./data --split all
-
-# 方法 2：分批下载（如数据集托管在 Hugging Face）
-pip install huggingface_hub
-huggingface-cli download --repo-type dataset Thelegendzz/MotionScape --local-dir ./data
-
-# 方法 3：仅下载训练集
-bash scripts/download_dataset.sh --output_dir ./data --split train
+# 第 1 步：按 manifest 抓源视频（yt-dlp 抓 YouTube，保留 manifest 里的文件名）
+python reconstruction/download_sources.py \
+  --manifest  /path/to/MotionScape/source_manifest.json \
+  --output-dir /path/to/MotionScape_raw
 ```
 
-### 2.3 数据集目录结构
+> **旧版指南给的两条下载命令都不成立**：`bash scripts/download_dataset.sh` 那个脚本不存在；`huggingface-cli download --repo-type dataset Thelegendzz/MotionScape` 下到的也只是标注，**没有视频**——发布方明确不分发视听内容，版权与可用性仍归源平台与版权方。
 
-```text
-MotionScape/
-├── README.md
-├── scripts/
-│   ├── download_dataset.sh
-│   ├── preprocess.py
-│   ├── visualize.py
-│   └── evaluate_trajectory.py
-├── src/
-│   ├── dataset.py            # PyTorch Dataset 类
-│   ├── transforms.py         # 数据变换
-│   └── utils.py
-├── configs/
-│   └── default.yaml
-└── examples/
-    ├── load_data.py
-    └── visualize_sample.py
-```
-
-### 2.4 解压与校验
-
-```bash
-# 下载完成后解压（如为压缩格式）
-cd data
-for f in *.tar.gz; do tar -xzf "$f"; done
-
-# 校验文件完整性
-python ../scripts/verify_checksums.py --data_dir .
-```
+`download_sources.py` 按 manifest 记录的**分辨率、标称帧率、编码**去选流，并且会在记录的流不可用时**直接报错，而不是悄悄换一个编码**。可选参数里比较有用的是 `--proxy`、`--cookies-from-browser`、`--limit`、`--dry-run`。**已存在的源文件不会被覆盖。**
 
 ---
 
 ## 3. 数据格式详解
 
-### 3.1 视频文件
+### 3.1 `source_manifest.json`
 
-```text
-data/
-├── videos/
-│   ├── scene_001/
-│   │   ├── flight_01.mp4
-│   │   ├── flight_02.mp4
-│   │   └── ...
-│   ├── scene_002/
-│   └── ...
-```
+顶层四个键：`source_acquisition` / `benchmark_specification` / `items` / `summary`。
 
-视频参数：
-- 编码格式：H.264
-- 分辨率：3840 x 2160（可降至 1080p 或 720p 使用）
-- 帧率：30 FPS
-- 每段飞行视频长度：30 秒 - 5 分钟不等
-
-### 3.2 轨迹文件
-
-```text
-data/
-├── trajectories/
-│   ├── scene_001/
-│   │   ├── flight_01.npz     # NumPy 压缩格式
-│   │   ├── flight_02.npz
-│   │   └── ...
-│   └── ...
-```
-
-轨迹数据结构：
-
-```python
-import numpy as np
-
-traj = np.load("data/trajectories/scene_001/flight_01.npz")
-print(traj.keys())
-
-# 'position': (N, 3)     — 世界坐标系位置 [x, y, z]，单位：米
-# 'orientation': (N, 4)   — 四元数姿态 [qw, qx, qy, qz]
-# 'velocity': (N, 3)      — 线速度 [vx, vy, vz]，单位：米/秒
-# 'angular_velocity': (N, 3)  — 角速度 [wx, wy, wz]，单位：弧度/秒
-# 'timestamp': (N,)       — 时间戳，单位：秒
-# 'frame_indices': (N,)   — 对应的视频帧索引
-```
-
-### 3.3 语言描述文件
-
-```text
-data/
-├── descriptions/
-│   ├── scene_001/
-│   │   ├── flight_01.json
-│   │   └── flight_02.json
-│   └── ...
-```
-
-描述文件格式：
-
-```json
+```jsonc
 {
-    "scene_description": "Urban environment with tall buildings and wide roads",
-    "flight_intent": "Navigate through the city streets, following the main road",
-    "segment_descriptions": [
-        {
-            "start_frame": 0,
-            "end_frame": 300,
-            "description": "Taking off from the rooftop and ascending to 50 meters"
-        },
-        {
-            "start_frame": 300,
-            "end_frame": 900,
-            "description": "Flying north along the main avenue, passing the central park"
-        }
-    ],
-    "weather": "clear",
-    "time_of_day": "afternoon"
+  "source_acquisition": {
+    "tool": "yt-dlp",
+    "format_selector": "bv[height=2160]+ba/bv+ba",
+    "merge_output_format": "mp4",
+    "extractor_args": "youtube:player_client=android",
+    "yt_dlp_version": "2026.03.17"
+  },
+  "benchmark_specification": { "fps": "30000/1001", "num_frames": 275,
+                               "observed_frames": 200, "future_frames": 75 },
+  "summary": { "source_videos": 67, "benchmark_samples": 228 },
+  "items": [ /* 228 项 */ ]
 }
 ```
 
----
+`items[]` 每项七个字段：`sample_id`、`video`、`video_index`、`segment_index`、`url`、`start_s`、`frame_count`、`resolution`、`fps`、`codec`。
 
-## 4. 数据加载与预处理
+**实测分布**（228 项逐条统计，可复算）：
 
-### 4.1 使用仓库自带的 Dataset 类
+| 字段 | 分布 |
+|---|---|
+| `frame_count` | `275` × 228（**无例外**） |
+| `codec` | vp9 **169** · h264 **39** · av1 **20** |
+| `resolution` | 3840×2160 **170** · 1920×1080 **43** · 2560×1440 **12** · 3840×1634 2 · 7680×3268 1 |
+| `fps`（源） | 30/1 **92** · 30000/1001 **50** · 50/1 **40** · 60/1 **34** · 60000/1001 **12** |
 
-```python
-"""
-MotionScape 数据加载示例（基于仓库提供的 Dataset 类）
-"""
-from src.dataset import MotionScapeDataset
-from torchvision import transforms
+这张表解释了两件事。**一是「编码是 H.264」不成立**：H.264 只占 39/228，主力是 VP9。**二是源帧率很杂**（30 / 29.97 / 50 / 60 / 59.94），统一到 29.97 是重建阶段做的重采样，不是源本身就整齐。
 
-# 定义图像变换
-transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                         std=[0.229, 0.224, 0.225])
-])
+`start_s` 是**每段在源视频时间轴上的定点**（例如 `44.0`、`15.047`），不是随机取。
 
-# 创建数据集
-dataset = MotionScapeDataset(
-    data_dir="./data",
-    split="train",
-    context_length=5,           # 上下文帧数
-    prediction_length=10,       # 预测帧数
-    image_transform=transform,
-    resolution="720p",          # 可选: "4k", "1080p", "720p"
-    include_language=True       # 包含语言描述
-)
+### 3.2 `annotations/`
 
-# 创建 DataLoader
-from torch.utils.data import DataLoader
-loader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=4)
+每个样本一个扁平 JSON，只有四个字段：
 
-# 读取一个批次
-batch = next(iter(loader))
-print(f"Images: {batch['images'].shape}")          # (16, 5, 3, 224, 224)
-print(f"Positions: {batch['positions'].shape}")    # (16, 15, 3)
-print(f"Orientations: {batch['orientations'].shape}")  # (16, 15, 4)
-print(f"Descriptions: {len(batch['descriptions'])}")   # 16 个字符串
+```json
+{ "sample_id": "...", "weather": "Overcast", "environment": "Urban parking structure",
+  "caption": "..." }
 ```
 
-### 4.2 自定义数据加载
+`weather` 与 `environment` 是**自由文本**，不是枚举——**写下游代码时不要按固定类别去 match**。`caption` 描述的是相机视角的运动，提示词里特意用 "the camera viewpoint" 或 "the onboard camera"，**不暗示能看到无人机本体**。
 
-如果不使用仓库自带的 Dataset，可以自行编写加载逻辑：
+### 3.3 `dynamicity_buckets.json`
 
-```python
-import numpy as np
-import cv2
-import json
+给每个样本的运动分数与 Low / Medium / High 归属。**这个分数是在缩放后的图像空间里量的，是视觉动态性/视角运动强度的代理量，不是物理相机速度**——README 专门写了这一句，引用数字时别把它当速度用。
 
-class MotionScapeLoader:
-    def __init__(self, data_dir, resolution="720p"):
-        self.data_dir = data_dir
-        self.resolution = resolution
-        self.samples = self._index_samples()
+### 3.4 重建产物
 
-    def _index_samples(self):
-        """索引所有可用样本"""
-        samples = []
-        # 遍历所有场景和飞行段
-        # ... 省略遍历逻辑
-        return samples
+`reconstruct_benchmark.py` 为每个 `sample_id` 产出四份东西：
 
-    def load_video_frames(self, video_path, frame_indices):
-        """加载指定帧"""
-        cap = cv2.VideoCapture(video_path)
-        frames = []
-        for idx in frame_indices:
-            cap.set(cv2.CAP_PROP_POS_FRAMES, idx)
-            ret, frame = cap.read()
-            if ret:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                frames.append(frame)
-        cap.release()
-        return np.stack(frames)
-
-    def load_trajectory(self, traj_path, frame_indices):
-        """加载对应轨迹"""
-        data = np.load(traj_path)
-        positions = data["position"][frame_indices]
-        orientations = data["orientation"][frame_indices]
-        return positions, orientations
-
-    def load_description(self, desc_path):
-        """加载语言描述"""
-        with open(desc_path, "r") as f:
-            return json.load(f)
+```text
+MotionScape_reconstructed/
+├── full_frames/<sample_id>/          # 275 帧图像序列
+├── full_videos/<sample_id>.mp4       # 275 帧整段
+├── observed_prefix_videos/<sample_id>.mp4   # 1–200 帧（条件输入）
+└── last_75_videos/<sample_id>.mp4    # 201–275 帧（预测目标 / GT）
 ```
 
-### 4.3 数据预处理脚本
+最后一步会**校验帧数正是 275 / 200 / 75**，对不上就报错。评测时 `--gt-dir` 指的就是 `last_75_videos`。
 
-```bash
-# 降低视频分辨率（节省存储和计算）
-python scripts/preprocess.py \
-    --input_dir data/videos \
-    --output_dir data/videos_720p \
-    --target_resolution 1280x720 \
-    --target_fps 15
-
-# 提取轨迹特征
-python scripts/extract_features.py \
-    --data_dir data \
-    --output_dir data/features \
-    --feature_type "optical_flow"
-```
+> **勘误（2026-10）**：本节早先描述了三类文件。**（一）轨迹**：说 `data/trajectories/scene_00X/flight_0X.npz` 里存 `position / orientation / velocity / angular_velocity / timestamp / frame_indices` 六个数组。**没有这种文件，也没有这些字段**。**（二）描述 JSON**：说有 `scene_description / flight_intent / segment_descriptions / weather / time_of_day`。真实标注只有 `sample_id / weather / environment / caption` 四个字段。**（三）视频目录**：说视频按 `videos/scene_00X/flight_0X.mp4` 组织、编码 H.264、每段 30 秒–5 分钟。真实是**每段固定 275 帧 ≈ 9.2 秒**，编码以 VP9 为主。三处都是照着一个「无人机数据集应该长什么样」的模板写出来的。
 
 ---
 
-## 5. 数据可视化
+## 4. 重建与运动分层
 
-### 5.1 轨迹 3D 可视化
-
-```python
-"""
-3D 轨迹可视化脚本
-"""
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
-def plot_trajectory_3d(traj_path):
-    data = np.load(traj_path)
-    pos = data["position"]
-
-    fig = plt.figure(figsize=(12, 8))
-    ax = fig.add_subplot(111, projection="3d")
-
-    # 绘制轨迹
-    ax.plot(pos[:, 0], pos[:, 1], pos[:, 2], "b-", linewidth=1, label="Trajectory")
-
-    # 标记起点和终点
-    ax.scatter(*pos[0], c="green", s=100, marker="o", label="Start")
-    ax.scatter(*pos[-1], c="red", s=100, marker="^", label="End")
-
-    # 每隔 N 个时间步绘制坐标系（表示姿态）
-    N = 50
-    for i in range(0, len(pos), N):
-        orientation = data["orientation"][i]
-        # 将四元数转换为旋转矩阵，绘制坐标轴
-        # ... 省略旋转矩阵转换和坐标轴绘制
-
-    ax.set_xlabel("X (m)")
-    ax.set_ylabel("Y (m)")
-    ax.set_zlabel("Z (m)")
-    ax.legend()
-    plt.title("MotionScape Trajectory Visualization")
-    plt.show()
-
-# 使用
-plot_trajectory_3d("data/trajectories/scene_001/flight_01.npz")
-```
-
-### 5.2 视频与轨迹叠加可视化
+### 4.1 重建
 
 ```bash
-# 使用仓库提供的可视化脚本
-python scripts/visualize.py \
-    --video data/videos/scene_001/flight_01.mp4 \
-    --trajectory data/trajectories/scene_001/flight_01.npz \
-    --output visualization_output.mp4 \
-    --overlay_trajectory True
+python reconstruction/reconstruct_benchmark.py \
+  --input-json /path/to/MotionScape/source_manifest.json \
+  --video-root /path/to/MotionScape_raw \
+  --output-dir /path/to/MotionScape_reconstructed
 ```
 
-### 5.3 使用仓库示例
+对每个 `sample_id`，脚本依次做七件事：
+
+1. 定位到源时间轴上的 `start_s`；
+2. 时间重采样到 **30000/1001 FPS**；
+3. 取**前 275 个连续输出帧**；
+4. 写出 275 帧图像序列与整段视频；
+5. 写出 1–200 帧的观测前缀视频；
+6. 写出 201–275 帧的未来目标视频；
+7. 校验 275 / 200 / 75 三个帧数。
+
+两个容易踩的点：**公开的扁平 manifest 模式下 `end_s` 不作为抽取边界**——边界就是「起点 + 275 帧」；**已完整的样本默认跳过**，要覆盖必须显式加 `--overwrite`。
+
+### 4.2 运动分层：把每一步的参数都对一遍
+
+论文的最终协议**只用未来目标段 201–275 帧**来算运动分数（因为分层要刻画的是「未来有多难预测」）。整条链路的参数都是可核的：
+
+| 环节 | 设置 |
+|---|---|
+| 源帧率 | 30000/1001 |
+| 时间降采样 | 每 3 帧取 1（得 25 帧、24 个相邻帧对） |
+| 缩放 | 854×480，area 插值 |
+| 光流 | 灰度 Farnebäck 稠密光流，OpenCV 参数 `(0.5, 3, 15, 3, 5, 1.2, 0)` |
+| 帧对统计量 | 光流幅值的**空间 75 分位** |
+| 片段分数 | 24 个帧对统计量的**均值** |
+| 分档 | 全局 **33 / 66 分位**切成 Low / Medium / High |
 
 ```bash
-cd examples
-python visualize_sample.py --scene scene_001 --flight flight_01
+python -m motion_stratification.compute_motion_strata \
+  --frames-root /path/to/MotionScape_reconstructed/full_frames \
+  --manifest-json /path/to/MotionScape/source_manifest.json \
+  --output-json /path/to/dynamicity_buckets_detailed.json
 ```
+
+最终 228 段的分档是 **Low 75 / Medium 75 / High 78**。
+
+> 一个反直觉的地方：降采样到「每 3 帧取 1」后，等效帧率只有约 9.99 FPS。**分层的分辨率与帧率都比评测时低得多**——这是刻意的，运动强度只需要一个相对排序，不需要精细的流场。
+
+> **勘误（2026-10）**：本节早先给的「预处理」是 `python scripts/preprocess.py --target_resolution 1280x720 --target_fps 15` 与 `python scripts/extract_features.py --feature_type "optical_flow"`，以及一个从仓库导入的 `MotionScapeDataset(data_dir, split, context_length=5, prediction_length=10, resolution="720p", include_language=True)`。
+> **这两个脚本和这个类都不存在。** 仓库里做运动分析的是 `motion_stratification/compute_motion_strata.py` 与 `motion_scoring.py`，参数如上表（854×480、每 3 帧取 1、Farnebäck 光流、75 分位），与「720p / 15 fps / 特征提取」无关。另外「500 GB+ 磁盘建议」也没有出处：真实数据量是 228 段 4K 片段加 67 个源视频，具体占用取决于你按 `format_selector` 抓下来的版本。
 
 ---
 
-## 6. 与世界模型训练管线集成
+## 5. 语义标注与生成提示词
 
-### 6.1 用于视频预测模型
+### 5.1 标注怎么生成
 
-MotionScape 可直接用于训练视频预测（Video Prediction）世界模型：
+标注由 `prompts/semantic_annotation.txt` 驱动，经 OpenAI 兼容的 API 生成：
 
-```python
-"""
-将 MotionScape 数据适配到视频预测管线
-"""
-class MotionScapeForVideoPrediction:
-    def __init__(self, dataset, pred_length=10):
-        self.dataset = dataset
-        self.pred_length = pred_length
-
-    def __getitem__(self, idx):
-        sample = self.dataset[idx]
-        # 输入：当前帧 + 历史帧
-        input_frames = sample["images"][:5]     # (5, 3, H, W)
-        # 目标：未来帧
-        target_frames = sample["images"][5:15]  # (10, 3, H, W)
-        # 条件：动作序列
-        actions = sample["actions"][5:15]        # (10, 4)
-
-        return {
-            "input_frames": input_frames,
-            "target_frames": target_frames,
-            "actions": actions,
-            "description": sample["description"]
-        }
+```bash
+export ANNOTATION_API_KEY='...'
+python annotation/generate_semantic_annotations.py \
+  --input-path /path/to/MotionScape_reconstructed/full_frames \
+  --mode prediction \
+  --dynamicity-json /path/to/MotionScape/dynamicity_buckets.json \
+  --prompt-file prompts/semantic_annotation.txt \
+  --output-dir /path/to/new_annotations \
+  --response-json
 ```
 
-### 6.2 用于轨迹预测模型
+两个必须照做的细节：**时序不能乱**——条件帧 196–200 先发，随后才是抽样的未来帧 201–275；**温度固定 `0.1`**。196–200 这五帧**只作时序上下文**，提示词要求模型只描述 201–275。
 
-```python
-class MotionScapeForTrajectoryPrediction:
-    def __init__(self, dataset, pred_length=10):
-        self.dataset = dataset
-        self.pred_length = pred_length
+### 5.2 四套生成提示词
 
-    def __getitem__(self, idx):
-        sample = self.dataset[idx]
-        # 输入：视觉观测 + 历史轨迹
-        context_images = sample["images"][:5]
-        context_traj = sample["positions"][:5]  # (5, 3)
-        # 目标：未来轨迹
-        target_traj = sample["positions"][5:15]  # (10, 3)
-        # 语言条件
-        description = sample["description"]
+| 文件 | 条件 |
+|---|---|
+| `prompts/text2world.txt` | 纯文本 |
+| `prompts/image2world.txt` | 单帧图像 |
+| `prompts/video2world_task_level.txt` | 只看**固定任务提示词 + 观测视频**，不读任何逐样本标注 |
+| `prompts/video2world_clip_level.txt` | `weather + environment + caption` 按此顺序拼接 |
 
-        return {
-            "context_images": context_images,
-            "context_trajectory": context_traj,
-            "target_trajectory": target_traj,
-            "language_condition": description
-        }
+`clip_assisted_inspection.txt` 记的是**预处理阶段的负面提示词**（字幕文字、标题/logo/片头、转场特效、第三人称无人机画面四类），用来在选片阶段剔掉非目标片段，**不喂给生成模型**。
+
+评测里还有一个口径要分清：**CLIPSim 只用 `caption`**，因为它是评测输入而不是生成提示词。
+
+---
+
+## 6. 基线推理与评测
+
+### 6.1 五个基线
+
+| 基线 | 入口 |
+|---|---|
+| Cosmos-Predict2.5-2B | `inference/cosmos/` 的补丁与资产 |
+| CogVideoX1.5-5B / I2V | `inference/cogvideox/t2v.py` · `i2v.py` |
+| Wan2.2 T2V / I2V（A14B） | `inference/wan/t2v.py` · `i2v.py` |
+| LongCat-Video | `inference/longcat/v2w.py` |
+| MAGI-1-24B | `inference/magi/v2w.py` |
+
+各模型用的条件帧数与原生帧率都不一样，论文的评测按各自原生时序配置跑：
+
+| 模型 / 任务 | 条件帧数 | 原生 FPS | 输出帧数 |
+|---|---:|---:|---:|
+| Cosmos-Predict2.5-2B（T2W / I2W / V2W） | 0 / 1 / 5 | 30 | 93 / 92 / 88 |
+| CogVideoX1.5-5B（T2W / I2W） | 0 / 1 | 16 | 41 |
+| Wan2.2-A14B（T2W / I2W） | 0 / 1 | 16 | 40 |
+| LongCat-Video（V2W） | 13 | 15 | 40 |
+| MAGI-1-24B（V2W） | 32 | 16 | 40 |
+
+权重要自己下（仓库不分发第三方权重）：
+
+```bash
+python -m venv .venv-download && source .venv-download/bin/activate
+pip install -r inference/requirements-download.txt
+python inference/download_model_weights.py --output-root /data/MotionScape_models --model all --dry-run
 ```
 
-### 6.3 与 DreamerV3 等世界模型的集成
+Cosmos 权重是 **gated** 的，得先在 Hugging Face 上接受 NVIDIA 许可再登录。
 
-MotionScape 的数据格式可以转换为 DreamerV3 所需的 replay buffer 格式：
+> **那条 `huggingface-hub==0.36.0` 的钉版本只属于下载环境**，不要拿它去替换任何基线的推理环境——README 专门警告过。
 
-```python
-def convert_to_dreamer_format(sample):
-    """将 MotionScape 样本转换为 DreamerV3 兼容格式"""
-    return {
-        "observation": sample["images"],       # (T, 3, H, W)
-        "action": sample["actions"],           # (T, 4)
-        "reward": compute_reward(sample),      # 自定义奖励函数
-        "done": False,
-        "info": {"description": sample["description"]}
-    }
+### 6.2 指标与预处理
+
+最终评测器是 `evaluation/evaluate_video_metrics.py`：
+
+```bash
+python evaluation/evaluate_video_metrics.py \
+  --gt-dir /path/to/MotionScape_reconstructed/last_75_videos \
+  --pred-dir /path/to/model_outputs \
+  --dynamicity-buckets-json /path/to/MotionScape/dynamicity_buckets.json \
+  --clipsim-caption-dir /path/to/MotionScape/annotations \
+  --clipsim-caption-field caption \
+  --clipsim-model openai/clip-vit-base-patch32 \
+  --output-json /path/to/metrics_per_clip.json \
+  --output-dynamicity-json /path/to/metrics_by_dynamicity.json \
+  --frame-alignment timestamp --frame-metric-size 704x1280 \
+  --fvd-mode Video2World --model-name MODEL_NAME \
+  --i3d-python .venv-i3d/bin/python
 ```
+
+六项指标的口径**不是随便取的**，每一条都会影响可比性：
+
+- **PSNR / SSIM / LPIPS / Warping Error** 在各模型**原生帧率**上做时间戳对齐后按片段算；GT 与预测的 RGB 帧**各自独立**缩放到 **1280×704**；PSNR/SSIM/Warping Error 用 `[0,1]` 区间，**LPIPS 用 `[-1,1]`**。
+- **Warping Error** 先用相邻 GT 帧估计光流，把前一张预测帧 warp 过来，再对有效像素取平均。
+- **CLIPSim** 固定取最多 75 个连续可用预测帧。**运动分层只用于聚合，不改动 CLIPSim 的帧选择。**
+- **FVD 是分布级的**：在每个运动档内，把所有片段的 I3D 嵌入**合起来比一次**，得到 Low / Medium / High 各一个 FVD——**不是**片段级 FVD 的平均。FVD 在 GT/预测对的公共时长上均匀采 75 个时间戳，转成 224×224 与 `[-1,1]`，每段抽一个 DeepMind I3D Mean 嵌入。
+
+FVD 需要**独立的 TensorFlow 环境**（官方 TF-Hub I3D 实现与主环境冲突）：
+
+```bash
+python -m venv .venv-i3d
+.venv-i3d/bin/pip install -r evaluation/requirements-i3d-fvd.txt
+```
+
+### 6.3 环境别互相污染
+
+| 环境 | PyTorch | Transformers | Diffusers |
+|---|---|---|---|
+| Cosmos-Predict2.5-2B | 2.7.1+cu128 | 4.57.1 | 0.35.2 |
+| CogVideoX1.5-5B / I2V | 2.8.0+cu128 | 5.13.1 | 0.39.0 |
+| Wan2.2 T2V / I2V | 2.8.0+cu128 | 4.51.3 | 0.39.0 |
+| LongCat-Video | 2.8.0+cu128 | 4.41.0 | 0.35.1 |
+| 帧指标 / CLIPSim | 2.8.0+cu128 | 5.13.1 | N/A |
+
+**MAGI 自带一整套独立运行时**（Python 3.10.20、PyTorch 2.11.0+cu130、FlashAttention/FlashInfer、CUDA 13.0/Blackwell），README 明确要求**不要与上面任何一个环境合并**。统一的基线容器说明在 `inference/docker/README.md`。
+
+> 对 8 GB 显存：这五个基线一个都放不下。**本篇能在这类机器上跑完的只有 §2–§4**（重建 + 分层），语义标注走 API 不需要本地 GPU。生成质量部分只能引论文数字，不能自己出数。
 
 ---
 
 ## 7. 常见问题与解决方案
 
-### Q1: 数据集下载中断
+### Q1: 重建时某些样本的源视频抓不下来
+
+源被下架、换区、或变成会员可见都会导致 yt-dlp 失败。先 `--dry-run` 看清单，再用 `--cookies-from-browser` 或 `--proxy` 重试，`--limit` 可以先小批量试通。**发布方不分发视频，这个风险无法绕过**——抓不到的样本就重建不出来，评测时要按实际重建成功的样本数报告。
+
+### Q2: 下载器报「记录的流不可用」
+
+这是**设计如此**：`download_sources.py` 按 manifest 的 `resolution / fps / codec` 精确选流，找不到就报错，**不会静默换一个编码**。因为编码变了会让重建结果的画质基线漂移。要放宽只能改 manifest 或接受缺样本，不要绕过去改脚本。
+
+### Q3: `ffmpeg: command not found`
+
+重建依赖系统级的 `ffmpeg` 与 `ffprobe`，pip 装的 Python 包不能替代：
 
 ```bash
-# 使用支持断点续传的工具
-wget -c <download_url>
-
-# 或使用 huggingface-cli（自动支持断点续传）
-huggingface-cli download --resume-download Thelegendzz/MotionScape --local-dir ./data
+ffmpeg -version && ffprobe -version    # 两个都要有
 ```
 
-### Q2: 4K 视频占用空间过大
+### Q4: FVD 装不上 / 与主环境冲突
 
-```bash
-# 预处理降低分辨率
-python scripts/preprocess.py \
-    --input_dir data/videos \
-    --output_dir data/videos_720p \
-    --target_resolution 1280x720
-```
+官方 TF-Hub I3D 实现自带一套 TensorFlow 依赖，**必须单独建环境**（`evaluation/requirements-i3d-fvd.txt`），并用 `--i3d-python` 把那个解释器路径传给评测脚本。官方权重不是 HF checkpoint，而是从 TF-Hub 解析 `deepmind/i3d-kinetics-400/1`，评测器会校验固定的聚合 SHA-256。
 
-通常 720p 分辨率对于模型训练已经足够，4K 主要用于高质量可视化和展示。
+### Q5: 想用 8 GB 显存跑一个基线
 
-### Q3: 视频帧与轨迹对齐问题
+跑不动。最小的是 Cosmos-Predict2.5-**2B**（且显存需求远大于参数量本身，还要扛 93 帧的时间维），最大的是 MAGI-**24B**。可行的替代是：用你自己的小模型生成预测视频，**只要帧数对得上、能落到 `--pred-dir`**，就能接进这套评测协议——这也是把 MotionScape 当基准用的意义：**协议与模型解耦**。
 
-```python
-# 使用 frame_indices 字段确保对齐
-traj = np.load(traj_path)
-frame_indices = traj["frame_indices"]
-# frame_indices[i] 对应 videos 中的第 frame_indices[i] 帧
-# 确保加载视频帧时使用 frame_indices 而非连续索引
-```
+### Q6: CLIPSim 用哪段文本？
 
-### Q4: 四元数转换错误
-
-```python
-# 使用 scipy 或 pyquaternion 进行正确的四元数转换
-from scipy.spatial.transform import Rotation
-
-quat = [qw, qx, qy, qz]  # 注意四元数顺序
-# scipy 使用 [x, y, z, w] 顺序
-rot = Rotation.from_quat([qx, qy, qz, qw])
-euler = rot.as_euler("xyz", degrees=True)  # 转换为欧拉角
-```
-
-### Q5: 内存不足加载整个数据集
-
-```python
-# 使用流式加载，不一次性加载所有数据
-from torch.utils.data import DataLoader
-
-loader = DataLoader(
-    dataset,
-    batch_size=8,
-    shuffle=True,
-    num_workers=4,
-    pin_memory=True,
-    prefetch_factor=2  # 预加载 2 个批次
-)
-```
+只用 `caption`，不用 `weather + environment`。生成侧的 clip-level Video2World 提示词要拼 `weather + environment + caption`，但 **CLIPSim 是评测输入，口径就窄一档**。两者别混。
 
 ---
 
 ## 参考资源
 
 - MotionScape GitHub: https://github.com/Thelegendzz/MotionScape
-- 四元数与姿态表示: https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
-- PyTorch DataLoader 文档: https://pytorch.org/docs/stable/data.html
+- 数据集（HF）: https://huggingface.co/datasets/thelegendzz/MotionScape
+- Zenodo 记录: https://doi.org/10.5281/zenodo.21954342
+- 论文: https://arxiv.org/abs/2604.07991
+- yt-dlp: https://github.com/yt-dlp/yt-dlp
+- TensorFlow Hub I3D (Kinetics-400): https://tfhub.dev/deepmind/i3d-kinetics-400/1
 
 ## 延伸阅读
 
@@ -512,26 +420,26 @@ loader = DataLoader(
 
 ## 思考题
 
-1. **对齐陷阱**：视频帧和轨迹对不上时，文档给的解法是什么？为什么不能直接用 0, 1, 2, ... 这样的连续索引取帧？
+1. **定位判断**：228 段、34.9 分钟、无位姿真值。如果给你一个自研的无人机世界模型，MotionScape 能用来做什么、不能用来做什么？分别说出理由。
 
-2. **复现风险**：2.4 节让你跑 `scripts/verify_checksums.py`、4.3 节让你跑 `scripts/extract_features.py`，但第 2 节的仓库结构里 `scripts/` 只有 download_dataset.sh、preprocess.py、visualize.py、evaluate_trajectory.py。照这份指南动手会撞上什么？
+2. **分层的分辨率**：运动分层把帧缩到 854×480、每 3 帧取 1，等效约 9.99 FPS。评测时的图像处理却是 1280×704、各模型原生帧率。**为什么两处的分辨率差这么多还能用同一套分层结果？**
 
-3. **存储权衡**：磁盘扛不住 4K 时，文档给的降级路径是什么？能一路降到什么程度，凭什么说够用？
+3. **旧版残留**：早先的指南让你跑 `python scripts/preprocess.py --target_resolution 1280x720`。按本版给出的真实仓库结构，这个「降分辨率」的需求应该落在哪一步、由谁负责？
 
-4. **姿态陷阱**：如果直接把 `orientation` 原样喂给 `Rotation.from_quat()` 会发生什么？正确写法是什么？
+4. **FVD 的口径**：为什么 FVD 要在每个运动档内把片段嵌入**合起来比一次**，而不是算每个片段的 FVD 再平均？这两种算法在什么情况下会给出一致的结论？
 
-5. **集成缺口**：6.3 节转 DreamerV3 格式时，哪个字段必须自己定义？数据集本身为什么给不了？
+5. **条件帧的差异**：LongCat 用 13 个条件帧、MAGI 用 32 个，Cosmos 的 V2W 只用 5 个。如果想让三者在同一条件下比，需要改动什么？改了之后还算不算「各自原生配置的报告」？
 
 <details><summary>参考答案</summary>
 
-1. 用轨迹文件里的 `frame_indices` 字段取帧：`frame_indices[i]` 对应视频的第 `frame_indices[i]` 帧，文档明确要求"使用 frame_indices 而非连续索引"。因为轨迹文件里 position/orientation/timestamp 与 frame_indices 是各自独立的序列，连续索引只在两者恰好一一对应时才碰巧成立。
+1. **能做的**：当**评测集**。它切好了「200 帧观测 + 75 帧未来」的固定格式，条件可文本/图像/视频，还有统一的指标实现与运动分层聚合——这正是「考卷」的三要素：题目固定、条件可控、评分口径统一。**不能做的**：当**训练集**。228 段 34.9 分钟的量级不足以训一个世界模型；也**不能评定位/轨迹精度**，因为没有位姿真值，只有视频帧与语义标注。所以「用 MotionScape 训练一个视频预测模型，再用它评定位误差」这条路两头都走不通。
 
-2. 会撞上结构图和正文对不上：这两个脚本都不在结构图列出的文件里，可能不存在或路径不同。下载解压后先核对实际的 scripts/ 目录，缺的校验和特征提取步骤要自己补（文档给出的特征类型示例是 `--feature_type "optical_flow"`）；结构里那个 evaluate_trajectory.py 全文也没给用法，同样得自己看。
+2. **因为分层的产物是一个相对排序，不是一个精确量。** 运动分档只需要「哪段比哪段更动」，用低分辨率、低帧率算出来的 75 分位光流均值足以稳定地排出这个次序——相邻帧的运动趋势在缩到 854×480 后依然保留。而评测阶段要的是**像素级可比性**，所以必须按各模型原生帧率做时间对齐、按统一尺寸 1280×704 缩放。**两者用的是分层结果的「档位标签」，不是「分数数值」**，所以口径不一致不影响。反过来说：如果下游有人直接把 `dynamicity_score` 当物理速度用，那就错了——README 明确说它是图像空间里的代理量。
 
-3. 降级路径是用 `scripts/preprocess.py --input_dir data/videos --output_dir data/videos_720p --target_resolution 1280x720` 离线转一份低分辨率副本（还可加 `--target_fps 15`），MotionScapeDataset 也支持 `resolution` 取 "4k"/"1080p"/"720p"。文档明确说 720p 对模型训练已经足够，4K 主要用于高质量可视化和展示——言下之意训练侧没有非用 4K 的理由（但下载仍需预留 500 GB+ 磁盘）。
+3. 落在**重建脚本里，由源分辨率与评测侧缩放共同决定，不存在一个独立的「预处理降分辨率」步骤**。真实链路是：`download_sources.py` 按 manifest 记录的原始分辨率（多为 3840×2160）抓源视频，`reconstruct_benchmark.py` 只做**时间**上的重采样与切帧（不降空间分辨率，输出仍是源分辨率），空间缩放发生在**用到的时候**——运动分层缩到 854×480，帧指标缩到 1280×704（GT 与预测各自独立缩）。所以「720p 副本」这个需求在本仓库里没有对应的入口；真要省存储，是在抓源视频那一步用 `--extra-arg` 之类的手段换流，代价是让重建结果偏离 manifest 记录的口径。
 
-4. 会得到错误的姿态。数据集的 orientation 是四元数 `[qw, qx, qy, qz]`（w 在前），而 scipy 的 `Rotation.from_quat` 期望 `[x, y, z, w]`，所以必须先换序：`Rotation.from_quat([qx, qy, qz, qw])`，再 `as_euler("xyz", degrees=True)` 转欧拉角。Q4 专门提示"注意四元数顺序"，就是这个坑。
+4. 因为 **FVD 是分布间的距离**（这里用 Fréchet 距离），不是逐样本的误差。它比较的是**两组嵌入的均值与协方差**，单看一个片段根本算不出 FVD——片段级根本没有「分布」。在一个档位内把 75 段左右的嵌入合起来比一次，得到的是「这个模型在这个运动强度档上的预测分布与真实分布有多远」，这正是想报的量。两种算法只有在**每个片段自成一个档**的退化情形下才会趋于一致，或者当所有片段的嵌入分布足够接近时，平均值与合并值约等于——实务上没人会这么用。
 
-5. `reward` 要自己定义。转换函数里写的是 `"reward": compute_reward(sample)`，注释就是"自定义奖励函数"，`done` 则直接写死 False。数据集提供的是 position/orientation/velocity/angular_velocity/timestamp/frame_indices 和语言描述（scene_description、flight_intent、segment_descriptions），里面没有任何奖励信号，奖励必须按下游任务设计。
+5. LongCat 与 MAGI 用的是 Video2World 的**逐帧条件**（每 2 帧取 1，得 13 / 32 帧），Cosmos 的 V2W 只给 5 帧连续条件，三者原生口径本来就不同。要对齐，得**从同一段 200 帧前缀里按统一规则抽条件帧**（比如统一抽最后 5 帧或等间隔 13 帧），再把抽好的条件喂给每个适配器——这是改 `inference/*/v2w.py` 的输入，不是改评测器。**改完就不再是「各自原生配置」的报告了**：论文那张表的意义正是「大家都按自己最擅长的配置跑，看谁在同一个考卷上分高」；统一条件后报的是「同一条件下谁更强」，两个结论都成立，但**必须在报告里写清是哪一种**，混着比就不可比。
 
 </details>

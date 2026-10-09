@@ -2,18 +2,19 @@
 
 > 预计阅读：25 分钟 | 前置知识：了解世界模型基础概念（见[什么是世界模型](../01-基础概念/01-什么是世界模型.md)）
 >
-> 本文收录13篇世界模型关键论文，每篇含一句话总结、核心贡献、方法分析和链接
+> 本文收录 13 篇世界模型关键论文。每张卡片由「标题行 → 徽章行 → 一句话总结 → 核心贡献 / 方法要点 / 结果亮点」组成，题名取 arXiv API 返回的完整题名
 
 ---
 
 ## 论文卡片格式
 
-每篇论文包含：
-- **一句话总结**：快速了解论文核心
-- **核心贡献**：论文的主要创新点
-- **方法要点**：技术方法的关键细节
-- **结果亮点**：最重要的实验结果
-- **链接**：论文和代码
+每张卡片的字段固定为：
+
+- **标题行**：`**标题**：*英文完整题名*`。题名取 arXiv API 返回的完整题名——系统名（如 ANWM）是简称，不进标题位。
+- **徽章行**：arXiv 号、代码仓、项目页三类链接，徽章颜色分别是 `b31b1b` / `181717` / `0A66C2`；行尾是年份、会议或期刊、机构与推荐度。
+- **一句话总结 / 核心贡献 / 方法要点 / 结果亮点**：按论文实际给出的范围写。论文没有的部分留空，不补。
+
+同一篇论文可能在两篇合集里各出现一次（例如 MotionScape 既是世界模型论文也是基准），这是交叉列出，不是重复录入。
 
 ---
 
@@ -21,12 +22,9 @@
 
 **一句话总结**：用FFP模块为无人机提供几何先验，实现长距离视觉预测
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | Aerial World Model for Long-horizon Visual Generation and Navigation in 3D Space |
-| **arXiv** | [2512.21887](https://arxiv.org/abs/2512.21887) |
-| **年份** | 2025 |
-| **推荐度** | ★★★ |
+**标题**：*Aerial World Model for Long-horizon Visual Generation and Navigation in 3D Space*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2512.21887-b31b1b.svg)](https://arxiv.org/abs/2512.21887) · 2025 · 推荐度 ★★★
 
 **核心贡献**：
 - 提出Future Frame Projection (FFP)模块，物理启发的几何先验
@@ -46,12 +44,9 @@
 
 **一句话总结**：可控制相机运动的航空视角世界模型
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | AirScape: An Aerial Generative World Model with Motion Controllability |
-| **会议** | ACM 2025 |
-| **年份** | 2025 |
-| **推荐度** | ★★☆ |
+**标题**：*AirScape: An Aerial Generative World Model with Motion Controllability*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2507.08885-b31b1b.svg)](https://arxiv.org/abs/2507.08885) [![Website](https://img.shields.io/badge/Website-embodiedcity.github.io-0A66C2.svg)](https://embodiedcity.github.io/AirScape) · ACM MM 2025 · 2025 · 推荐度 ★★☆
 
 **核心贡献**：
 - 专门为航空视角设计的生成式世界模型
@@ -69,12 +64,9 @@
 
 **一句话总结**：用扩散模型从单帧生成多样FPV视频，用于无人机策略训练
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | FlightDiffusion: Revolutionising Autonomous Drone Training with Diffusion Models Generating FPV Video |
-| **arXiv** | [2509.14082](https://arxiv.org/abs/2509.14082) |
-| **年份** | 2025 |
-| **推荐度** | ★★★ |
+**标题**：*FlightDiffusion: Revolutionising Autonomous Drone Training with Diffusion Models Generating FPV Video*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2509.14082-b31b1b.svg)](https://arxiv.org/abs/2509.14082) · 2025 · 推荐度 ★★★
 
 **核心贡献**：
 - 从单帧生成多样FPV视频轨迹
@@ -95,29 +87,25 @@
 
 ## 4. MotionScape — 大规模无人机视频数据集
 
-**一句话总结**：30+小时4K无人机视频数据集，配6-DoF轨迹和语言描述
+**一句话总结**：按运动强度分层的无人机视频基准，228 段 / 62,700 帧，配天气、光照、场景与相机运动标注
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | MotionScape: A Motion-Stratified UAV Video Benchmark for World Modeling and Future Video Generation |
-| **arXiv** | [2604.07991](https://arxiv.org/abs/2604.07991) |
-| **GitHub** | [Thelegendzz/MotionScape](https://github.com/Thelegendzz/MotionScape) |
-| **年份** | 2026 |
-| **推荐度** | ★★★ |
+**标题**：*MotionScape: A Motion-Stratified UAV Video Benchmark for World Modeling and Future Video Generation*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2604.07991-b31b1b.svg)](https://arxiv.org/abs/2604.07991) [![GitHub](https://img.shields.io/badge/GitHub-MotionScape-181717.svg?logo=github)](https://github.com/Thelegendzz/MotionScape) · 2026 · 推荐度 ★★★
 
 **核心贡献**：
-- 最大规模的真实无人机视频数据集
-- 30+小时4K视频，4.5M+帧
-- 准确的6-DoF相机轨迹
-- 细粒度自然语言描述
+- 真实无人机视角视频基准：**228 段高分辨率视频、共 62,700 帧**（约 35 分钟）
+- 标注天气与光照条件、场景环境、相机视角运动
+- 按相机运动强度分层（低/中/高运动层），供"运动分层"式评测
 
 **方法要点**：
-- CLIP相关性过滤
-- 时间分割
-- 鲁棒视觉SLAM轨迹恢复
-- LLM驱动语义标注
+- 人工选源
+- CLIP 辅助筛查
+- 人工校验（三步，非自动化管线）
 
-**结果亮点**：对齐的标注有效提升现有世界模型模拟复杂3D动态的能力
+**结果亮点**：对齐的标注有效提升现有世界模型模拟复杂 3D 动态的能力
+
+> **勘误（2026-10）**：本卡片早先写作「30+小时4K视频，4.5M+帧，准确的6-DoF相机轨迹，细粒度自然语言描述」，管线写成「CLIP相关性过滤 / 时间分割 / 鲁棒视觉SLAM轨迹恢复 / LLM驱动语义标注」。原文摘要的实际规模是 *"228 high-resolution video clips totaling 62,700 frames, with semantic annotations of weather and illumination conditions, scene environment, and camera-viewpoint motion"*，数据构建是 *"manual source selection, CLIP-assisted inspection, and human verification"*。**帧数被夸大约 70 倍，6-DoF 轨迹、SLAM、LLM 标注在原文中均不存在（全文 0 命中）。**
 
 ---
 
@@ -125,12 +113,9 @@
 
 **一句话总结**：最全面的无人机世界模型基准套件，定义五大下游任务
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | AeroVerse: UAV-Agent Benchmark Suite for Simulating, Pre-training, Finetuning, and Evaluating Aerospace Embodied World Models |
-| **arXiv** | [2408.15511](https://arxiv.org/abs/2408.15511) |
-| **年份** | 2024 |
-| **推荐度** | ★★☆ |
+**标题**：*AeroVerse: UAV-Agent Benchmark Suite for Simulating, Pre-training, Finetuning, and Evaluating Aerospace Embodied World Models*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2408.15511-b31b1b.svg)](https://arxiv.org/abs/2408.15511) · 2024 · 推荐度 ★★☆
 
 **核心贡献**：
 - 定义"航空航天世界模型"概念
@@ -138,11 +123,13 @@
 - 预训练和微调数据集
 
 **五大任务**：
-1. 场景认知
-2. 导航规划
-3. 目标跟踪
-4. 避障控制
-5. 降落评估
+1. 场景认知（aerospace embodied scene awareness）
+2. 空间推理（spatial reasoning）
+3. 导航探索（navigational exploration）
+4. 任务规划（task planning）
+5. 运动决策（motion decision）
+
+> **勘误（2026-10）**：本卡片早先列的五大任务是「场景认知 / 导航规划 / 目标跟踪 / 避障控制 / 降落评估」，其中**后三项原文里根本没有**。原文定义的是 *"aerospace embodied scene awareness, spatial reasoning, navigational exploration, task planning, and motion decision"*，已按原文改正。
 
 ---
 
@@ -150,13 +137,9 @@
 
 **一句话总结**：首次将DreamerV3用于无人机竞速，涌现感知意识行为
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | Dream to fly: Model-based reinforcement learning for vision-based drone flight |
-| **arXiv** | [2501.14377](https://arxiv.org/abs/2501.14377) |
-| **会议** | ICRA 2026 |
-| **机构** | UZH, RPG |
-| **推荐度** | ★★★ |
+**标题**：*Dream to fly: Model-based reinforcement learning for vision-based drone flight*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2501.14377-b31b1b.svg)](https://arxiv.org/abs/2501.14377) · ICRA 2026 · UZH, RPG · 推荐度 ★★★
 
 **核心贡献**：
 - DreamerV3首次用于无人机竞速
@@ -177,13 +160,9 @@
 
 **一句话总结**：结合解析模型和学习组件的混合动力学状态估计
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | HDVIO: Improving Localization and Disturbance Estimation with Hybrid Dynamics VIO |
-| **arXiv** | [2306.11429](https://arxiv.org/abs/2306.11429) |
-| **机构** | UZH, RPG |
-| **年份** | 2023 |
-| **推荐度** | ★★☆ |
+**标题**：*HDVIO: Improving Localization and Disturbance Estimation with Hybrid Dynamics VIO*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2306.11429-b31b1b.svg)](https://arxiv.org/abs/2306.11429) · 2023 · UZH, RPG · 推荐度 ★★☆
 
 **核心贡献**：
 - 混合动力学模型：解析+学习
@@ -201,12 +180,9 @@
 
 **一句话总结**：将哈密顿方程结构注入神经ODE网络用于四旋翼控制
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | Physics-guided Learning-based Adaptive Control on the SE(3) Manifold |
-| **arXiv** | [2201.04339](https://arxiv.org/abs/2201.04339) |
-| **年份** | 2022 |
-| **推荐度** | ★★☆ |
+**标题**：*Physics-guided Learning-based Adaptive Control on the SE(3) Manifold*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2201.04339-b31b1b.svg)](https://arxiv.org/abs/2201.04339) · 2022 · 推荐度 ★★☆
 
 **核心贡献**：
 - 物理启发的神经ODE
@@ -219,12 +195,9 @@
 
 **一句话总结**：利用过去成功任务迭代改进四旋翼控制性能
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | Learning Model Predictive Control for Quadrotors |
-| **arXiv** | [2202.07716](https://arxiv.org/abs/2202.07716) |
-| **年份** | 2022 |
-| **推荐度** | ★☆☆ |
+**标题**：*Learning Model Predictive Control for Quadrotors*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2202.07716-b31b1b.svg)](https://arxiv.org/abs/2202.07716) · 2022 · 推荐度 ★☆☆
 
 **核心贡献**：
 - 学习MPC方法
@@ -237,12 +210,9 @@
 
 **一句话总结**：世界模型用于无线边缘智能优化，含天气感知无人机轨迹规划
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | World Models for Cognitive Agents: Transforming Edge Intelligence in Future Networks |
-| **arXiv** | [2506.00417](https://arxiv.org/abs/2506.00417) |
-| **年份** | 2025 |
-| **推荐度** | ★★☆ |
+**标题**：*World Models for Cognitive Agents: Transforming Edge Intelligence in Future Networks*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2506.00417-b31b1b.svg)](https://arxiv.org/abs/2506.00417) · 2025 · 推荐度 ★★☆
 
 **核心贡献**：
 - "Wireless Dreamer"框架
@@ -255,12 +225,9 @@
 
 **一句话总结**：用对比学习在世界模型框架中学习无人机导航视觉表示
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | Learning visual representation for autonomous drone navigation via a contrastive world model |
-| **期刊** | IEEE Transactions |
-| **年份** | 2023 |
-| **推荐度** | ★★☆ |
+**标题**：*Learning visual representation for autonomous drone navigation via a contrastive world model*
+
+ · IEEE Transactions · 2023 · 推荐度 ★★☆
 
 **核心贡献**：
 - 对比学习+世界模型
@@ -273,12 +240,9 @@
 
 **一句话总结**：Crazyflie 2.1纳米四旋翼的75k真实样本系统辨识基准
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | Nonlinear System Identification Nano-drone Benchmark |
-| **arXiv** | [2512.14450](https://arxiv.org/abs/2512.14450) |
-| **年份** | 2025 |
-| **推荐度** | ★☆☆ |
+**标题**：*Nonlinear System Identification Nano-drone Benchmark*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2512.14450-b31b1b.svg)](https://arxiv.org/abs/2512.14450) · 2025 · 推荐度 ★☆☆
 
 **核心贡献**：
 - 75k真实世界样本
@@ -291,12 +255,9 @@
 
 **一句话总结**：用物理信息神经网络学习多旋翼-悬挂负载系统的端到端模型
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | Physics-Informed Neural Network for Multirotor Slung Load Systems |
-| **arXiv** | [2405.09428](https://arxiv.org/abs/2405.09428) |
-| **年份** | 2024 |
-| **推荐度** | ★☆☆ |
+**标题**：*Physics-Informed Neural Network for Multirotor Slung Load Systems Modeling*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2405.09428-b31b1b.svg)](https://arxiv.org/abs/2405.09428) · 2024 · 推荐度 ★☆☆
 
 **核心贡献**：
 - PINN用于复杂耦合系统
@@ -312,7 +273,7 @@
 | ★★★ | ANWM | 无人机专属世界模型，FFP创新 |
 | ★★★ | FlightDiffusion | 扩散模型+FPV视频生成 |
 | ★★★ | Dream to Fly | DreamerV3用于无人机，ICRA 2026 |
-| ★★★ | MotionScape | 最大无人机视频数据集 |
+| ★★★ | MotionScape | 运动分层的无人机视频基准 |
 | ★★☆ | AirScape | 可控航空世界模型 |
 | ★★☆ | AeroVerse | 全面的基准套件 |
 | ★★☆ | HDVIO | 混合动力学，UZH RPG |
@@ -327,7 +288,7 @@
 - [VLA论文卡片](vla-papers.md) — VLA领域论文导读
 - [VLM论文卡片](vlm-papers.md) — VLM领域论文导读
 - [基准与数据集论文](benchmark-papers.md) — 基准论文导读
-- [完整论文列表](../../references/paper-list.md) — 81 篇论文分类汇总
+- [完整论文列表](../../references/paper-list.md) — 195 篇论文分类汇总
 
 ## 思考题
 
