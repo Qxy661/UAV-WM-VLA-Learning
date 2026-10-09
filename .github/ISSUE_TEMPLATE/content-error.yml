@@ -1,0 +1,41 @@
+name: 内容错误 / 链接失效
+description: 文档里的说法、数字、引用或链接有问题
+title: "[内容] "
+body:
+  - type: input
+    id: where
+    attributes:
+      label: 位置
+      description: 文件路径与行号
+      placeholder: "docs/02-世界模型专题/07-世界模型评测与诊断.md:120"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 类型
+      options:
+        - 说法 / 结论有误
+        - 数字对不上
+        - arXiv 号或论文标题有误
+        - 链接失效
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: 错在哪
+      description: 现在写的是什么，按你的判断应该是什么
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: 依据
+      description: 论文链接、官方文档或能复现的命令。有就填，能省一轮来回。
+    validations:
+      required: false

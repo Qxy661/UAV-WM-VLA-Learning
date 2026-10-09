@@ -389,6 +389,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true", help="写出 references/citation-audit.md")
     ap.add_argument("--verbose", action="store_true", help="逐条打印")
+    ap.add_argument("--fail-on-bad", action="store_true",
+                    help="有 arXiv 号配错或 API 查无此文时退出码 1（供 CI 当门禁）；"
+                         "请求失败的号只警告、不判失败")
     args = ap.parse_args()
 
     print("扫描 Markdown …")
@@ -546,6 +549,18 @@ def main():
         out.write_text("\n".join(L), encoding="utf-8")
         print(f"\n报告已写出：{out.relative_to(ROOT)}")
 
+    # 退出码：只有「号配错」「API 明确查无」算失败。
+    # 请求失败（unknown）绝不能当失败——脚本自己的 docstring 就警告过，
+    # 把请求失败当成论文不存在会让整个结论作废。
+    if args.fail_on_bad:
+        if unknown:
+            print(f"::warning::{len(unknown)} 个号请求失败、未能核实，不作为失败依据："
+                  f"{'、'.join(sorted(unknown))}")
+        if bad_ids or missing:
+            print(f"\n--fail-on-bad：{len(bad_ids)} 个号配错、{len(missing)} 个号查无此文 -> 退出 1")
+            return 1
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

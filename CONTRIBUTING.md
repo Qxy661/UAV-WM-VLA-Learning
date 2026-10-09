@@ -124,8 +124,12 @@
 
 ```
 README.md                 # 项目说明与文档目录
+README.en.md              # 英文门面（只做门面，正文保持中文）
 CONTRIBUTING.md           # 贡献指南（本文件）
 LICENSE
+CHANGELOG.md              # 更新日志
+CITATION.cff              # 引用元数据（GitHub 侧据此导出 BibTeX / APA）
+mkdocs.yml                # 文档站配置（docs_dir 指向 build-docs/，见「文档站」）
 docs/
 ├── 00-导读与学习路线.md
 ├── 01-基础概念/          # 基础概念解释
@@ -143,6 +147,8 @@ code/                     # 可运行 demo（真实 PyTorch）
 mindmaps/                 # 思维导图
 references/               # 参考资料
 figures/                  # 由 code/ 脚本生成的配图
+tools/                    # 自检与生成脚本（引用核查、前沿追踪、站点构建、链接/nav 检查）
+.github/                  # Issue 表单、PR 模板与两个 workflow
 ```
 
 ---
@@ -251,13 +257,25 @@ figures/                  # 由 code/ 脚本生成的配图
 `tools/check_citations.py` 对着 arXiv API 核对：
 
 ```bash
-py -3.9 tools/check_citations.py            # 核查并打印摘要
-py -3.9 tools/check_citations.py --write    # 额外写出 references/citation-audit.md
+py -3.9 tools/check_citations.py                    # 核查并打印摘要
+py -3.9 tools/check_citations.py --write            # 额外写出 references/citation-audit.md
+py -3.9 tools/check_citations.py --fail-on-bad      # 号配错 / 查无此文时退出码 1（CI 用）
 ```
 
 只依赖标准库。判据是 API 返回的真实标题，与文档在号附近写的标题做比对；
 相似度低只代表「值得人看一眼」，**不是「这篇论文不存在」**。请求失败的号会
 单独列出来，重跑即可——**绝不能把请求失败当成论文不存在**。
+
+在本机跑需要走代理，脚本用 `urllib` 会自动读环境变量，所以直接带上即可
+（CI 里直连 arXiv，无需设置）：
+
+```bash
+HTTPS_PROXY=http://127.0.0.1:7897 py -3.9 tools/check_citations.py
+```
+
+`--fail-on-bad` **只对「号配错」「API 明确查无」判失败**；请求失败（限流/超时）
+只打 `::warning::`。这条边界是刻意的：把请求失败当失败，一次网络抖动就会让 CI 变红，
+而它证明不了任何事。
 
 工具认三种在文档里写标题的写法：链接文字、引号、**斜体**（条目式的
 `**[会议'年月] 名称** — *English Title*`）。所以清单层改条目式之后，核查不会
@@ -280,6 +298,50 @@ py -3.9 tools/watch.py --volume vla --write   # VLA 卷
 **429 / 超时 / 非 200 记 `NULL`，绝不记 0**——把请求失败当成「没有命中」
 会凭空造出一个空白。命中 0 的查询，复核过之后把结论钉进
 `watchlists.py` 的 `VERIFIED_ZEROS`，否则它只活在对话里，下次重跑又变成裸的 0。
+
+### 文档站
+
+站点用 mkdocs-material。构建分两步，**不要跳过第一步**：
+
+```bash
+py -3.9 tools/build_docs.py     # 生成暂存树 build-docs/
+mkdocs build --strict           # 或 mkdocs serve 本地预览
+```
+
+**为什么要有 `build_docs.py`。** `mkdocs.yml` 的 `docs_dir` 指向 `build-docs/`，那是仓库的镜像。
+直接把 `docs_dir` 设成仓库根不行：根目录有 1.1 GB 的 `paper/`，而 `mkdocs serve` 不遵守
+`exclude_docs`，本地预览会被拖垮。镜像的好处是每个文件与仓库里的相对位置一致，
+**全仓 900 多条相对链接一条都不用改写**。脚本还会给每个卷生成一个落地页，
+让 README 与正文里那些指向目录的链接（`docs/01-基础概念/`）在站点上也有落点。
+
+**版本必须钉住：**
+
+```bash
+pip install "mkdocs-material==9.7.*" "mkdocs<2" jieba
+```
+
+- **jieba 一定要装。** 中文分词在构建期做（把词用零宽空格连起来），但包本身不带 jieba；
+  缺了它会静默退回英文式切分——搜索框看起来正常，中文却搜不到。
+- **`search` 插件不要写 `lang: zh`。** 写了会报 `Option search.lang 'zh' is not supported`，
+  而这条警告会让 `mkdocs build --strict` 直接失败。中文支持由 `theme.language: zh` 装好。
+- material 自 2025-11 转入维护模式（EOL 2026-11-05），9.7.\* 是最后一个免费开放中文分词
+  的版本。已发布的静态站点不受影响，但升级是另一件事。
+
+**`use_directory_urls` 是关掉的，别改回去。** 仓库里有一批指向目录的链接，mkdocs 不会重写它们；
+开着目录化 URL 会给每个页面多加一层，这类链接就少一层而 404。
+
+**提交前先跑这两条**，它们也是 CI 的检查项：
+
+```bash
+py -3.9 tools/check_links.py    # 全仓相对链接
+py -3.9 tools/check_nav.py      # mkdocs.yml 的 nav 与仓库文档是否对得上
+```
+
+新增文档忘了加进 `mkdocs.yml` 的 nav，`check_nav.py` 会把缺的那篇直接打印出来。
+
+**英文门面**：`README.en.md` 是英文首页，`docs/en/index.md` 是英文文档总览
+（59 篇的英文标题 + 一句英文说明 + 链回中文正文）。总览页由 `tools/gen_en_index.py`
+从各篇的 H1 生成，**改动了文档标题或结构时重跑它**；只改正文不必同步。
 
 ---
 

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 提问 / 讨论 / 交流学习路线
+    url: https://github.com/Qxy661/UAV-WM-VLA-Learning/discussions
+    about: 使用方法、学习顺序、选题这类开放问题，请到 Discussions，不要开 Issue。
+  - name: 先读贡献指南
+    url: https://github.com/Qxy661/UAV-WM-VLA-Learning/blob/main/CONTRIBUTING.md
+    about: 想补充文档或代码，先看这里的体例与自查清单。
