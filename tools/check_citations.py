@@ -42,7 +42,9 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-API = "http://export.arxiv.org/api/query"
+# 必须走 https：http 端点回 301，urllib 跟随重定向时在部分网络下会整批失败，
+# 于是最老的那几个号（1707/1803/1811…）会被批量错记为「未能核实」。
+API = "https://export.arxiv.org/api/query"
 NS = {"a": "http://www.w3.org/2005/Atom"}
 
 BATCH = 25                 # 每批请求的 id 数
@@ -60,6 +62,12 @@ RE_QUOTED = re.compile(r"[\"“]([^\"”]{8,200})[\"”]")
 # 前后各一个 `*`，用环视把 `**加粗**` 排除掉（加粗内部的首字符就是 `*`，
 # 从那里起步会撞上第二条环视）。
 RE_ITALIC = re.compile(r"(?<!\*)\*([^*\n]{8,220})\*(?!\*)")
+# 加粗标题：条目式里没有系统名的篇目把完整标题放在加粗位
+# （`- **[NeurIPS'18.03] World Models** — *Ha & Schmidhuber* · ★★★`），
+# 这类条目连斜体位都没有标题，不认加粗就会退到「整行」当标题，条条报不符。
+RE_BOLD = re.compile(r"\*\*([^*\n]{4,220})\*\*")
+# 条目式开头的 `[Venue'YY.MM]` 标签，与标题比相似度前要剥掉。
+RE_TAG = re.compile(r"^\s*\[[^\]]{0,40}\]\s*")
 
 
 # ---------------------------------------------------------------- 抽取
@@ -137,7 +145,14 @@ def plausible(t, src):
         return False
     if re.match(r"^\d{4}\s*年|^\d+\.\d+\s*$", t):         # 「2025 年 4 月」这类
         return False
-    if looks_like_authors(t) or is_venue(t):
+    # 作者串在表格列、裸 URL 前缀、整行兜底里一律剔除；但 link / quote / italic /
+    # bold 是**明确的标题位**——指向这个号的链接文字、引号里的话、条目式的斜体与
+    # 加粗位，本身就是标题声明。这里不剔，否则短标题会被作者判据误杀：实测
+    # `Gaussian Splatting SLAM`（三个词、全大写首字母）被判成作者串，于是
+    # 2312.06741 那条被报成「对不上」，而文档写的正是论文原标题。
+    if src not in ("link", "quote", "italic", "bold") and looks_like_authors(t):
+        return False
+    if is_venue(t):
         return False
     # 中文散文：汉字多且没有英文词
     if len(re.findall(r"[一-鿿]", t)) > 6 and not re.search(r"[A-Za-z]{3}", t):
@@ -236,6 +251,10 @@ def claimed_titles(lines, i, aid):
             # 明确的标题位，优先取；两个都取不到才退到「整行」。
             cand = [(m.group(1), "quote") for m in RE_QUOTED.finditer(prev)]
             cand += [(m.group(1), "italic") for m in RE_ITALIC.finditer(prev)]
+            # 条目式里没有系统名的篇目，完整标题在加粗位而不是斜体位；
+            # 先把开头的 `[Venue'YY.MM]` 标签剥掉再比。
+            cand += [(RE_TAG.sub("", m.group(1)), "bold")
+                     for m in RE_BOLD.finditer(prev)]
             if cand:
                 out = clean(cand)
                 if out:
@@ -472,8 +491,11 @@ def main():
              "> 由 `tools/check_citations.py` 自动生成，请勿手改。",
              "> 判定以 arXiv API 返回的元数据为准。",
              "> 「未能核实」表示请求失败，**不代表论文不存在**，重跑即可。",
-             "> 「无标题可判」表示文档没在 arXiv 号附近写出标题，本工具无从比对，不等于正确。", "",
-             "## 摘要", "",
+             "> 「无标题可判」表示文档没在 arXiv 号附近写出标题，本工具无从比对，不等于正确。",
+             "> **本报告只校验两件事：号能否解析、号附近的标题是否配得上。**",
+             "> 它**不校验正文数字、机制名、能力断言与数据集规模**——「0 个对不上」",
+             "> 不能当作正文内容正确的证据。数字与机制必须回原文核。",
+             "", "## 摘要", "",
              f"- 引用出现处：{len(cites)}",
              f"- 去重后 arXiv 号：{len(ids)}",
              f"- **对不上任何处文档标题的号：{len(bad_ids)}**",
