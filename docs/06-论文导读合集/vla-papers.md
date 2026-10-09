@@ -2,7 +2,7 @@
 
 > 预计阅读：20 分钟 | 前置知识：了解VLA基础概念（见[什么是VLA](../01-基础概念/03-什么是VLA.md)）
 >
-> 本文收录11篇VLA关键论文，每篇含一句话总结、核心贡献、方法分析和链接
+> 本文收录 11 篇 VLA 关键论文。每张卡片由「标题行 → 徽章行 → 一句话总结 → 核心贡献 / 方法要点 / 结果亮点」组成，题名取 arXiv API 返回的完整题名
 
 ---
 
@@ -10,12 +10,9 @@
 
 **一句话总结**：把 VLA 压到能上机载的端到端框架
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | VLA-AN: An Efficient and Onboard Vision-Language-Action Framework for Aerial Navigation in Complex Environments |
-| **arXiv** | [2512.15258](https://arxiv.org/abs/2512.15258) |
-| **年份** | 2025 |
-| **推荐度** | ★★★ |
+**标题**：*VLA-AN: An Efficient and Onboard Vision-Language-Action Framework for Aerial Navigation in Complex Environments*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2512.15258-b31b1b.svg)](https://arxiv.org/abs/2512.15258) · 2025 · 推荐度 ★★★
 
 **核心贡献**：
 - 3D Gaussian Splatting高保真数据生成
@@ -39,14 +36,9 @@
 
 **一句话总结**：VLA模型处理认知无人机任务：人类识别、符号理解、推理
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | CognitiveDrone: A VLA Model and Evaluation Benchmark for Real-Time Cognitive Task Solving and Reasoning in UAVs |
-| **arXiv** | [2503.01378](https://arxiv.org/abs/2503.01378) |
-| **项目页** | [cognitivedrone.github.io](https://cognitivedrone.github.io) |
-| **GitHub** | [SerValera/docker_CognitiveDrone_DataCollector](https://github.com/SerValera/docker_CognitiveDrone_DataCollector) |
-| **年份** | 2025 |
-| **推荐度** | ★★★ |
+**标题**：*CognitiveDrone: A VLA Model and Evaluation Benchmark for Real-Time Cognitive Task Solving and Reasoning in UAVs*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2503.01378-b31b1b.svg)](https://arxiv.org/abs/2503.01378) [![GitHub](https://img.shields.io/badge/GitHub-docker__CognitiveDrone__DataCollector-181717.svg?logo=github)](https://github.com/SerValera/docker_CognitiveDrone_DataCollector) [![Website](https://img.shields.io/badge/Website-cognitivedrone.github.io-0A66C2.svg)](https://cognitivedrone.github.io) · 2025 · 推荐度 ★★★
 
 **核心贡献**：
 - 8000+模拟飞行轨迹训练
@@ -66,13 +58,9 @@
 
 **一句话总结**：基于π₀.₅的无人机跟踪VLA，时序压缩+双分支解码
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | UAV-Track VLA: Embodied Aerial Tracking via Vision-Language-Action Models |
-| **arXiv** | [2604.02241](https://arxiv.org/abs/2604.02241) |
-| **GitHub** | [RobotFlow-Labs/project_uav_trackvla](https://github.com/RobotFlow-Labs/project_uav_trackvla) |
-| **年份** | 2026 |
-| **推荐度** | ★★☆ |
+**标题**：*UAV-Track VLA: Embodied Aerial Tracking via Vision-Language-Action Models*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2604.02241-b31b1b.svg)](https://arxiv.org/abs/2604.02241) [![GitHub](https://img.shields.io/badge/GitHub-UAV--Track__VLA-181717.svg?logo=github)](https://github.com/Hub-Tian/UAV-Track_VLA) · 2026 · 推荐度 ★★☆
 
 **核心贡献**：
 - 基于π₀.₅ VLA架构
@@ -93,14 +81,9 @@
 
 **一句话总结**：提出细粒度语言条件飞行任务 "Flying-on-a-Word"，并开源数据与模型
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | UAV-Flow Colosseo: A Real-World Benchmark for Flying-on-a-Word UAV Imitation Learning |
-| **arXiv** | [2505.15725](https://arxiv.org/abs/2505.15725) |
-| **GitHub** | [buaa-colalab/UAV-Flow](https://github.com/buaa-colalab/UAV-Flow) (124 stars) |
-| **HuggingFace** | wangxiangyu0814/UAV-Flow, OpenVLA-UAV |
-| **年份** | 2025 |
-| **推荐度** | ★★★ |
+**标题**：*UAV-Flow Colosseo: A Real-World Benchmark for Flying-on-a-Word UAV Imitation Learning*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2505.15725-b31b1b.svg)](https://arxiv.org/abs/2505.15725) [![GitHub](https://img.shields.io/badge/GitHub-UAV--Flow-181717.svg?logo=github)](https://github.com/buaa-colalab/UAV-Flow) · 约 170 stars · 2025 · HuggingFace wangxiangyu0814/UAV-Flow, OpenVLA-UAV · 推荐度 ★★★
 
 **核心贡献**：
 - OpenVLA-UAV适配模型
@@ -109,9 +92,11 @@
 **方法要点**：
 - 模仿学习：模仿专家飞行员轨迹
 - 原子语言指令配对
-- UnrealZoo Gym评估环境
+- UnrealCV 仿真环境
 
 **结果亮点**：VLA模型在细粒度无人机控制上显著优于VLN基线
+
+> **勘误（2026-10）**：本卡片早先写「UnrealZoo Gym评估环境」。arXiv:2505.15725 原文用的是 *"We utilize UnrealCV as the simulation environment for the UAV"*，全文无 "gym" 命中。
 
 ---
 
@@ -119,12 +104,9 @@
 
 **一句话总结**：大型VLM替代人类飞行员，在GPS拒止环境中操作室内无人机
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | VLN-Pilot: Large Vision-Language Model as an Autonomous Indoor Drone Operator |
-| **arXiv** | [2602.05552](https://arxiv.org/abs/2602.05552) |
-| **年份** | 2026 |
-| **推荐度** | ★★☆ |
+**标题**：*VLN-Pilot: Large Vision-Language Model as an Autonomous Indoor Drone Operator*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2602.05552-b31b1b.svg)](https://arxiv.org/abs/2602.05552) · 2026 · 推荐度 ★★☆
 
 **核心贡献**：
 - 自由形式自然语言指令解释
@@ -138,13 +120,9 @@
 
 **一句话总结**：首个云边端协同框架，将基础模型集成到无人机巡航中
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | CoDrone: Autonomous Drone Navigation Assisted by Edge and Cloud Foundation Models |
-| **arXiv** | [2512.19083](https://arxiv.org/abs/2512.19083) |
-| **期刊** | IEEE Internet of Things Journal |
-| **年份** | 2025 |
-| **推荐度** | ★★☆ |
+**标题**：*CoDrone: Autonomous Drone Navigation Assisted by Edge and Cloud Foundation Models*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2512.19083-b31b1b.svg)](https://arxiv.org/abs/2512.19083) · IEEE Internet of Things Journal · 2025 · 推荐度 ★★☆
 
 **核心贡献**：
 - 灰度图像减少计算
@@ -161,13 +139,9 @@
 
 **一句话总结**：系统评估8种LLM/VLM方法用于无人机路径规划
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | FM-Planner: Foundation Model Guided Path Planning for Autonomous Drone Navigation |
-| **arXiv** | [2505.20783](https://arxiv.org/abs/2505.20783) |
-| **GitHub** | [NTU-ICG/FM-Planner](https://github.com/NTU-ICG/FM-Planner) |
-| **年份** | 2025 |
-| **推荐度** | ★★☆ |
+**标题**：*FM-Planner: Foundation Model Guided Path Planning for Autonomous Drone Navigation*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2505.20783-b31b1b.svg)](https://arxiv.org/abs/2505.20783) [![GitHub](https://img.shields.io/badge/GitHub-FM--Planner-181717.svg?logo=github)](https://github.com/NTU-ICG/FM-Planner) · 2025 · 推荐度 ★★☆
 
 **核心贡献**：
 - LLM-Vision集成规划器
@@ -180,14 +154,9 @@
 
 **一句话总结**：跨四足、无人机、轮式、车辆的统一导航基础模型
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | Embodied Navigation Foundation Model（系统名 NavFoM） |
-| **arXiv** | [2509.12129](https://arxiv.org/abs/2509.12129) |
-| **项目页** | [pku-epic.github.io/NavFoM-Web](https://pku-epic.github.io/NavFoM-Web/) |
-| **机构** | 北京大学 |
-| **年份** | 2025 |
-| **推荐度** | ★★☆ |
+**标题**：*Embodied Navigation Foundation Model（系统名 NavFoM）*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2509.12129-b31b1b.svg)](https://arxiv.org/abs/2509.12129) [![Website](https://img.shields.io/badge/Website-pku--epic.github.io-0A66C2.svg)](https://pku-epic.github.io/NavFoM-Web/) · 2025 · 北京大学 · 推荐度 ★★☆
 
 **核心贡献**：
 - 8M样本跨形态训练
@@ -203,13 +172,9 @@
 
 **一句话总结**：LLM驱动的城市航空VLN代理，层次化语义规划+全局记忆
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | CityNavAgent: Aerial Vision-and-Language Navigation with Hierarchical Semantic Planning and Global Memory |
-| **会议** | ACL 2025 |
-| **arXiv** | [2505.05622](https://arxiv.org/abs/2505.05622) |
-| **年份** | 2025 |
-| **推荐度** | ★★☆ |
+**标题**：*CityNavAgent: Aerial Vision-and-Language Navigation with Hierarchical Semantic Planning and Global Memory*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2505.05622-b31b1b.svg)](https://arxiv.org/abs/2505.05622) · ACL 2025 · 2025 · 推荐度 ★★☆
 
 **核心贡献**：
 - 拓扑记忆图
@@ -221,13 +186,9 @@
 
 **一句话总结**：VLM+ChatGPT-4o场景解释+NMPC控制，搜救响应时间提升33.75%
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | UAV-VLRR: Vision-Language Informed NMPC for Rapid Response in UAV Search and Rescue |
-| **arXiv** | [2503.02465](https://arxiv.org/abs/2503.02465) |
-| **机构** | Skolkovo |
-| **年份** | 2025 |
-| **推荐度** | ★★☆ |
+**标题**：*UAV-VLRR: Vision-Language Informed NMPC for Rapid Response in UAV Search and Rescue*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2503.02465-b31b1b.svg)](https://arxiv.org/abs/2503.02465) · 2025 · Skolkovo · 推荐度 ★★☆
 
 **核心贡献**：
 - NMPC控制
@@ -238,13 +199,9 @@
 
 **一句话总结**：端到端VLA用于野外自主无人机导航，ICLR 2026
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | AutoFly: Vision-Language-Action Model for UAV Autonomous Navigation in the Wild |
-| **会议** | ICLR 2026 |
-| **arXiv** | [2602.09657](https://arxiv.org/abs/2602.09657) |
-| **年份** | 2026 |
-| **推荐度** | ★★☆ |
+**标题**：*AutoFly: Vision-Language-Action Model for UAV Autonomous Navigation in the Wild*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2602.09657-b31b1b.svg)](https://arxiv.org/abs/2602.09657) · ICLR 2026 · 2026 · 推荐度 ★★☆
 
 **核心贡献**：
 - 伪深度编码器
@@ -273,7 +230,7 @@
 
 - [世界模型论文卡片](world-model-papers.md) — 世界模型论文导读
 - [VLM论文卡片](vlm-papers.md) — VLM论文导读
-- [完整论文列表](../../references/paper-list.md) — 81 篇论文分类汇总
+- [完整论文列表](../../references/paper-list.md) — 195 篇论文分类汇总
 
 ## 思考题
 

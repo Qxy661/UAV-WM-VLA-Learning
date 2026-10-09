@@ -168,13 +168,15 @@ OpenVLA 的开源贡献体现在多个层面：
 
 ### 4.4 关键实验结果
 
-OpenVLA 在多个机器人操控基准上取得了与 RT-2 相当甚至更好的性能，同时参数量仅为 7B（RT-2 使用 55B）：
+OpenVLA 论文自报的结论（arXiv:2406.09246 摘要）：
 
-| 模型 | 参数量 | SIMPLER 均分 | 推理速度 |
-|------|--------|-------------|---------|
-| RT-2-X (55B) | 55B | 72.6% | ~1.5 Hz |
-| OpenVLA | 7B | 73.2% | ~6 Hz |
-| Octo | 93M | 56.3% | ~50 Hz |
+- 在 **29 个任务、多种机器人形态**上，绝对任务成功率比闭源模型 **RT-2-X (55B) 高 16.5%**，而参数量少 7 倍
+- 比从头训练的模仿学习强基线 **Diffusion Policy 高 20.4%**
+- 可在**消费级 GPU 上用 LoRA 微调**，并可经量化加速服务、下游成功率不降
+
+> **勘误（2026-10）**：本节早先有一张「SIMPLER 均分：RT-2-X 72.6% / OpenVLA 73.2% / Octo 56.3%」的表。**这张表是编的**——OpenVLA 论文（2406.09246）里没有 SIMPLER 相关表格，而 SIMPLER 原论文（2405.05941）**一次都没有提到 OpenVLA**，也没有这三个数字。已整表删除，改为论文摘要里可核的结论。
+>
+> 顺带记一条教训：三个数都"像那么回事"（OpenVLA 略高于 RT-2-X、Octo 明显低），这正是编造数字最难被发现的地方——它们符合读者对结论的预期。**核对时必须回原文，不能靠合理性判断。**
 
 ### 4.5 微调与适配
 
@@ -222,7 +224,7 @@ graph LR
                                           |
 [语言指令] ------→ [Tokenizer] ----------+--→ [VLM Backbone]
                                           |      (预训练 VLM)
-[当前状态] ------→ [状态编码器] ----------+      (如 PaLI-X)
+[当前状态] ------→ [状态编码器] ----------+      (PaliGemma)
                                           |
                                           ↓
                                     [Flow Matching Head]
@@ -235,6 +237,8 @@ graph LR
 - **动作 chunk**：一次生成未来 H 步的动作序列（通常 H=16-50），而非逐步生成
 - **条件生成**：Flow Matching 过程以 VLM 的特征表示为条件
 - **去噪步数**：推理时通常使用 10 步去噪
+
+> **口径（2026-10）**：VLM 骨干是 **PaliGemma**。π₀ 论文原句是 *"The VLM backbone weights are initialized from PaliGemma"*。本仓库早先在架构图与对比表里写成「PaLI-X」或「定制 VLM」——PaLI-X 是 **RT-2** 的骨干，属张冠李戴，已改。
 
 ### 5.4 训练流程
 
@@ -259,11 +263,13 @@ graph LR
 
 | 创新点 | π₀ | π₀.₅ |
 |--------|-----|-------|
-| 架构范式 | VLM + 动作头 | 原生动作 VLM |
-| 动作表示 | Flow Matching 头 | 统一 token 空间 |
+| 架构范式 | VLM + 动作头 | VLM 上接动作专家，兼做高层子任务预测 |
+| 动作表示 | Flow Matching（连续） | Flow Matching（连续）+ 离散 token 预测子任务 |
 | 跨具身能力 | 有限 | 强（统一架构） |
 | 语言理解 | 通过 VLM | 深度融合 |
 | 训练范式 | 两阶段 | 端到端 |
+
+> **勘误（2026-10）**：本表 π₀.₅ 的「动作表示：统一 token 空间」是错的。π₀.₅（arXiv:2504.16054）走的是 **flow matching 连续动作 + 离散 token 混合**（用离散 token 预测高层子任务、再用连续动作专家执行），不是把动作统一到 token 空间里。已改。
 
 ### 6.3 跨具身泛化
 
@@ -284,10 +290,10 @@ graph LR
 | 发表时间 | 2023.07 | 2024.06 | 2024.10 | 2025.04 |
 | 发表机构 | Google DeepMind | Stanford | Physical Intelligence | Physical Intelligence |
 | 参数量 | 55B | 7B | 未公开 | 未公开 |
-| VLM 基座 | PaLI-X / PaLM-E | Llama 2 + SigLIP/DINOv2 | 定制 VLM | 原生动作 VLM |
-| 动作表示 | 离散 token (256 bin) | 离散 token (256 bin) | Flow Matching (连续) | 统一 token 空间 |
-| 推理频率 | ~1.5 Hz | ~6 Hz | ~10-20 Hz | ~20-50 Hz |
-| 开源 | 否 | 是 | 否 | 否 |
+| VLM 基座 | PaLI-X / PaLM-E | Llama 2 + SigLIP/DINOv2 | PaliGemma | PaliGemma 系 |
+| 动作表示 | 离散 token (256 bin) | 离散 token (256 bin) | Flow Matching (连续) | Flow Matching + 离散子任务 token |
+| 推理频率 | ~1.5 Hz | ~6 Hz（单张 RTX 4090） | ~10-20 Hz | ~20-50 Hz |
+| 开源 | 否 | 是 | 是（openpi） | 是（openpi） |
 | 跨具身泛化 | 有限 | 中等 | 中等 | 强 |
 | 涌现推理 | 强 | 中等 | 中等 | 强 |
 | 动作精度 | 中 | 中 | 高 | 高 |
@@ -364,13 +370,25 @@ VLA 模型为无人机领域带来了新的可能性，但也面临独特挑战�
 
 ## 9. 关键论文
 
-| 论文 | 机构 | 年份 | 关键贡献 | 链接 |
-|------|------|------|---------|------|
-| RT-2: Vision-Language-Action Models | Google DeepMind | 2023 | 首个 VLA，动作 tokenization | arXiv:2307.15818 |
-| OpenVLA: An Open-Source Vision-Language-Action Model | Stanford | 2024 | 开源 7B VLA | arXiv:2406.09246 |
-| π₀: A Vision-Language-Action Flow Model | Physical Intelligence | 2024 | Flow Matching 连续动作 | arXiv:2410.24164 |
-| π₀.₅: a Vision-Language-Action Model with Open-World Generalization | Physical Intelligence | 2025 | 原生动作 VLM | arXiv:2504.16054 |
-| RT-1: Robotics Transformer | Google | 2023 | Transformer 动作预测基础 | arXiv:2212.06817 |
+- **[CoRL'23] RT-2** — *RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2307.15818-b31b1b.svg)](https://arxiv.org/abs/2307.15818)
+  首个 VLA，动作 tokenization
+
+- **[arXiv'24.06] OpenVLA** — *OpenVLA: An Open-Source Vision-Language-Action Model*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2406.09246-b31b1b.svg)](https://arxiv.org/abs/2406.09246)
+  开源 7B VLA
+
+- **[arXiv'24.10] π₀** — *π₀: A Vision-Language-Action Flow Model for General Robot Control*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2410.24164-b31b1b.svg)](https://arxiv.org/abs/2410.24164)
+  Flow Matching 连续动作
+
+- **[arXiv'25.04] π₀.₅** — *π₀.₅: a Vision-Language-Action Model with Open-World Generalization*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2504.16054-b31b1b.svg)](https://arxiv.org/abs/2504.16054)
+  原生动作 VLM
+
+- **[RSS'23] RT-1** — *RT-1: Robotics Transformer for Real-World Control*  
+  [![arXiv](https://img.shields.io/badge/arXiv-2212.06817-b31b1b.svg)](https://arxiv.org/abs/2212.06817)
+  Transformer 动作预测基础
 
 ---
 
@@ -581,7 +599,7 @@ RT-2 展示了"把物体移到最大的物体旁边"等涌现推理能力。请�
 <details>
 <summary>参考答案</summary>
 
-**因为可换的架构部件被换完了。** 这条线上的代际更替靠的是三个可换的部件：骨干（PaLI-X 到原生动作 VLM）、动作表示（256-bin 离散到 Flow Matching 到统一 token 空间）、以及动作头的挂载方式（外挂到原生）。到 π₀.₅ 三个都动过一轮，再往下换已经没有"下一个明显更好的部件"可换 —— 剩下的改进量分散在一批互不包含的具体问题上。
+**因为可换的架构部件被换完了。** 这条线上的代际更替靠的是三个可换的部件：骨干（PaLI-X 到 PaliGemma 系）、动作表示（256-bin 离散到 Flow Matching 连续，再到"连续 + 离散子任务 token"的混合）、以及动作头的挂载方式（外挂到原生）。到 π₀.₅ 三个都动过一轮，再往下换已经没有"下一个明显更好的部件"可换 —— 剩下的改进量分散在一批互不包含的具体问题上。
 
 **停顿的标志是消融轴从一个变成五个。** RT-2 到 π₀.₅ 这四篇里，代际比较的方式是"整篇对比整篇"，因为每一代换的是同一个部件。2026 年的工作不再这样比：06 固定住骨干去扫提交长度，07 固定住架构去扫数据来源，08 固定住数据去扫奖励信号，09 固定住模型去扫评测口径，10 固定住策略去扫想象步长。**能被写成"某个轴上的受控实验"，说明问题已经被切到可测量的粒度了** —— 这是成熟而不是停滞的标志。
 

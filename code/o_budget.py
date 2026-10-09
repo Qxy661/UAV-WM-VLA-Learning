@@ -6,9 +6,11 @@ Demo O — 显存这笔账，为什么同一件事各处算出来不一样
           08-可复现项目候选清单.md，以及 docs/03-VLA专题/05-机载部署与优化.md、
           docs/04-VLM专题/04-边缘VLM部署.md
 
-要验证的结论：同一个 7B 模型的 LoRA 微调，一处写 18 GB、一处 24 GB、一处 40 GB。
-这些数不是谁抄错了，是四项开销（权重 / 梯度 / 优化器状态 / 激活）算了几项、各按什么
-精度算。更关键的是那张表里少了一个自变量：每个样本多少个 token——九张表一张都没写它。
+要验证的结论（2026-10 按核查结果改写过一次）：同一个 7B 模型的 LoRA 微调，一处写 18 GB、
+一处 24 GB、一处 40 GB。这些数**不是谁抄错了**——它们是四项开销（权重 / 梯度 / 优化器状态 /
+激活）算了几项、各按什么精度算。但**算得通不等于有出处**：那几行所在的表后来因为源头
+查不到而被删除，本脚本把它们的数字保留在这里，只作反例。真正能算的是静态三项，
+而激活那一项差一个从没写出来的自变量：每个样本多少个 token。
 
 做法：
   1. 权重 / 梯度 / 优化器状态是精确算术，直接给公式
@@ -250,29 +252,44 @@ def measure_seq():
 def reconcile(per_layer_sample, fixed, per_sample):
     """把文档的数减去静态账，余额除以实测的每 token 字节数，反解出它隐含的序列长度。"""
     per_token = per_layer_sample * N_LAYER / SEQ
-    print("\n六、对账：把文档的数减去静态账，余额能反解出一个没写出来的自变量")
+    print("\n六、对账：先算真实配置的账，再拿它去量那些已删的表")
     print(f"  实测的 7B 激活：{per_token/2**20:.1f} MB/token（{N_LAYER} 层合计，与 batch 无关）")
+
+    # --- 六之一：GeoChat 脚本里的真实配置（3 x A100-40G, r=64, bs=32, seq=2048）---
+    st_64 = static_gb(P_7B, lora_params(64))
+    budget = 40.0 - st_64
+    need_tok = 32 * 2048
+    need_gb = need_tok * per_token / GB
+    print(f"\n  六之一、06 号脚本写的是 3 x A100(40G)、per_device_batch 32、seq 2048、r=64")
+    print(f"    每卡静态（r=64）= {st_64:.1f}G，40G 卡留给激活 {budget:.1f}G")
+    print(f"    每卡需要激活 {need_gb:.0f}G（{need_tok} token x {per_token/2**20:.1f} MB），"
+          f"超预算 {need_gb/budget:.0f} 倍")
+    print("    静态账怎么算都装得下，装不下的是激活——这就是脚本里")
+    print("    --gradient_checkpointing True 存在的算术理由。仓库不给「每种配置要多少显存」")
+    print("    的表，正是因为那个数取决于一个开关，不取决于模型本身。")
+
+    print("\n  六之二、再拿这把尺子去量两张已删的表（数字已从正文删除，此处仅作反例）")
     rows = [
-        ("07/06 GeoChat", "LoRA r=64, bs=2", 18.0, P_7B, lora_params(64), 2),
-        ("07/06 GeoChat", "LoRA r=128, bs=4", 24.0, P_7B, lora_params(128), 4),
-        ("07/06 GeoChat", "全量微调, 4 卡", 80.0, 0.0, P_7B, 1),
-        ("07/02 UAV-Flow", "LoRA, bs=4, fp16", 18.0, P_7B, lora_params(16), 4),
-        ("07/02 UAV-Flow", "LoRA, bs=8, bf16", 40.0, P_7B, lora_params(16), 8),
+        ("07/06（已删的表）", "LoRA r=64, bs=2", 18.0, P_7B, lora_params(64), 2),
+        ("07/06（已删的表）", "LoRA r=128, bs=4", 24.0, P_7B, lora_params(128), 4),
+        ("07/06（已删的表）", "全量微调, 4 卡", 80.0, 0.0, P_7B, 1),
+        ("07/02（已删的表）", "LoRA, bs=4, fp16", 18.0, P_7B, lora_params(16), 4),
+        ("07/02（已删的表）", "LoRA, bs=8, bf16", 40.0, P_7B, lora_params(16), 8),
     ]
-    print("  " + pad("出处", 16) + pad("配置", 20) + pad("文档", 7, True)
+    print("  " + pad("出处", 18) + pad("配置", 20) + pad("文档", 7, True)
           + pad("静态", 7, True) + pad("余额", 7, True) + pad("反解 token", 11, True))
     toks = []
     for src, cfg, doc, nf, nt, bs in rows:
         st = static_gb(nf, nt)
         tok = (doc - st) * GB / (per_token * bs)
         toks.append(tok)
-        print(f"  {pad(src, 16)}{pad(cfg, 20)}{doc:>6.0f}G{st:>6.1f}G{doc-st:>6.1f}G{tok:>11.0f}")
+        print(f"  {pad(src, 18)}{pad(cfg, 20)}{doc:>6.0f}G{st:>6.1f}G{doc-st:>6.1f}G{tok:>11.0f}")
     print(f"  反解出来的序列长度落在 {min(toks):.0f} ~ {max(toks):.0f} token，"
           f"跨度 {max(toks)/min(toks):.1f} 倍。")
-    print("  这个区间正是 VLM 读一张图加一句指令的量级——没有一行是荒谬的，")
-    print("  差的近 3 倍就藏在没人写的那个自变量里。")
-    print("  有意思的是 GeoChat 全量微调那行：4 卡并没有让每卡省下什么，因为数据并行")
-    print("  复制的是整个模型。它的 80 GB 几乎全是静态账 78.2 GB——这一行是对的。")
+    print("  这个区间正是 VLM 读一张图加一句指令的量级——每一行都看着合理，")
+    print("  所以这把尺子验不出它们是编的。判伪靠的是另一件事：仓库和论文里")
+    print("  根本没有按配置分行的显存数据，那几个数字无从产生。")
+    print("  自洽和有出处是两件事，这把尺子只能验前者。")
 
     print("\n  统一按 256 token 重算，GeoChat 那三行几乎重合，UAV-Flow 两行还差一截：")
     print("  " + pad("配置", 28) + pad("文档", 7, True) + pad("按 256 token 重算", 20, True)
@@ -293,7 +310,8 @@ def reconcile(per_layer_sample, fixed, per_sample):
           f"而实测是固定项 0.00 GB、每样本 {per_sample/GB:.3f} GB。")
     print(f"  每样本差 {doc_per/(per_sample/GB):.1f} 倍，还凭空多出 2.0 GB 的固定项。")
     print(f"  小模型上参数只有 {st:.2f} GB，nvidia-smi 读到的东西里框架开销与显存碎片占了大头，")
-    print("  那不是能按算法量算出来的。所以 7B 那几张表能和实测对上，这张对不上——两码事。")
+    print("  那不是能按算法量算出来的。7B 那些行反解出的 token 数落在合理区间、这张差 3 倍——")
+    print("  但两者的区别不是「真假」，是「这把尺子在小模型上根本不好使」。")
 
 
 def main():
@@ -309,8 +327,9 @@ def main():
     seq_data = measure_seq()
     reconcile(per_layer_sample, fixed, per_sample)
 
-    print("\n结论：显存表的每一项都是算得出来的，唯独「序列长度」这个自变量没人写。")
-    print("      补上它，九张表里的数就能互相换算；补不上，它们就永远是九个孤立的经验值。")
+    print("\n结论：显存的前三笔是精确算术，第四笔（激活）只差一个没人写的自变量——序列长度。")
+    print("      但算得通不等于有出处：自洽的表能算通，编的表也能算通，")
+    print("      这把尺子验的是「内部一致」，验不了「来源可靠」。")
 
     figure(fixed, per_sample, per_layer_sample, seq_data)
 

@@ -2,35 +2,31 @@
 
 > 预计阅读：15 分钟 | 前置知识：了解世界模型、VLA、VLM基础概念
 >
-> 本文收录无人机VLA/VLM/世界模型领域的基准和数据集论文
+> 本文收录 9 篇无人机 VLA/VLM/世界模型领域的基准与数据集论文。每张卡片由「标题行 → 徽章行 → 一句话总结 → 核心贡献 / 方法要点 / 结果亮点」组成，题名取 arXiv API 返回的完整题名
 
 ---
 
 ## 1. MotionScape — 大规模无人机视频数据集
 
-**一句话总结**：把 6-DoF 相机轨迹和语言描述对齐标注，用于训练世界模型
+**一句话总结**：按运动强度分层的无人机视频基准，228 段 / 62,700 帧，配天气、光照、场景与相机运动标注
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | MotionScape: A Motion-Stratified UAV Video Benchmark for World Modeling and Future Video Generation |
-| **arXiv** | [2604.07991](https://arxiv.org/abs/2604.07991) |
-| **GitHub** | [Thelegendzz/MotionScape](https://github.com/Thelegendzz/MotionScape) |
-| **年份** | 2026 |
-| **推荐度** | ★★★ |
+**标题**：*MotionScape: A Motion-Stratified UAV Video Benchmark for World Modeling and Future Video Generation*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2604.07991-b31b1b.svg)](https://arxiv.org/abs/2604.07991) [![GitHub](https://img.shields.io/badge/GitHub-MotionScape-181717.svg?logo=github)](https://github.com/Thelegendzz/MotionScape) · 2026 · 推荐度 ★★★
 
 **数据规模**：
-- 30+小时4K视频
-- 4.5M+帧
-- 准确的6-DoF相机轨迹
-- 细粒度自然语言描述
+- 228 段高分辨率视频，共 62,700 帧（约 35 分钟）
+- 标注天气与光照条件、场景环境、相机视角运动
+- 按相机运动强度分层（低/中/高运动层）
 
 **数据管线**：
-1. CLIP相关性过滤
-2. 时间分割
-3. 鲁棒视觉SLAM轨迹恢复
-4. LLM驱动语义标注
+1. 人工选源
+2. CLIP 辅助筛查
+3. 人工校验
 
 **关键发现**：对齐的标注有效提升现有世界模型模拟复杂3D动态和处理大视角变化的能力
+
+> **勘误（2026-10）**：本卡片早先写作「30+小时4K视频 / 4.5M+帧 / 6-DoF相机轨迹 / 细粒度自然语言描述」，管线写成「CLIP相关性过滤 / 时间分割 / 鲁棒视觉SLAM轨迹恢复 / LLM驱动语义标注」。arXiv:2604.07991 摘要的实际规模是 *"228 high-resolution video clips totaling 62,700 frames, with semantic annotations of weather and illumination conditions, scene environment, and camera-viewpoint motion"*，构建方式是 *"manual source selection, CLIP-assisted inspection, and human verification"*。**帧数被夸大约 70 倍；6-DoF 轨迹、SLAM、LLM 标注在原文中均不存在（全文 0 命中）。**
 
 ---
 
@@ -38,20 +34,18 @@
 
 **一句话总结**：把世界模型的预训练、微调和评估收进同一套基准
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | AeroVerse: UAV-Agent Benchmark Suite for Simulating, Pre-training, Finetuning, and Evaluating Aerospace Embodied World Models |
-| **arXiv** | [2408.15511](https://arxiv.org/abs/2408.15511) |
-| **机构** | 哈尔滨工业大学 |
-| **年份** | 2024 |
-| **推荐度** | ★★☆ |
+**标题**：*AeroVerse: UAV-Agent Benchmark Suite for Simulating, Pre-training, Finetuning, and Evaluating Aerospace Embodied World Models*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2408.15511-b31b1b.svg)](https://arxiv.org/abs/2408.15511) · 2024 · 中国科学院空天信息创新研究院 · 推荐度 ★★☆
 
 **五大任务**：
-1. 场景认知
-2. 导航规划
-3. 目标跟踪
-4. 避障控制
-5. 降落评估
+1. 场景认知（aerospace embodied scene awareness）
+2. 空间推理（spatial reasoning）
+3. 导航探索（navigational exploration）
+4. 任务规划（task planning）
+5. 运动决策（motion decision）
+
+> **勘误（2026-10）**：本卡片早先写机构「哈尔滨工业大学」、五大任务「场景认知 / 导航规划 / 目标跟踪 / 避障控制 / 降落评估」。原文署名为 *"Fanglong Yao is with the Aerospace Information Research Institute, Chinese Academy of Sciences, Beijing"*（中科院空天信息创新研究院），任务定义是 *"aerospace embodied scene awareness, spatial reasoning, navigational exploration, task planning, and motion decision"*。**机构与后三项任务均写错，已按原文改正。**
 
 ---
 
@@ -59,12 +53,9 @@
 
 **一句话总结**：在CARLA世界中飞无人机，统一空中和地面智能体
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | CARLA-Air: Fly Drones Inside a CARLA World |
-| **arXiv** | [2603.28032](https://arxiv.org/abs/2603.28032) |
-| **年份** | 2026 |
-| **推荐度** | ★★☆ |
+**标题**：*CARLA-Air: Fly Drones Inside a CARLA World — A Unified Infrastructure for Air-Ground Embodied Intelligence*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2603.28032-b31b1b.svg)](https://arxiv.org/abs/2603.28032) · 2026 · 推荐度 ★★☆
 
 **核心特点**：
 - 支持视觉语言动作任务
@@ -77,12 +68,9 @@
 
 **一句话总结**：面向低空无人机的视觉语言基准
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | UAVBench and UAVIT-1M |
-| **arXiv** | [2603.14336](https://arxiv.org/abs/2603.14336) |
-| **年份** | 2026 |
-| **推荐度** | ★★☆ |
+**标题**：*UAVBench and UAVIT-1M: Benchmarking and Enhancing MLLMs for Low-Altitude UAV Vision-Language Understanding*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2603.14336-b31b1b.svg)](https://arxiv.org/abs/2603.14336) · 2026 · 推荐度 ★★☆
 
 **数据规模**：
 - 43个测试单元
@@ -95,20 +83,19 @@
 
 **一句话总结**：评估无人机具身智能的六大核心子技能
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | BEDI: A Comprehensive Benchmark for Evaluating Embodied Agents on UAVs |
-| **arXiv** | [2505.18229](https://arxiv.org/abs/2505.18229) |
-| **年份** | 2025 |
-| **推荐度** | ★★☆ |
+**标题**：*BEDI: A Comprehensive Benchmark for Evaluating Embodied Agents on UAVs*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2505.18229-b31b1b.svg)](https://arxiv.org/abs/2505.18229) · 2025 · 推荐度 ★★☆
 
 **六大子技能**：
-1. 语义感知
-2. 空间感知
-3. 运动控制
-4. 任务理解
-5. 规划推理
-6. 安全约束
+1. 语义感知（semantic perception）
+2. 空间感知（spatial perception）
+3. 运动控制（motion control）
+4. 工具使用（tool utilization）
+5. 任务规划（task planning）
+6. 动作生成（action generation）
+
+> **勘误（2026-10）**：本卡片早先的六项是「语义感知 / 空间感知 / 运动控制 / 任务理解 / 规划推理 / 安全约束」，其中**后三项原文里没有**。arXiv:2505.18229 原文写的是 *"six core sub-skills: semantic perception, spatial perception, motion control, tool utilization, task planning and action generation"*，已按原文改正。
 
 ---
 
@@ -116,12 +103,9 @@
 
 **一句话总结**：跨车辆、无人机、操作器的闭环VLN评估
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | Embodied4C: Measuring What Matters for Embodied Vision-Language Navigation |
-| **arXiv** | [2512.18028](https://arxiv.org/abs/2512.18028) |
-| **年份** | 2025 |
-| **推荐度** | ★★☆ |
+**标题**：*Embodied4C: Measuring What Matters for Embodied Vision-Language Navigation*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2512.18028-b31b1b.svg)](https://arxiv.org/abs/2512.18028) · 2025 · 推荐度 ★★☆
 
 **评估内容**：
 - 约1100个推理问题
@@ -136,12 +120,9 @@
 
 **一句话总结**：用 VLM 自动生成航拍图像的开放集标注
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | OS-W2S: An Automatic Labeling Engine for Language-Guided Open-Set Aerial Object Detection |
-| **arXiv** | [2505.03334](https://arxiv.org/abs/2505.03334) |
-| **年份** | 2025 |
-| **推荐度** | ★☆☆ |
+**标题**：*OS-W2S: An Automatic Labeling Engine for Language-Guided Open-Set Aerial Object Detection*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2505.03334-b31b1b.svg)](https://arxiv.org/abs/2505.03334) · 2025 · 推荐度 ★☆☆
 
 **数据规模**：163K 图像，2M 描述对。
 
@@ -151,12 +132,9 @@
 
 **一句话总结**：Crazyflie 2.1的75k真实样本系统辨识基准
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | Nonlinear System Identification Nano-drone Benchmark |
-| **arXiv** | [2512.14450](https://arxiv.org/abs/2512.14450) |
-| **年份** | 2025 |
-| **推荐度** | ★☆☆ |
+**标题**：*Nonlinear System Identification Nano-drone Benchmark*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2512.14450-b31b1b.svg)](https://arxiv.org/abs/2512.14450) · 2025 · 推荐度 ★☆☆
 
 ---
 
@@ -164,14 +142,9 @@
 
 **一句话总结**：细粒度语言条件飞行控制的评测基准
 
-| 项目 | 内容 |
-|------|------|
-| **标题** | UAV-Flow Colosseo |
-| **arXiv** | [2505.15725](https://arxiv.org/abs/2505.15725) |
-| **GitHub** | [buaa-colalab/UAV-Flow](https://github.com/buaa-colalab/UAV-Flow) |
-| **HuggingFace** | wangxiangyu0814/UAV-Flow, UAV-Flow-Sim |
-| **年份** | 2025 |
-| **推荐度** | ★★★ |
+**标题**：*UAV-Flow Colosseo: A Real-World Benchmark for Flying-on-a-Word UAV Imitation Learning*
+
+[![arXiv](https://img.shields.io/badge/arXiv-2505.15725-b31b1b.svg)](https://arxiv.org/abs/2505.15725) [![GitHub](https://img.shields.io/badge/GitHub-UAV--Flow-181717.svg?logo=github)](https://github.com/buaa-colalab/UAV-Flow) · 2025 · HuggingFace wangxiangyu0814/UAV-Flow, UAV-Flow-Sim · 推荐度 ★★★
 
 **数据内容**：
 - 真实世界无人机轨迹
@@ -200,7 +173,7 @@
 ## 延伸阅读
 
 - [关键数据集与基准](../02-世界模型专题/06-关键数据集与基准.md) — 数据集详解
-- [完整论文列表](../../references/paper-list.md) — 81 篇论文分类汇总
+- [完整论文列表](../../references/paper-list.md) — 195 篇论文分类汇总
 
 ## 思考题
 
