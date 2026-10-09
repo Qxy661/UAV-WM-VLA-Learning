@@ -1,0 +1,180 @@
+site_name: 世界模型 · VLA · VLM 学习库（无人机视角）
+site_description: 59 篇中文文档 · 195 篇论文 · 24 个纯 CPU 可跑 demo · 28.7 万字
+site_url: https://qxy661.github.io/UAV-WM-VLA-Learning/
+repo_url: https://github.com/Qxy661/UAV-WM-VLA-Learning
+repo_name: Qxy661/UAV-WM-VLA-Learning
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2026 Qxy661 · MIT License
+
+# build-docs/ 由 tools/build_docs.py 生成（见该脚本注释）。不要直接指向仓库根：
+# 根目录有 1.1 GB 的 paper/，而 mkdocs serve 不遵守 exclude_docs。
+docs_dir: build-docs
+
+# 关掉 use_directory_urls：仓库里有一批指向**目录**的链接（README 的 `docs/01-基础概念/`、
+# 正文里的 `../06-论文导读合集/`）。mkdocs 只重写 .md 链接，目录链接原样保留；
+# 而 use_directory_urls 会给每个页面多加一层目录，导致这类链接少一层而 404。
+# 关掉后页面仍是每目录一个 index.html，目录链接正好落在 index.html 上。
+use_directory_urls: false
+
+theme:
+  name: material
+  # language 只在这里写。search 插件【不要】写 lang，否则
+  # "Option search.lang 'zh' is not supported" 会让 mkdocs build --strict 直接失败。
+  language: zh
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: 切到深色
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: 切到浅色
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search:
+      # 中文分词要在构建期装 jieba（pip install mkdocs-material jieba），
+      # 且 path 相对 mkdocs 运行目录（仓库根）。见 CONTRIBUTING。
+      jieba_dict_user: tools/jieba_dict.txt
+
+markdown_extensions:
+  - attr_list          # 保住 README 里的 <a id="..."> 与导航锚点
+  - md_in_html
+  - tables
+  - admonition
+  - footnotes
+  - toc:
+      permalink: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+extra_javascript:
+  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
+
+# 默认的 links 校验级别多为 INFO，--strict 抓不到断链；这里显式抬高。
+validation:
+  nav:
+    omitted_files: warn
+  links:
+    not_found: warn
+    absolute_links: warn
+    unrecognized_links: info
+
+nav:
+  - 首页: README.md
+  - 导读与学习路线: docs/00-导读与学习路线.md
+  - 基础概念:
+      - docs/01-基础概念/index.md
+      - 01 什么是世界模型: docs/01-基础概念/01-什么是世界模型.md
+      - 02 什么是 VLM: docs/01-基础概念/02-什么是VLM.md
+      - 03 什么是 VLA: docs/01-基础概念/03-什么是VLA.md
+      - 04 三者关系与区别: docs/01-基础概念/04-三者关系与区别.md
+      - 05 无人机与地面机器人: docs/01-基础概念/05-无人机vs地面机器人.md
+  - 世界模型专题:
+      - docs/02-世界模型专题/index.md
+      - 01 世界模型发展史: docs/02-世界模型专题/01-世界模型发展史.md
+      - 02 生成式世界模型: docs/02-世界模型专题/02-生成式世界模型.md
+      - 03 模型强化学习世界模型: docs/02-世界模型专题/03-模型强化学习世界模型.md
+      - 04 3D 场景世界模型: docs/02-世界模型专题/04-3D场景世界模型.md
+      - 05 无人机世界模型综述: docs/02-世界模型专题/05-无人机世界模型综述.md
+      - 06 关键数据集与基准: docs/02-世界模型专题/06-关键数据集与基准.md
+      - 07 世界模型评测与诊断: docs/02-世界模型专题/07-世界模型评测与诊断.md
+      - 08 联合嵌入预测与潜空间世界模型: docs/02-世界模型专题/08-联合嵌入预测与潜空间世界模型.md
+      - 09 长时程世界模型与交互式生成: docs/02-世界模型专题/09-长时程世界模型与交互式生成.md
+  - VLA 专题:
+      - docs/03-VLA专题/index.md
+      - 01 架构演进: docs/03-VLA专题/01-VLA架构演进.md
+      - 02 无人机 VLA 模型: docs/03-VLA专题/02-无人机VLA模型.md
+      - 03 语言条件飞行控制: docs/03-VLA专题/03-语言条件飞行控制.md
+      - 04 基础模型辅助规划: docs/03-VLA专题/04-基础模型辅助规划.md
+      - 05 机载部署与优化: docs/03-VLA专题/05-机载部署与优化.md
+      - 06 动作头与动作分块: docs/03-VLA专题/06-动作头与动作分块.md
+      - 07 数据、预训练与跨具身: docs/03-VLA专题/07-数据、预训练与跨具身.md
+      - 08 强化学习后训练与自我改进: docs/03-VLA专题/08-强化学习后训练与自我改进.md
+      - 09 评测基准与报告口径: docs/03-VLA专题/09-评测基准与报告口径.md
+      - 10 世界模型增强 VLA: docs/03-VLA专题/10-世界模型增强VLA.md
+  - VLM 专题:
+      - docs/04-VLM专题/index.md
+      - 01 遥感 VLM: docs/04-VLM专题/01-遥感VLM.md
+      - 02 无人机场景理解: docs/04-VLM专题/02-无人机场景理解.md
+      - 03 LLM 驱动的无人机 Agent: docs/04-VLM专题/03-LLM驱动的无人机Agent.md
+      - 04 边缘 VLM 部署: docs/04-VLM专题/04-边缘VLM部署.md
+      - 05 通用 VLM 架构与视觉编码器: docs/04-VLM专题/05-通用VLM架构与视觉编码器.md
+      - 06 VLM 指令微调与对齐: docs/04-VLM专题/06-VLM指令微调与对齐.md
+      - 07 通用 VLM 评测与幻觉: docs/04-VLM专题/07-通用VLM评测与幻觉.md
+  - 综述论文精读:
+      - docs/05-综述论文精读/index.md
+      - 01 综述概览与结构: docs/05-综述论文精读/01-综述概览与结构.md
+      - 02 世界模型作为策略: docs/05-综述论文精读/02-世界模型作为策略.md
+      - 03 世界模型作为模拟器: docs/05-综述论文精读/03-世界模型作为模拟器.md
+      - 04 视频生成世界模型: docs/05-综述论文精读/04-视频生成世界模型.md
+      - 05 基准与评估: docs/05-综述论文精读/05-基准与评估.md
+  - 论文导读合集:
+      - docs/06-论文导读合集/index.md
+      - 世界模型论文卡片: docs/06-论文导读合集/world-model-papers.md
+      - VLA 论文卡片: docs/06-论文导读合集/vla-papers.md
+      - VLM 论文卡片: docs/06-论文导读合集/vlm-papers.md
+      - 基准与数据集论文: docs/06-论文导读合集/benchmark-papers.md
+  - 实践指南:
+      - docs/07-实践指南/index.md
+      - 01 环境搭建: docs/07-实践指南/01-环境搭建.md
+      - 02 复现指南 UAV-Flow: docs/07-实践指南/02-复现指南-UAV-Flow.md
+      - 03 复现指南 CognitiveDrone: docs/07-实践指南/03-复现指南-CognitiveDrone.md
+      - 04 复现指南 FlightDiffusion: docs/07-实践指南/04-复现指南-FlightDiffusion.md
+      - 05 复现指南 MotionScape: docs/07-实践指南/05-复现指南-MotionScape.md
+      - 06 复现指南 GeoChat: docs/07-实践指南/06-复现指南-GeoChat.md
+      - 07 复现指南 DreamerV3-Drone: docs/07-实践指南/07-复现指南-DreamerV3-Drone.md
+      - 08 可复现项目候选清单: docs/07-实践指南/08-可复现项目候选清单.md
+      - 09 复现指南 DeepDrone: docs/07-实践指南/09-复现指南-DeepDrone.md
+      - 10 复现指南 RemoteCLIP: docs/07-实践指南/10-复现指南-RemoteCLIP.md
+      - 11 复现指南 Flightmare: docs/07-实践指南/11-复现指南-Flightmare.md
+  - 研究前沿与开放问题:
+      - docs/08-研究前沿与开放问题/index.md
+      - 01 研究路线图: docs/08-研究前沿与开放问题/01-研究路线图.md
+      - 02 研究空白与机会: docs/08-研究前沿与开放问题/02-研究空白与机会.md
+      - 03 论文批判性阅读: docs/08-研究前沿与开放问题/03-论文批判性阅读.md
+      - 04 最新进展与团队追踪: docs/08-研究前沿与开放问题/04-最新进展与团队追踪.md
+  - 专题自测与考察:
+      - docs/09-专题自测与考察/index.md
+      - 01 VLA 专题自测: docs/09-专题自测与考察/01-VLA专题自测.md
+      - 02 世界模型专题自测: docs/09-专题自测与考察/02-世界模型专题自测.md
+      - 03 VLM 专题自测: docs/09-专题自测与考察/03-VLM专题自测.md
+  - 思维导图:
+      - 领域全景图: mindmaps/field-overview.md
+      - 世界模型分类学: mindmaps/world-model-taxonomy.md
+      - VLA 演进路线: mindmaps/vla-evolution.md
+      - 推荐阅读顺序: mindmaps/reading-order.md
+  - 参考资料:
+      - 完整论文列表: references/paper-list.md
+      - VLA 追踪台账: references/vla-watch-2026-10.md
+      - 世界模型追踪台账: references/wm-watch-2026-10.md
+      - VLM 追踪台账: references/vlm-watch-2026-10.md
+      - Awesome List 注释: references/awesome-annotations.md
+      - 引用核查报告: references/citation-audit.md
+  - 可运行代码: code/README.md
+  - 贡献指南: CONTRIBUTING.md

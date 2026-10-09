@@ -28,3 +28,7 @@ paper/
 
 # 上面那套工作区实验出的配图，与 docs/ 引用的 figures/ph*.png 不是一套
 figures/kh*.png
+
+# 文档站构建产物（by tools/build_docs.py 与 mkdocs build），每次重建
+build-docs/
+site/
