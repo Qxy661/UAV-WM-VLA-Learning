@@ -5,12 +5,12 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/学习文档-49-blue" alt="学习文档">
-  <img src="https://img.shields.io/badge/论文覆盖-78-green" alt="论文覆盖">
-  <img src="https://img.shields.io/badge/可运行demo-18-orange" alt="demo">
-  <img src="https://img.shields.io/badge/正文-约18万字-red" alt="字数">
+  <img src="https://img.shields.io/badge/学习文档-59-blue" alt="学习文档">
+  <img src="https://img.shields.io/badge/论文覆盖-195-green" alt="论文覆盖">
+  <img src="https://img.shields.io/badge/可运行demo-24-orange" alt="demo">
+  <img src="https://img.shields.io/badge/正文-约28万字-red" alt="字数">
   <img src="https://img.shields.io/badge/许可证-MIT-yellow" alt="许可证">
-  <img src="https://img.shields.io/badge/最后更新-2026--10--08-lightgrey" alt="最后更新">
+  <img src="https://img.shields.io/badge/最后更新-2026--10--09-lightgrey" alt="最后更新">
 </p>
 
 <p align="center">
@@ -50,7 +50,7 @@
 | **保姆级教学** | 每篇文档配有阅读时间、前置知识、核心内容、思考题与参考答案，适合零基础入门 |
 | **认知优先，代码可选验证** | 主线是把原理、架构、演进脉络和论文思想讲清楚；关键结论另配**可运行的迷你 demo**（[`code/`](code/)），跑不跑都不影响阅读 |
 | **系统化梳理** | 从基础概念到前沿论文，从理论到实践指南，完整学习路径 |
-| **论文精读** | 81 篇关键论文逐条核对 arXiv 编号与标题，见 [`references/paper-list.md`](references/paper-list.md) |
+| **论文精读** | 195 篇关键论文逐条核对 arXiv 编号与标题，见 [`references/paper-list.md`](references/paper-list.md) |
 | **结论可复跑** | 每个重要结论尽量附一条能重跑的验证路径；量不出来的地方**明说不作为结论** |
 
 ### 三大核心概念
@@ -71,6 +71,8 @@ VLM (视觉语言模型)          VLA (视觉语言动作模型)        World Mo
 <a id="学习路线"></a>
 
 ## 学习路线
+
+> 从零基础到能读懂前沿论文的九阶段路线；每阶段约 1–2 周，但不必按序走完才开始自测。
 
 建议按以下顺序阅读，每阶段约 1-2 周：
 
@@ -113,68 +115,76 @@ graph TD
 
 ## 文档目录
 
-[`docs/`](docs/) 下共 53 篇学习文档，另有 4 篇思维导图与 4 篇参考资料。推荐度：★ 必读 · ● 推荐 · ○ 了解。
+> 本节是**全量清单**：每一篇都在这里，按 Part 分组。只想知道先读哪几篇的，看上一节「学习路线」。
+
+[`docs/`](docs/) 下共 59 篇学习文档，另有 4 篇思维导图与 6 篇参考资料。推荐度：★★★ 必读 · ★★☆ 推荐 · ★☆☆ 了解。
 
 ### 导读
 
 | 文档 | 内容 | 推荐度 |
 |------|------|--------|
-| [导读与学习路线](docs/00-导读与学习路线.md) | 项目定位、前置知识、七阶段学习路线、术语表 | ★ 必读 |
+| [导读与学习路线](docs/00-导读与学习路线.md) | 项目定位、前置知识、七阶段学习路线、术语表 | ★★★ 必读 |
 
 ### Part 1 · 基础概念
 
 | 文档 | 内容 | 推荐度 |
 |------|------|--------|
-| [什么是世界模型](docs/01-基础概念/01-什么是世界模型.md) | 定义、发展脉络、核心思想 | ★ 必读 |
-| [什么是VLM](docs/01-基础概念/02-什么是VLM.md) | 视觉语言模型架构与训练 | ★ 必读 |
-| [什么是VLA](docs/01-基础概念/03-什么是VLA.md) | 从VLM到VLA的演进 | ★ 必读 |
-| [三者关系与区别](docs/01-基础概念/04-三者关系与区别.md) | VLM→VLA→世界模型关系图谱 | ★ 必读 |
-| [无人机vs地面机器人](docs/01-基础概念/05-无人机vs地面机器人.md) | 无人机领域的特殊挑战 | ● 推荐 |
+| [什么是世界模型](docs/01-基础概念/01-什么是世界模型.md) | 定义、发展脉络、核心思想 | ★★★ 必读 |
+| [什么是VLM](docs/01-基础概念/02-什么是VLM.md) | 视觉语言模型架构与训练 | ★★★ 必读 |
+| [什么是VLA](docs/01-基础概念/03-什么是VLA.md) | 从VLM到VLA的演进 | ★★★ 必读 |
+| [三者关系与区别](docs/01-基础概念/04-三者关系与区别.md) | VLM→VLA→世界模型关系图谱 | ★★★ 必读 |
+| [无人机vs地面机器人](docs/01-基础概念/05-无人机vs地面机器人.md) | 无人机领域的特殊挑战 | ★★☆ 推荐 |
 
 ### Part 2 · 世界模型专题
 
 | 文档 | 内容 | 推荐度 |
 |------|------|--------|
-| [世界模型发展史](docs/02-世界模型专题/01-世界模型发展史.md) | 从 Ha/Schmidhuber 到现代 | ★ 必读 |
-| [生成式世界模型](docs/02-世界模型专题/02-生成式世界模型.md) | ANWM、AirScape、FlightDiffusion | ● 推荐 |
-| [模型强化学习世界模型](docs/02-世界模型专题/03-模型强化学习世界模型.md) | Dreamer 系列、Dream to Fly | ● 推荐 |
-| [3D场景世界模型](docs/02-世界模型专题/04-3D场景世界模型.md) | NeRF、3DGS 作为世界模型 | ○ 了解 |
-| [无人机世界模型综述](docs/02-世界模型专题/05-无人机世界模型综述.md) | 无人机专属世界模型论文解读 | ● 推荐 |
-| [关键数据集与基准](docs/02-世界模型专题/06-关键数据集与基准.md) | MotionScape、AeroVerse 等 | ○ 了解 |
+| [世界模型发展史](docs/02-世界模型专题/01-世界模型发展史.md) | 从 Ha/Schmidhuber 到现代 | ★★★ 必读 |
+| [生成式世界模型](docs/02-世界模型专题/02-生成式世界模型.md) | ANWM、AirScape、FlightDiffusion | ★★☆ 推荐 |
+| [模型强化学习世界模型](docs/02-世界模型专题/03-模型强化学习世界模型.md) | Dreamer 系列、Dream to Fly | ★★☆ 推荐 |
+| [3D场景世界模型](docs/02-世界模型专题/04-3D场景世界模型.md) | NeRF、3DGS 作为世界模型 | ★☆☆ 了解 |
+| [无人机世界模型综述](docs/02-世界模型专题/05-无人机世界模型综述.md) | 无人机专属世界模型论文解读 | ★★☆ 推荐 |
+| [关键数据集与基准](docs/02-世界模型专题/06-关键数据集与基准.md) | MotionScape、AeroVerse 等 | ★☆☆ 了解 |
+| [世界模型评测与诊断](docs/02-世界模型专题/07-世界模型评测与诊断.md) | 单步准 ≠ rollout 可用；注入退化看指标会不会看走眼 | ★★★ 必读 |
+| [联合嵌入预测与潜空间世界模型](docs/02-世界模型专题/08-联合嵌入预测与潜空间世界模型.md) | JEPA 路线：不重建输入，在表征空间预测未来 | ★★★ 必读 |
+| [长时程世界模型与交互式生成](docs/02-世界模型专题/09-长时程世界模型与交互式生成.md) | horizon 拉到上百步后，漂移、遗忘、恒存性缺失才显形 | ★★☆ 推荐 |
 
 ### Part 3 · VLA 专题
 
 | 文档 | 内容 | 推荐度 |
 |------|------|--------|
-| [VLA架构演进](docs/03-VLA专题/01-VLA架构演进.md) | 从 RT-2 到 2026 年：五个方向各自独立，按消融轴而非时间切 | ★ 必读 |
-| [无人机VLA模型](docs/03-VLA专题/02-无人机VLA模型.md) | VLA-AN、CognitiveDrone、UAV-TrackVLA、AutoFly | ● 推荐 |
-| [语言条件飞行控制](docs/03-VLA专题/03-语言条件飞行控制.md) | UAV-Flow、VLN-Pilot、2026 年两份空中 VLN 路线图 | ● 推荐 |
-| [基础模型辅助规划](docs/03-VLA专题/04-基础模型辅助规划.md) | CoDrone、FM-Planner、NavFoM、FlyMirage | ○ 了解 |
-| [机载部署与优化](docs/03-VLA专题/05-机载部署与优化.md) | 推理加速、边缘计算、动作年龄的下限而非均值 | ● 推荐 |
-| [动作头与动作分块](docs/03-VLA专题/06-动作头与动作分块.md) | 离散 token → 回归 → 扩散 → 流匹配，以及分块长度怎么选 | ★ 必读 |
-| [数据、预训练与跨具身](docs/03-VLA专题/07-数据、预训练与跨具身.md) | OXE/DROID、协同训练、潜在动作；飞行数据稀缺是第一约束 | ● 推荐 |
-| [强化学习后训练与自我改进](docs/03-VLA专题/08-强化学习后训练与自我改进.md) | GRPO/PPO、奖励从哪来、自我改进飞轮与奖励钻空子 | ● 推荐 |
-| [评测基准与报告口径](docs/03-VLA专题/09-评测基准与报告口径.md) | LIBERO→RoboArena、过程指标、均值/回合数/独立单元 | ● 推荐 |
-| [世界模型增强VLA](docs/03-VLA专题/10-世界模型增强VLA.md) | 世界模型当数据源 / 策略的一部分 / 模拟器 / 评测代理，以及想象 rollout 的共同上限 | ● 推荐 |
+| [VLA架构演进](docs/03-VLA专题/01-VLA架构演进.md) | 从 RT-2 到 2026 年：五个方向各自独立，按消融轴而非时间切 | ★★★ 必读 |
+| [无人机VLA模型](docs/03-VLA专题/02-无人机VLA模型.md) | VLA-AN、CognitiveDrone、UAV-TrackVLA、AutoFly | ★★☆ 推荐 |
+| [语言条件飞行控制](docs/03-VLA专题/03-语言条件飞行控制.md) | UAV-Flow、VLN-Pilot、2026 年两份空中 VLN 路线图 | ★★☆ 推荐 |
+| [基础模型辅助规划](docs/03-VLA专题/04-基础模型辅助规划.md) | CoDrone、FM-Planner、NavFoM、FlyMirage | ★☆☆ 了解 |
+| [机载部署与优化](docs/03-VLA专题/05-机载部署与优化.md) | 推理加速、边缘计算、动作年龄的下限而非均值 | ★★☆ 推荐 |
+| [动作头与动作分块](docs/03-VLA专题/06-动作头与动作分块.md) | 离散 token → 回归 → 扩散 → 流匹配，以及分块长度怎么选 | ★★★ 必读 |
+| [数据、预训练与跨具身](docs/03-VLA专题/07-数据、预训练与跨具身.md) | OXE/DROID、协同训练、潜在动作；飞行数据稀缺是第一约束 | ★★☆ 推荐 |
+| [强化学习后训练与自我改进](docs/03-VLA专题/08-强化学习后训练与自我改进.md) | GRPO/PPO、奖励从哪来、自我改进飞轮与奖励钻空子 | ★★☆ 推荐 |
+| [评测基准与报告口径](docs/03-VLA专题/09-评测基准与报告口径.md) | LIBERO→RoboArena、过程指标、均值/回合数/独立单元 | ★★☆ 推荐 |
+| [世界模型增强VLA](docs/03-VLA专题/10-世界模型增强VLA.md) | 世界模型当数据源 / 策略的一部分 / 模拟器 / 评测代理，以及想象 rollout 的共同上限 | ★★☆ 推荐 |
 
 ### Part 4 · VLM 专题
 
 | 文档 | 内容 | 推荐度 |
 |------|------|--------|
-| [遥感VLM](docs/04-VLM专题/01-遥感VLM.md) | GeoChat、RSGPT、SkySenseGPT | ● 推荐 |
-| [无人机场景理解](docs/04-VLM专题/02-无人机场景理解.md) | UAVBench、BEDI 基准 | ○ 了解 |
-| [LLM驱动的无人机Agent](docs/04-VLM专题/03-LLM驱动的无人机Agent.md) | CityNavAgent、ACDC 等 | ○ 了解 |
-| [边缘VLM部署](docs/04-VLM专题/04-边缘VLM部署.md) | 轻量化、知识蒸馏、BLIP-2 | ○ 了解 |
+| [遥感VLM](docs/04-VLM专题/01-遥感VLM.md) | GeoChat、RSGPT、SkySenseGPT | ★★☆ 推荐 |
+| [无人机场景理解](docs/04-VLM专题/02-无人机场景理解.md) | UAVBench、BEDI 基准 | ★☆☆ 了解 |
+| [LLM驱动的无人机Agent](docs/04-VLM专题/03-LLM驱动的无人机Agent.md) | CityNavAgent、ACDC 等 | ★☆☆ 了解 |
+| [边缘VLM部署](docs/04-VLM专题/04-边缘VLM部署.md) | 轻量化、知识蒸馏、BLIP-2 | ★☆☆ 了解 |
+| [通用VLM架构与视觉编码器](docs/04-VLM专题/05-通用VLM架构与视觉编码器.md) | 四部件、CLIP→原生分辨率、连接器、token 预算 | ★★★ 必读 |
+| [VLM指令微调与对齐](docs/04-VLM专题/06-VLM指令微调与对齐.md) | 指令数据构造、LoRA 边界、冻结还是联合训练 | ★★☆ 推荐 |
+| [通用VLM评测与幻觉](docs/04-VLM专题/07-通用VLM评测与幻觉.md) | MMMU/MMBench/POPE、负样本划分与 yes-偏差 | ★★★ 必读 |
 
 ### Part 5 · 综述论文精读
 
 | 文档 | 内容 | 推荐度 |
 |------|------|--------|
-| [综述概览与结构](docs/05-综述论文精读/01-综述概览与结构.md) | arXiv:2605.00080 整体框架 | ★ 必读 |
-| [世界模型作为策略](docs/05-综述论文精读/02-世界模型作为策略.md) | 综述第二部分精读 | ● 推荐 |
-| [世界模型作为模拟器](docs/05-综述论文精读/03-世界模型作为模拟器.md) | 综述第三部分精读 | ● 推荐 |
-| [视频生成世界模型](docs/05-综述论文精读/04-视频生成世界模型.md) | 综述第四部分精读 | ● 推荐 |
-| [基准与评估](docs/05-综述论文精读/05-基准与评估.md) | 综述第五部分精读 | ○ 了解 |
+| [综述概览与结构](docs/05-综述论文精读/01-综述概览与结构.md) | arXiv:2605.00080 整体框架 | ★★★ 必读 |
+| [世界模型作为策略](docs/05-综述论文精读/02-世界模型作为策略.md) | 综述第二部分精读 | ★★☆ 推荐 |
+| [世界模型作为模拟器](docs/05-综述论文精读/03-世界模型作为模拟器.md) | 综述第三部分精读 | ★★☆ 推荐 |
+| [视频生成世界模型](docs/05-综述论文精读/04-视频生成世界模型.md) | 综述第四部分精读 | ★★☆ 推荐 |
+| [基准与评估](docs/05-综述论文精读/05-基准与评估.md) | 综述第五部分精读 | ★☆☆ 了解 |
 
 ### Part 6 · 论文导读合集
 
@@ -196,7 +206,7 @@ graph TD
 | [MotionScape 复现指南](docs/07-实践指南/05-复现指南-MotionScape.md) | 无人机视频数据集 |
 | [GeoChat 复现指南](docs/07-实践指南/06-复现指南-GeoChat.md) | 遥感 VLM |
 | [DreamerV3-Drone 复现指南](docs/07-实践指南/07-复现指南-DreamerV3-Drone.md) | 模型强化学习无人机飞行 |
-| [可复现项目候选清单](docs/07-实践指南/08-可复现项目候选清单.md) | 22 个可单机复现的无人机 AI 项目 |
+| [可复现项目候选清单](docs/07-实践指南/08-可复现项目候选清单.md) | 17 个可单机复现的无人机 AI 项目 |
 | [DeepDrone 复现指南](docs/07-实践指南/09-复现指南-DeepDrone.md) | LLM 自然语言控制无人机 |
 | [RemoteCLIP 复现指南](docs/07-实践指南/10-复现指南-RemoteCLIP.md) | 遥感视觉语言基础模型 |
 | [Flightmare 复现指南](docs/07-实践指南/11-复现指南-Flightmare.md) | 高保真无人机仿真器 |
@@ -214,9 +224,9 @@ graph TD
 
 | 文档 | 内容 | 推荐度 |
 |------|------|--------|
-| [VLA专题自测](docs/09-专题自测与考察/01-VLA专题自测.md) | 三层考察（知识体系自测 / 高频考察点 / 前沿修正）+ 无人机专场 12 问；正文只给指针，末尾 3 道跨篇综合题带答案 | ● 推荐 |
-| [世界模型专题自测](docs/09-专题自测与考察/02-世界模型专题自测.md) | 六篇各带一个动手验证，第三层把"加了那个东西反而更差"的三段实测单列出来；无人机专场 12 问 | ● 推荐 |
-| [VLM专题自测](docs/09-专题自测与考察/03-VLM专题自测.md) | 遥感、空中场景理解、空中 Agent、机载部署四篇；第三层集中在量化与延迟两个被量反的说法上 | ● 推荐 |
+| [VLA专题自测](docs/09-专题自测与考察/01-VLA专题自测.md) | 三层考察（知识体系自测 / 高频考察点 / 前沿修正）+ 无人机专场 12 问；正文只给指针，末尾 3 道跨篇综合题带答案 | ★★☆ 推荐 |
+| [世界模型专题自测](docs/09-专题自测与考察/02-世界模型专题自测.md) | 九篇各带一个动手验证，第三层把"加了那个东西反而更差"的三段实测单列出来；无人机专场 12 问 | ★★☆ 推荐 |
+| [VLM专题自测](docs/09-专题自测与考察/03-VLM专题自测.md) | 遥感、空中场景理解、空中 Agent、机载部署四篇；第三层集中在量化与延迟两个被量反的说法上 | ★★☆ 推荐 |
 
 ### 思维导图 & 参考资料
 
@@ -226,8 +236,10 @@ graph TD
 | [世界模型分类学](mindmaps/world-model-taxonomy.md) | 世界模型分类体系 |
 | [VLA演进路线](mindmaps/vla-evolution.md) | VLA 模型发展时间线 |
 | [推荐阅读顺序](mindmaps/reading-order.md) | 论文阅读顺序建议 |
-| [完整论文列表](references/paper-list.md) | 81 篇论文分类汇总，逐条核对 arXiv 编号与标题 |
+| [完整论文列表](references/paper-list.md) | 195 篇论文分类汇总，逐条核对 arXiv 编号与标题 |
 | [VLA 追踪台账](references/vla-watch-2026-10.md) | 按专题分节的 arXiv 检索记录 |
+| [世界模型追踪台账](references/wm-watch-2026-10.md) | 同上，世界模型卷 |
+| [VLM 追踪台账](references/vlm-watch-2026-10.md) | 同上，VLM 卷 |
 | [Awesome List 注释](references/awesome-annotations.md) | 对 NTUMARS 仓库的补充 |
 | [引用核查报告](references/citation-audit.md) | 全仓 arXiv 编号与标题的一致性核查 |
 
@@ -237,47 +249,94 @@ graph TD
 
 ## 核心论文
 
-「资源」列只收**已逐条访问确认可打开的**项目页与代码库，其余记 —（**不等于**没有代码）。
-按此口径，下面 15 篇里 8 篇带得出来链接，7 篇是 —，而**这 7 篇全部落在无人机方向的论文**：
-**空中方向的公开项目页，比地面方向稀疏得多**——这和下面「数据稀缺」一行是同一个约束的两种表现。
+> 本节只列本仓认为**最该先读**的 15 篇，且只收**已逐条访问确认可打开的**项目页与代码库链接；
+> 没有链接的**不等于**没有代码。完整 195 篇（含会议/年份标签、arXiv 号与推荐等级）见 [`references/paper-list.md`](references/paper-list.md)，
+> 那里是元数据唯一权威——本节标题、年份、会议均照它抄，不另立一份。
+>
+> 下面 15 篇里 8 篇带得出来链接，另外 7 篇没有；**这 7 篇全部落在无人机方向**。
+> **空中方向的公开项目页，比地面方向稀疏得多**——这和下面「数据稀缺」一行是同一个约束的两种表现。
 
 ### 世界模型（无人机方向）
 
-| 论文 | 年份 | 核心贡献 | arXiv | 资源 | 推荐度 |
-|------|:---:|------|------|------|:---:|
-| **ANWM** — Aerial World Model | 2025 | 航空导航世界模型，FFP 模块提供几何先验 | [2512.21887](https://arxiv.org/abs/2512.21887) | — | ★★★ |
-| **Dream to Fly** | 2025 | DreamerV3 用于无人机竞速，ICRA 2026 | [2501.14377](https://arxiv.org/abs/2501.14377) | — | ★★★ |
-| **FlightDiffusion** | 2025 | 扩散模型生成 FPV 视频用于策略学习 | [2509.14082](https://arxiv.org/abs/2509.14082) | — | ★★☆ |
-| **MotionScape** | 2026 | 动作分层的无人机视频基准，用于世界建模与未来视频生成 | [2604.07991](https://arxiv.org/abs/2604.07991) | [代码](https://github.com/Thelegendzz/MotionScape) | ★★☆ |
-| **AeroVerse** | 2024 | 航空航天世界模型基准套件 | [2408.15511](https://arxiv.org/abs/2408.15511) | — | ★★☆ |
+- **[arXiv'25.12] ANWM** — *Aerial World Model for Long-horizon Visual Generation and Navigation in 3D Space*
+  [![arXiv](https://img.shields.io/badge/arXiv-2512.21887-b31b1b.svg)](https://arxiv.org/abs/2512.21887)
+  航空导航世界模型，FFP 模块提供几何先验。推荐度 ★★★
+
+- **[ICRA'26] Dream to Fly** — *Dream to Fly: Model-Based Reinforcement Learning for Vision-Based Drone Flight*
+  [![arXiv](https://img.shields.io/badge/arXiv-2501.14377-b31b1b.svg)](https://arxiv.org/abs/2501.14377)
+  DreamerV3 用于无人机竞速，单卡约 240 小时收敛。无项目页。推荐度 ★★★
+
+- **[arXiv'25.09] FlightDiffusion** — *FlightDiffusion: Revolutionising Autonomous Drone Training with Diffusion Models Generating FPV Video*
+  [![arXiv](https://img.shields.io/badge/arXiv-2509.14082-b31b1b.svg)](https://arxiv.org/abs/2509.14082)
+  扩散模型生成 FPV 视频用于策略学习；注意它的扩散模型生成的是**视频**不是动作。推荐度 ★★☆
+
+- **[arXiv'26.04] MotionScape** — *MotionScape: A Motion-Stratified UAV Video Benchmark for World Modeling and Future Video Generation*
+  [![arXiv](https://img.shields.io/badge/arXiv-2604.07991-b31b1b.svg)](https://arxiv.org/abs/2604.07991)
+  [![GitHub](https://img.shields.io/badge/GitHub-MotionScape-181717.svg?logo=github)](https://github.com/Thelegendzz/MotionScape)
+  按光流强度分层的无人机视频基准，用于世界建模与未来视频生成。推荐度 ★★☆
+
+- **[arXiv'24.08] AeroVerse** — *AeroVerse: UAV-Agent Benchmark Suite for Simulating, Pre-training, Finetuning, and Evaluating Aerospace Embodied World Models*
+  [![arXiv](https://img.shields.io/badge/arXiv-2408.15511-b31b1b.svg)](https://arxiv.org/abs/2408.15511)
+  航空航天具身世界模型的仿真—预训练—微调—评测套件。推荐度 ★★☆
 
 ### VLA（无人机方向）
 
-| 论文 | 年份 | 核心贡献 | arXiv | 资源 | 推荐度 |
-|------|:---:|------|------|------|:---:|
-| **VLA-AN** | 2025 | 机载 VLA 框架，98.1% 成功率，8.3× 加速 | [2512.15258](https://arxiv.org/abs/2512.15258) | — | ★★★ |
-| **CognitiveDrone** | 2025 | 认知无人机 VLA，实时 4D 动作输出 | [2503.01378](https://arxiv.org/abs/2503.01378) | [主页](https://cognitivedrone.github.io) | ★★★ |
-| **UAV-TrackVLA** | 2026 | 基于 π₀.₅ 的无人机跟踪 VLA | [2604.02241](https://arxiv.org/abs/2604.02241) | [代码](https://github.com/Hub-Tian/UAV-Track_VLA) | ★★☆ |
-| **UAV-Flow** | 2025 | 语言条件细粒度无人机控制基准 | [2505.15725](https://arxiv.org/abs/2505.15725) | [代码](https://github.com/buaa-colalab/UAV-Flow) | ★★☆ |
-| **VLN-Pilot** | 2026 | VLM 作为室内无人机操作员 | [2602.05552](https://arxiv.org/abs/2602.05552) | — | ★★☆ |
+- **[arXiv'25.12] VLA-AN** — *VLA-AN: An Efficient and Onboard Vision-Language-Action Framework for Aerial Navigation in Complex Environments*
+  [![arXiv](https://img.shields.io/badge/arXiv-2512.15258-b31b1b.svg)](https://arxiv.org/abs/2512.15258)
+  机载 VLA 框架，论文报告 98.1% 成功率、8.3× 加速。推荐度 ★★★
+
+- **[arXiv'25.03] CognitiveDrone** — *CognitiveDrone: A VLA Model and Evaluation Benchmark for Real-Time Cognitive Task Solving and Reasoning in UAVs*
+  [![arXiv](https://img.shields.io/badge/arXiv-2503.01378-b31b1b.svg)](https://arxiv.org/abs/2503.01378)
+  [![主页](https://img.shields.io/badge/Website-cognitivedrone-0A66C2.svg)](https://cognitivedrone.github.io)
+  认知无人机 VLA，实时输出 4D 动作。推荐度 ★★★
+
+- **[arXiv'26.04] UAV-Track VLA** — *UAV-Track VLA: Embodied Aerial Tracking via Vision-Language-Action Models*
+  [![arXiv](https://img.shields.io/badge/arXiv-2604.02241-b31b1b.svg)](https://arxiv.org/abs/2604.02241)
+  [![GitHub](https://img.shields.io/badge/GitHub-UAV--Track__VLA-181717.svg?logo=github)](https://github.com/Hub-Tian/UAV-Track_VLA)
+  基于 π₀.₅ 的无人机跟踪 VLA。推荐度 ★★☆
+
+- **[arXiv'25.05] UAV-Flow Colosseo** — *UAV-Flow Colosseo: A Real-World Benchmark for Flying-on-a-Word UAV Imitation Learning*
+  [![arXiv](https://img.shields.io/badge/arXiv-2505.15725-b31b1b.svg)](https://arxiv.org/abs/2505.15725)
+  [![GitHub](https://img.shields.io/badge/GitHub-UAV--Flow-181717.svg?logo=github)](https://github.com/buaa-colalab/UAV-Flow)
+  语言条件细粒度无人机控制基准（"一句话一个飞行动作"）。推荐度 ★★☆
+
+- **[arXiv'26.02] VLN-Pilot** — *VLN-Pilot: Large Vision-Language Model as an Autonomous Indoor Drone Operator*
+  [![arXiv](https://img.shields.io/badge/arXiv-2602.05552-b31b1b.svg)](https://arxiv.org/abs/2602.05552)
+  VLM 作为室内无人机操作员。无项目页。推荐度 ★★☆
 
 ### VLM（无人机 / 遥感方向）
 
-| 论文 | 年份 | 核心贡献 | arXiv | 资源 | 推荐度 |
-|------|:---:|------|------|------|:---:|
-| **GeoChat** | 2024 | 首个遥感 VLM，CVPR 2024 | [2311.15826](https://arxiv.org/abs/2311.15826) | [代码](https://github.com/mbzuai-oryx/geochat) | ★★★ |
-| **CoDrone** | 2025 | 云边端基础模型无人机导航 | [2512.19083](https://arxiv.org/abs/2512.19083) | — | ★★☆ |
-| **FM-Planner** | 2025 | 基础模型路径规划，8 种 LLM/VLM 对比 | [2505.20783](https://arxiv.org/abs/2505.20783) | [代码](https://github.com/NTU-ICG/FM-Planner) | ★★☆ |
-| **NavFoM** | 2025 | 跨形态导航基础模型，含无人机 | [2509.12129](https://arxiv.org/abs/2509.12129) | [主页](https://pku-epic.github.io/NavFoM-Web/) | ★★☆ |
-| **UAVBench** | 2026 | 无人机 VLM 基准，966K 样本 | [2603.14336](https://arxiv.org/abs/2603.14336) | [主页](https://UAVBench.github.io/) | ★★☆ |
+- **[CVPR'24] GeoChat** — *GeoChat: Grounded Large Vision-Language Model for Remote Sensing*
+  [![arXiv](https://img.shields.io/badge/arXiv-2311.15826-b31b1b.svg)](https://arxiv.org/abs/2311.15826)
+  [![GitHub](https://img.shields.io/badge/GitHub-GeoChat-181717.svg?logo=github)](https://github.com/mbzuai-oryx/geochat)
+  首个 grounded 遥感 VLM。推荐度 ★★★
 
-> 完整的 81 篇分类列表（含作者、会议/期刊、推荐等级）见 [`references/paper-list.md`](references/paper-list.md)。
+- **[arXiv'25.12] CoDrone** — *CoDrone: Autonomous Drone Navigation Assisted by Edge and Cloud Foundation Models*
+  [![arXiv](https://img.shields.io/badge/arXiv-2512.19083-b31b1b.svg)](https://arxiv.org/abs/2512.19083)
+  云边端基础模型协同的无人机导航。无项目页。推荐度 ★★☆
+
+- **[arXiv'25.05] FM-Planner** — *FM-Planner: Foundation Model Guided Path Planning for Autonomous Drone Navigation*
+  [![arXiv](https://img.shields.io/badge/arXiv-2505.20783-b31b1b.svg)](https://arxiv.org/abs/2505.20783)
+  [![GitHub](https://img.shields.io/badge/GitHub-FM--Planner-181717.svg?logo=github)](https://github.com/NTU-ICG/FM-Planner)
+  基础模型引导的路径规划，横向对比 8 种 LLM/VLM。推荐度 ★★☆
+
+- **[arXiv'25.09] NavFoM** — *Embodied Navigation Foundation Model*
+  [![arXiv](https://img.shields.io/badge/arXiv-2509.12129-b31b1b.svg)](https://arxiv.org/abs/2509.12129)
+  [![主页](https://img.shields.io/badge/Website-NavFoM-0A66C2.svg)](https://pku-epic.github.io/NavFoM-Web/)
+  跨形态导航基础模型，覆盖无人机。标题取 arXiv 原文，NavFoM 是系统简称。推荐度 ★★☆
+
+- **[arXiv'26.03] UAVBench** — *UAVBench and UAVIT-1M: Benchmarking and Enhancing MLLMs for Low-Altitude UAV Vision-Language Understanding*
+  [![arXiv](https://img.shields.io/badge/arXiv-2603.14336-b31b1b.svg)](https://arxiv.org/abs/2603.14336)
+  [![主页](https://img.shields.io/badge/Website-UAVBench-0A66C2.svg)](https://UAVBench.github.io/)
+  低空无人机 VLM 基准，966K 样本、1.24M 指令调优数据、43 个测试单元。推荐度 ★★☆
 
 ---
 
 <a id="关键挑战"></a>
 
 ## 无人机领域关键挑战
+
+> 地面机器人的经验不能直接搬到空中。这张表列的是**每一条差别的具体形态**，不是"更难"三个字。
 
 | 挑战 | 地面机器人 | 无人机 |
 |------|-----------|--------|
@@ -295,6 +354,8 @@ graph TD
 
 ## 如何使用
 
+> 两种用法：想入门就按顺序读，只想解决某个具体问题就按需跳读。
+
 ### 快速开始
 
 1. 阅读 [00-导读与学习路线](docs/00-导读与学习路线.md) 了解整体结构
@@ -307,7 +368,7 @@ graph TD
 
 ```
 第1周: 00-导读 → 01-基础概念(5篇) → 04-三者关系
-第2周: 02-世界模型专题(6篇) 或 03-VLA专题(10篇)
+第2周: 02-世界模型专题(9篇) 或 03-VLA专题(10篇) 或 04-VLM专题(7篇)
 第3周: 05-综述精读(5篇)
 第4周: 06-论文导读(4篇) → 07-实践指南(按兴趣选)
 持续: 08-研究前沿与开放问题 → 从学习者过渡到研究者
@@ -319,7 +380,7 @@ graph TD
 
 ## 可运行代码（可选）
 
-[`code/`](code/) 下 19 个脚本，**纯 CPU 即可**，合计约十七分钟，出图落在 [`figures/`](figures/)。
+[`code/`](code/) 下 24 个脚本，**纯 CPU 即可**，合计约十六分钟（本机实测 944.8 秒），出图落在 [`figures/`](figures/)。
 每个脚本只验证一件事，结论量不出来时会直接写明「不作为结论」。
 
 | 脚本 | 验证的结论 |
@@ -338,7 +399,7 @@ graph TD
 | [Demo L：ATE / RPE / SSIM / FID](code/l_seq_metrics.py) | 全局错位对齐后两个指标都归零；尺度慢漂移只有 ATE 看得见 |
 | [Demo M：误差累积](code/m_exposure_bias.py) | 喂自己的输出后第 60 步误差是第 1 步的 1084 倍 |
 | [Demo N：量化位宽](code/n_quant_bits.py) | 位宽不是均匀打折：基准波动就能淹掉高位量化的效应 |
-| [Demo O：显存预算](code/o_budget.py) | 三项精确算术 + 一项实测，反解出九张表都没写的那个自变量 |
+| [Demo O：显存预算](code/o_budget.py) | 三项精确算术 + 一项实测，反解出那些表都没写的自变量——也顺带说明「算得通」验不了「有出处」 |
 | [Demo P：分块提交长度](code/p_chunk_horizon.py) | 提交越长，基于旧状态开环执行越久，闭环误差越大 |
 | [Demo Q：奖励加权后训练](code/q_rl_posttrain.py) | 奖励加权把坏数据的影响压掉三分之一（3.86 → 2.54 m），但压不到干净数据的 1.37 m |
 | [Demo R：评测报告口径](code/r_eval_protocol.py) | 同一批回合，换汇总方式名次会翻转；独立单元从回合换成训练，区间宽 2.8 倍 |
@@ -351,6 +412,8 @@ graph TD
 <a id="引用"></a>
 
 ## 引用
+
+> 学术引用用下面的 BibTeX；只是学习参考，直接贴仓库链接即可。
 
 如果本项目对你的学习有帮助，欢迎引用：
 
@@ -369,6 +432,8 @@ graph TD
 <a id="致谢"></a>
 
 ## 致谢
+
+> 本项目的结构与条目形式参考了下面两个来源；内容与结论由本项目自己核对，讹误归本项目。
 
 - 感谢 [arXiv:2605.00080](https://arxiv.org/abs/2605.00080) 的作者们提供了高质量的综述
 - 感谢 [NTUMARS/Awesome-World-Model-for-Robotics-Policy](https://github.com/NTUMARS/Awesome-World-Model-for-Robotics-Policy) 维护的 awesome list，本项目的条目标签与分节判据参考了它的组织方式
