@@ -3,7 +3,10 @@ site_description: 59 篇中文文档 · 195 篇论文 · 24 个纯 CPU 可跑 de
 site_url: https://qxy661.github.io/UAV-WM-VLA-Learning/
 repo_url: https://github.com/Qxy661/UAV-WM-VLA-Learning
 repo_name: Qxy661/UAV-WM-VLA-Learning
-edit_uri: edit/main/docs/
+# edit_uri 拼在【相对 docs_dir】的页面路径前面。build-docs/ 是仓库镜像，
+# 所以 README 的页面路径就是 README.md、卷文档是 docs/xx.md——
+# 写成 edit/main/docs/ 会把 README 指向仓库里并不存在的 docs/README.md。
+edit_uri: edit/main/
 copyright: Copyright &copy; 2026 Qxy661 · MIT License
 
 # build-docs/ 由 tools/build_docs.py 生成（见该脚本注释）。不要直接指向仓库根：
@@ -60,6 +63,10 @@ markdown_extensions:
   - footnotes
   - toc:
       permalink: true
+      # 不写这行，mkdocs 默认用 ASCII 版 slugify：`## 7. 思考题` 的 id 会变成 "7"
+      # （CJK 被 NFKD 丢掉），于是正文里 63 条 `(#7-思考题)` 这类页内锚点全部落空。
+      # slugify_unicode 与 GitHub 的算法一致，站点锚点由此与 GitHub 上的锚点同名。
+      slugify: !!python/name:markdown.extensions.toc.slugify_unicode
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
@@ -176,4 +183,7 @@ nav:
       - Awesome List 注释: references/awesome-annotations.md
       - 引用核查报告: references/citation-audit.md
   - 可运行代码: code/README.md
+  - English Overview: docs/en/index.md
+  - English README: README.en.md
+  - 更新日志: CHANGELOG.md
   - 贡献指南: CONTRIBUTING.md

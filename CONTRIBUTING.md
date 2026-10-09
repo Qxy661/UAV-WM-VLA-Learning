@@ -140,7 +140,8 @@ docs/
 ├── 06-论文导读合集/       # 论文卡片
 ├── 07-实践指南/           # 复现指南
 ├── 08-研究前沿与开放问题/  # 从学习者到研究者
-└── 09-专题自测与考察/      # 专题自测与考察（正文即题目集）
+├── 09-专题自测与考察/      # 专题自测与考察（正文即题目集）
+└── en/index.md           # 英文文档总览（英文标题 + 一句说明 + 链回中文正文）
 code/                     # 可运行 demo（真实 PyTorch）
 ├── common/               # 共用部件：四旋翼仿真、出图工具
 └── a_~x_*.py             # 每个 demo 一个脚本，与文档一一对应
@@ -330,18 +331,32 @@ pip install "mkdocs-material==9.7.*" "mkdocs<2" jieba
 **`use_directory_urls` 是关掉的，别改回去。** 仓库里有一批指向目录的链接，mkdocs 不会重写它们；
 开着目录化 URL 会给每个页面多加一层，这类链接就少一层而 404。
 
-**提交前先跑这两条**，它们也是 CI 的检查项：
+**`toc.slugify` 也别删。** mkdocs 默认的 slugify 会走一遍 NFKD + `encode('ascii')`，
+中文标题的 `id` 因此只剩数字（`## 7. 思考题` → `id="7"`），正文里几十条
+`[§7 思考题](#7-思考题)` 这类页内锚点会全部落空——页面照常构建，`--strict` 也不报错，
+只有读者点了没反应。配上 `slugify_unicode` 之后锚点算法与 GitHub 一致，
+**站点锚点与 GitHub 锚点同名**，同一份正文两边都能跳。
+
+**`edit_uri` 是 `edit/main/`，不带 `docs/`。** 它拼在「相对 `docs_dir`」的页面路径前面，
+而 `build-docs/` 是仓库镜像：README 的页面路径就是 `README.md`，卷文档是 `docs/xx.md`。
+写 `edit/main/docs/` 会让 README 的「编辑此页」指向仓库里并不存在的 `docs/README.md`。
+
+**提交前先跑这三条**，前两条也是 CI 的检查项：
 
 ```bash
-py -3.9 tools/check_links.py    # 全仓相对链接
-py -3.9 tools/check_nav.py      # mkdocs.yml 的 nav 与仓库文档是否对得上
+py -3.9 tools/check_links.py       # 全仓相对链接
+py -3.9 tools/check_nav.py         # mkdocs.yml 的 nav 与仓库文档是否对得上
+py -3.9 tools/gen_en_index.py --check   # 英文总览页是否覆盖了全部文档
 ```
 
 新增文档忘了加进 `mkdocs.yml` 的 nav，`check_nav.py` 会把缺的那篇直接打印出来。
 
 **英文门面**：`README.en.md` 是英文首页，`docs/en/index.md` 是英文文档总览
-（59 篇的英文标题 + 一句英文说明 + 链回中文正文）。总览页由 `tools/gen_en_index.py`
-从各篇的 H1 生成，**改动了文档标题或结构时重跑它**；只改正文不必同步。
+（每篇的英文标题 + 一句英文说明 + 链回中文正文）；正文不翻译。
+总览页里的英文是人写的，所以 `tools/gen_en_index.py` **只校验、不重写**：
+`--check` 比对「总览页链接到的文件」与「仓库里该被覆盖的文件」，缺谁点名谁；
+`--write` 只是把当前文档树摊成骨架打到 stdout，供初次撰写或大改时抄。
+**增删文档、改文件位置之后跑 `--check`**；只改正文不必管。
 
 ---
 

@@ -16,10 +16,11 @@ import os
 import shutil
 import sys
 
+sys.stdout.reconfigure(encoding='utf-8')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'build-docs')
 ENTRIES = [
-    'README.md', 'CONTRIBUTING.md',
+    'README.md', 'README.en.md', 'CONTRIBUTING.md', 'CHANGELOG.md', 'CITATION.cff',
     'docs', 'references', 'mindmaps', 'figures', 'code', 'tools',
 ]
 IGNORE = shutil.ignore_patterns('__pycache__', '*.pyc', '*.pyo')
