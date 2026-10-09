@@ -17,8 +17,6 @@ Flightmare 是苏黎世大学 RPG 实验室开发的模块化四旋翼仿真器�
 | **核心特点** | Unity 渲染与 C++ 物理引擎完全解耦；可并行仿真数百架四旋翼；带三维点云接口与 VR 头显集成 |
 | **与本项目关系** | Dream to Fly（ICRA 2026，arXiv 2501.14377）的基础仿真环境 |
 
-> **勘误（2026-10）**：本节早先写「核心特点：Unity 渲染 + **Gymnasium 接口** + 高保真物理」。**Flightmare 没有 Gymnasium 接口**——它的 RL 栈钉在旧版 Gym 上（`rpg_baselines` 的 `install_requires` 逐字是 `gym==0.11`），环境对象由 pybind11 模块 `flightgym` 直接构造，**不走 `gym.make()` 注册**。它的三个卖点按 README 原文是：*"(i) a large multi-modal sensor suite, including an interface to extract the 3D point-cloud of the scene; (ii) an API for reinforcement learning which can simulate hundreds of quadrotors in parallel; and (iii) an integration with a virtual-reality headset"*。上表已按原文重写。
-
 ---
 
 ## 环境要求
@@ -29,8 +27,6 @@ Flightmare 是苏黎世大学 RPG 实验室开发的模块化四旋翼仿真器�
 - **系统依赖**：`build-essential`、`cmake`、`libzmqpp-dev`、`libopencv-dev`（外加 python3/python3-dev/python3-pip）
 - **Python 依赖**：`tensorflow-gpu==1.14`（无 GPU 用 `tensorflow==1.14`，**TF1**）、`scikit-build`；`rpg_baselines` 自带 `gym==0.11` + `stable_baselines==2.10.1`
 - **环境变量**：`FLIGHTMARE_PATH` 指向仓库根目录，训练脚本按它去找配置
-
-> **勘误（2026-10）**：本节早先写「依赖：**Eigen3**, PyBind11, CMake」「Python 3.8+」「Unity 2020+」。三处都不对：**系统依赖里没有 Eigen3**，官方列的是 `build-essential / cmake / libzmqpp-dev / libopencv-dev`（Dockerfile 与 wiki 一致）；Python 版本要求是**向下钉到 3.6**，因为整条 RL 栈吃 TF1；**Unity 版本没有被指定**，渲染器不是用 Unity 编辑器打开的工程，而是从 Releases 下载编译好的二进制。另外早先完全没提 `FLIGHTMARE_PATH` 和 TF1 依赖——而这两条是跑不起来的第一、第二原因。
 
 ---
 
@@ -69,8 +65,6 @@ pip install .
 ```
 
 Unity 渲染是**独立的一步**，不装也不影响纯物理仿真：从 GitHub **Releases** 下载渲染器二进制，解压进 `flightrender/` 目录，需要可视化时先手动双击里面的可执行文件把渲染器跑起来（wiki 把它写作 `RPG_Flightmare.x84-64`，看名字是 `x86-64` 的笔误）。
-
-> **勘误（2026-10）**：本节早先的六步全是编的：`git clone --recursive`（**没有子模块**，官方就是普通 clone）、`apt-get install libeigen3-dev`（Eigen3 不在依赖里）、手工 `mkdir build && cmake .. && make -j$(nproc)`（**没有这一步**，`pip install .` 内部会编译）、`cd flightlib && pip install -e .`（是 `pip install .`，**不是 `-e` 可编辑安装**）、以及最关键的 `cd flightenvs && pip install -e .`——**`flightenvs` 这个目录根本不存在**，仓库顶层是 `flightlib / flightrl / flightrender / flightros`，RL 侧叫 `flightrl`。整套步骤已按 wiki 的 `Prerequisites` / `Install-with-pip` / `Basic-Usage-with-Python` 三页重写。
 
 ---
 
@@ -122,8 +116,6 @@ for _ in range(1000):
 env.close()
 ```
 
-> **勘误（2026-10）**：本节早先的两段代码都是编的。第一段用 `import flightenvs` + `gym.make("Quadrotor-v0", render=True)`——**`flightenvs` 模块不存在**，也**没有 `gym.make` 注册**这套机制，环境是从 `flightgym` 直接 `QuadrotorEnv_v1(...)` 构造的；`obs, info = env.reset()` 和 `terminated/truncated` 五元组是 Gymnasium 的接口，而 Flightmare 的 `EnvWrapper.step()` 逐字返回 `self.observation, self.reward, self.done, [dict(...)]`——**四元组**（`gym==0.11` 的时代没有 truncated）。第二段用 `from stable_baselines3 import PPO`——**仓库没用 SB3**，它自带一份 PPO2 实现（`rpg_baselines/ppo/ppo2.py`，从 stable-baselines 2.10.1 fork 而来）并依赖 TF1；`model.learn(total_timesteps=100_000)` 的步数也是编的，示例脚本里是 `int(25000000)`。
-
 ---
 
 ## 核心架构
@@ -142,8 +134,6 @@ Flightmare
 ```
 
 渲染引擎与物理引擎**完全解耦**：`flightlib` 单独就能跑纯物理仿真，`flightrender` 只有需要图像时才连上。
-
-> **勘误（2026-10）**：本节早先的架构树里写了 `flightenvs/`（Gymnasium 环境封装，含 `QuadrotorEnv` 与 `RacingEnv`）。**这个目录不存在**，也没有 `RacingEnv`——RL 侧是 `flightrl/`，而且它是一个纯 Python 包（`rpg_baselines`），C++ 环境类住在 `flightlib/src/envs/` 里。早先的树还漏掉了 `flightros/`（ROS 那条安装路线）与 `flightlib/src/bridges/`（连 Unity 的桥）。
 
 ---
 
@@ -179,8 +169,6 @@ env:
   render: no
 ```
 
-> **勘误（2026-10）**：早先这张表列的是 `Quadrotor-v0`（悬停）、`Quadrotor-v1`（航点追踪）、`Racing-v0`（竞速）三个环境名，全是编的——`pybind_wrapper.cpp` 里只导出 `QuadrotorEnv_v1` 与 `TestEnv_v0`，**没有 `Racing-v0`，也没有 `Quadrotor-v0`/`Quadrotor-v1` 这种带连字符的注册名**（`QuadrotorEnv_v1` 末尾的 `_v1` 是版本号，不是环境序号）。「航点追踪 / 竞速」这两种任务划分在仓库里找不到对应实现。观测与动作维度按 `quadrotor_env.hpp` 的 `enum Ctl`（`kNObs = 12`，`kNAct = 4`）与 `quadrotor_env.cpp` 的动作缩放重写。
-
 ---
 
 ## 复现 Checklist
@@ -207,8 +195,6 @@ env:
 | **GitHub Stars**（2026-10） | 1,431 | 2,154 | 18,539 | 4,231（`isaac-sim/IsaacSim`） |
 | **适合场景** | RL 训练 | RL 入门 | sim-to-real | 工业级仿真 |
 
-> **勘误（2026-10）**：本节早先有一行「**Gymnasium**：Flightmare ✅ / gym-pybullet-drones ✅」。**Flightmare 那一格是错的**——它用的是旧版 Gym，`rpg_baselines` 的依赖逐字钉在 `gym==0.11`，接口是四元组，也没有 `gym.make` 注册。早先还有一行「引用量：高/高/最高/中」，四个都是印象值，已换成 2026-10 实测的 GitHub Stars。
-
 ---
 
 ## 参考资源
@@ -220,8 +206,6 @@ env:
 - 论文（CoRL 2020 Spotlight）: [Flightmare: A Flexible Quadrotor Simulator](http://rpg.ifi.uzh.ch/docs/CoRL20_Yunlong.pdf)
 - Dream to Fly 论文（ICRA 2026）: https://arxiv.org/abs/2501.14377
 - Unity 渲染器二进制: https://github.com/uzh-rpg/flightmare/releases
-
-> **勘误（2026-10）**：本节早先列的「Gymnasium 文档」与本项目已无关（Flightmare 不用 Gymnasium）；同时漏掉了 wiki——而**安装步骤的唯一权威出处就在 wiki 上**，README 只有一句话把读者指过去（*"Installation instructions can be found in our Wiki"*）。
 
 ## 延伸阅读
 
@@ -254,5 +238,3 @@ env:
 5. **不能直接复用**。Flightmare 提供的是两样东西：四旋翼动力学（`flightlib` 的 dynamics）和赛道生成，所以"仿真器"这一层是有用的；但把这两样接成**竞速任务**的那一整条链路——门位姿、奖励设计、以及把 Habitat 接进来做渲染——**论文没有开源**（见本仓 [07-复现指南：DreamerV3-Drone](./07-复现指南-DreamerV3-Drone.md) 的说明：论文只点名了它用的 DreamerV3 底座，环境代码没放出来）。而且仓库里也**没有现成的竞速环境**：`pybind_wrapper.cpp` 只导出 `QuadrotorEnv_v1` 与 `TestEnv_v0`，两个都是位置/姿态控制任务，不带赛道门。要换的不是"训练算法那一侧"那么轻——环境这一侧得自己写。
 
 </details>
-
-> **勘误（2026-10）**：参考答案 1–5 早先全部建立在编造的环境名（`Quadrotor-v0` / `Quadrotor-v1` / `Racing-v0`）、编造的"自带 Gymnasium 接口"和编造的安装步骤（`--recursive`、Eigen3、手工 cmake、`flightenvs`）之上，因此五条答案一并重写。其中第 5 题的结论**方向反转**了：早先答"不用换"，实际是环境这一层必须自己接。

@@ -94,8 +94,6 @@ graph TB
 | 层次化语义规划 | Hierarchical Semantic Planning Module，按 Landmark / Object / Motion 三级分解 | 长距离导航的复杂性 |
 | 全局记忆模块 | Global Memory Module，用拓扑图维护已探索区域 | 避免重复探索 |
 
-> **勘误（2026-10）**：本表早先有「语义锚点（使用地标作为导航参考点）」与「自适应策略（根据环境复杂度动态调整规划粒度）」两行。**两个模块论文里都没有** —— 全文 "anchor" 出现 0 次、"adaptive" 出现 0 次。已按论文实际的三个模块替换（地标这一层对应的是层次化规划里的 Landmark-level）。
-
 #### 拓扑记忆图
 
 ```mermaid
@@ -128,8 +126,6 @@ graph LR
 
 论文自述的领先幅度很小 —— 原句：*"CityNavAgent outperforms the best of them by 1.3%, 0.8%, 0.5%, and 16.1% in SR, SPL, SDTW and NE for validation seen dataset"*。
 
-> **勘误（2026-10）**：本表早先是「传统 RL 42.3% / CLIP-Nav 58.7% / CityNavAgent 78.4%」加上「平均路径长度 287m / 234m / 198m」与「SPL 0.31 / 0.45 / 0.68」。**整表为虚构**：78.4 / 198 / 0.68 / 42.3 在论文 17 张表里都搜不到，基线里也没有「传统 RL」和「CLIP-Nav」（真实基线是 RS、AC、Seq2seq、CMA、NavGPT、MapGPT、VELMA、LM-Nav、STMR）；论文报的是导航误差 NE 而不是「平均路径长度」；真实的 SPL 量级是 10–23，不是 0.31–0.68（数量级也错）。已按论文 Table 1/2 重写。
-
 ---
 
 ### 2.2 ACDC — 自然语言驱动的航拍电影
@@ -160,21 +156,15 @@ graph LR
 | 2. 位姿精修 | 按「更像不像描述里的画面」反复比较、择优 | 偏好式贝叶斯优化 |
 | 3. 轨迹生成 | 在精修后的位姿之间生成可行轨迹 | 运动规划 |
 
-> **勘误（2026-10）**：本节早先有一张「航拍镜头语言映射」表，把 Orbit / Follow / Bird's Eye / Dolly Zoom / Fly Through 五类镜头与「半径、高度、速度」等参数对应起来，并配了「镜头语言转换」的架构图。**这些在论文中一个都不存在** —— `Orbit`、`Follow`、`Bird`、`Dolly`、`Fly Through` 各 0 次命中，而且论文的卖点恰恰是**不依赖固定镜头语法**。已按论文真实的三步流水线替换。
-
 #### LLM 的角色
 
 1. **意图理解**：解析用户的自然语言描述，把它变成可优化的目标
 2. **检索目标编写**：把描述转成检索用的查询，选出初始航点
 3. **美学偏好判定**：在贝叶斯优化里充当「哪个更符合描述」的判据
 
-> **勘误（2026-10）**：本节早先列的第三个角色是「参数推断：根据上下文推断缺失的飞行参数（如速度、高度）」。论文没有这一步。
-
 #### 安全约束
 
 ACDC 不给出显式的安全参数表，安全性由**运动规划**保证：生成的轨迹本身要求碰撞自由且动力学可行。
-
-> **勘误（2026-10）**：本节早先有一段 Python 代码，列出 `min_altitude: 10` / `max_altitude: 120` / `max_speed: 15` / `min_obstacle_distance: 5` 以及 geofence、no_fly_zones。**论文全文没有 safety、altitude、geofence 任何一个词**，也没有高度/速度约束表；而且它是面向**室内**的，120 m 这种飞行高度约束与场景不符。该代码块已删。
 
 ---
 
@@ -182,8 +172,6 @@ ACDC 不给出显式的安全参数表，安全性由**运动规划**保证：�
 
 **论文**: *Taking Flight with Dialogue: Enabling Natural Language Control for PX4-based Drone Agent* (2025)
 **arXiv**: [2506.07509](https://arxiv.org/abs/2506.07509)
-
-> **勘误（2026-10）**：本节题名早先写作 *"Taking Flight with Dialogue: Natural Language Control of UAVs via LLMs"*，副标题不是论文正式题名。arXiv 2506.07509 的题名是 *"Taking Flight with Dialogue: Enabling Natural Language Control for PX4-based Drone Agent"*。
 
 #### 系统架构
 
@@ -196,8 +184,6 @@ ACDC 不给出显式的安全参数表，安全性由**运动规划**保证：�
 | LLM 推理 | Ollama (本地部署) | 自然语言理解 |
 | 仿真环境 | NVIDIA Isaac Sim | 仿真测试 |
 | 硬件平台 | 自组装四旋翼（custom quadcopter） | 真机验证 |
-
-> **勘误（2026-10）**：本表早先「仿真环境」写 Gazebo、「硬件平台」写「大疆/自组装无人机」。论文用的是 **NVIDIA Isaac Sim**（Gazebo 只在相关工作里作为别人家的系统被提过一次），硬件是 *"a custom quadcopter platform"*，全文 "DJI" 出现 0 次。
 
 #### 系统架构图
 
@@ -261,8 +247,6 @@ graph TB
 
 需要加一条重要限定：**评测里没有闭源模型**。原句：*"Proprietary models requiring paid Application Programming Interface (API) access, such as OpenAI's ChatGPT-4 and Anthropic's Claude, were omitted from the analysis."*
 
-> **勘误（2026-10）**：本表早先是「GPT-4 94.2% / LLaMA-3 70B 87.6% / Mistral 7B 82.1% / Qwen-2 7B 85.3%」加上「参数提取准确率」「平均推理时间」两列。**整表为虚构**：论文评的是 Gemma3、Qwen2.5、Llama-3.2、DeepSeek-LLM 四个家族，且明确**排除了 GPT-4**；"accuracy" 一词全文 0 次，94.2 这组数字也不存在，Mistral 根本不在评测之列。已按论文原文重写。
-
 #### 指令解析示例
 
 ```
@@ -298,16 +282,12 @@ LLM 解析输出:
 3. **小模型的短板集中在指令有效性**：DeepSeek-LLM 的指令有效率只有 38%，任务成功率为 0
 4. **缺少端到端延迟数据**：论文**没有测延迟**，作者把它列为局限 —— 原句：*"The current evaluation also lacks a quantitative analysis of several vital system metrics, including end-to-end latency, token usage of the language model, and path optimality"*
 
-> **勘误（2026-10）**：本条早先是「参数推断能力」「安全约束遵循」加「实时性挑战：LLM 推理延迟（1-4秒）是实时控制的主要瓶颈」。前两条在论文里没有对应内容；第四条把「1-4 秒」归到论文名下也不对 —— **论文自述没有测端到端延迟**。第 6 节的动手验证正是用仓库自己的仿真把这个缺口补成一个可量的数（见下）。
-
 ---
 
 ### 2.4 Agentic AI for UAV Swarms — 无人机集群智能
 
 **论文**: *Agentic AI Meets Edge Computing in Autonomous UAV Swarms* (2026)
 **arXiv**: [2601.14437](https://arxiv.org/abs/2601.14437)
-
-> **勘误（2026-10）**：本节题名早先写作 *"Agentic AI for UAV Swarms: A Case Study in Wildfire Search and Rescue"*。arXiv 2601.14437 的题名是 *"Agentic AI Meets Edge Computing in Autonomous UAV Swarms"* —— 论文的主线是 **LLM 与边缘计算的三种部署架构**（standalone / edge-enabled / edge-cloud hybrid），wildfire SAR 只是其中一个 use case，不是题名里的 case study。
 
 #### 核心问题
 
@@ -355,8 +335,6 @@ graph TB
 | 巡测点分配 | 边缘地面站 | GPT-4.1 |
 | 无人机路径规划 | 机上 | TinyLLaMA |
 
-> **勘误（2026-10）**：本节早先画的是「无人机3: 确认 / 无人机4: 通信中继」式的按功能分工，并配了一张「任务规划者 / 信息整合者 / 策略调整者 / **冲突解决者** / **报告生成者**」的角色表。**这些都查无来源**：论文全文 "relay"、"confirmation" 各 0 次，没有「确认机」「中继机」这类功能分工，也没有「冲突解决者」「报告生成者」两个角色。已按论文的 EGS + TinyLLaMA 分工替换。
-
 #### 火灾搜索救援场景
 
 ```mermaid
@@ -389,15 +367,11 @@ sequenceDiagram
 **论文**: *Team Xiaomi EV-AD VLA: Caption-Guided Retrieval System for Cross-Modal Drone Navigation*（IROS 2025 RoboSense Challenge Track 4 技术报告，2025）
 **arXiv**: [2510.02728](https://arxiv.org/abs/2510.02728)
 
-> **勘误（2026-10）**：本节题名早先写作 *"Team Xiaomi: Caption-Guided Retrieval for UAV Object Search"*。arXiv 2510.02728 的题名是 *"Team Xiaomi EV-AD VLA: Caption-Guided Retrieval System for Cross-Modal Drone Navigation — Technical Report for IROS 2025 RoboSense Challenge Track 4"*。
-
 #### 核心问题
 
 这个任务**不是在一张图里框目标**，而是**跨视图图像检索**：给定自然语言描述，从大规模图像库里检索出相关图像，覆盖无人机、卫星、地面相机三种视角。
 
 论文原句：*"requiring efficient retrieval of relevant images from large-scale databases based on natural language descriptions... focusing on robust, natural language-guided cross-view image retrieval across multiple platforms (drones, satellites, and ground cameras)"*。
-
-> **勘误（2026-10）**：本节早先把它写成「无人机目标检索（Object Search）：根据自然语言描述在航拍图像中找到目标，传统方法依赖目标检测模型，只能识别预定义类别」。任务定义与基线都错：它是检索任务，官方基线不是目标检测模型而是检索基线 GeoText-1652。
 
 #### 系统流程
 
@@ -424,8 +398,6 @@ graph LR
 | 相似度计算 | 余弦相似度 | 计算文本-图像相似度 |
 | 排序策略 | 用 VLM 生成的 caption 做多模态重排 | 输出最终检索结果 |
 
-> **勘误（2026-10）**：本表早先写的是「CLIP Text Encoder / CLIP Image Encoder / Selective Search 或 RPN / Top-K + NMS」。论文的实际编码器是 **Swin Transformer（图像）+ BERT（文本）**，区域靠 **RoI pooling**；`Selective`、`RPN`、`NMS` 全文各 0 次。只有「余弦相似度」一项与论文一致。
-
 #### 性能表现
 
 官方榜成绩（8 支队伍中排第 2）：
@@ -436,8 +408,6 @@ graph LR
 | Team Xiaomi | 31.33% | 49.09% | 57.15% |
 
 论文原句：*"ranking second with R@1 scores of 31.33%, R@5 scores of 49.09%, and R@10 scores of 57.15%. Our R@1 score is 5.89% higher than the official baseline"*。
-
-> **勘误（2026-10）**：本表早先是「CLIP 直接匹配 23.4/45.2/58.7」「检测+CLIP 41.2/62.3/73.8」「Team Xiaomi 56.8/78.4/87.2」。**整表为虚构**：前两行是不存在的基线，第三行的三个数也不是论文值（真实是 31.33 / 49.09 / 57.15）。官方基线那一行的数字由论文给出的领先幅度（+5.89 / +8.48 / +8.05）反推得到。
 
 ---
 
@@ -451,8 +421,6 @@ graph LR
 | 任务规划器 | 分解复杂任务为子任务序列 | CityNavAgent | 处理长程任务 | 依赖环境模型 |
 | 检索目标编写器 | 把自然语言意图改写成可检索的查询，并对结果重排 | ACDC、Team Xiaomi | 零样本泛化，无需预定义类别 | 受底层检索器召回率限制 |
 | 任务分配器 | 在边缘侧把巡测任务分配给各机 | Agentic AI（EGS 上的 GPT-4.1） | 适应动态集群 | 依赖边缘侧算力 |
-
-> **勘误（2026-10）**：本表早先的两行是「策略决策器 | 在多选项中做出决策 | Agentic AI」与「知识检索器 | 利用世界知识辅助决策 | ACDC」。两条都与论文对不上：Agentic AI 的模型在边缘地面站上做的是**巡测点分配**，不是通用策略决策；ACDC 的 LLM 做的是**把意图改写成检索目标**和**判定美学偏好**，并**不**检索世界知识。已按各篇正文的实际分工改写。
 
 ### 3.2 系统集成模式
 
@@ -530,15 +498,11 @@ graph TB
 
 ---
 
-> **勘误（2026-10）**：本表早先的题名是「Agentic AI for UAV Swarms」「Team Xiaomi」两项简写，核心贡献一列也按旧描述写成了「集群搜救」「目标检索」。已同步为 2.4、2.5 节改写后的正式题名与真实贡献。
-
 ---
 
 ## 6. 动手验证：LLM 慢一秒，无人机偏几米？
 
 4.1 节把「推理延迟」列为实时控制的头号挑战，但本卷所引论文都**没有测过端到端延迟**（2.3 节的论文甚至把它写进局限）。这是一个从定性判断到一个数之间的空档，这一节用仓库自己的仿真把它填上。
-
-> **勘误（2026-10）**：本段早先写作「4.1 节把"LLM 推理延迟 1-4 秒"列为实时控制的主要瓶颈，"无法满足实时控制需求"」。「1-4 秒」既不来自本节任何一篇论文，也不是任何一处实测，属于凭印象填入的数值，已删。下面的仿真量的是**外环航点刷新周期**对轨迹跟踪误差的影响，量的是内环跟得上跟不上，不是 LLM 的推理耗时。
 
 做法是内环固定 50 Hz 正常跑，外环每 τ 秒重新下发一个目标点，从 0 扫到 4 秒。参考轨迹是一条半径 2 m 的圆，8 秒一圈。外环用的是**离散航点**而不是连续轨迹：LLM agent 给的是"去哪儿"，不是每一步的速度，内环收到航点后就地悬停。
 
@@ -591,7 +555,7 @@ for tau in (0, 1, 2, 4):
 
 4 秒的规划周期对应 3.15 m 的路径偏差，已经超过无人机的机身尺度，在半径 2 m 的圆上等于跑到了圆周的另一侧。这就把「外环慢到什么程度就不能再算跟踪」落成了一个数。**注意这只覆盖了链路里的一环**：它量的是「规划周期」这一项，不是 LLM 的推理耗时——推理耗时叠加上去只会更长。
 
-值得注意的是 τ=0 那一行：外环每一步都更新，误差仍有 1.09 m。这部分与延迟无关，是定点悬停的固有代价——内环收到航点就停在那儿，而参考点在持续移动，两次规划之间"世界已经变了"。换句话说，慢外环的代价由两部分组成：延迟本身，加上"悬停"这个动作与移动任务之间的错配。
+τ=0 那一行也说明同一件事：外环每一步都更新，误差仍有 1.09 m。这部分与延迟无关，是定点悬停的固有代价——内环收到航点就停在那儿，而参考点在持续移动，两次规划之间"世界已经变了"。慢外环的代价由两部分组成：延迟本身，加上"悬停"这个动作与移动任务之间的错配。
 
 这与连续轨迹指令的对照很有意思：连续轨迹那套（内环带速度前馈）基准只有 0.12 m，但延迟一上来就陡增，4 秒时 4.11 m；航点这套基准高出一大截（1.09 m），增长却平缓得多。两条曲线的对照见 [机载部署与优化](../03-VLA专题/05-机载部署与优化.md) 第 10 节。
 
@@ -699,8 +663,6 @@ py -3.9 code/f_control_loop.py     # 约 12 秒，CPU 即可
 3. **看基准要看它测了什么、没测什么**：缺延迟数据意味着这一篇不能用来做实时性选型
 
 </details>
-
-> **勘误（2026-10）**：本题早先的题干是「为什么 Mistral 7B 的推理速度最快但执行成功率最低？」。Mistral **根本不在该论文的评测之列**，四个模型家族是 Gemma3 / Qwen2.5 / Llama-3.2 / DeepSeek-LLM，论文里也没有测推理速度。整道题已按论文真实数据重写（原答案的「参数提取准确率」「安全约束遵循」两条同样是编造内容）。
 
 ### 题目 3：LLM 驱动的无人机 Agent 如何保证飞行安全？设计一个安全架构。
 

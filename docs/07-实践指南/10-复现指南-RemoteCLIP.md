@@ -54,8 +54,6 @@ for model_name in ['RN50', 'ViT-B-32', 'ViT-L-14']:
     print(f'{model_name} -> {path}')
 ```
 
-> **勘误（2026-10）**：本节早先写「`pip install -r requirements.txt`」。**仓库里没有 `requirements.txt`**（git tree 顶层只有 `README.md`、`demo.ipynb`、`RemoteCLIP_colab_demo.ipynb`、`retrieval.py` 与 `assets/`）。README 给的安装步骤只有一条：*"pip install open-clip-torch"*。早先的依赖清单还把 `transformers`、`timm` 列为必需，也不对——权重是 **OpenCLIP 格式**，加载走 `open_clip`，不用 `transformers`/`timm`。
-
 ---
 
 ## 预训练模型
@@ -67,8 +65,6 @@ for model_name in ['RN50', 'ViT-B-32', 'ViT-L-14']:
 | `RemoteCLIP-RN50.pt` | ResNet-50 | **102M**（408 MB） | 最轻，CPU 也能跑 |
 | `RemoteCLIP-ViT-B-32.pt` | ViT-B/32 | **151M**（605 MB） | 平衡，第一次跑通用它 |
 | `RemoteCLIP-ViT-L-14.pt` | ViT-L/14 | **428M**（1.71 GB） | 性能最好，fp16 约 0.9 GB |
-
-> **勘误（2026-10）**：本节早先那张表列的是「ViT-B/32 ~150M / **ViT-B/14 ~300M** / ViT-L/14 **~600M**」。**`ViT-B/14` 这个权重不存在**：README 逐字写的是 *"pretrained checkpoints of RemoteCLIP models (ResNet-50, ViT-base-32, and ViT-large-14)"*，HF 仓库里也确实只有 `RemoteCLIP-RN50.pt`、`RemoteCLIP-ViT-B-32.pt`、`RemoteCLIP-ViT-L-14.pt` 三个文件。ViT-L/14 的参数量也不是 600M，按 1.71 GB 的 fp32 权重算是 **427.7M**。表已按实际文件重写。
 
 ---
 
@@ -104,8 +100,6 @@ with torch.no_grad(), torch.cuda.amp.autocast():
 
 print(labels[int(probs.argmax())], float(probs.max()))
 ```
-
-> **勘误（2026-10）**：本节早先的推理代码是 `from models.remoteclip import RemoteCLIP` 加 `RemoteCLIP.from_pretrained("ChenDelong1999/RemoteCLIP-ViT-B-32")`。**这三处都不成立**：仓库里没有 `models/` 目录、没有 `remoteclip.py`、也没有 `RemoteCLIP` 这个类；`ChenDelong1999/RemoteCLIP-ViT-B-32` 这个 HF 仓库不存在（权重全在 `chendelong/RemoteCLIP` 一个仓库里，文件名是 `RemoteCLIP-ViT-B-32.pt`）；加载方式也不是一个自定义类，而是 `open_clip.create_model_and_transforms()` 后 `load_state_dict()`。上面的代码按 README 的官方示例重写。注意它的相似度算法要**先归一化再乘 100**——早先省略了归一化。
 
 ### 跨模态检索
 
@@ -157,8 +151,6 @@ top_k = similarities.topk(5).indices
 - HuggingFace 数据集（训练用的遥感图文对）: https://huggingface.co/datasets/gzqy1026/RemoteCLIP
 - 仓库内的检索脚本: [retrieval.py](https://github.com/ChenDelong1999/RemoteCLIP/blob/main/retrieval.py)
 
-> **勘误（2026-10）**：权重链接早先写成 `ChenDelong1999/RemoteCLIP`，**这个 HF 仓库不存在**，实际是 `chendelong/RemoteCLIP`（GitHub 账号名与 HF 账号名不同）。数据集 `gzqy1026/RemoteCLIP` 早先完全没提。
-
 ## 延伸阅读
 
 - [什么是VLM](../01-基础概念/02-什么是VLM.md) — 理解视觉语言模型基础
@@ -190,5 +182,3 @@ top_k = similarities.topk(5).indices
 5. 图像库那一侧的编码可以离线算好并缓存：文档的检索代码只在线编码查询文本，再与已缓存的图像特征矩阵做矩阵乘并 `topk(5)`。把整个图像库的 `encode_image` 结果（**归一化之后**）预先算成矩阵，查询时只编码一条文本，在线成本就只剩一次矩阵乘。归一化必须放在缓存之前，否则缓存下来的是未归一化特征，余弦相似度会算错。
 
 </details>
-
-> **勘误（2026-10）**：参考答案 1、2、4 早先也引用了那套编造的权重清单（「B/32 约 150M / B/14 约 300M / L/14 约 600M」）和自定义类接口（`encode_image` / `encode_text` 之外还提到不存在的 `RemoteCLIP.from_pretrained`）。三处答案已按实际权重（`RN50` / `ViT-B-32` / `ViT-L-14`，102M / 151M / 428M）与 OpenCLIP 接口改写。第 4 题的答案还补了一条早先漏掉的关键点：三个权重的输入分辨率不同，必须各用各的 `preprocess`。

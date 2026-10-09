@@ -105,8 +105,6 @@
 
 **结果亮点**：对齐的标注有效提升现有世界模型模拟复杂 3D 动态的能力
 
-> **勘误（2026-10）**：本卡片早先写作「30+小时4K视频，4.5M+帧，准确的6-DoF相机轨迹，细粒度自然语言描述」，管线写成「CLIP相关性过滤 / 时间分割 / 鲁棒视觉SLAM轨迹恢复 / LLM驱动语义标注」。原文摘要的实际规模是 *"228 high-resolution video clips totaling 62,700 frames, with semantic annotations of weather and illumination conditions, scene environment, and camera-viewpoint motion"*，数据构建是 *"manual source selection, CLIP-assisted inspection, and human verification"*。**帧数被夸大约 70 倍，6-DoF 轨迹、SLAM、LLM 标注在原文中均不存在（全文 0 命中）。**
-
 ---
 
 ## 5. AeroVerse — 航空航天世界模型基准
@@ -128,8 +126,6 @@
 3. 导航探索（navigational exploration）
 4. 任务规划（task planning）
 5. 运动决策（motion decision）
-
-> **勘误（2026-10）**：本卡片早先列的五大任务是「场景认知 / 导航规划 / 目标跟踪 / 避障控制 / 降落评估」，其中**后三项原文里根本没有**。原文定义的是 *"aerospace embodied scene awareness, spatial reasoning, navigational exploration, task planning, and motion decision"*，已按原文改正。
 
 ---
 

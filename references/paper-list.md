@@ -47,7 +47,7 @@
 
 - **[Nature'25] Mastering Diverse Domains through World Models** — *Hafner et al.* · ★★★  
   [![arXiv](https://img.shields.io/badge/arXiv-2301.04104-b31b1b.svg)](https://arxiv.org/abs/2301.04104) [![Website](https://img.shields.io/badge/Website-page-0A66C2.svg)](https://danijar.com/dreamerv3)
-  Nature 2025 版标题为《Mastering diverse control tasks through world models》（DOI 10.1038/s41586-025-08744-2）。本条曾标 JMLR'23，JMLR 第 24、25 卷目录里都没有这篇。
+  Nature 2025 版标题为《Mastering diverse control tasks through world models》（DOI 10.1038/s41586-025-08744-2）。
 
 - **[ICLR'22/24] TD-MPC/TD-MPC2** — *TD-MPC/TD-MPC2: Temporal Difference Learning for Model Predictive Control* · ★★☆  
   [![arXiv](https://img.shields.io/badge/arXiv-2203.04955-b31b1b.svg)](https://arxiv.org/abs/2203.04955) [![Website](https://img.shields.io/badge/Website-page-0A66C2.svg)](https://nicklashansen.github.io/td-mpc)
@@ -722,8 +722,8 @@ pie title 论文分布
 > `1.7` 长时程与交互式生成（18 篇）三节，共 47 篇；「世界模型 — 无人机」的 11 篇里有 5 篇同批新增。
 >
 > 「多模态基础模型与通用 VLM 71 篇」是按 `8.1` 架构与视觉编码器（29 篇）、`8.2` 指令微调与对齐（20 篇）、
-> `8.3` 评测与幻觉（22 篇）三组新建的，对应 `04-VLM专题` 的 `05`–`07` 三篇；原先的「多模态基础模型」9 篇
-> （CLIP / SigLIP / LLaVA / LLaVA-1.5 / Qwen-VL / Qwen2.5-VL / InternVL / Cambrian-1 / GPT-4V）全部并入这三组，
+> `8.3` 评测与幻觉（22 篇）三组对应 `04-VLM专题` 的 `05`–`07` 三篇；原先的「多模态基础模型」9 篇
+> （CLIP / SigLIP / LLaVA / LLaVA-1.5 / Qwen-VL / Qwen2.5-VL / InternVL / Cambrian-1 / GPT-4V）全部并入这三组。
 > 没有删除，原先的条目序号已随条目式改写弃用。`8.3` 一组里的评测基准与「七、基准与数据集」不重复：那一节收的是机器人/无人机的
 > 数据与评测协议，这一组收的是通用 VLM 的基准与幻觉诊断。
 

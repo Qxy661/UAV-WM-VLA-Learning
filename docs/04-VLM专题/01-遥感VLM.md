@@ -30,8 +30,6 @@ timeline
     2024.09 : ChangeChat (双时相变化分析对话)
 ```
 
-> **勘误（2026-10）**：本时间线的日期早先与各论文的 arXiv 首次公开时间普遍不符（RSGPT 写 2023.06 实为 2023.07、EarthGPT 写 2023.10 实为 2024.01、SkySenseGPT 写 2023.12 实为 2024.06、RS-LLaVA 写 2024.01 实为 2024.04、LHRS-Bot 写 2024.03 实为 2024.02、ChangeChat 写 2024.04 实为 2024.09）。图中日期按 arXiv v1 公开时间重排；RS-LLaVA 没有 arXiv 预印本，2024.04 是它在 MDPI *Remote Sensing* 16(9):1477 的出版时间。
-
 ---
 
 ## 3. 核心模型详解
@@ -92,8 +90,6 @@ GeoChat 构建了 318K 遥感指令数据，数据来源包括：
 | 图像描述 | ROUGE-1 | 87.3 | — |
 | 图像描述 | METEOR | 83.9 | — |
 
-> **勘误（2026-10）**：本节早先有一张表列「RS Image Captioning 85.2 CIDEr / RS VQA 78.4% / Grounded Description 71.6 IoU / Change Detection 82.1% F1」，**这四个数字在论文里都不存在**，GeoChat 也**根本没有变化检测任务**（描述任务用的是 ROUGE/METEOR，不是 CIDEr）。原先其下还有一段「口径提示」，比对本文与 [复现指南-GeoChat](../07-实践指南/06-复现指南-GeoChat.md) 两张表的差异——那两张表都是编的，所以那段提示本身也没有意义，已一并删除。
-
 ---
 
 ### 3.2 RSGPT — 遥感图文对话先驱
@@ -119,8 +115,6 @@ RSGPT 采用 Q-Former 架构作为视觉-语言桥梁，通过可学习的 Query
 ```
 遥感图像 → EVA-G → Q-Former → K 个 Query Token → Vicuna-7B/13B → 文本输出
 ```
-
-> **勘误（2026-10）**：本节早先写「BLIP-2 架构 + FlanT5-XL」「32 Query Tokens」「数据集 RSICD、UCM、Sydney」「RS CapQA Benchmark」。这四处都不对：论文用 InstructBLIP 预训练权重初始化、底座 LLM 是 Vicuna、训练数据是自建的 RSICap（2,585 对）、评测集叫 RSIEval。原文：*"off-the-shelf frozen pre-trained image encoders (EVA-G) and large language models (vicuna7b, vicuna13b) form the foundation of the model."*、*"we construct RSICap dataset by carefully curating 2,585 high-quality remote sensing (RS) image-text pairs"*。
 
 #### 局限性
 
@@ -160,8 +154,6 @@ graph LR
 ```
 
 论文的重点不在架构（架构是标准的），而在**指令数据的构造**：把细粒度任务拆成可自动生成的模板，再靠规则与模型交叉校验筛选。
-
-> **勘误（2026-10）**：本节早先写「LLaVA 架构 + **SAM 辅助**」「引入 Segment Anything Model 辅助区域特征提取」，并画了一张含 SAM Encoder 的融合架构图。**论文全文没有 SAM/Segment Anything**，架构就是 CLIP-ViT-L14 + MLP + Vicuna-v1.5。训练数据规模也写错了：原先写「多粒度遥感指令数据集 ~100K」，实际 FIT-RS 是 1,800,851 条，差约 18 倍。原文：*"The architecture SkySenseGPT follows mainstream LMMs, composed of a visual encoder, i.e. CLIP-ViT-L14 ... a multilayer perceptron (MLP) as the multi-modal projector, and an LLM (Vicuna-v1.5)."*、*"we propose a large-scale instruction tuning dataset FIT-RS, containing 1,800,851 instruction samples."*
 
 ---
 
@@ -209,8 +201,6 @@ EarthGPT 的做法是**统一任务格式**：把分类、检测、描述、VQA�
 | 模态 | 光学、红外、SAR |
 | 覆盖任务 | 场景分类、图像描述、区域描述、VQA、视觉定位、水平框与旋转框检测 |
 
-> **勘误（2026-10）**：本节早先写「传感器支持：光学 RGB、多光谱、SAR、高光谱」，并画了一张带 MS Encoder / HSI Encoder 的四路融合图；还列了一张「MME-RS 评测基准」的五维子任务表（描述 4/~10K、VQA 6/~25K、变化检测 2/~8K、检测 3/~15K、分类 2/~12K）。两处都不对：论文**只支持光学、SAR、红外三种模态**，**没有多光谱和高光谱**；数据集叫 **MMRS-1M**（不是 MME-RS），**没有变化检测任务**，那张表里的数字全部查无来源。原文：*"MMRS-1M encompasses three visual modalities such as optical, infrared, and SAR."*、*"a dataset named MMRS-1M ... comprising over 1M image-text pairs based on 34 existing diverse RS datasets"*。
-
 ---
 
 ### 3.5 其他重要模型
@@ -220,8 +210,6 @@ EarthGPT 的做法是**统一任务格式**：把分类、检测、描述、VQA�
 - **定位**: 遥感图像**描述与 VQA 的联合建模**（论文题名即 "Joint Captioning and Question Answering"）
 - **架构**: 基于 LLaVA 架构，在遥感指令数据（RS-instructions）上微调
 - **特点**: 简洁高效的基线模型，适合快速验证遥感 VLM 的可行性
-
-> **勘误（2026-10）**：本节早先只写「专注于遥感图像描述」，把 VQA 排除在外。论文把两个任务并列作为核心，原文：*"We particularly emphasize their multi-tasking potential with a focus on image captioning and visual question answering (VQA)."*
 
 #### ChangeChat
 
@@ -234,8 +222,6 @@ EarthGPT 的做法是**统一任务格式**：把分类、检测、描述、VQA�
 - **定位**: 用**视觉-地理定位（VGI）数据**增强的遥感 VLM
 - **创新点**: 借助地理坐标等元信息提升遥感图像理解与定位能力
 - **意义**: 展示了非视觉先验（地理元数据）对遥感任务的增益
-
-> **勘误（2026-10）**：本节早先写 LHRS-Bot「支持多语言遥感」「支持中英文等多种语言」。论文全文没有 multilingual / 中文支持的任何说法，它的卖点是 VGI 增强。另：该论文做了视觉定位（RSVG、DIOR-RSVG），下节能力矩阵已相应更正。
 
 ---
 
@@ -253,8 +239,6 @@ EarthGPT 的做法是**统一任务格式**：把分类、检测、描述、VQA�
 | ChangeChat | ❌ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | LHRS-Bot | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ |
 
-> **勘误（2026-10）**：本矩阵原有一列「多语言」，只有 LHRS-Bot 打 ✅ —— 但该论文没有任何多语言支持的说法，该列已整列删除。另有四处打勾打反：GeoChat 的「变化检测」、EarthGPT 的「变化检测」两篇论文都没有这个任务；EarthGPT 与 LHRS-Bot 的「空间定位」两篇论文都做了却没打勾；RS-LLaVA 被标成不做 VQA，而 VQA 正是它论文题名里的两个任务之一。
-
 ### 4.2 架构对比
 
 | 模型 | 视觉编码器 | LLM 基座 | 桥接模块 |
@@ -264,8 +248,6 @@ EarthGPT 的做法是**统一任务格式**：把分类、检测、描述、VQA�
 | SkySenseGPT | CLIP-ViT-L14 | Vicuna-v1.5 | MLP |
 | EarthGPT | 视觉编码器 | LLaMA-2 | 统一任务指令格式 |
 
-> **勘误（2026-10）**：本表早先给每行配了「参数规模」，其中 GeoChat ~7B、RSGPT ~4B、SkySenseGPT ~7B 三个数论文里都没有；RSGPT 那行尤其不可能 —— 它的底座是 Vicuna-7B，总参数不可能只有 4B。该列已删。LLaMA-2、FlanT5-XL、ViT+SAM 三处基座/编码器信息也全部写错，见前文各节勘误。
-
 ### 4.3 训练数据对比
 
 | 模型 | 数据规模 | 数据来源 |
@@ -274,8 +256,6 @@ EarthGPT 的做法是**统一任务格式**：把分类、检测、描述、VQA�
 | RSGPT | 2,585 图文对 | RSICap（源自 DOTA） |
 | SkySenseGPT | 1,800,851 指令样本 | FIT-RS |
 | EarthGPT | >1M 图文对 | 34 个公开遥感数据集 |
-
-> **勘误（2026-10）**：本表早先的规模一列全错：RSGPT 写「~50K」（实际 2,585）、SkySenseGPT 写「~100K」（实际 1,800,851，差 18 倍）、EarthGPT 写「~200K」（实际 >1M）。数据来源一列把评测集当成了训练集（RSICD/UCM/Sydney 是 RSGPT 的评测集，不是训练集），GeoChat 那行还多写了论文没用的 fMoW。
 
 ---
 

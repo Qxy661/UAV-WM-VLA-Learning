@@ -31,8 +31,6 @@ GeoChat 是由 MBZUAI Oryx Lab 提出的遥感领域视觉语言模型（VLM）�
   - **多轮对话**: 支持上下文关联的多轮问答
   - **视觉定位**: 结合空间位置信息回答问题
 
-> **勘误（2026-10 核对该论文原文与仓库后补）**：本节及后续几节早先写的基座、分辨率、LoRA 秩与训练硬件都无出处，已按下述主源改写。三处主源分工：**架构与超参以论文全文为准**（`arxiv.org/html/2311.15826`），**训练硬件与耗时以仓库 README 为准**（论文里没有 A100/小时数），**脚本参数以仓库 `scripts/finetune_lora.sh` 与 `geochat/train/train.py` 为准**。三处若互相矛盾，下面在对应位置逐条注明。
-
 ### 模型架构概览
 
 ```text
@@ -50,8 +48,6 @@ GeoChat 是由 MBZUAI Oryx Lab 提出的遥感领域视觉语言模型（VLM）�
 ```
 
 论文原文的说法是：视觉塔为 “CLIP-ViT(L-14)”，原生 “input resolution of 336×336 … effectively 576 patches per image”，为适配遥感小目标把位置编码插值整到 “504×504 … 1296 per image”；语言塔为 “The open source Vicuna-v1.5(7B)”。
-
-> **勘误（2026-10）**：本图原来写的语言模型是 **「LLaMA-2 7B / Mistral 7B」**，两者都不是——GeoChat 全程用 **Vicuna-v1.5 (7B)**，且在 `scripts/finetune_lora.sh` 里 `MODEL_VERSION="vicuna-v1.5-7b"`、基座路径写的是 `path/to/base/llavav1.5-7b`。原图也没有写分辨率：训练**全程在 504×504**，不是 336。
 
 ---
 
@@ -112,8 +108,6 @@ GeoChat/
     ├── extract_mm_projector.py
     ├── zero2.json / zero3.json / zero3_offload.json
 ```
-
-> **勘误（2026-10）**：本节早先的目录树是**凭名字想象**的——`geochat/model/vision_encoder.py`、`projector.py`、`geochat/eval/eval_vqa.py`、`eval_caption.py`、`eval_chat.py`、`geochat/data/dataset.py`、`scripts/inference.py`、`scripts/train_lora.sh`、`scripts/eval_all.sh`、`configs/*.yaml` **在仓库里都不存在**。实际是上面这棵树：视觉编码器在 `multimodal_encoder/`、投影层在 `multimodal_projector/`、评估脚本统一叫 `batch_geochat_*.py`、没有 `configs/` 目录（超参全写在 `scripts/*.sh` 和 `train.py` 的 argparse 默认值里）。
 
 ---
 
@@ -176,9 +170,6 @@ huggingface-cli download liuhaotian/llava-v1.5-mlp2x-336px-pretrain-vicuna-7b-v1
 
 视觉塔不单独下载——`--vision_tower openai/clip-vit-large-patch14-336` 会在运行时从 HF 拉取。
 
-> **勘误（2026-10）**：本节早先写「GeoChat 基于 LLaMA-2 7B 或 Mistral 7B」，并给了 `meta-llama/Llama-2-7b-hf` 与 `mistralai/Mistral-7B-v0.1` 两条下载命令。**两个都不是它的基座**，仓库里也搜不到这两条命令。真正要下的是 LLaVA-1.5-7B 权重和它的 projector（见 `docs/MODEL_ZOO.md`：“We use the projector from LlaVA-1.5 for initialization”）。原「需要申请访问权限」这个所谓的复现卡点也随之消失——LLaVA 与 Vicuna 权重都是公开的。
-
-
 ---
 
 ## 4. 数据集准备
@@ -217,7 +208,7 @@ cd ./data/geochat_instruct && cat images_parta* > images.zip && unzip images.zip
 }
 ```
 
-三点值得注意：`<image>` 占位符放在第一轮 human 文本的最前面；图像路径是**带数据集前缀的相对路径**（`NWPU-RESISC45/church/church_144.jpg`），不是扁平的 `images/xxx.png`；一次问答就能是一条记录，不必凑成多轮。
+三点细节：`<image>` 占位符放在第一轮 human 文本的最前面；图像路径是**带数据集前缀的相对路径**（`NWPU-RESISC45/church/church_144.jpg`），不是扁平的 `images/xxx.png`；一次问答就能是一条记录，不必凑成多轮。
 
 论文 §4 给出的九类指令数据与规模（Table 1）：
 
@@ -235,8 +226,6 @@ cd ./data/geochat_instruct && cat images_parta* > images.zip && unzip images.zip
 
 合计约 306k，论文口径写作 “nearly 318k instructions”。
 
-> **勘误（2026-10）**：本节早先的示例 JSON 是**编的**——`id`/`image` 写成 `sample_00001`，还多出一个 `"metadata": {"source": "Google Earth", "resolution": "0.5m", "location_type": "urban"}` 块。**实际数据里没有 `metadata` 字段**，图像路径也不是扁平编号（见上面第一条原文）。早先的目录结构同样不存在：没有 `train.json` / `val.json` / `test.json` 三分，标注就是**一个** `GeoChat_Instruct.json`，图像靠 `images_parta*` 分卷分发。九类数据的规模表则是本节早先**整块缺**的。
-
 ---
 
 ## 5. 模型推理
@@ -247,8 +236,6 @@ cd ./data/geochat_instruct && cat images_parta* > images.zip && unzip images.zip
 # 从 Hugging Face 下载已训练（LoRA 已合并）的 GeoChat-7B
 huggingface-cli download MBZUAI/geochat-7B --local-dir ./models/geochat-7b
 ```
-
-> **勘误（2026-10）**：本节早先写的 repo id 是 `MBZUAI/GeoChat`，**该 id 不存在**（2026-10 查 HF API 返回 401）。`docs/MODEL_ZOO.md` 与 `docs/LoRA.md` 给的下载地址都是 `MBZUAI/geochat-7B`（返回 200）。
 
 ### 5.2 运行推理
 
@@ -292,7 +279,7 @@ out = model.generate(**inputs, images=images, max_new_tokens=512, do_sample=Fals
 print(tokenizer.decode(out[0], skip_special_tokens=True))
 ```
 
-> **注意分辨率**：送入视觉塔的图像按 **504×504** 处理（见 §3.4 勘误与 §1 架构图），不是 336×336——336 是 CLIP ViT-L/14 的原生边长。以 `geochat/mm_utils.py` 里的 `process_images` 实际实现为准。
+> **注意分辨率**：送入视觉塔的图像按 **504×504** 处理（见 §1 架构图），不是 336×336——336 是 CLIP ViT-L/14 的原生边长。以 `geochat/mm_utils.py` 里的 `process_images` 实际实现为准。
 
 ### 5.4 Gradio 演示
 
@@ -368,8 +355,6 @@ deepspeed --master_port=$((RANDOM + 10000)) --include localhost:0,1,2 geochat/tr
 | 优化器 / 调度 | AdamW + cosine | 论文 §5.1 |
 | 两阶段 | 阶段一全量数据 1 epoch = 2400 步；阶段二只跑 grounding 再 1600 步 | 论文 §5.1，合计 4000 步 |
 
-> **勘误（2026-10）**：本节早先给的 `configs/train_lora.yaml` 与其中的 `r: 128`、`alpha: 256`、`num_epochs: 3`、`image_resolution: 336`、`name_or_path: "./models/llama-2-7b"` **全部无出处**——没有 yaml 这个文件，秩实际是 64、alpha 是 16、训练 1 epoch、分辨率 504、基座是 LLaVA-1.5-7B。早先的 `--lora_r 128 --lora_alpha 256 --num_train_epochs 3 --per_device_train_batch_size 4 --gradient_accumulation_steps 8 --learning_rate 2e-5` 这一串同样与脚本不符（那是 LLaVA 的**全量微调**记忆被套到 LoRA 上了）。
-
 ### 6.3 多 GPU 训练
 
 用 DeepSpeed，不是 `accelerate`：
@@ -392,8 +377,6 @@ deepspeed --include localhost:0,1,2 geochat/train/train_mem.py --deepspeed ./scr
 | 参考：projector 预训练耗时 | 约 3.5 小时（LLaVA-v1.5-7B，非本模型） | README |
 
 README 同时给了一条约束：换 GPU 数时要保持全局 batch 不变，即 `per_device_train_batch_size x gradient_accumulation_steps x num_gpus` 固定。**论文里没有 A100、也没有小时数**——这类硬件细节只在 README 里。
-
-> **勘误（2026-10）**：本节早先那张四行表（`LoRA r=64, batch=2, 1 GPU → ~18 GB / ~24 小时` 等）**四行的显存与耗时全是编的**，仓库与论文都没有按配置分行的显存/耗时数据。真实可引用的只有上表三行。下面「动手验证」一节原先正是拿这张假表做反解，已按新的真实参数重做。
 
 ---
 
@@ -425,8 +408,6 @@ python geochat/eval/batch_geochat_referring.py --model-path ./models/geochat-7b 
 ```
 
 `--question-file` 是 jsonl，每行一条 `{question_id, image, text}`。仓库里**没有** `scripts/eval_all.sh` 这种一键全跑脚本，四类要分别起。
-
-> **勘误（2026-10）**：本节早先给的 `eval_vqa.py` / `eval_caption.py` / `eval_all.sh` 三个文件**都不存在**（见第 2 节勘误）。真实脚本名是 `batch_geochat_{vqa,scene,grounding,referring}.py`。
 
 ### 7.2 评估指标
 
@@ -462,8 +443,6 @@ VQA（Accuracy，%）：对比模型里最强的 RSGPT 平均 92.29，GeoChat �
 | MiniGPT-v2 | 32.1 | 31.2 | 10.0 |
 | **GeoChat** | **87.3** | **87.2** | **83.9** |
 
-> **勘误（2026-10）**：本节早先那张 `LLaVA-1.5 52.3/18.7/62.1`、`MiniGPT-4 48.1/16.2/55.3`、`GeoChat 61.8/23.4/78.9` 的「VQA Acc / BLEU-4 / CIDEr」表**整张是编的**——三列数字与三个指标在论文里都不存在。上面两张表是论文原值（列名也照论文）。另外「GeoChat 全面碾压」这个印象也不对：VQA 上它并不领先专用模型，真正的优势在场景分类与区域级描述。
-
 ---
 
 ## 8. 常见问题与解决方案
@@ -477,8 +456,6 @@ huggingface-cli download liuhaotian/llava-v1.5-7b --local-dir ./models/llava-v1.
 huggingface-cli download liuhaotian/llava-v1.5-mlp2x-336px-pretrain-vicuna-7b-v1.5 \
     --local-dir ./models/llava-v1.5-projector
 ```
-
-> **勘误（2026-10）**：Q1 原题是「LLaMA-2 权重下载需要权限」，并给了 `meta-llama/Llama-2-7b-hf` 与 `mistralai/Mistral-7B-v0.1` 两条命令。**GeoChat 两个都不用**，这个"卡点"本身不成立（见 §3.4 勘误）。真正会卡住的是拿错基座/混用 projector。
 
 ### Q2: GPU 显存不足
 
@@ -509,8 +486,6 @@ transform = transforms.Compose([
 ])
 ```
 
-> **勘误（2026-10）**：本节早先写「GeoChat 默认使用 336x336」，代码也 `Resize((336, 336))`。**336 是错的**，训练与评估都在 504×504。这一处与 §1、§6.2 是同一个错，源头都是把 CLIP 的原生分辨率当成了模型的工作分辨率。
-
 ### Q4: 多轮对话上下文丢失
 
 确保在多轮推理时将完整的对话历史传入模型：
@@ -531,8 +506,6 @@ for question in multi_turn_questions:
 - 训练轮数：**1 epoch 是原设定的全部**（论文两阶段合计 4000 步），不要按「2–3 轮」加练
 - 数据侧先查图像路径与 `<image>` 占位符是否对得上（§4.2 的 `NWPU-RESISC45/...` 前缀形式）
 - 分辨率是否被改成了 336（见 Q3）；这项最容易悄悄拖垮效果
-
-> **勘误（2026-10）**：本节早先第 1、2 条写「建议从 2e-5 开始」「减少训练轮数（2-3 轮通常足够）」，与实际脚本（lr 2e-4、1 epoch）不符，已按脚本改写。
 
 ---
 
@@ -583,7 +556,7 @@ LoRA r=128              13.5G    0.4G    1.8G    15.7G
 
 **第二，静态账怎么算都装得下，装不下的是激活。** 14.4 GB 对 40 GB 余量很足；但 `batch 32 × 2048 token = 65536 token` 按测得那把尺子要 **544 GB**，超预算 **21 倍**。这个缺口不可能靠调 LoRA 秩或换优化器补上——两笔账是独立的。**这正是脚本里 `--gradient_checkpointing True` 存在的算术理由**：不重算就放不下。也就是说，这个仓库为什么没给「每种配置要多少显存」的表，答案在这里——那个数取决于一个开关，不取决于模型本身。
 
-**第三，反过来说：这张表早就被删过一次，而删掉的原因值得记住。** 本文件原先有一张四行的显存表（`LoRA r=64, bs=2 → 18 GB` 等，其中两行是同配置不同卡数）。把有独立数值的那三行拿来对上这把尺子，反解出的序列长度落在 **220 / 251 / 213 token**，跨度只有 1.2 倍——**看起来很齐，像同一套口径量出来的**。齐恰恰不能证明它是真的：仓库和论文里**根本没有按配置分行的显存数据**，那几个数字无从产生。**「自洽」和「有出处」是两件事，这把尺子只能验前者。** 判伪的证据来自"这个数在源头根本不存在"，不是来自算得通不通。
+**第三，反过来说：齐不等于真。** 假设有这么一张四行的显存表（`LoRA r=64, bs=2 → 18 GB` 等，其中两行是同配置不同卡数）。把有独立数值的那三行拿来对上这把尺子，反解出的序列长度落在 **220 / 251 / 213 token**，跨度只有 1.2 倍——**看起来很齐，像同一套口径量出来的**。齐恰恰不能证明它是真的：按配置分行的显存数据在仓库和论文里都不存在，那几个数字无从产生。**「自洽」和「有出处」是两件事，这把尺子只能验前者。** 判伪的证据来自"这个数在源头根本不存在"，不是来自算得通不通。
 
 > **限制**：
 > - `lora_params` 按 §6.2 的 `target_modules` 列出的 7 个投影模块算（q/k/v/o/gate/up/down）。改成只挂 q/v 会小一截；论文写的是 r=64 作用在 `W_q`、`W_v` 上，而代码用的是 `find_all_linear_names()`——**论文口径比代码口径更窄，静态账以代码为准更保守**。
@@ -634,11 +607,11 @@ py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torch
 
 1. 链路是三段：CLIP **ViT-L/14**（原生 336×336，576 个 patch）→ `mlp2x_gelu` 两层 MLP 投影层 → **Vicuna-v1.5 (7B)** 语言塔。插值到 504 的原因写在论文里——336 的分辨率不足以看清遥感图像的细节（“not sufficient to understand details presented in remote sensing imagery”），把位置编码插值撑到 504×504 后 patch 数几乎翻倍到 1296 个。**代价就是这 1296**：视觉 token 变多，序列变长，激活显存和注意力开销跟着涨——这正是 README 说“Visual instruction tuning takes more time due to the increased resolution of CLIP to 504X504”的原因。
 
-2. 两处最可能的卡点。**（一）拿错基座**：要的是 LLaVA-1.5-7B 权重加上它配套的 projector，不是裸 Vicuna-7B；`docs/MODEL_ZOO.md` 明说 projector 必须与基座 LLM 和视觉塔同源，混用会让效果明显变差。**（二）分辨率**：训练全程 504×504，自己写预处理时按 336 处理是最容易犯的错（本指南早先的版本就写错过）。另外 06 号这类已发布权重的下载 id 是 `MBZUAI/geochat-7B`，写成 `MBZUAI/GeoChat` 会 401。
+2. 两处最可能的卡点。**（一）拿错基座**：要的是 LLaVA-1.5-7B 权重加上它配套的 projector，不是裸 Vicuna-7B；`docs/MODEL_ZOO.md` 明说 projector 必须与基座 LLM 和视觉塔同源，混用会让效果明显变差。**（二）分辨率**：训练全程 504×504，自己写预处理时按 336 处理是最容易犯的错。另外 06 号这类已发布权重的下载 id 是 `MBZUAI/geochat-7B`，写成 `MBZUAI/GeoChat` 会 401。
 
 3. 拆成四笔账。**静态三项**（权重 / 梯度 / 优化器状态）是精确算术：r=64 时 LoRA 只有约 1.17 亿可训练参数，静态合计 **14.4 GB**，对 40 GB 卡余量很足。**第四笔激活**才是缺口：`32 × 2048 = 65536 token`，按实测那把尺子（8.5 MB/token）要 **544 GB**，而卡上只剩 25.6 GB，**超预算 21 倍**。补法只有一类——用重算换显存，也就是脚本里已经设好的 `--gradient_checkpointing True`；或者按 README 的约束降 `per_device_train_batch_size` 并同步抬 `gradient_accumulation_steps`（乘积必须不变）。调 LoRA 秩没用：两笔账互相独立。
 
-4. 定位看 **acc@0.5 / acc@0.25**——预测框与真值框 IoU 过阈值的比例（论文 Table 9）。区域级描述另用 **ROUGE-1 / ROUGE-L / METEOR**（Table 10）。BLEU-4 不能用，原因有两层：**它量的对象就不对**（n-gram 重合度反映的是文本像不像，对"框得准不准"没有区分力），**而且论文通篇没有用它**——BLEU-4 与 CIDEr 在本指南早先版本里出现过，属于无出处的混入。
+4. 定位看 **acc@0.5 / acc@0.25**——预测框与真值框 IoU 过阈值的比例（论文 Table 9）。区域级描述另用 **ROUGE-1 / ROUGE-L / METEOR**（Table 10）。BLEU-4 不能用，原因有两层：**它量的对象就不对**（n-gram 重合度反映的是文本像不像，对"框得准不准"没有区分力），**而且论文通篇没有用它**——BLEU-4 与 CIDEr 都不该出现在这里。
 
 5. Q5 给了四条：学习率（脚本用 2e-4，README 表写 2e-5，两处不一致——照脚本跑）；训练轮数（原设定就是 1 epoch，不要加练）；数据侧先核对图像路径与 `<image>` 占位符格式；分辨率有没有被改成 336（最容易悄悄拖垮效果的一项）。
 
