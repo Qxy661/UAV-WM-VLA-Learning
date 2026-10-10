@@ -13,8 +13,8 @@
 - **英文门面**：`README.en.md` 与英文文档总览页。
 - **自检工具**：`tools/check_links.py`（全仓相对链接）、`tools/check_nav.py`（nav 与文档一致性）、
   `tools/build_docs.py`（站点暂存树）；前两个已接进 CI。
-- **持续集成**：`.github/workflows/ci.yml`（链接与 nav 检查、站点发布）、
-  `citations.yml`（每周核对 arXiv 号并刷新审计报告）。
+- **文档站上线**：<https://qxy661.github.io/UAV-WM-VLA-Learning/>（由 `mkdocs gh-deploy`
+  发布到 `gh-pages` 分支）。
 - **`CITATION.cff`**：GitHub 侧可直接导出 BibTeX / APA 引用格式。
 - **三卷自测**（Part 9）：VLA / 世界模型 / VLM 各一篇，正文只给指针不给答案。
 - **三卷前沿增量台账**：`references/{vla,wm,vlm}-watch-2026-10.md`。

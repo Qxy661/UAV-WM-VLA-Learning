@@ -260,7 +260,7 @@ tools/                    # 自检与生成脚本（引用核查、前沿追踪�
 ```bash
 py -3.9 tools/check_citations.py                    # 核查并打印摘要
 py -3.9 tools/check_citations.py --write            # 额外写出 references/citation-audit.md
-py -3.9 tools/check_citations.py --fail-on-bad      # 号配错 / 查无此文时退出码 1（CI 用）
+py -3.9 tools/check_citations.py --fail-on-bad      # 号配错 / 查无此文时退出码 1（当门禁用）
 ```
 
 只依赖标准库。判据是 API 返回的真实标题，与文档在号附近写的标题做比对；
@@ -268,14 +268,14 @@ py -3.9 tools/check_citations.py --fail-on-bad      # 号配错 / 查无此文�
 单独列出来，重跑即可——**绝不能把请求失败当成论文不存在**。
 
 在本机跑需要走代理，脚本用 `urllib` 会自动读环境变量，所以直接带上即可
-（CI 里直连 arXiv，无需设置）：
+（能直连 arXiv 的环境不必设置）：
 
 ```bash
 HTTPS_PROXY=http://127.0.0.1:7897 py -3.9 tools/check_citations.py
 ```
 
 `--fail-on-bad` **只对「号配错」「API 明确查无」判失败**；请求失败（限流/超时）
-只打 `::warning::`。这条边界是刻意的：把请求失败当失败，一次网络抖动就会让 CI 变红，
+只打 `::warning::`。这条边界是刻意的：把请求失败当失败，一次网络抖动就会让检查变红，
 而它证明不了任何事。
 
 工具认三种在文档里写标题的写法：链接文字、引号、**斜体**（条目式的
@@ -341,7 +341,7 @@ pip install "mkdocs-material==9.7.*" "mkdocs<2" jieba
 而 `build-docs/` 是仓库镜像：README 的页面路径就是 `README.md`，卷文档是 `docs/xx.md`。
 写 `edit/main/docs/` 会让 README 的「编辑此页」指向仓库里并不存在的 `docs/README.md`。
 
-**提交前先跑这三条**，前两条也是 CI 的检查项：
+**提交前先跑这三条**：
 
 ```bash
 py -3.9 tools/check_links.py       # 全仓相对链接
@@ -350,6 +350,17 @@ py -3.9 tools/gen_en_index.py --check   # 英文总览页是否覆盖了全部�
 ```
 
 新增文档忘了加进 `mkdocs.yml` 的 nav，`check_nav.py` 会把缺的那篇直接打印出来。
+
+**线上站点目前是手动更新的：**
+
+```bash
+py -3.9 tools/build_docs.py && mkdocs gh-deploy --force
+```
+
+推到 `gh-pages` 分支，GitHub Pages 从那里发布。**还没有接 CI**：GitHub 规定推送
+`.github/workflows/` 下的文件必须用带 `workflow` scope 的凭据，而本机现有两份凭据都只有
+`gist, read:org, repo`，所以两个 workflow（链接/nav 检查 + 站点发布、每周引用核查）
+暂时留在仓库外，凭据补上 scope 之后再进仓。
 
 **英文门面**：`README.en.md` 是英文首页，`docs/en/index.md` 是英文文档总览
 （每篇的英文标题 + 一句英文说明 + 链回中文正文）；正文不翻译。

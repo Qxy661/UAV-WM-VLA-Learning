@@ -86,7 +86,7 @@ VLM (vision-language model)   VLA (vision-language-action)   World Model
 | Asset | What it is |
 |-------|------------|
 | **24 CPU-only demos** | No training, no VRAM, each produces a figure in about two minutes. Every demo verifies exactly one claim in the text — and where a claim cannot be measured, the text says so instead of implying otherwise. See [`code/`](code/README.md). |
-| **Reproducible citation discipline** | [`tools/check_citations.py`](tools/check_citations.py) verifies every arXiv ID in the repository against the official API by title. Results land in [`references/citation-audit.md`](references/citation-audit.md), refreshed weekly by CI. |
+| **Reproducible citation discipline** | [`tools/check_citations.py`](tools/check_citations.py) verifies every arXiv ID in the repository against the official API by title. Results land in [`references/citation-audit.md`](references/citation-audit.md), refreshed by a weekly audit run (see [`CONTRIBUTING.md`](CONTRIBUTING.md)). |
 | **Frontier logs for all three topics** | [`tools/watch.py`](tools/watch.py) re-queries world models / VLA / VLM monthly, producing [`references/*-watch-2026-10.md`](references/vla-watch-2026-10.md). |
 | **Self-assessment sets** | [`docs/09-专题自测与考察/`](docs/09-专题自测与考察/01-VLA专题自测.md) — questions only; the body text gives pointers, never answers. |
 | **A hardware limit stated up front** | Every number comes from a real run. The ceiling is a single 8 GB GPU, so this repository does not train large models — it covers what actually runs. |
