@@ -1,0 +1,5437 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="59 篇中文文档 · 195 篇论文 · 24 个纯 CPU 可跑 demo · 28.7 万字">
+      
+      
+      
+        <link rel="canonical" href="https://qxy661.github.io/UAV-WM-VLA-Learning/references/paper-list.html">
+      
+      
+        <link rel="prev" href="../mindmaps/reading-order.html">
+      
+      
+        <link rel="next" href="vla-watch-2026-10.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>完整论文列表 - 世界模型 · VLA · VLM 学习库（无人机视角）</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#完整论文列表" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-header__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            世界模型 · VLA · VLM 学习库（无人机视角）
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              完整论文列表
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到深色"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切到深色" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到浅色"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切到浅色" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../docs/00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  导读与学习路线
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  基础概念
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  世界模型专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLA 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLM 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  综述论文精读
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  论文导读合集
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  实践指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  研究前沿与开放问题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  专题自测与考察
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../mindmaps/field-overview.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  思维导图
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="paper-list.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  参考资料
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../code/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  可运行代码
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../docs/en/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English Overview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../README.en.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English README
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../CHANGELOG.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  更新日志
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../CONTRIBUTING.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  贡献指南
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-nav__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    世界模型 · VLA · VLM 学习库（无人机视角）
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读与学习路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础概念
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基础概念
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/01-%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 什么是世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/02-%E4%BB%80%E4%B9%88%E6%98%AFVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 什么是 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/03-%E4%BB%80%E4%B9%88%E6%98%AFVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 什么是 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/04-%E4%B8%89%E8%80%85%E5%85%B3%E7%B3%BB%E4%B8%8E%E5%8C%BA%E5%88%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 三者关系与区别
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/05-%E6%97%A0%E4%BA%BA%E6%9C%BAvs%E5%9C%B0%E9%9D%A2%E6%9C%BA%E5%99%A8%E4%BA%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机与地面机器人
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    世界模型专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/01-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95%E5%8F%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 世界模型发展史
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/02-%E7%94%9F%E6%88%90%E5%BC%8F%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 生成式世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/03-%E6%A8%A1%E5%9E%8B%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 模型强化学习世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/04-3D%E5%9C%BA%E6%99%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 3D 场景世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/05-%E6%97%A0%E4%BA%BA%E6%9C%BA%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E7%BB%BC%E8%BF%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机世界模型综述
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 关键数据集与基准
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/07-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E6%B5%8B%E4%B8%8E%E8%AF%8A%E6%96%AD.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 世界模型评测与诊断
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/08-%E8%81%94%E5%90%88%E5%B5%8C%E5%85%A5%E9%A2%84%E6%B5%8B%E4%B8%8E%E6%BD%9C%E7%A9%BA%E9%97%B4%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 联合嵌入预测与潜空间世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/09-%E9%95%BF%E6%97%B6%E7%A8%8B%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%94%9F%E6%88%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 长时程世界模型与交互式生成
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLA 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/01-VLA%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 架构演进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BAVLA%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机 VLA 模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/03-%E8%AF%AD%E8%A8%80%E6%9D%A1%E4%BB%B6%E9%A3%9E%E8%A1%8C%E6%8E%A7%E5%88%B6.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 语言条件飞行控制
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/04-%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E8%BE%85%E5%8A%A9%E8%A7%84%E5%88%92.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 基础模型辅助规划
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/05-%E6%9C%BA%E8%BD%BD%E9%83%A8%E7%BD%B2%E4%B8%8E%E4%BC%98%E5%8C%96.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 机载部署与优化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/06-%E5%8A%A8%E4%BD%9C%E5%A4%B4%E4%B8%8E%E5%8A%A8%E4%BD%9C%E5%88%86%E5%9D%97.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 动作头与动作分块
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/07-%E6%95%B0%E6%8D%AE%E3%80%81%E9%A2%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%B7%A8%E5%85%B7%E8%BA%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 数据、预训练与跨具身
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/08-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%90%8E%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%87%AA%E6%88%91%E6%94%B9%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 强化学习后训练与自我改进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/09-%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E4%B8%8E%E6%8A%A5%E5%91%8A%E5%8F%A3%E5%BE%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 评测基准与报告口径
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/10-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%A2%9E%E5%BC%BAVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 世界模型增强 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLM 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/01-%E9%81%A5%E6%84%9FVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 遥感 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机场景理解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/03-LLM%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BAAgent.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 LLM 驱动的无人机 Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/04-%E8%BE%B9%E7%BC%98VLM%E9%83%A8%E7%BD%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 边缘 VLM 部署
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/05-%E9%80%9A%E7%94%A8VLM%E6%9E%B6%E6%9E%84%E4%B8%8E%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 通用 VLM 架构与视觉编码器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/06-VLM%E6%8C%87%E4%BB%A4%E5%BE%AE%E8%B0%83%E4%B8%8E%E5%AF%B9%E9%BD%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 VLM 指令微调与对齐
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/07-%E9%80%9A%E7%94%A8VLM%E8%AF%84%E6%B5%8B%E4%B8%8E%E5%B9%BB%E8%A7%89.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 通用 VLM 评测与幻觉
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    综述论文精读
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    综述论文精读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/01-%E7%BB%BC%E8%BF%B0%E6%A6%82%E8%A7%88%E4%B8%8E%E7%BB%93%E6%9E%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 综述概览与结构
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E7%AD%96%E7%95%A5.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型作为策略
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/03-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E6%A8%A1%E6%8B%9F%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 世界模型作为模拟器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/04-%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 视频生成世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/05-%E5%9F%BA%E5%87%86%E4%B8%8E%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 基准与评估
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文导读合集
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文导读合集
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/world-model-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vla-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vlm-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/benchmark-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基准与数据集论文
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实践指南
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    实践指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/01-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 环境搭建
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/02-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-UAV-Flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 复现指南 UAV-Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/03-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-CognitiveDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 复现指南 CognitiveDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/04-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-FlightDiffusion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 复现指南 FlightDiffusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/05-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-MotionScape.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 复现指南 MotionScape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/06-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-GeoChat.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 复现指南 GeoChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/07-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DreamerV3-Drone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 复现指南 DreamerV3-Drone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/08-%E5%8F%AF%E5%A4%8D%E7%8E%B0%E9%A1%B9%E7%9B%AE%E5%80%99%E9%80%89%E6%B8%85%E5%8D%95.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 可复现项目候选清单
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/09-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DeepDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 复现指南 DeepDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/10-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-RemoteCLIP.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 复现指南 RemoteCLIP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/11-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-Flightmare.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11 复现指南 Flightmare
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    研究前沿与开放问题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10" id="__nav_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    研究前沿与开放问题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/01-%E7%A0%94%E7%A9%B6%E8%B7%AF%E7%BA%BF%E5%9B%BE.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 研究路线图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/02-%E7%A0%94%E7%A9%B6%E7%A9%BA%E7%99%BD%E4%B8%8E%E6%9C%BA%E4%BC%9A.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 研究空白与机会
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/03-%E8%AE%BA%E6%96%87%E6%89%B9%E5%88%A4%E6%80%A7%E9%98%85%E8%AF%BB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 论文批判性阅读
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/04-%E6%9C%80%E6%96%B0%E8%BF%9B%E5%B1%95%E4%B8%8E%E5%9B%A2%E9%98%9F%E8%BF%BD%E8%B8%AA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 最新进展与团队追踪
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    专题自测与考察
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    专题自测与考察
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/01-VLA%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 VLA 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/03-VLM%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 VLM 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    思维导图
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    思维导图
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mindmaps/field-overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    领域全景图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mindmaps/world-model-taxonomy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型分类学
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mindmaps/vla-evolution.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 演进路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mindmaps/reading-order.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    推荐阅读顺序
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考资料
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    参考资料
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完整论文列表
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="paper-list.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完整论文列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#一世界模型-通用-world-models-general" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、世界模型 — 通用 (World Models, General)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一、世界模型 — 通用 (World Models, General)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-经典基础" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 经典基础
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-transformer-时代" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Transformer 时代
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-大规模世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 大规模世界模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-世界模型理论与综述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 世界模型理论与综述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-联合嵌入预测与潜空间世界模型jepa-路线" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5 联合嵌入预测与潜空间世界模型（JEPA 路线）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-世界模型评测与诊断" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.6 世界模型评测与诊断
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-长时程世界模型与交互式生成" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.7 长时程世界模型与交互式生成
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#二世界模型-无人机-world-models-uavdrone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、世界模型 — 无人机 (World Models, UAV/Drone)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#三vla-通用-vision-language-action-general" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、VLA — 通用 (Vision-Language-Action, General)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、VLA — 通用 (Vision-Language-Action, General)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-奠基工作" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 奠基工作
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-开源时代" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 开源时代
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-流匹配与扩散-vla" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 流匹配与扩散 VLA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-vla-理论与综述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 VLA 理论与综述
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#四vla-无人机-vision-language-action-uavdrone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四、VLA — 无人机 (Vision-Language-Action, UAV/Drone)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#五vlm-遥感-vision-language-models-remote-sensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        五、VLM — 遥感 (Vision-Language Models, Remote Sensing)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#六vlm-无人机-vision-language-models-uavdrone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        六、VLM — 无人机 (Vision-Language Models, UAV/Drone)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#七基准与数据集-benchmarks-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        七、基准与数据集 (Benchmarks &amp; Datasets)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#八多模态基础模型与通用-vlm-方法-foundation-models-general-vlm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八、多模态基础模型与通用 VLM 方法 (Foundation Models &amp; General VLM)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="八、多模态基础模型与通用 VLM 方法 (Foundation Models &amp; General VLM)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-架构与视觉编码器-04-vlm专题05" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 架构与视觉编码器（→ 04-VLM专题/05）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-指令微调与对齐-04-vlm专题06" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 指令微调与对齐（→ 04-VLM专题/06）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-评测与幻觉-04-vlm专题07" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 评测与幻觉（→ 04-VLM专题/07）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#九统计摘要" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        九、统计摘要
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#十引用格式" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十、引用格式
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="vla-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="vlm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="awesome-annotations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Awesome List 注释
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="citation-audit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    引用核查报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    可运行代码
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/en/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../README.en.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CHANGELOG.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    更新日志
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CONTRIBUTING.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    贡献指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#一世界模型-通用-world-models-general" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、世界模型 — 通用 (World Models, General)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一、世界模型 — 通用 (World Models, General)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-经典基础" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 经典基础
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-transformer-时代" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Transformer 时代
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-大规模世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 大规模世界模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-世界模型理论与综述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 世界模型理论与综述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-联合嵌入预测与潜空间世界模型jepa-路线" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5 联合嵌入预测与潜空间世界模型（JEPA 路线）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-世界模型评测与诊断" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.6 世界模型评测与诊断
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-长时程世界模型与交互式生成" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.7 长时程世界模型与交互式生成
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#二世界模型-无人机-world-models-uavdrone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、世界模型 — 无人机 (World Models, UAV/Drone)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#三vla-通用-vision-language-action-general" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、VLA — 通用 (Vision-Language-Action, General)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、VLA — 通用 (Vision-Language-Action, General)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-奠基工作" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 奠基工作
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-开源时代" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 开源时代
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-流匹配与扩散-vla" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 流匹配与扩散 VLA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-vla-理论与综述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 VLA 理论与综述
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#四vla-无人机-vision-language-action-uavdrone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四、VLA — 无人机 (Vision-Language-Action, UAV/Drone)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#五vlm-遥感-vision-language-models-remote-sensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        五、VLM — 遥感 (Vision-Language Models, Remote Sensing)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#六vlm-无人机-vision-language-models-uavdrone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        六、VLM — 无人机 (Vision-Language Models, UAV/Drone)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#七基准与数据集-benchmarks-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        七、基准与数据集 (Benchmarks &amp; Datasets)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#八多模态基础模型与通用-vlm-方法-foundation-models-general-vlm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八、多模态基础模型与通用 VLM 方法 (Foundation Models &amp; General VLM)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="八、多模态基础模型与通用 VLM 方法 (Foundation Models &amp; General VLM)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-架构与视觉编码器-04-vlm专题05" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 架构与视觉编码器（→ 04-VLM专题/05）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-指令微调与对齐-04-vlm专题06" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 指令微调与对齐（→ 04-VLM专题/06）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-评测与幻觉-04-vlm专题07" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 评测与幻觉（→ 04-VLM专题/07）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#九统计摘要" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        九、统计摘要
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#十引用格式" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十、引用格式
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="完整论文列表">完整论文列表<a class="headerlink" href="#完整论文列表" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>本文收录 World Model、VLA、VLM 及无人机相关的核心论文 195 篇。
+推荐等级：★★★ 必读 | ★★☆ 推荐 | ★☆☆ 选读</p>
+<p><strong>本文是元数据唯一权威</strong>：年份、标题、会议/期刊以本表为准。各专题文档与论文卡片只写结论并链回这里，
+不重复维护年份；标题一律取 arXiv API 返回的完整标题 —— 系统名（如 NavFoM）是简称，不进标题位。</p>
+<p>每一条写成 <code>- **[会议'年] 名称** — *完整标题* · 推荐度</code> 一行，下一行缩进挂徽章：
+arXiv 编号取红底 <code>arXiv</code>，项目页取蓝底 <code>Website</code>，代码库取黑底 <code>GitHub</code>。
+有系统名的条目加粗位放系统名、斜体位放完整标题（如 <code>TD-MPC/TD-MPC2</code>）；
+没有系统名的条目加粗位直接是完整标题、斜体位是作者（如 <code>World Models</code>）。
+徽章只挂在清单层；各专题正文里的表格仍用纯文本链接，不挂徽章。</p>
+<p>项目页与代码库收的是作者在摘要或 arXiv comment 里写出的那些，外加本仓库卡片里已核对可访问的那些；
+两者都没有的条目只留 arXiv 一枚徽章（注意这<strong>不等于</strong>没有代码）。
+按此口径，<strong>无人机三节 20 篇里有 12 篇只留 arXiv 徽章（60%），其余五节 61 篇里只有 19 篇（31%）</strong>。
+这一项由此带了信息：空中方向的项目页与代码链接，比地面方向稀疏。
+加上追前沿新增的条目，<strong>全表 195 篇里有 139 篇只留 arXiv 一枚徽章</strong>。</p>
+<p><strong>上面那组比例只对 2026-10 追前沿之前的 81 篇成立</strong>（分母 20 + 61 = 81）。此后的新增条目
+项目页与代码库<strong>未逐条核查</strong>，与上面「只留 arXiv 一枚徽章」的含义不同，统计时不要混进来：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">批次</th>
+<th style="text-align: center;">条数</th>
+<th style="text-align: center;">其中只有 arXiv 徽章</th>
+<th style="text-align: left;">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">波 1：<code>1.5</code>–<code>1.7</code> 三节与「二」的后 5 条</td>
+<td style="text-align: center;">52</td>
+<td style="text-align: center;">52</td>
+<td style="text-align: left;">全部未核查</td>
+</tr>
+<tr>
+<td style="text-align: left;">波 2：<code>8.1</code>–<code>8.3</code> 三节</td>
+<td style="text-align: center;">62</td>
+<td style="text-align: center;">58</td>
+<td style="text-align: left;">4 条经 HTTP 核对后填入（BLIP-2、DINOv2、POPE、MME-RealWorld）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>合计待核查</strong></td>
+<td style="text-align: center;"><strong>114</strong></td>
+<td style="text-align: center;"><strong>110</strong></td>
+<td style="text-align: left;">恢复信息量需逐条查过代码库</td>
+</tr>
+</tbody>
+</table>
+<p>上表「4 条经 HTTP 核对」指只确认了 URL 返回 200，<strong>不等于</strong>该仓库与论文一一对应；
+这一层核对在排版改造那一轮统一做。</p>
+</blockquote>
+<hr />
+<h2 id="一世界模型-通用-world-models-general">一、世界模型 — 通用 (World Models, General)<a class="headerlink" href="#一世界模型-通用-world-models-general" title="Permanent link">&para;</a></h2>
+<h3 id="11-经典基础">1.1 经典基础<a class="headerlink" href="#11-经典基础" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[NeurIPS'18] World Models</strong> — <em>Ha &amp; Schmidhuber</em> · ★★★<br />
+<a href="https://arxiv.org/abs/1803.10122"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-1803.10122-b31b1b.svg" /></a> <a href="https://worldmodels.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICLR'20] Dream to Control</strong> — <em>Dream to Control: Learning Behaviors by Latent Imagination</em> · ★★★<br />
+<a href="https://arxiv.org/abs/1912.01603"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-1912.01603-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICLR'21] Mastering Atari with Discrete World Models</strong> — <em>Hafner et al.</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2010.02193"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2010.02193-b31b1b.svg" /></a> <a href="https://danijar.com/dreamerv2"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[Nature'25] Mastering Diverse Domains through World Models</strong> — <em>Hafner et al.</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2301.04104"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2301.04104-b31b1b.svg" /></a> <a href="https://danijar.com/dreamerv3"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a>
+  Nature 2025 版标题为《Mastering diverse control tasks through world models》（DOI 10.1038/s41586-025-08744-2）。</p>
+</li>
+<li>
+<p><strong>[ICLR'22/24] TD-MPC/TD-MPC2</strong> — <em>TD-MPC/TD-MPC2: Temporal Difference Learning for Model Predictive Control</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2203.04955"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2203.04955-b31b1b.svg" /></a> <a href="https://nicklashansen.github.io/td-mpc"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+</ul>
+<h3 id="12-transformer-时代">1.2 Transformer 时代<a class="headerlink" href="#12-transformer-时代" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[ICLR'23] IRIS</strong> — <em>Transformers are Sample-Efficient World Models (IRIS)</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2209.00588"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2209.00588-b31b1b.svg" /></a> <a href="https://github.com/eloialonso/iris"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[NeurIPS'24] DIAMOND</strong> — <em>Diffusion for World Modeling: Visual Details Matter in Atari (DIAMOND)</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2405.12399"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2405.12399-b31b1b.svg" /></a> <a href="https://diamond-wm.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.08] GameNGen</strong> — <em>GameNGen: Diffusion Models are Real-Time Game Engines</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2408.14837"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2408.14837-b31b1b.svg" /></a> <a href="https://gamengen.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[NeurIPS'24] Learning Universal Policies via Text-Guided Video Generation</strong> — <em>Du et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2302.00111"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2302.00111-b31b1b.svg" /></a> <a href="https://universal-policy.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[Report'24] Genie 2</strong> — <em>Genie 2: A Large-Scale Foundation World Model</em> · ★★☆<br />
+<a href="https://deepmind.google/discover/blog/genie-2/"><img alt="Site" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+</ul>
+<h3 id="13-大规模世界模型">1.3 大规模世界模型<a class="headerlink" href="#13-大规模世界模型" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[arXiv'24.02] Genie</strong> — <em>Genie: Generative Interactive Environments</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2402.15391"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2402.15391-b31b1b.svg" /></a> <a href="https://sites.google.com/corp/view/genie-2024/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.10] UniSim</strong> — <em>UniSim: Learning Interactive Real-World Simulators</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2310.06114"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2310.06114-b31b1b.svg" /></a> <a href="https://universal-simulator.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[Report'25] Cosmos World Foundation Model Platform for Physical AI</strong> — <em>NVIDIA</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2501.03575"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2501.03575-b31b1b.svg" /></a> <a href="https://github.com/nvidia-cosmos/cosmos-predict1"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[Report'25] GAIA-2</strong> — <em>GAIA-2: Generative AI for Autonomous Driving</em> · ★★☆<br />
+<a href="https://wayve.ai/thinking/gaia-2/"><img alt="Site" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[Report'25] World Labs</strong> — <em>World Labs: Generating 3D Worlds</em> · ★☆☆<br />
+<a href="https://www.worldlabs.ai/blog"><img alt="Site" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+</ul>
+<h3 id="14-世界模型理论与综述">1.4 世界模型理论与综述<a class="headerlink" href="#14-世界模型理论与综述" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[IEEE T-ITS'24] World Models for Autonomous Driving</strong> — <em>World Models for Autonomous Driving: An Initial Survey</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2403.02622"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2403.02622-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.11] Diffusion Models for Reinforcement Learning: A Survey</strong> — <em>Zhu et al.</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2311.01223"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2311.01223-b31b1b.svg" /></a> <a href="https://github.com/apexrl/Diff4RLSurvey"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[NeurIPS'22] Multi-Game Decision Transformers</strong> — <em>Lee et al.</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2205.15241"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2205.15241-b31b1b.svg" /></a> <a href="https://sites.google.com/view/multi-game-transformers"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+</ul>
+<h3 id="15-联合嵌入预测与潜空间世界模型jepa-路线">1.5 联合嵌入预测与潜空间世界模型（JEPA 路线）<a class="headerlink" href="#15-联合嵌入预测与潜空间世界模型jepa-路线" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[arXiv'23.01] Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture</strong> — <em>Assran et al.</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2301.08243"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2301.08243-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.06] V-JEPA 2</strong> — <em>V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2506.09985"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2506.09985-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.06] Cognitively Inspired Energy-Based World Models</strong> — <em>Gladstone et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2406.08862"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2406.08862-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.06] Sensorimotor World Models</strong> — <em>Sensorimotor World Models: Perception for Action via Inverse Dynamics</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2606.20104"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2606.20104-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.07] ODEWorld</strong> — <em>ODEWorld: A Continuous Predictive Architecture via Physical-Time Flow</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2607.27924"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2607.27924-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.08] Flow-JEPA</strong> — <em>Flow-JEPA: Robust Latent Dynamics for JEPA World Models via Flow Matching</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2608.29029"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2608.29029-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] MA-JEPA</strong> — <em>MA-JEPA: Joint-Embedding World Models for Multi-Agent Reinforcement Learning</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2609.33563"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.33563-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] DeepJEPA</strong> — <em>DeepJEPA: Scaling World Models from Within</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2610.00368"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.00368-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] CF-JEPA</strong> — <em>CF-JEPA: Improving Robustness of JEPA World Models via Controllability Factorization</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.00727"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.00727-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Drive vs. Decay</strong> — <em>Drive vs. Decay: On the Training Dynamics of Joint-Embedding Predictive Architectures</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.02344"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.02344-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] TwinJEPA</strong> — <em>TwinJEPA: Action-Preferred Predictive Representations for Goal-Conditioned Control</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2610.02922"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.02922-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Keeping JEPA World Models Plannable When Little of the Frame Moves</strong> — <em>Strohm et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.03137"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.03137-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] AVL-JEPA</strong> — <em>AVL-JEPA: Preventing Causal Dynamics Information Collapse in Joint Embedding Predictive Architecture World Models</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.03587"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.03587-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Frozen in a Frame</strong> — <em>Frozen in a Frame: The Velocity Blind Spot in JEPA World Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2610.04585"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.04585-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] H-JEPA</strong> — <em>H-JEPA: End-to-End Learning of Hierarchical World Models for Visual Planning</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.06805"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.06805-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Preserving Unstable Modes Through Inverse Dynamics in JEPA World Models</strong> — <em>Toso et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.07540"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.07540-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Modeling Latent Disturbances for Robust Decision-Making in World Models</strong> — <em>Seo et al.</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2610.07599"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.07599-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] DSReg</strong> — <em>DSReg: Provably Recovering Individual World Latents without Reconstruction</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.09457"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.09457-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] RoboJEPA</strong> — <em>RoboJEPA: Scaling Robotic Latent World Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2610.10515"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.10515-b31b1b.svg" /></a></p>
+</li>
+</ul>
+<h3 id="16-世界模型评测与诊断">1.6 世界模型评测与诊断<a class="headerlink" href="#16-世界模型评测与诊断" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[arXiv'26.09] Same World, Different Knowledge</strong> — <em>Same World, Different Knowledge: When Isolated Audits Misjudge World-Model Repairs</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2609.21155"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.21155-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] Beyond One-Step Accuracy</strong> — <em>Beyond One-Step Accuracy: State-Affine Latent Transition for Reliable Visual Planning</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2609.33595"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.33595-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Learning Commute-Time-Preserving World Models for Planning</strong> — <em>Hauri et al.</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2610.01373"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.01373-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] PROWBench</strong> — <em>PROWBench: Do Video Models Render What the Program Specifies?</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.02205"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.02205-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Does Physics Live in the Activations? Localizing Physical Quantities in Video Diffusion Models</strong> — <em>Kneifl et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.03154"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.03154-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] World Embedding Benchmark</strong> — <em>Liu et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.03632"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.03632-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] When Low Prediction Error Misleads Planning: Diagnosing Representation, Dynamics, and Decision Failures in Latent World Models</strong> — <em>Min et al.</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2610.05550"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.05550-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] World Models' Last Exam in Physics</strong> — <em>Gao et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.08791"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.08791-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] World Models Dream of Success</strong> — <em>World Models Dream of Success: Diagnosing and Repairing Failure Insensitivity in Robot World Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2610.09134"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.09134-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Predicted Futures Are Not Enough</strong> — <em>Predicted Futures Are Not Enough: Learning Executable Goals for Robot Manipulation</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.09309"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.09309-b31b1b.svg" /></a></p>
+</li>
+</ul>
+<h3 id="17-长时程世界模型与交互式生成">1.7 长时程世界模型与交互式生成<a class="headerlink" href="#17-长时程世界模型与交互式生成" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[arXiv'26.08] GeniWorld</strong> — <em>GeniWorld: A Generalizable Interactive World Model for Robotic Manipulation via Visual Actions</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2608.06332"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2608.06332-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.08] ReWorld</strong> — <em>ReWorld: An Interactive World Model with Long-Horizon Memory</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2608.23565"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2608.23565-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.08] Matrix-Game 3.5</strong> — <em>Matrix-Game 3.5: Enhancing Real-Time Streaming Interactive World Models with Patch Memory</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2608.29910"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2608.29910-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] SolarWM</strong> — <em>SolarWM: Open Data and Scalable Training for Long-Horizon Video World Models</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2609.02886"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.02886-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] The Past Frames the Future</strong> — <em>The Past Frames the Future: Memory for Autoregressive Video Generation</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2609.28466"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.28466-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] WorldPlay2</strong> — <em>WorldPlay2: Extending Real-Time Interactive World Models in Control and Horizon</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2609.35560"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.35560-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] Waypoint-1.5</strong> — <em>Waypoint-1.5: A Real-Time Video World Model for Consumer Hardware</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2609.37107"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.37107-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] Beyond a Single Latent Space</strong> — <em>Beyond a Single Latent Space: A Dual-Latent World Model for Long-Horizon Planning</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2609.37644"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.37644-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] Honeycomb</strong> — <em>Honeycomb: Constant-Size Scene Memory Representation for Video World Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2609.37690"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.37690-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Oneira</strong> — <em>Oneira: From Open-Ended Generation to Open-World Interaction in Video World Models</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2610.01614"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.01614-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] World Observer</strong> — <em>World Observer: Joint Actor-Observer Generation for Persistent World Modeling</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2610.02162"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.02162-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Spatial Memory Intelligence</strong> — <em>Spatial Memory Intelligence: Endowing World Models with Understanding-Driven Long-Term Memory</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.02521"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.02521-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] DeltaWorld</strong> — <em>DeltaWorld: Physically Consistent Interactive World Simulators via Action-Conditioned Latent Increment Learning</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.02691"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.02691-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] FLEX-WAM</strong> — <em>FLEX-WAM: Flexible Block-Causal World-Action Models for Long-Horizon Imagination and Planning</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.05483"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.05483-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] HLA-WM</strong> — <em>HLA-WM: Hybrid Linear Attention for Long-Horizon Video World Models</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.05739"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.05739-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] SimForcing</strong> — <em>SimForcing: Distilling Simulation Motion Priors into Real-Domain Robot World Models</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.06598"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.06598-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Tracking Is Not Permanence</strong> — <em>Tracking Is Not Permanence: What Video World Models Keep of a Hidden Object</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2610.07355"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.07355-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Parallel Predictive World Models for Accurate and Efficient Long-Horizon Planning</strong> — <em>Feng et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2610.08627"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.08627-b31b1b.svg" /></a></p>
+</li>
+</ul>
+<blockquote>
+<p>1.5–1.7 三节是 2026-10 追前沿时新增的（对应 <code>docs/02-世界模型专题/07</code>–<code>09</code> 三篇）。<strong>这三节的项目页与代码库没有逐条核查</strong>，
+只留 arXiv 一枚徽章表示「未核查」，不等于「没有代码」——与其余各节只留 arXiv 徽章的含义不同，统计时不要混。
+三节里的 arXiv 号全部由 arXiv API 逐条核对过 ID↔标题；录用去向在 API 返回里拿不到，标签一律写 <code>[arXiv'YY.MM]</code>，不臆测。</p>
+</blockquote>
+<hr />
+<h2 id="二世界模型-无人机-world-models-uavdrone">二、世界模型 — 无人机 (World Models, UAV/Drone)<a class="headerlink" href="#二世界模型-无人机-world-models-uavdrone" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>[IEEE RA-L'24] Learning to Fly in Seconds</strong> — <em>Eschmann et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2311.13081"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2311.13081-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICRA'25] Dream to Fly</strong> — <em>Dream to Fly: Model-Based Reinforcement Learning for Vision-Based Drone Flight</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2501.14377"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2501.14377-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.12] Aerial World Model for Long-horizon Visual Generation and Navigation in 3D Space</strong> — <em>Zhang et al.</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2512.21887"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2512.21887-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.09] FlightDiffusion</strong> — <em>FlightDiffusion: Revolutionising Autonomous Drone Training with Diffusion Models Generating FPV Video</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2509.14082"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2509.14082-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.04] MotionScape</strong> — <em>MotionScape: A Motion-Stratified UAV Video Benchmark for World Modeling and Future Video Generation</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2604.07991"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2604.07991-b31b1b.svg" /></a> <a href="https://github.com/Thelegendzz/MotionScape"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.08] AeroVerse</strong> — <em>AeroVerse: UAV-Agent Benchmark Suite for Simulating, Pre-training, Finetuning, and Evaluating Aerospace Embodied World Models</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2408.15511"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2408.15511-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.05] Aero-World</strong> — <em>Aero-World: Action-Conditioned Aerial Video Generation from Inertial Controls</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2605.19728"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2605.19728-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.05] WorldVLN</strong> — <em>WorldVLN: Autoregressive World Action Model for Aerial Vision-Language Navigation</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2605.15964"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2605.15964-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.06] WorldFly</strong> — <em>WorldFly: A World-Model-Based Vision-Language-Action Model for UAV Navigation</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2606.06147"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2606.06147-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] Skytopia</strong> — <em>Skytopia: Monocular Drone Navigation with Action-Conditioned Latent World Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2609.26007"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.26007-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] ForeFly</strong> — <em>ForeFly: A Dual-Horizon World Action Model for Aerial Vision-Language Navigation</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2609.33581"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.33581-b31b1b.svg" /></a></p>
+</li>
+</ul>
+<blockquote>
+<p>注：本节仅保留已验证 arXiv ID 的论文。更多无人机世界模型论文请参考 <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/05-%E6%97%A0%E4%BA%BA%E6%9C%BA%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E7%BB%BC%E8%BF%B0.html">无人机世界模型综述</a>。</p>
+<p><strong>后 5 条（Aero-World / WorldVLN / WorldFly / Skytopia / ForeFly）是 2026-10 追前沿时新增的</strong>，其中 <code>2605.19728</code> / <code>2605.15964</code> / <code>2606.06147</code> 三条落在
+<code>tools/watch.py</code> 的 120 天窗口起点（2026-06-10）之前几周，是换用不限窗口的查询复核时才捞出来的——
+复核证据记在 <code>tools/watchlists.py</code> 的 <code>VERIFIED_ZEROS</code> 里。<strong>窗口起点会切掉一整批同主线的论文，写「近期空白」之前必须先看不限窗口的命中。</strong></p>
+</blockquote>
+<hr />
+<h2 id="三vla-通用-vision-language-action-general">三、VLA — 通用 (Vision-Language-Action, General)<a class="headerlink" href="#三vla-通用-vision-language-action-general" title="Permanent link">&para;</a></h2>
+<h3 id="31-奠基工作">3.1 奠基工作<a class="headerlink" href="#31-奠基工作" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[ICML'23] PaLM-E</strong> — <em>PaLM-E: An Embodied Multimodal Language Model</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2303.03378"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2303.03378-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[CoRL'23] RT-2</strong> — <em>RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2307.15818"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2307.15818-b31b1b.svg" /></a> <a href="https://robotics-transformer.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[RSS'23] RT-1</strong> — <em>RT-1: Robotics Transformer for Real-World Control</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2212.06817"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2212.06817-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[CoRL'22] SayCan</strong> — <em>SayCan: Do As I Can, Not As I Say</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2204.01691"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2204.01691-b31b1b.svg" /></a> <a href="https://say-can.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+</ul>
+<h3 id="32-开源时代">3.2 开源时代<a class="headerlink" href="#32-开源时代" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[arXiv'24.06] OpenVLA</strong> — <em>OpenVLA: An Open-Source Vision-Language-Action Model</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2406.09246"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2406.09246-b31b1b.svg" /></a> <a href="https://openvla.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.05] Octo</strong> — <em>Octo: An Open-Source Generalist Robot Policy</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2405.12213"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2405.12213-b31b1b.svg" /></a> <a href="https://octo-models.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICRA'24] Open X-Embodiment</strong> — <em>Open X-Embodiment: Robotic Learning Datasets and RT-X Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2310.08864"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2310.08864-b31b1b.svg" /></a> <a href="https://robotics-transformer-x.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.12] RoboVLMs</strong> — <em>What Matters in Building Vision-Language-Action Models for Generalist Robots (RoboVLMs)</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2412.14058"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2412.14058-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.01] SpatialVLM</strong> — <em>SpatialVLM: Endowing Vision-Language Models with Spatial Reasoning</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2401.12168"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2401.12168-b31b1b.svg" /></a> <a href="https://spatial-vlm.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+</ul>
+<h3 id="33-流匹配与扩散-vla">3.3 流匹配与扩散 VLA<a class="headerlink" href="#33-流匹配与扩散-vla" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[arXiv'24.10] π₀</strong> — <em>π₀: A Vision-Language-Action Flow Model for General Robot Control</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2410.24164"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2410.24164-b31b1b.svg" /></a> <a href="https://physicalintelligence.company/blog/pi0"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.04] π₀.₅</strong> — <em>π₀.₅: a Vision-Language-Action Model with Open-World Generalization</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2504.16054"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2504.16054-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[RSS'24] 3D Diffusion Policy (DP3)</strong> — <em>3D Diffusion Policy (DP3): Generalizable Visuomotor Policy</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2403.03954"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2403.03954-b31b1b.svg" /></a> <a href="https://3d-diffusion-policy.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[RSS'23] Diffusion Policy</strong> — <em>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2303.04137"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2303.04137-b31b1b.svg" /></a></p>
+</li>
+</ul>
+<h3 id="34-vla-理论与综述">3.4 VLA 理论与综述<a class="headerlink" href="#34-vla-理论与综述" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[arXiv'24.05] A Survey on Vision-Language-Action Models for Embodied AI</strong> — <em>Ma et al.</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2405.14093"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2405.14093-b31b1b.svg" /></a> <a href="https://github.com/yueen-ma/Awesome-VLA"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.03] Foundation Models for Decision Making</strong> — <em>Foundation Models for Decision Making: Problems, Methods, and Opportunities</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2303.04129"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2303.04129-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.01] FAST</strong> — <em>FAST: Efficient Action Tokenization for Vision-Language-Action Models</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2501.09747"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2501.09747-b31b1b.svg" /></a> <a href="https://www.pi.website/research/fast"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+</ul>
+<hr />
+<h2 id="四vla-无人机-vision-language-action-uavdrone">四、VLA — 无人机 (Vision-Language-Action, UAV/Drone)<a class="headerlink" href="#四vla-无人机-vision-language-action-uavdrone" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>[arXiv'25.12] VLA-AN</strong> — <em>VLA-AN: An Efficient and Onboard Vision-Language-Action Framework for Aerial Navigation in Complex Environments</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2512.15258"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2512.15258-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.03] CognitiveDrone</strong> — <em>CognitiveDrone: A VLA Model and Evaluation Benchmark for Real-Time Cognitive Task Solving and Reasoning in UAVs</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2503.01378"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2503.01378-b31b1b.svg" /></a> <a href="https://cognitivedrone.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.04] UAV-Track VLA</strong> — <em>UAV-Track VLA: Embodied Aerial Tracking via Vision-Language-Action Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2604.02241"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2604.02241-b31b1b.svg" /></a> <a href="https://github.com/Hub-Tian/UAV-Track_VLA"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.05] UAV-Flow Colosseo</strong> — <em>UAV-Flow Colosseo: A Real-World Benchmark for Flying-on-a-Word UAV Imitation Learning</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2505.15725"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2505.15725-b31b1b.svg" /></a> <a href="https://github.com/buaa-colalab/UAV-Flow"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.02] VLN-Pilot</strong> — <em>VLN-Pilot: Large Vision-Language Model as an Autonomous Indoor Drone Operator</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2602.05552"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2602.05552-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICLR'26] AutoFly</strong> — <em>AutoFly: Vision-Language-Action Model for UAV Autonomous Navigation in the Wild</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2602.09657"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2602.09657-b31b1b.svg" /></a></p>
+</li>
+</ul>
+<hr />
+<h2 id="五vlm-遥感-vision-language-models-remote-sensing">五、VLM — 遥感 (Vision-Language Models, Remote Sensing)<a class="headerlink" href="#五vlm-遥感-vision-language-models-remote-sensing" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>[CVPR'24] GeoChat</strong> — <em>GeoChat: Grounded Large Vision-Language Model for Remote Sensing</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2311.15826"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2311.15826-b31b1b.svg" /></a> <a href="https://github.com/mbzuai-oryx/geochat"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.07] RSGPT</strong> — <em>RSGPT: A Remote Sensing Vision Language Model and Benchmark</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2307.15266"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2307.15266-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ECCV'24] LHRS-Bot</strong> — <em>LHRS-Bot: Empowering Remote Sensing with VGI-Enhanced Large Multimodal Language Model</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2402.02544"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2402.02544-b31b1b.svg" /></a> <a href="https://github.com/NJU-LHRS/LHRS-Bot"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.09] ChangeChat</strong> — <em>ChangeChat: An Interactive Model for Remote Sensing Change Analysis via Multimodal Instruction Tuning</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2409.08582"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2409.08582-b31b1b.svg" /></a> <a href="https://github.com/hanlinwu/ChangeChat"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.01] EarthGPT</strong> — <em>EarthGPT: A Universal Multi-modal Large Language Model for Multi-sensor Image Comprehension in Remote Sensing Domain</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2401.16822"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2401.16822-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.01] SkyEyeGPT</strong> — <em>SkyEyeGPT: Unifying Remote Sensing Vision-Language Tasks via Instruction Tuning with Large Language Model</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2401.09712"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2401.09712-b31b1b.svg" /></a> <a href="https://github.com/ZhanYang-nwpu/SkyEyeGPT"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.02] ChatEarthNet</strong> — <em>ChatEarthNet: A Global-Scale Image-Text Dataset Empowering Vision-Language Geo-Foundation Models</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2402.11325"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2402.11325-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[TGRS'24] RemoteCLIP</strong> — <em>RemoteCLIP: A Vision Language Foundation Model for Remote Sensing</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2306.11029"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2306.11029-b31b1b.svg" /></a> <a href="https://github.com/ChenDelong1999/RemoteCLIP"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+</ul>
+<hr />
+<h2 id="六vlm-无人机-vision-language-models-uavdrone">六、VLM — 无人机 (Vision-Language Models, UAV/Drone)<a class="headerlink" href="#六vlm-无人机-vision-language-models-uavdrone" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>[arXiv'26.01] DVGBench</strong> — <em>DVGBench: Implicit-to-Explicit Visual Grounding Benchmark in UAV Imagery with Large Vision-Language Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2601.00998"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2601.00998-b31b1b.svg" /></a> <a href="https://github.com/zytx121/DVGBench"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.03] UAVBench and UAVIT-1M</strong> — <em>UAVBench and UAVIT-1M: Benchmarking and Enhancing MLLMs for Low-Altitude UAV Vision-Language Understanding</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2603.14336"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2603.14336-b31b1b.svg" /></a> <a href="https://UAVBench.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.04] Can VLMs Think from the Sky? Unifying UAV Reasoning and Generation</strong> — <em>Sun et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2604.05377"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2604.05377-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.12] CoDrone</strong> — <em>CoDrone: Autonomous Drone Navigation Assisted by Edge and Cloud Foundation Models</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2512.19083"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2512.19083-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.05] FM-Planner</strong> — <em>FM-Planner: Foundation Model Guided Path Planning for Autonomous Drone Navigation</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2505.20783"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2505.20783-b31b1b.svg" /></a> <a href="https://github.com/NTU-ICG/FM-Planner"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.09] Embodied Navigation Foundation Model</strong> — <em>Zhang et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2509.12129"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2509.12129-b31b1b.svg" /></a> <a href="https://pku-epic.github.io/NavFoM-Web/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ACL'25] CityNavAgent</strong> — <em>CityNavAgent: Aerial Vision-and-Language Navigation with Hierarchical Semantic Planning and Global Memory</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2505.05622"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2505.05622-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.03] UAV-VLRR</strong> — <em>UAV-VLRR: Vision-Language Informed NMPC for Rapid Response in UAV Search and Rescue</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2503.02465"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2503.02465-b31b1b.svg" /></a></p>
+</li>
+</ul>
+<blockquote>
+<p>注：更多无人机 VLM 论文请参考 <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3.html">无人机场景理解</a> 和 <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/03-LLM%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BAAgent.html">LLM驱动的无人机Agent</a>。</p>
+</blockquote>
+<hr />
+<h2 id="七基准与数据集-benchmarks-datasets">七、基准与数据集 (Benchmarks &amp; Datasets)<a class="headerlink" href="#七基准与数据集-benchmarks-datasets" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>[ICRA'24] Open X-Embodiment</strong> — <em>Open X-Embodiment: Robotic Learning Datasets and RT-X Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2310.08864"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2310.08864-b31b1b.svg" /></a> <a href="https://robotics-transformer-x.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.06] LIBERO</strong> — <em>LIBERO: Benchmarking Knowledge Transfer in Lifelong Robot Learning</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2306.03310"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2306.03310-b31b1b.svg" /></a> <a href="https://libero-project.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.05] SIMPLER</strong> — <em>Evaluating Real-World Robot Manipulation Policies in Simulation (SIMPLER)</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2405.05941"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2405.05941-b31b1b.svg" /></a> <a href="https://simpler-env.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICLR'23] ManiSkill2</strong> — <em>ManiSkill2: A Unified Benchmark for Generalizable Manipulation</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2302.04659"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2302.04659-b31b1b.svg" /></a> <a href="https://maniskill2.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICLR'24] Habitat 3.0</strong> — <em>Habitat 3.0: A Co-Habitat for Humans, Avatars, and Robots</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2310.13724"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2310.13724-b31b1b.svg" /></a> <a href="http://aihabitat.org/habitat3"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ISER'18] AirSim</strong> — <em>AirSim: High-Fidelity Visual and Physical Simulation</em> · ★★★<br />
+<a href="https://github.com/microsoft/AirSim"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-simulator-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[Various'20-24] DroneCrowd / DroneVehicle / VisDrone Benchmarks</strong> — <em>Various</em> · ★★☆<br />
+<a href="https://github.com/VisDrone/VisDrone-Dataset"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-dataset-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'21.08] TS4Net</strong> — <em>TS4Net: Two-Stage Sample Selective Strategy for Rotating Object Detection（提出 UAV-ROD 无人机数据集）</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2108.03116"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2108.03116-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.11] Is your VLM Sky-Ready? A Comprehensive Spatial Intelligence Benchmark for UAV Navigation</strong> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2511.13269"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2511.13269-b31b1b.svg" /></a> <a href="https://github.com/linglingxiansen/SpatialSKy"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'26.01] AIR-VLA</strong> — <em>AIR-VLA: Vision-Language-Action Systems for Aerial Manipulation</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2601.21602"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2601.21602-b31b1b.svg" /></a> <a href="https://github.com/SpencerSon2001/AIR-VLA"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+</ul>
+<hr />
+<h2 id="八多模态基础模型与通用-vlm-方法-foundation-models-general-vlm">八、多模态基础模型与通用 VLM 方法 (Foundation Models &amp; General VLM)<a class="headerlink" href="#八多模态基础模型与通用-vlm-方法-foundation-models-general-vlm" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>本节按通用 VLM 的方法主干分三组，与 <code>docs/04-VLM专题/</code> 的 <code>05</code>（架构与编码器）、<code>06</code>（指令微调）、<code>07</code>（评测与幻觉）三篇一一对应。<code>### 8.x</code> 子编号是本次新增的，未改动「五」至「十」的节号。</p>
+</blockquote>
+<h3 id="81-架构与视觉编码器-04-vlm专题05">8.1 架构与视觉编码器（→ <code>04-VLM专题/05</code>）<a class="headerlink" href="#81-架构与视觉编码器-04-vlm专题05" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[ICML'21] CLIP</strong> — <em>CLIP: Learning Transferable Visual Models from NLP</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2103.00020"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2103.00020-b31b1b.svg" /></a> <a href="https://github.com/OpenAI/CLIP"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[CVPR'21] LiT</strong> — <em>LiT: Zero-Shot Transfer with Locked-image text Tuning</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2111.07991"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2111.07991-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[NeurIPS'22] Flamingo</strong> — <em>Flamingo: a Visual Language Model for Few-Shot Learning</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2204.14198"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2204.14198-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[CVPR'22] Scaling Language-Image Pre-training via Masking</strong> — <em>Li et al.</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2212.00794"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2212.00794-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.01] BLIP-2</strong> — <em>BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2301.12597"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2301.12597-b31b1b.svg" /></a> <a href="https://github.com/salesforce/LAVIS"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.03] EVA-CLIP</strong> — <em>EVA-CLIP: Improved Training Techniques for CLIP at Scale</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2303.15389"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2303.15389-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICCV'23] SigLIP</strong> — <em>SigLIP: Sigmoid Loss for Language-Image Pre-Training</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2303.15343"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2303.15343-b31b1b.svg" /></a> <a href="https://github.com/google-research/big_vision"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.02] SigLIP 2</strong> — <em>SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2502.14786"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2502.14786-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[NeurIPS'23] DataComp</strong> — <em>DataComp: In search of the next generation of multimodal datasets</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2304.14108"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2304.14108-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.04] DINOv2</strong> — <em>DINOv2: Learning Robust Visual Features without Supervision</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2304.07193"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2304.07193-b31b1b.svg" /></a> <a href="https://github.com/facebookresearch/dinov2"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.07] Patch n' Pack</strong> — <em>Patch n' Pack: NaViT, a Vision Transformer for any Aspect Ratio and Resolution</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2307.06304"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2307.06304-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.08] Qwen-VL</strong> — <em>Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2308.12966"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2308.12966-b31b1b.svg" /></a> <a href="https://github.com/QwenLM/Qwen-VL"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.09] Qwen2-VL</strong> — <em>Qwen2-VL: Enhancing Vision-Language Model's Perception of the World at Any Resolution</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2409.12191"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2409.12191-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'25.02] Qwen2.5-VL Technical Report</strong> — <em>Qwen Team</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2502.13923"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2502.13923-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[CVPR'24] InternVL</strong> — <em>InternVL: Scaling up Vision Foundation Models and Aligning for Generic Visual-Linguistic Tasks</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2312.14238"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2312.14238-b31b1b.svg" /></a> <a href="https://github.com/OpenGVLab/InternVL"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.12] Expanding Performance Boundaries of Open-Source Multimodal Models with Model, Data, and Test-Time Scaling</strong> — <em>Chen et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2412.05271"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2412.05271-b31b1b.svg" /></a> <a href="https://github.com/OpenGVLab/InternVL"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[CVPR'23] Honeybee</strong> — <em>Honeybee: Locality-enhanced Projector for Multimodal LLM</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2312.06742"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2312.06742-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICLR'22] Token Merging</strong> — <em>Token Merging: Your ViT But Faster</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2210.09461"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2210.09461-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.02] MobileVLM V2</strong> — <em>MobileVLM V2: Faster and Stronger Baseline for Vision Language Model</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2402.03766"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2402.03766-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICCV'24] LLaVA-PruMerge</strong> — <em>LLaVA-PruMerge: Adaptive Token Reduction for Efficient Large Multimodal Models</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2403.15388"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2403.15388-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.05] Matryoshka Multimodal Models</strong> — <em>Cai et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2405.17430"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2405.17430-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.05] Ovis</strong> — <em>Ovis: Structural Embedding Alignment for Multimodal Large Language Model</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2405.20797"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2405.20797-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.07] TokenPacker</strong> — <em>TokenPacker: Efficient Visual Projector for Multimodal LLM</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2407.02392"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2407.02392-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICML'24] Prismatic VLMs</strong> — <em>Prismatic VLMs: Investigating the Design Space of Visually-Conditioned Language Models</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2402.07865"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2402.07865-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.03] MM1</strong> — <em>MM1: Methods, Analysis &amp; Insights from Multimodal LLM Pre-training</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2403.09611"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2403.09611-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.05] What matters when building vision-language models?</strong> — <em>Laurençon et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2405.02246"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2405.02246-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.06] Cambrian-1</strong> — <em>Cambrian-1: A Fully Open, Vision-Centric Exploration of Multimodal LLMs</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2406.16860"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2406.16860-b31b1b.svg" /></a> <a href="https://cambrian-mllm.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.08] LLaVA-OneVision</strong> — <em>LLaVA-OneVision: Easy Visual Task Transfer</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2408.03326"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2408.03326-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[Report'23] GPT-4V(ision) System Card</strong> — <em>OpenAI</em> · ★★☆<br />
+<a href="https://cdn.openai.com/papers/GPTV_System_Card.pdf"><img alt="Site" src="https://img.shields.io/badge/Website-report-0A66C2.svg" /></a></p>
+</li>
+</ul>
+<h3 id="82-指令微调与对齐-04-vlm专题06">8.2 指令微调与对齐（→ <code>04-VLM专题/06</code>）<a class="headerlink" href="#82-指令微调与对齐-04-vlm专题06" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[NeurIPS'23] LLaVA</strong> — <em>LLaVA: Visual Instruction Tuning</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2304.08485"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2304.08485-b31b1b.svg" /></a> <a href="https://llava-vl.github.io/"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.10] LLaVA-1.5</strong> — <em>LLaVA-1.5: Improved Baselines with Visual Instruction Tuning</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2310.03744"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2310.03744-b31b1b.svg" /></a> <a href="https://llava-vl.github.io"><img alt="Website" src="https://img.shields.io/badge/Website-page-0A66C2.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.04] MiniGPT-4</strong> — <em>MiniGPT-4: Enhancing Vision-Language Understanding with Advanced Large Language Models</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2304.10592"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2304.10592-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.05] InstructBLIP</strong> — <em>InstructBLIP: Towards General-purpose Vision-Language Models with Instruction Tuning</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2305.06500"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2305.06500-b31b1b.svg" /></a> <a href="https://github.com/salesforce/LAVIS"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.04] mPLUG-Owl</strong> — <em>mPLUG-Owl: Modularization Empowers Large Language Models with Multimodality</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2304.14178"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2304.14178-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[TPAMI'23] Otter</strong> — <em>Otter: A Multi-Modal Model with In-Context Instruction Tuning</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2305.03726"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2305.03726-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.11] SPHINX</strong> — <em>SPHINX: The Joint Mixing of Weights, Tasks, and Visual Embeddings for Multi-modal Large Language Models</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2311.07575"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2311.07575-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.09] InternLM-XComposer</strong> — <em>InternLM-XComposer: A Vision-Language Large Model for Advanced Text-image Comprehension and Composition</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2309.15112"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2309.15112-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.07] SVIT</strong> — <em>SVIT: Scaling up Visual Instruction Tuning</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2307.04087"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2307.04087-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.11] ShareGPT4V</strong> — <em>ShareGPT4V: Improving Large Multi-Modal Models with Better Captions</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2311.12793"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2311.12793-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.02] ALLaVA</strong> — <em>ALLaVA: Harnessing GPT4V-Synthesized Data for Lite Vision-Language Models</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2402.11684"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2402.11684-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.02] TinyLLaVA</strong> — <em>TinyLLaVA: A Framework of Small-scale Large Multimodal Models</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2402.14289"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2402.14289-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICLR'21] LoRA</strong> — <em>LoRA: Low-Rank Adaptation of Large Language Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2106.09685"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2106.09685-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[NeurIPS'23] QLoRA</strong> — <em>QLoRA: Efficient Finetuning of Quantized LLMs</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2305.14314"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2305.14314-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICLR'23] LLaMA-Adapter</strong> — <em>LLaMA-Adapter: Efficient Fine-tuning of Language Models with Zero-init Attention</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2303.16199"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2303.16199-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[NeurIPS'23] Direct Preference Optimization</strong> — <em>Direct Preference Optimization: Your Language Model is Secretly a Reward Model</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2305.18290"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2305.18290-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.09] Aligning Large Multimodal Models with Factually Augmented RLHF</strong> — <em>Sun et al.</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2309.14525"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2309.14525-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[CVPR'23] RLHF-V</strong> — <em>RLHF-V: Towards Trustworthy MLLMs via Behavior Alignment from Fine-grained Correctional Human Feedback</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2312.00849"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2312.00849-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[National Science Review'23] A Survey on Multimodal Large Language Models</strong> — <em>Yin et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2306.13549"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2306.13549-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.09] Multimodal Foundation Models</strong> — <em>Multimodal Foundation Models: From Specialists to General-Purpose Assistants</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2309.10020"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2309.10020-b31b1b.svg" /></a></p>
+</li>
+</ul>
+<h3 id="83-评测与幻觉-04-vlm专题07">8.3 评测与幻觉（→ <code>04-VLM专题/07</code>）<a class="headerlink" href="#83-评测与幻觉-04-vlm专题07" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>[arXiv'23.09] The Dawn of LMMs</strong> — <em>The Dawn of LMMs: Preliminary Explorations with GPT-4V(ision)</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2309.17421"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2309.17421-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[CVPR'23] MMMU</strong> — <em>MMMU: A Massive Multi-discipline Multimodal Understanding and Reasoning Benchmark for Expert AGI</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2311.16502"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2311.16502-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ACL'24] MMMU-Pro</strong> — <em>MMMU-Pro: A More Robust Multi-discipline Multimodal Understanding Benchmark</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2409.02813"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2409.02813-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ECCV'23] MMBench</strong> — <em>MMBench: Is Your Multi-modal Model an All-around Player?</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2307.06281"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2307.06281-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[NeurIPS'23] MME</strong> — <em>MME: A Comprehensive Evaluation Benchmark for Multimodal Large Language Models</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2306.13394"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2306.13394-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICML'23] MM-Vet</strong> — <em>MM-Vet: Evaluating Large Multimodal Models for Integrated Capabilities</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2308.02490"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2308.02490-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICLR'23] MathVista</strong> — <em>MathVista: Evaluating Mathematical Reasoning of Foundation Models in Visual Contexts</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2310.02255"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2310.02255-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.03] Are We on the Right Way for Evaluating Large Vision-Language Models?</strong> — <em>Chen et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2403.20330"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2403.20330-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[CVPR'23] MVBench</strong> — <em>MVBench: A Comprehensive Multi-modal Video Understanding Benchmark</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2311.17005"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2311.17005-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ICLR'24] MME-RealWorld</strong> — <em>MME-RealWorld: Could Your Multimodal LLM Challenge High-Resolution Real-World Scenarios that are Difficult for Humans?</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2408.13257"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2408.13257-b31b1b.svg" /></a> <a href="https://github.com/MME-Benchmarks/MME-RealWorld"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[ICML'24] MLLM-as-a-Judge</strong> — <em>MLLM-as-a-Judge: Assessing Multimodal LLM-as-a-Judge with Vision-Language Benchmark</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2402.04788"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2402.04788-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[CVPR'24] LLaVA-Critic</strong> — <em>LLaVA-Critic: Learning to Evaluate Multimodal Models</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2410.02712"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2410.02712-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[EMNLP'23] What's "up" with vision-language models? Investigating their struggle with spatial reasoning</strong> — <em>Kamath et al.</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2310.19785"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2310.19785-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[ECCV'24] BLINK</strong> — <em>BLINK: Multimodal Large Language Models Can See but Not Perceive</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2404.12390"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2404.12390-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.01] Eyes Wide Shut? Exploring the Visual Shortcomings of Multimodal LLMs</strong> — <em>Tong et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2401.06209"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2401.06209-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[EMNLP'23] Evaluating Object Hallucination in Large Vision-Language Models</strong> — <em>Li et al.</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2305.10355"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2305.10355-b31b1b.svg" /></a> <a href="https://github.com/AoiDragon/POPE"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-code-181717.svg?logo=github" /></a></p>
+</li>
+<li>
+<p><strong>[CVPR'23] HallusionBench</strong> — <em>HallusionBench: An Advanced Diagnostic Suite for Entangled Language Hallucination and Visual Illusion in Large Vision-Language Models</em> · ★★★<br />
+<a href="https://arxiv.org/abs/2310.14566"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2310.14566-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.11] AMBER</strong> — <em>AMBER: An LLM-free Multi-dimensional Benchmark for MLLMs Hallucination Evaluation</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2311.07397"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2311.07397-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'24.02] A Survey on Hallucination in Large Vision-Language Models</strong> — <em>Liu et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2402.00253"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2402.00253-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[arXiv'23.11] Mitigating Object Hallucinations in Large Vision-Language Models through Visual Contrastive Decoding</strong> — <em>Leng et al.</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2311.16922"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2311.16922-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[CVPR'23] OPERA</strong> — <em>OPERA: Alleviating Hallucination in Multi-Modal Large Language Models via Over-Trust Penalty and Retrospection-Allocation</em> · ★★☆<br />
+<a href="https://arxiv.org/abs/2311.17911"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2311.17911-b31b1b.svg" /></a></p>
+</li>
+<li>
+<p><strong>[SCI CHINA Inf. Sci.'23] Woodpecker</strong> — <em>Woodpecker: Hallucination Correction for Multimodal Large Language Models</em> · ★☆☆<br />
+<a href="https://arxiv.org/abs/2310.16045"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2310.16045-b31b1b.svg" /></a></p>
+</li>
+</ul>
+<hr />
+<h2 id="九统计摘要">九、统计摘要<a class="headerlink" href="#九统计摘要" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>pie title 论文分布
+    "世界模型(通用)" : 65
+    "世界模型(无人机)" : 11
+    "VLA(通用)" : 16
+    "VLA(无人机)" : 6
+    "VLM(遥感)" : 8
+    "VLM(无人机)" : 8
+    "基准/数据集" : 10
+    "多模态与通用VLM" : 71</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">类别</th>
+<th style="text-align: center;">论文数</th>
+<th style="text-align: center;">必读(★★★)</th>
+<th style="text-align: center;">推荐(★★☆)</th>
+<th style="text-align: center;">选读(★☆☆)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">世界模型 — 通用</td>
+<td style="text-align: center;">65</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">11</td>
+</tr>
+<tr>
+<td style="text-align: left;">世界模型 — 无人机</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">VLA — 通用</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;">VLA — 无人机</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">VLM — 遥感</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: left;">VLM — 无人机</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">基准与数据集</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: left;">多模态基础模型与通用 VLM</td>
+<td style="text-align: center;">71</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>合计</strong></td>
+<td style="text-align: center;"><strong>195</strong></td>
+<td style="text-align: center;"><strong>56</strong></td>
+<td style="text-align: center;"><strong>103</strong></td>
+<td style="text-align: center;"><strong>36</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>「世界模型 — 通用 65 篇」里含 2026-10 追前沿新增的 <code>1.5</code> JEPA 路线（19 篇）、<code>1.6</code> 评测与诊断（10 篇）、
+<code>1.7</code> 长时程与交互式生成（18 篇）三节，共 47 篇；「世界模型 — 无人机」的 11 篇里有 5 篇同批新增。</p>
+<p>「多模态基础模型与通用 VLM 71 篇」是按 <code>8.1</code> 架构与视觉编码器（29 篇）、<code>8.2</code> 指令微调与对齐（20 篇）、
+<code>8.3</code> 评测与幻觉（22 篇）三组对应 <code>04-VLM专题</code> 的 <code>05</code>–<code>07</code> 三篇；原先的「多模态基础模型」9 篇
+（CLIP / SigLIP / LLaVA / LLaVA-1.5 / Qwen-VL / Qwen2.5-VL / InternVL / Cambrian-1 / GPT-4V）全部并入这三组。
+没有删除，原先的条目序号已随条目式改写弃用。<code>8.3</code> 一组里的评测基准与「七、基准与数据集」不重复：那一节收的是机器人/无人机的
+数据与评测协议，这一组收的是通用 VLM 的基准与幻觉诊断。</p>
+<p><strong>交叉列出现在是有意的。</strong> Open X-Embodiment（arXiv:2310.08864）同时出现在「三、VLA — 通用」与「七、基准与数据集」，
+因为它既是一个 VLA 训练语料库、也是一个评测基准。凡同时是数据集与基准的工作都可能出现两次，不是重复录入。</p>
+<p>AIR-VLA（arXiv:2601.21602）名字里带 VLA，但产品是数据与评测协议，不是模型，所以收在「七、基准与数据集」，
+不在「四、VLA — 无人机」—— 分类按产出物走，不按标题走。</p>
+</blockquote>
+<hr />
+<h2 id="十引用格式">十、引用格式<a class="headerlink" href="#十引用格式" title="Permanent link">&para;</a></h2>
+<p>如需 BibTeX 格式，推荐使用 <a href="https://www.semanticscholar.org/">Semantic Scholar</a> 或 <a href="https://scholar.google.com/">Google Scholar</a> 导出。以下为示例：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nc">@article</span><span class="p">{</span><span class="nl">brohan2023rt2</span><span class="p">,</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="na">title</span><span class="p">=</span><span class="s">{RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control}</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Brohan, Anthony and others}</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="na">journal</span><span class="p">=</span><span class="s">{arXiv preprint arXiv:2307.15818}</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="na">year</span><span class="p">=</span><span class="s">{2023}</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nc">@article</span><span class="p">{</span><span class="nl">hafner2023dreamerv3</span><span class="p">,</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="na">title</span><span class="p">=</span><span class="s">{Mastering Diverse Domains through World Models}</span><span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Hafner, Danijar and others}</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="na">journal</span><span class="p">=</span><span class="s">{Journal of Machine Learning Research}</span><span class="p">,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="na">year</span><span class="p">=</span><span class="s">{2023}</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">}</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="nc">@article</span><span class="p">{</span><span class="nl">black2024pi0</span><span class="p">,</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">  </span><span class="na">title</span><span class="p">=</span><span class="s">{pi{\_}0: A Vision-Language-Action Flow Model for General Robot Control}</span><span class="p">,</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Black, Kevin and others}</span><span class="p">,</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">  </span><span class="na">journal</span><span class="p">=</span><span class="s">{arXiv preprint arXiv:2410.24164}</span><span class="p">,</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">  </span><span class="na">year</span><span class="p">=</span><span class="s">{2024}</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<blockquote>
+<p>推荐等级（★★★ 必读 / ★★☆ 推荐 / ★☆☆ 选读）根据论文的影响力、创新性和与无人机领域的相关性综合评定。arXiv 编号与标题已逐条核对；会议/期刊信息以正式录用版本为准，部分预印本可能后续变更。</p>
+</blockquote>
+<p><em>本文件为 UAV-WM-VLA-Learning 项目的一部分，最后更新：2026-10-09。</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Qxy661 · MIT License
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

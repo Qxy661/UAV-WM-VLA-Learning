@@ -1,0 +1,5476 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="59 篇中文文档 · 195 篇论文 · 24 个纯 CPU 可跑 demo · 28.7 万字">
+      
+      
+      
+        <link rel="canonical" href="https://qxy661.github.io/UAV-WM-VLA-Learning/docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/01-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html">
+      
+      
+        <link rel="prev" href="index.html">
+      
+      
+        <link rel="next" href="02-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-UAV-Flow.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>01 环境搭建 - 世界模型 · VLA · VLM 学习库（无人机视角）</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#01-环境搭建uav-vlavlmworld-model-项目实践环境" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-header__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            世界模型 · VLA · VLM 学习库（无人机视角）
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              01 环境搭建
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到深色"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切到深色" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到浅色"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切到浅色" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  导读与学习路线
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  基础概念
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  世界模型专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLA 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLM 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  综述论文精读
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  论文导读合集
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  实践指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  研究前沿与开放问题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  专题自测与考察
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../mindmaps/field-overview.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  思维导图
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../references/paper-list.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  参考资料
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../code/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  可运行代码
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../en/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English Overview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../README.en.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English README
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CHANGELOG.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  更新日志
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  贡献指南
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-nav__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    世界模型 · VLA · VLM 学习库（无人机视角）
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读与学习路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础概念
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基础概念
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/01-%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 什么是世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/02-%E4%BB%80%E4%B9%88%E6%98%AFVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 什么是 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/03-%E4%BB%80%E4%B9%88%E6%98%AFVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 什么是 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/04-%E4%B8%89%E8%80%85%E5%85%B3%E7%B3%BB%E4%B8%8E%E5%8C%BA%E5%88%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 三者关系与区别
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/05-%E6%97%A0%E4%BA%BA%E6%9C%BAvs%E5%9C%B0%E9%9D%A2%E6%9C%BA%E5%99%A8%E4%BA%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机与地面机器人
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    世界模型专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/01-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95%E5%8F%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 世界模型发展史
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/02-%E7%94%9F%E6%88%90%E5%BC%8F%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 生成式世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/03-%E6%A8%A1%E5%9E%8B%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 模型强化学习世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/04-3D%E5%9C%BA%E6%99%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 3D 场景世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/05-%E6%97%A0%E4%BA%BA%E6%9C%BA%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E7%BB%BC%E8%BF%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机世界模型综述
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 关键数据集与基准
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/07-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E6%B5%8B%E4%B8%8E%E8%AF%8A%E6%96%AD.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 世界模型评测与诊断
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/08-%E8%81%94%E5%90%88%E5%B5%8C%E5%85%A5%E9%A2%84%E6%B5%8B%E4%B8%8E%E6%BD%9C%E7%A9%BA%E9%97%B4%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 联合嵌入预测与潜空间世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/09-%E9%95%BF%E6%97%B6%E7%A8%8B%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%94%9F%E6%88%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 长时程世界模型与交互式生成
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLA 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/01-VLA%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 架构演进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BAVLA%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机 VLA 模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/03-%E8%AF%AD%E8%A8%80%E6%9D%A1%E4%BB%B6%E9%A3%9E%E8%A1%8C%E6%8E%A7%E5%88%B6.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 语言条件飞行控制
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/04-%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E8%BE%85%E5%8A%A9%E8%A7%84%E5%88%92.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 基础模型辅助规划
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/05-%E6%9C%BA%E8%BD%BD%E9%83%A8%E7%BD%B2%E4%B8%8E%E4%BC%98%E5%8C%96.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 机载部署与优化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/06-%E5%8A%A8%E4%BD%9C%E5%A4%B4%E4%B8%8E%E5%8A%A8%E4%BD%9C%E5%88%86%E5%9D%97.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 动作头与动作分块
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/07-%E6%95%B0%E6%8D%AE%E3%80%81%E9%A2%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%B7%A8%E5%85%B7%E8%BA%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 数据、预训练与跨具身
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/08-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%90%8E%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%87%AA%E6%88%91%E6%94%B9%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 强化学习后训练与自我改进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/09-%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E4%B8%8E%E6%8A%A5%E5%91%8A%E5%8F%A3%E5%BE%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 评测基准与报告口径
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/10-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%A2%9E%E5%BC%BAVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 世界模型增强 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLM 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/01-%E9%81%A5%E6%84%9FVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 遥感 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机场景理解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/03-LLM%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BAAgent.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 LLM 驱动的无人机 Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/04-%E8%BE%B9%E7%BC%98VLM%E9%83%A8%E7%BD%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 边缘 VLM 部署
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/05-%E9%80%9A%E7%94%A8VLM%E6%9E%B6%E6%9E%84%E4%B8%8E%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 通用 VLM 架构与视觉编码器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/06-VLM%E6%8C%87%E4%BB%A4%E5%BE%AE%E8%B0%83%E4%B8%8E%E5%AF%B9%E9%BD%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 VLM 指令微调与对齐
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/07-%E9%80%9A%E7%94%A8VLM%E8%AF%84%E6%B5%8B%E4%B8%8E%E5%B9%BB%E8%A7%89.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 通用 VLM 评测与幻觉
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    综述论文精读
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    综述论文精读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/01-%E7%BB%BC%E8%BF%B0%E6%A6%82%E8%A7%88%E4%B8%8E%E7%BB%93%E6%9E%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 综述概览与结构
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E7%AD%96%E7%95%A5.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型作为策略
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/03-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E6%A8%A1%E6%8B%9F%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 世界模型作为模拟器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/04-%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 视频生成世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/05-%E5%9F%BA%E5%87%86%E4%B8%8E%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 基准与评估
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文导读合集
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文导读合集
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/world-model-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vla-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vlm-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/benchmark-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基准与数据集论文
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实践指南
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    实践指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 环境搭建
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="01-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 环境搭建
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#目录" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-硬件需求总览" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 硬件需求总览
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 硬件需求总览">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#硬件需求表" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        硬件需求表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#推荐硬件配置个人开发" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        推荐硬件配置（个人开发）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-nvidia-驱动与-cuda-安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. NVIDIA 驱动与 CUDA 安装
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. NVIDIA 驱动与 CUDA 安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-确认-gpu-型号与当前驱动" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 确认 GPU 型号与当前驱动
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-安装更新-nvidia-驱动" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 安装/更新 NVIDIA 驱动
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-cuda-toolkit-安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 CUDA Toolkit 安装
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-cudnn-安装可选但推荐" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 cuDNN 安装（可选，但推荐）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-pytorch-安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. PyTorch 安装
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. PyTorch 安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-使用-conda-安装推荐" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 使用 conda 安装（推荐）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-使用-pip-安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 使用 pip 安装
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-验证-pytorch-与-cuda" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 验证 PyTorch 与 CUDA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ros2-humble-在-wsl2-中的安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. ROS2 Humble 在 WSL2 中的安装
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. ROS2 Humble 在 WSL2 中的安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-系统准备" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 系统准备
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-安装-ros2-humble" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 安装 ROS2 Humble
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-验证-ros2-安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 验证 ROS2 安装
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-安装-colcon-构建工具" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 安装 colcon 构建工具
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-px4-sitl-仿真环境" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. PX4 SITL 仿真环境
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. PX4 SITL 仿真环境">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-克隆-px4-仓库" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 克隆 PX4 仓库
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-编译-sitl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 编译 SITL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-安装-qgroundcontrol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 安装 QGroundControl
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-安装-mavrosros2-px4-桥接" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 安装 MAVROS（ROS2-PX4 桥接）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-常用-python-包安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 常用 Python 包安装
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 常用 Python 包安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-基础科学计算与深度学习包" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 基础科学计算与深度学习包
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-hugging-face-生态" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Hugging Face 生态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-训练与实验管理" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 训练与实验管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-机器人与仿真相关" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 机器人与仿真相关
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-数据处理与标注" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 数据处理与标注
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-环境验证清单" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 环境验证清单
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-常见问题与解决方案" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 常见问题与解决方案
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 常见问题与解决方案">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q1-torchcudais_available-返回-false" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q1: torch.cuda.is_available() 返回 False
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q2-wsl2-中内存不足oom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q2: WSL2 中内存不足（OOM）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q3-hugging-face-模型下载速度慢" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q3: Hugging Face 模型下载速度慢
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q4-ros2-与-python-版本冲突" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q4: ROS2 与 Python 版本冲突
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q5-px4-sitl-编译失败" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q5: PX4 SITL 编译失败
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q6-xformers-安装失败" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q6: xformers 安装失败
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q7-gpu-显存不足怎么办" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q7: GPU 显存不足怎么办？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#动手验证硬件需求表里的显存是怎么算出来的" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手验证：硬件需求表里的显存是怎么算出来的？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="动手验证：硬件需求表里的显存是怎么算出来的？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#前三笔的公式和一列反解表假设的算式" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        前三笔的公式，和一列反解表假设的算式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#本地实测结果" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本地实测结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#运行完整脚本" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        运行完整脚本
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#下一步" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#思考题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        思考题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-UAV-Flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 复现指南 UAV-Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-CognitiveDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 复现指南 CognitiveDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-FlightDiffusion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 复现指南 FlightDiffusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="05-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-MotionScape.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 复现指南 MotionScape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="06-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-GeoChat.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 复现指南 GeoChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="07-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DreamerV3-Drone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 复现指南 DreamerV3-Drone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="08-%E5%8F%AF%E5%A4%8D%E7%8E%B0%E9%A1%B9%E7%9B%AE%E5%80%99%E9%80%89%E6%B8%85%E5%8D%95.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 可复现项目候选清单
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="09-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DeepDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 复现指南 DeepDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="10-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-RemoteCLIP.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 复现指南 RemoteCLIP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="11-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-Flightmare.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11 复现指南 Flightmare
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    研究前沿与开放问题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10" id="__nav_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    研究前沿与开放问题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/01-%E7%A0%94%E7%A9%B6%E8%B7%AF%E7%BA%BF%E5%9B%BE.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 研究路线图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/02-%E7%A0%94%E7%A9%B6%E7%A9%BA%E7%99%BD%E4%B8%8E%E6%9C%BA%E4%BC%9A.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 研究空白与机会
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/03-%E8%AE%BA%E6%96%87%E6%89%B9%E5%88%A4%E6%80%A7%E9%98%85%E8%AF%BB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 论文批判性阅读
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/04-%E6%9C%80%E6%96%B0%E8%BF%9B%E5%B1%95%E4%B8%8E%E5%9B%A2%E9%98%9F%E8%BF%BD%E8%B8%AA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 最新进展与团队追踪
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    专题自测与考察
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    专题自测与考察
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/01-VLA%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 VLA 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/03-VLM%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 VLM 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    思维导图
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    思维导图
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/field-overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    领域全景图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/world-model-taxonomy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型分类学
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/vla-evolution.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 演进路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/reading-order.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    推荐阅读顺序
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考资料
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    参考资料
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/paper-list.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完整论文列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/vla-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/wm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/vlm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/awesome-annotations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Awesome List 注释
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/citation-audit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    引用核查报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    可运行代码
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../en/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../README.en.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    更新日志
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    贡献指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#目录" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-硬件需求总览" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 硬件需求总览
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 硬件需求总览">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#硬件需求表" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        硬件需求表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#推荐硬件配置个人开发" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        推荐硬件配置（个人开发）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-nvidia-驱动与-cuda-安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. NVIDIA 驱动与 CUDA 安装
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. NVIDIA 驱动与 CUDA 安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-确认-gpu-型号与当前驱动" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 确认 GPU 型号与当前驱动
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-安装更新-nvidia-驱动" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 安装/更新 NVIDIA 驱动
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-cuda-toolkit-安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 CUDA Toolkit 安装
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-cudnn-安装可选但推荐" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 cuDNN 安装（可选，但推荐）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-pytorch-安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. PyTorch 安装
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. PyTorch 安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-使用-conda-安装推荐" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 使用 conda 安装（推荐）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-使用-pip-安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 使用 pip 安装
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-验证-pytorch-与-cuda" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 验证 PyTorch 与 CUDA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ros2-humble-在-wsl2-中的安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. ROS2 Humble 在 WSL2 中的安装
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. ROS2 Humble 在 WSL2 中的安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-系统准备" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 系统准备
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-安装-ros2-humble" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 安装 ROS2 Humble
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-验证-ros2-安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 验证 ROS2 安装
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-安装-colcon-构建工具" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 安装 colcon 构建工具
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-px4-sitl-仿真环境" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. PX4 SITL 仿真环境
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. PX4 SITL 仿真环境">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-克隆-px4-仓库" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 克隆 PX4 仓库
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-编译-sitl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 编译 SITL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-安装-qgroundcontrol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 安装 QGroundControl
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-安装-mavrosros2-px4-桥接" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 安装 MAVROS（ROS2-PX4 桥接）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-常用-python-包安装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 常用 Python 包安装
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 常用 Python 包安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-基础科学计算与深度学习包" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 基础科学计算与深度学习包
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-hugging-face-生态" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Hugging Face 生态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-训练与实验管理" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 训练与实验管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-机器人与仿真相关" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 机器人与仿真相关
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-数据处理与标注" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 数据处理与标注
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-环境验证清单" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 环境验证清单
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-常见问题与解决方案" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 常见问题与解决方案
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 常见问题与解决方案">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q1-torchcudais_available-返回-false" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q1: torch.cuda.is_available() 返回 False
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q2-wsl2-中内存不足oom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q2: WSL2 中内存不足（OOM）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q3-hugging-face-模型下载速度慢" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q3: Hugging Face 模型下载速度慢
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q4-ros2-与-python-版本冲突" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q4: ROS2 与 Python 版本冲突
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q5-px4-sitl-编译失败" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q5: PX4 SITL 编译失败
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q6-xformers-安装失败" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q6: xformers 安装失败
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q7-gpu-显存不足怎么办" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q7: GPU 显存不足怎么办？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#动手验证硬件需求表里的显存是怎么算出来的" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手验证：硬件需求表里的显存是怎么算出来的？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="动手验证：硬件需求表里的显存是怎么算出来的？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#前三笔的公式和一列反解表假设的算式" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        前三笔的公式，和一列反解表假设的算式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#本地实测结果" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本地实测结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#运行完整脚本" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        运行完整脚本
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#下一步" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#思考题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        思考题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="01-环境搭建uav-vlavlmworld-model-项目实践环境">01 - 环境搭建：UAV VLA/VLM/World Model 项目实践环境<a class="headerlink" href="#01-环境搭建uav-vlavlmworld-model-项目实践环境" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>预计阅读：15 分钟 | 前置知识：Linux 基础命令、Python 虚拟环境概念、GPU 驱动基本概念</strong></p>
+</blockquote>
+<p>本指南面向希望在本地复现 UAV 领域视觉语言动作模型（VLA）、视觉语言模型（VLM）及世界模型（World Model）相关论文的同学。我们将从零开始搭建一套完整的实验环境，覆盖 CUDA、PyTorch、ROS2、PX4 仿真及常用 Python 包。</p>
+<hr />
+<h2 id="目录">目录<a class="headerlink" href="#目录" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#1-硬件需求总览">硬件需求总览</a></li>
+<li><a href="#2-nvidia-驱动与-cuda-安装">NVIDIA 驱动与 CUDA 安装</a></li>
+<li><a href="#3-pytorch-安装">PyTorch 安装</a></li>
+<li><a href="#4-ros2-humble-在-wsl2-中的安装">ROS2 Humble 在 WSL2 中的安装</a></li>
+<li><a href="#5-px4-sitl-仿真环境">PX4 SITL 仿真环境</a></li>
+<li><a href="#6-常用-python-包安装">常用 Python 包安装</a></li>
+<li><a href="#7-环境验证清单">环境验证清单</a></li>
+<li><a href="#8-常见问题与解决方案">常见问题与解决方案</a></li>
+</ol>
+<hr />
+<h2 id="1-硬件需求总览">1. 硬件需求总览<a class="headerlink" href="#1-硬件需求总览" title="Permanent link">&para;</a></h2>
+<p>不同项目对硬件的要求差异较大。以下表格列出各类型项目的最低与推荐配置：</p>
+<h3 id="硬件需求表">硬件需求表<a class="headerlink" href="#硬件需求表" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>项目类型</th>
+<th>典型代表</th>
+<th>GPU 显存（最低）</th>
+<th>GPU 显存（推荐）</th>
+<th>内存（RAM）</th>
+<th>磁盘空间</th>
+<th>CPU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>VLM 推理（7B 参数）</strong></td>
+<td>GeoChat, LLaVA</td>
+<td>16 GB</td>
+<td>24 GB (RTX 4090)</td>
+<td>32 GB</td>
+<td>100 GB SSD</td>
+<td>8 核+</td>
+</tr>
+<tr>
+<td><strong>VLM 微调（7B 参数）</strong></td>
+<td>GeoChat Fine-tune</td>
+<td>24 GB</td>
+<td>48 GB (A6000)</td>
+<td>64 GB</td>
+<td>200 GB SSD</td>
+<td>16 核+</td>
+</tr>
+<tr>
+<td><strong>VLA 模型（OpenVLA 系列）</strong></td>
+<td>UAV-Flow</td>
+<td>24 GB</td>
+<td>48 GB</td>
+<td>64 GB</td>
+<td>200 GB SSD</td>
+<td>8 核+</td>
+</tr>
+<tr>
+<td><strong>视频生成推理（现成 I2V 模型）</strong></td>
+<td>FlightDiffusion §9</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>32 GB</td>
+<td>200 GB SSD</td>
+<td>8 核+</td>
+</tr>
+<tr>
+<td><strong>世界模型训练（DreamerV3）</strong></td>
+<td>DreamerV3-Drone</td>
+<td>12 GB</td>
+<td>24 GB</td>
+<td>32 GB</td>
+<td>100 GB SSD</td>
+<td>8 核+</td>
+</tr>
+<tr>
+<td><strong>PX4 SITL + ROS2</strong></td>
+<td>仿真飞行测试</td>
+<td>无需 GPU</td>
+<td>—</td>
+<td>16 GB</td>
+<td>50 GB</td>
+<td>4 核+</td>
+</tr>
+<tr>
+<td><strong>数据集处理/可视化</strong></td>
+<td>MotionScape</td>
+<td>无需 GPU</td>
+<td>—</td>
+<td>16 GB</td>
+<td>500 GB+</td>
+<td>4 核+</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>表中数字是经验估算，不是实测。显存那两栏最容易误导：它取决于权重、梯度、优化器状态与激活四项，只有激活必须实测，而激活又主要随<strong>每个样本的 token 数</strong>变。本节末尾的动手验证把这笔账拆开算了一遍。</p>
+<p><strong>提示</strong>：如果本地 GPU 不足，可考虑使用 Google Colab Pro（A100）、AutoDL 或 Lambda Cloud 等云 GPU 平台。</p>
+</blockquote>
+<h3 id="推荐硬件配置个人开发">推荐硬件配置（个人开发）<a class="headerlink" href="#推荐硬件配置个人开发" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>GPU</strong>：NVIDIA RTX 4090 (24 GB) 或 RTX 3090 (24 GB)</li>
+<li><strong>CPU</strong>：AMD Ryzen 9 / Intel i9，16 核以上</li>
+<li><strong>内存</strong>：64 GB DDR4/DDR5</li>
+<li><strong>存储</strong>：1 TB NVMe SSD（系统+环境）+ 2 TB HDD（数据集）</li>
+<li><strong>操作系统</strong>：Windows 11 + WSL2 (Ubuntu 22.04) 或原生 Ubuntu 22.04</li>
+</ul>
+<hr />
+<h2 id="2-nvidia-驱动与-cuda-安装">2. NVIDIA 驱动与 CUDA 安装<a class="headerlink" href="#2-nvidia-驱动与-cuda-安装" title="Permanent link">&para;</a></h2>
+<h3 id="21-确认-gpu-型号与当前驱动">2.1 确认 GPU 型号与当前驱动<a class="headerlink" href="#21-确认-gpu-型号与当前驱动" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># 在 Windows PowerShell 中查看 GPU 信息</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>nvidia-smi
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># 输出示例：</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># NVIDIA-SMI 546.xx   Driver Version: 546.xx   CUDA Version: 12.x</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># GPU Name        | Bus-Id</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># NVIDIA GeForce RTX 4090 | 00000000:01:00.0</span>
+</code></pre></div>
+<h3 id="22-安装更新-nvidia-驱动">2.2 安装/更新 NVIDIA 驱动<a class="headerlink" href="#22-安装更新-nvidia-驱动" title="Permanent link">&para;</a></h3>
+<p>访问 <a href="https://www.nvidia.com/Download/index.aspx">NVIDIA 官方驱动下载页面</a>，选择对应 GPU 型号下载最新 Game Ready Driver 或 Studio Driver。</p>
+<h3 id="23-cuda-toolkit-安装">2.3 CUDA Toolkit 安装<a class="headerlink" href="#23-cuda-toolkit-安装" title="Permanent link">&para;</a></h3>
+<p>当前 PyTorch 主流版本支持 CUDA 11.8 和 CUDA 12.1。建议安装 CUDA 12.1。</p>
+<p><strong>Windows 安装步骤：</strong></p>
+<ol>
+<li>访问 <a href="https://developer.nvidia.com/cuda-toolkit-archive">CUDA Toolkit Archive</a></li>
+<li>下载 CUDA Toolkit 12.1</li>
+<li>运行安装程序，选择"自定义安装"，勾选 CUDA Runtime、CUDA Developer Tools</li>
+<li>安装完成后验证：</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>nvcc<span class="w"> </span>--version
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># 应显示：Cuda compilation tools, release 12.1</span>
+</code></pre></div>
+<p><strong>WSL2 中的 CUDA：</strong></p>
+<p>WSL2 中无需单独安装 CUDA Toolkit，Windows 端的驱动会通过 <code>/usr/lib/wsl/lib/</code> 自动映射到 WSL2 内部。只需确保 Windows 端驱动已正确安装。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 在 WSL2 终端中验证</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>nvidia-smi
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># 应能看到 GPU 信息</span>
+</code></pre></div>
+<h3 id="24-cudnn-安装可选但推荐">2.4 cuDNN 安装（可选，但推荐）<a class="headerlink" href="#24-cudnn-安装可选但推荐" title="Permanent link">&para;</a></h3>
+<p>cuDNN 通常已包含在 PyTorch 的预编译包中，无需单独安装。如果需要从源码编译 PyTorch 或使用 TensorFlow，请从 <a href="https://developer.nvidia.com/cudnn">NVIDIA cuDNN</a> 下载安装。</p>
+<hr />
+<h2 id="3-pytorch-安装">3. PyTorch 安装<a class="headerlink" href="#3-pytorch-安装" title="Permanent link">&para;</a></h2>
+<h3 id="31-使用-conda-安装推荐">3.1 使用 conda 安装（推荐）<a class="headerlink" href="#31-使用-conda-安装推荐" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># 创建项目环境</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>uavvla<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10<span class="w"> </span>-y
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>conda<span class="w"> </span>activate<span class="w"> </span>uavvla
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># 安装 PyTorch 2.1 + CUDA 12.1</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>conda<span class="w"> </span>install<span class="w"> </span><span class="nv">pytorch</span><span class="o">==</span><span class="m">2</span>.1.2<span class="w"> </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.16.2<span class="w"> </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">2</span>.1.2<span class="w"> </span>pytorch-cuda<span class="o">=</span><span class="m">12</span>.1<span class="w"> </span>-c<span class="w"> </span>pytorch<span class="w"> </span>-c<span class="w"> </span>nvidia
+</code></pre></div>
+<h3 id="32-使用-pip-安装">3.2 使用 pip 安装<a class="headerlink" href="#32-使用-pip-安装" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># 创建虚拟环境</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>uavvla-env
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">source</span><span class="w"> </span>uavvla-env/bin/activate<span class="w">  </span><span class="c1"># Linux/WSL2</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># uavvla-env\Scripts\activate   # Windows PowerShell</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># 安装 PyTorch</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.1.2<span class="w"> </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.16.2<span class="w"> </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">2</span>.1.2<span class="w"> </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu121
+</code></pre></div>
+<h3 id="33-验证-pytorch-与-cuda">3.3 验证 PyTorch 与 CUDA<a class="headerlink" href="#33-验证-pytorch-与-cuda" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PyTorch version: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"CUDA available: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"CUDA version: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">cuda</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"GPU name: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"GPU memory: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_properties</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">total_memory</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1e9</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GB"</span><span class="p">)</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1"># 简单计算测试</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">'cuda'</span><span class="p">)</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Matrix multiplication test passed: </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="4-ros2-humble-在-wsl2-中的安装">4. ROS2 Humble 在 WSL2 中的安装<a class="headerlink" href="#4-ros2-humble-在-wsl2-中的安装" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>适用于需要 ROS2 + PX4 联合仿真的项目（如 UAV-Flow 的仿真评估环境）。</p>
+</blockquote>
+<h3 id="41-系统准备">4.1 系统准备<a class="headerlink" href="#41-系统准备" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># 确保 WSL2 使用 Ubuntu 22.04</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>wsl<span class="w"> </span>--list<span class="w"> </span>--verbose
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># 如果不是 22.04，安装：</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>wsl<span class="w"> </span>--install<span class="w"> </span>-d<span class="w"> </span>Ubuntu-22.04
+</code></pre></div>
+<h3 id="42-安装-ros2-humble">4.2 安装 ROS2 Humble<a class="headerlink" href="#42-安装-ros2-humble" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># 设置语言环境</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>locales
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>sudo<span class="w"> </span>locale-gen<span class="w"> </span>en_US<span class="w"> </span>en_US.UTF-8
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>sudo<span class="w"> </span>update-locale<span class="w"> </span><span class="nv">LC_ALL</span><span class="o">=</span>en_US.UTF-8<span class="w"> </span><span class="nv">LANG</span><span class="o">=</span>en_US.UTF-8
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">LANG</span><span class="o">=</span>en_US.UTF-8
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># 添加 ROS2 apt 源</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>software-properties-common
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>sudo<span class="w"> </span>add-apt-repository<span class="w"> </span>universe
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>sudo<span class="w"> </span>curl<span class="w"> </span>-sSL<span class="w"> </span>https://raw.githubusercontent.com/ros/rosdistro/master/ros.key<span class="w"> </span>-o<span class="w"> </span>/usr/share/keyrings/ros-archive-keyring.gpg
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"deb [arch=</span><span class="k">$(</span>dpkg<span class="w"> </span>--print-architecture<span class="k">)</span><span class="s2"> signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu </span><span class="k">$(</span>.<span class="w"> </span>/etc/os-release<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$UBUNTU_CODENAME</span><span class="k">)</span><span class="s2"> main"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/apt/sources.list.d/ros2.list<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="c1"># 安装 ROS2 Humble</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>sudo<span class="w"> </span>apt<span class="w"> </span>upgrade
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>ros-humble-desktop
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="c1"># 安装开发工具</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>ros-dev-tools
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="c1"># 配置环境</span>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"source /opt/ros/humble/setup.bash"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="nb">source</span><span class="w"> </span>~/.bashrc
+</code></pre></div>
+<h3 id="43-验证-ros2-安装">4.3 验证 ROS2 安装<a class="headerlink" href="#43-验证-ros2-安装" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># 终端 1：启动 talker</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>ros2<span class="w"> </span>run<span class="w"> </span>demo_nodes_cpp<span class="w"> </span>talker
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># 终端 2：启动 listener</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>ros2<span class="w"> </span>run<span class="w"> </span>demo_nodes_py<span class="w"> </span>listener
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># 应能看到消息收发</span>
+</code></pre></div>
+<h3 id="44-安装-colcon-构建工具">4.4 安装 colcon 构建工具<a class="headerlink" href="#44-安装-colcon-构建工具" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python3-colcon-common-extensions
+</code></pre></div>
+<hr />
+<h2 id="5-px4-sitl-仿真环境">5. PX4 SITL 仿真环境<a class="headerlink" href="#5-px4-sitl-仿真环境" title="Permanent link">&para;</a></h2>
+<h3 id="51-克隆-px4-仓库">5.1 克隆 PX4 仓库<a class="headerlink" href="#51-克隆-px4-仓库" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">cd</span><span class="w"> </span>~
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/PX4/PX4-Autopilot.git<span class="w"> </span>--recursive
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nb">cd</span><span class="w"> </span>PX4-Autopilot
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>git<span class="w"> </span>checkout<span class="w"> </span>v1.14.0<span class="w">  </span><span class="c1"># 使用稳定版本</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="c1"># 安装依赖</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>bash<span class="w"> </span>Tools/setup/ubuntu.sh
+</code></pre></div>
+<h3 id="52-编译-sitl">5.2 编译 SITL<a class="headerlink" href="#52-编译-sitl" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># 编译 px4_sitl 默认目标</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>make<span class="w"> </span>px4_sitl_default
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># 使用 Gazebo Classic 仿真</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>make<span class="w"> </span>px4_sitl_default<span class="w"> </span>gz_classic
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1"># 或使用 Gazebo Harmonic（新版）</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>make<span class="w"> </span>px4_sitl<span class="w"> </span>gz_x500
+</code></pre></div>
+<h3 id="53-安装-qgroundcontrol">5.3 安装 QGroundControl<a class="headerlink" href="#53-安装-qgroundcontrol" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># 下载 AppImage —— 官方文件名带架构后缀，无后缀的旧链接已失效</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># （2026-10 实测：QGroundControl.AppImage 返回 HTTP 403，带后缀的两个都能取到）</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>wget<span class="w"> </span>https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl-x86_64.AppImage
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>chmod<span class="w"> </span>+x<span class="w"> </span>QGroundControl-x86_64.AppImage
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>./QGroundControl-x86_64.AppImage
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># ARM64 机器改用：</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="c1"># wget https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl-aarch64.AppImage</span>
+</code></pre></div>
+<h3 id="54-安装-mavrosros2-px4-桥接">5.4 安装 MAVROS（ROS2-PX4 桥接）<a class="headerlink" href="#54-安装-mavrosros2-px4-桥接" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>ros-humble-mavros<span class="w"> </span>ros-humble-mavros-extras
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1"># 安装 GeographicLib 数据集</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>sudo<span class="w"> </span>/opt/ros/humble/lib/mavros/install_geographiclib_datasets.sh
+</code></pre></div>
+<hr />
+<h2 id="6-常用-python-包安装">6. 常用 Python 包安装<a class="headerlink" href="#6-常用-python-包安装" title="Permanent link">&para;</a></h2>
+<h3 id="61-基础科学计算与深度学习包">6.1 基础科学计算与深度学习包<a class="headerlink" href="#61-基础科学计算与深度学习包" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy<span class="w"> </span>matplotlib<span class="w"> </span>pandas<span class="w"> </span>seaborn
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>pip<span class="w"> </span>install<span class="w"> </span>opencv-python-headless<span class="w"> </span>pillow
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>pip<span class="w"> </span>install<span class="w"> </span>scikit-learn<span class="w"> </span>scikit-image
+</code></pre></div>
+<h3 id="62-hugging-face-生态">6.2 Hugging Face 生态<a class="headerlink" href="#62-hugging-face-生态" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>pip<span class="w"> </span>install<span class="w"> </span>transformers&gt;<span class="o">=</span><span class="m">4</span>.36.0
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>pip<span class="w"> </span>install<span class="w"> </span>diffusers&gt;<span class="o">=</span><span class="m">0</span>.25.0
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>pip<span class="w"> </span>install<span class="w"> </span>accelerate
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>pip<span class="w"> </span>install<span class="w"> </span>datasets
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>pip<span class="w"> </span>install<span class="w"> </span>tokenizers
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>pip<span class="w"> </span>install<span class="w"> </span>safetensors
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>pip<span class="w"> </span>install<span class="w"> </span>huggingface_hub
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="c1"># 登录 Hugging Face（下载 gated 模型需要）</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>huggingface-cli<span class="w"> </span>login
+</code></pre></div>
+<h3 id="63-训练与实验管理">6.3 训练与实验管理<a class="headerlink" href="#63-训练与实验管理" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>pip<span class="w"> </span>install<span class="w"> </span>wandb<span class="w">            </span><span class="c1"># 实验追踪</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>pip<span class="w"> </span>install<span class="w"> </span>tensorboard<span class="w">      </span><span class="c1"># 日志可视化</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>pip<span class="w"> </span>install<span class="w"> </span>peft<span class="w">             </span><span class="c1"># 参数高效微调（LoRA 等）</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>pip<span class="w"> </span>install<span class="w"> </span>bitsandbytes<span class="w">     </span><span class="c1"># 量化训练</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>pip<span class="w"> </span>install<span class="w"> </span>deepspeed<span class="w">        </span><span class="c1"># 分布式训练</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>pip<span class="w"> </span>install<span class="w"> </span>xformers<span class="w">         </span><span class="c1"># 高效注意力机制</span>
+</code></pre></div>
+<h3 id="64-机器人与仿真相关">6.4 机器人与仿真相关<a class="headerlink" href="#64-机器人与仿真相关" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>pip<span class="w"> </span>install<span class="w"> </span>gymnasium<span class="w">        </span><span class="c1"># Gym 环境接口（替代旧版 gym）</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>pip<span class="w"> </span>install<span class="w"> </span>stable-baselines3<span class="w">  </span><span class="c1"># RL 基线算法</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>pip<span class="w"> </span>install<span class="w"> </span>pyquaternion<span class="w">     </span><span class="c1"># 四元数运算</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>pip<span class="w"> </span>install<span class="w"> </span>transforms3d<span class="w">     </span><span class="c1"># 3D 变换</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>pip<span class="w"> </span>install<span class="w"> </span>trimesh<span class="w">          </span><span class="c1"># 3D 网格处理</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>pip<span class="w"> </span>install<span class="w"> </span>open3d<span class="w">           </span><span class="c1"># 点云处理</span>
+</code></pre></div>
+<h3 id="65-数据处理与标注">6.5 数据处理与标注<a class="headerlink" href="#65-数据处理与标注" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>pip<span class="w"> </span>install<span class="w"> </span>h5py<span class="w">             </span><span class="c1"># HDF5 数据读写</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>pip<span class="w"> </span>install<span class="w"> </span>av<span class="w">               </span><span class="c1"># 视频解码（PyAV）</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>pip<span class="w"> </span>install<span class="w"> </span>imageio<span class="o">[</span>ffmpeg<span class="o">]</span><span class="w">  </span><span class="c1"># 视频读写</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>pip<span class="w"> </span>install<span class="w"> </span>supervision<span class="w">      </span><span class="c1"># 目标检测标注工具</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>pip<span class="w"> </span>install<span class="w"> </span>albumentations<span class="w">   </span><span class="c1"># 数据增强</span>
+</code></pre></div>
+<hr />
+<h2 id="7-环境验证清单">7. 环境验证清单<a class="headerlink" href="#7-环境验证清单" title="Permanent link">&para;</a></h2>
+<p>完成上述安装后，运行以下脚本验证环境完整性：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="sd">"""</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="sd">环境验证脚本 - 检查 UAV VLA/VLM/World Model 项目所需组件</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="sd">运行方式: python check_env.py</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="sd">"""</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">check_package</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">import_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">    </span><span class="sd">"""检查 Python 包是否安装"""</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>    <span class="n">import_name</span> <span class="o">=</span> <span class="n">import_name</span> <span class="ow">or</span> <span class="n">name</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>        <span class="n">mod</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">import_name</span><span class="p">)</span>
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>        <span class="n">version</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="s1">'__version__'</span><span class="p">,</span> <span class="s1">'unknown'</span><span class="p">)</span>
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  [OK] </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>        <span class="k">return</span> <span class="kc">True</span>
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  [MISSING] </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>        <span class="k">return</span> <span class="kc">False</span>
+<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a>
+<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a><span class="k">def</span><span class="w"> </span><span class="nf">check_all</span><span class="p">():</span>
+<a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+<a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"UAV VLA/VLM/World Model 环境检查"</span><span class="p">)</span>
+<a id="__codelineno-19-21" name="__codelineno-19-21" href="#__codelineno-19-21"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+<a id="__codelineno-19-22" name="__codelineno-19-22" href="#__codelineno-19-22"></a>
+<a id="__codelineno-19-23" name="__codelineno-19-23" href="#__codelineno-19-23"></a>    <span class="c1"># 1. CUDA</span>
+<a id="__codelineno-19-24" name="__codelineno-19-24" href="#__codelineno-19-24"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<a id="__codelineno-19-25" name="__codelineno-19-25" href="#__codelineno-19-25"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">[GPU]"</span><span class="p">)</span>
+<a id="__codelineno-19-26" name="__codelineno-19-26" href="#__codelineno-19-26"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  CUDA available: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-19-27" name="__codelineno-19-27" href="#__codelineno-19-27"></a>    <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+<a id="__codelineno-19-28" name="__codelineno-19-28" href="#__codelineno-19-28"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  GPU: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-19-29" name="__codelineno-19-29" href="#__codelineno-19-29"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  VRAM: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_properties</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">total_memory</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1e9</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GB"</span><span class="p">)</span>
+<a id="__codelineno-19-30" name="__codelineno-19-30" href="#__codelineno-19-30"></a>
+<a id="__codelineno-19-31" name="__codelineno-19-31" href="#__codelineno-19-31"></a>    <span class="c1"># 2. 核心包</span>
+<a id="__codelineno-19-32" name="__codelineno-19-32" href="#__codelineno-19-32"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">[Core]"</span><span class="p">)</span>
+<a id="__codelineno-19-33" name="__codelineno-19-33" href="#__codelineno-19-33"></a>    <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'torch'</span><span class="p">,</span> <span class="s1">'torchvision'</span><span class="p">,</span> <span class="s1">'torchaudio'</span><span class="p">]:</span>
+<a id="__codelineno-19-34" name="__codelineno-19-34" href="#__codelineno-19-34"></a>        <span class="n">check_package</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span>
+<a id="__codelineno-19-35" name="__codelineno-19-35" href="#__codelineno-19-35"></a>
+<a id="__codelineno-19-36" name="__codelineno-19-36" href="#__codelineno-19-36"></a>    <span class="c1"># 3. Hugging Face</span>
+<a id="__codelineno-19-37" name="__codelineno-19-37" href="#__codelineno-19-37"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">[Hugging Face]"</span><span class="p">)</span>
+<a id="__codelineno-19-38" name="__codelineno-19-38" href="#__codelineno-19-38"></a>    <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'transformers'</span><span class="p">,</span> <span class="s1">'diffusers'</span><span class="p">,</span> <span class="s1">'datasets'</span><span class="p">,</span> <span class="s1">'accelerate'</span><span class="p">,</span> <span class="s1">'peft'</span><span class="p">,</span> <span class="s1">'huggingface_hub'</span><span class="p">]:</span>
+<a id="__codelineno-19-39" name="__codelineno-19-39" href="#__codelineno-19-39"></a>        <span class="n">check_package</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span>
+<a id="__codelineno-19-40" name="__codelineno-19-40" href="#__codelineno-19-40"></a>
+<a id="__codelineno-19-41" name="__codelineno-19-41" href="#__codelineno-19-41"></a>    <span class="c1"># 4. 科学计算</span>
+<a id="__codelineno-19-42" name="__codelineno-19-42" href="#__codelineno-19-42"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">[Scientific]"</span><span class="p">)</span>
+<a id="__codelineno-19-43" name="__codelineno-19-43" href="#__codelineno-19-43"></a>    <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'numpy'</span><span class="p">,</span> <span class="s1">'scipy'</span><span class="p">,</span> <span class="s1">'matplotlib'</span><span class="p">,</span> <span class="s1">'opencv-python'</span><span class="p">,</span> <span class="s1">'PIL:pillow'</span><span class="p">]:</span>
+<a id="__codelineno-19-44" name="__codelineno-19-44" href="#__codelineno-19-44"></a>        <span class="k">if</span> <span class="s1">':'</span> <span class="ow">in</span> <span class="n">pkg</span><span class="p">:</span>
+<a id="__codelineno-19-45" name="__codelineno-19-45" href="#__codelineno-19-45"></a>            <span class="n">name</span><span class="p">,</span> <span class="n">imp</span> <span class="o">=</span> <span class="n">pkg</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)</span>
+<a id="__codelineno-19-46" name="__codelineno-19-46" href="#__codelineno-19-46"></a>            <span class="n">check_package</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">imp</span><span class="p">)</span>
+<a id="__codelineno-19-47" name="__codelineno-19-47" href="#__codelineno-19-47"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-19-48" name="__codelineno-19-48" href="#__codelineno-19-48"></a>            <span class="n">check_package</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span>
+<a id="__codelineno-19-49" name="__codelineno-19-49" href="#__codelineno-19-49"></a>
+<a id="__codelineno-19-50" name="__codelineno-19-50" href="#__codelineno-19-50"></a>    <span class="c1"># 5. 机器人与仿真</span>
+<a id="__codelineno-19-51" name="__codelineno-19-51" href="#__codelineno-19-51"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">[Robotics &amp; Sim]"</span><span class="p">)</span>
+<a id="__codelineno-19-52" name="__codelineno-19-52" href="#__codelineno-19-52"></a>    <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'gymnasium'</span><span class="p">,</span> <span class="s1">'pyquaternion'</span><span class="p">,</span> <span class="s1">'transforms3d'</span><span class="p">]:</span>
+<a id="__codelineno-19-53" name="__codelineno-19-53" href="#__codelineno-19-53"></a>        <span class="n">check_package</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span>
+<a id="__codelineno-19-54" name="__codelineno-19-54" href="#__codelineno-19-54"></a>
+<a id="__codelineno-19-55" name="__codelineno-19-55" href="#__codelineno-19-55"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="s1">'='</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">50</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-19-56" name="__codelineno-19-56" href="#__codelineno-19-56"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"环境检查完成。如果所有项均为 [OK]，可以开始实验。"</span><span class="p">)</span>
+<a id="__codelineno-19-57" name="__codelineno-19-57" href="#__codelineno-19-57"></a>
+<a id="__codelineno-19-58" name="__codelineno-19-58" href="#__codelineno-19-58"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+<a id="__codelineno-19-59" name="__codelineno-19-59" href="#__codelineno-19-59"></a>    <span class="n">check_all</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<h2 id="8-常见问题与解决方案">8. 常见问题与解决方案<a class="headerlink" href="#8-常见问题与解决方案" title="Permanent link">&para;</a></h2>
+<h3 id="q1-torchcudais_available-返回-false">Q1: <code>torch.cuda.is_available()</code> 返回 <code>False</code><a class="headerlink" href="#q1-torchcudais_available-返回-false" title="Permanent link">&para;</a></h3>
+<p><strong>原因与解决方案：</strong></p>
+<ul>
+<li>检查 NVIDIA 驱动是否安装正确：运行 <code>nvidia-smi</code></li>
+<li>PyTorch 版本与 CUDA 版本不匹配：重新安装对应版本的 PyTorch</li>
+<li>WSL2 中未安装 <code>nvidia-cuda-toolkit</code>：确保 Windows 端驱动是最新版本</li>
+<li>多 GPU 环境中 CUDA_VISIBLE_DEVICES 设置错误：检查环境变量</li>
+</ul>
+<h3 id="q2-wsl2-中内存不足oom">Q2: WSL2 中内存不足（OOM）<a class="headerlink" href="#q2-wsl2-中内存不足oom" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># 在 Windows 端创建 %UserProfile%\.wslconfig 文件</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="c1"># 内容如下：</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="o">[</span>wsl2<span class="o">]</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="nv">memory</span><span class="o">=</span>48GB
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="nv">swap</span><span class="o">=</span>8GB
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="nv">processors</span><span class="o">=</span><span class="m">16</span>
+</code></pre></div>
+<h3 id="q3-hugging-face-模型下载速度慢">Q3: Hugging Face 模型下载速度慢<a class="headerlink" href="#q3-hugging-face-模型下载速度慢" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># 使用镜像源</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span>https://hf-mirror.com
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1"># 或使用 huggingface-cli 下载</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>huggingface-cli<span class="w"> </span>download<span class="w"> </span>--resume-download<span class="w"> </span>model_name<span class="w"> </span>--local-dir<span class="w"> </span>./models
+</code></pre></div>
+<h3 id="q4-ros2-与-python-版本冲突">Q4: ROS2 与 Python 版本冲突<a class="headerlink" href="#q4-ros2-与-python-版本冲突" title="Permanent link">&para;</a></h3>
+<p>ROS2 Humble 默认使用 Python 3.10。建议在 ROS2 工作空间使用系统 Python，在深度学习环境使用 conda/venv。两者不要混用。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># 在 ROS2 终端中</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="nb">source</span><span class="w"> </span>/opt/ros/humble/setup.bash
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="c1"># 不要在此环境下 conda activate</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="c1"># 在深度学习终端中</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>conda<span class="w"> </span>activate<span class="w"> </span>uavvla
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="c1"># 不要在此环境下 source ROS2 的 setup.bash</span>
+</code></pre></div>
+<h3 id="q5-px4-sitl-编译失败">Q5: PX4 SITL 编译失败<a class="headerlink" href="#q5-px4-sitl-编译失败" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># 确保安装了所有依赖</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>git<span class="w"> </span>cmake<span class="w"> </span>ninja-build<span class="w"> </span>gperf<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span>ccache<span class="w"> </span>dfu-util<span class="w"> </span>device-portal-common<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">  </span>libglib2.0-dev<span class="w"> </span>libpython3-dev<span class="w"> </span>pkg-config
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="c1"># 清理后重新编译</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="nb">cd</span><span class="w"> </span>PX4-Autopilot
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>make<span class="w"> </span>clean
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>make<span class="w"> </span>px4_sitl_default
+</code></pre></div>
+<h3 id="q6-xformers-安装失败">Q6: <code>xformers</code> 安装失败<a class="headerlink" href="#q6-xformers-安装失败" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># 确保 PyTorch 和 CUDA 版本匹配</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>pip<span class="w"> </span>install<span class="w"> </span>xformers<span class="w"> </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu121
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="c1"># 或使用预编译版本</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">xformers</span><span class="o">==</span><span class="m">0</span>.0.23.post1<span class="w"> </span>--extra-index-url<span class="w"> </span>https://download.pytorch.org/whl/cu121
+</code></pre></div>
+<h3 id="q7-gpu-显存不足怎么办">Q7: GPU 显存不足怎么办？<a class="headerlink" href="#q7-gpu-显存不足怎么办" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1"># 方法 1: 使用半精度推理</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="nv">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>model.to<span class="o">(</span>torch.float16<span class="o">)</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="c1"># 方法 2: 使用 4-bit 量化（需要 bitsandbytes）</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>from<span class="w"> </span>transformers<span class="w"> </span>import<span class="w"> </span>BitsAndBytesConfig
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="nv">bnb_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>BitsAndBytesConfig<span class="o">(</span><span class="nv">load_in_4bit</span><span class="o">=</span>True<span class="o">)</span>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="nv">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>AutoModelForCausalLM.from_pretrained<span class="o">(</span>model_name,<span class="w"> </span><span class="nv">quantization_config</span><span class="o">=</span>bnb_config<span class="o">)</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="c1"># 方法 3: 使用 DeepSpeed ZeRO</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="c1"># 方法 4: 减小 batch_size</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="c1"># 方法 5: 使用 gradient checkpointing</span>
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a>model.gradient_checkpointing_enable<span class="o">()</span>
+</code></pre></div>
+<hr />
+<h2 id="动手验证硬件需求表里的显存是怎么算出来的">动手验证：硬件需求表里的显存是怎么算出来的？<a class="headerlink" href="#动手验证硬件需求表里的显存是怎么算出来的" title="Permanent link">&para;</a></h2>
+<p>第 1 节那张表给了每一行的"最低"和"推荐"两栏，但没写这些数是怎么来的。这类表多是经验估算，彼此之间也常常对不上：同为 7B 微调，不同地方给出的数从 18 GB 到 48 GB 都有。</p>
+<p>它们不是谁抄错了。显存是四笔账的和：<strong>权重 / 梯度 / 优化器状态 / 激活</strong>。前三笔是精确算术，只要写清楚哪几项算了、按什么精度算，答案唯一；只有第四笔要实测。而四笔里最容易被漏掉的自变量是<strong>每个样本多少个 token</strong> —— 各类硬件表几乎都不写它。</p>
+<h3 id="前三笔的公式和一列反解表假设的算式">前三笔的公式，和一列反解表假设的算式<a class="headerlink" href="#前三笔的公式和一列反解表假设的算式" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">GB</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">30</span>                                   <span class="c1"># 与 nvidia-smi 的口径一致</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="n">P7</span><span class="p">,</span> <span class="n">N_LAYER</span><span class="p">,</span> <span class="n">D_MODEL</span> <span class="o">=</span> <span class="mf">7.0e9</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">4096</span>         <span class="c1"># LLaMA-2 7B 的规模</span>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">pad</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>                    <span class="c1"># 中文占两格，str.ljust 数不出来</span>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>    <span class="n">n</span> <span class="o">=</span> <span class="s2">" "</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">w</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mh">0x2E80</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">))</span>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>    <span class="k">return</span> <span class="n">n</span> <span class="o">+</span> <span class="n">s</span> <span class="k">if</span> <span class="n">right</span> <span class="k">else</span> <span class="n">s</span> <span class="o">+</span> <span class="n">n</span>
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">lora</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>                                   <span class="c1"># 每层 4 个 d x d 投影，各挂一对 d x r</span>
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>    <span class="k">return</span> <span class="n">N_LAYER</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D_MODEL</span> <span class="o">*</span> <span class="n">r</span>
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="k">def</span><span class="w"> </span><span class="nf">static_gb</span><span class="p">(</span><span class="n">n_frozen</span><span class="p">,</span> <span class="n">n_trainable</span><span class="p">):</span>
+<a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="w">    </span><span class="sd">"""冻结的只存 fp16 一份；可训练的存 fp16 权重 + fp16 梯度 + fp32 两份动量。"""</span>
+<a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a>    <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_frozen</span> <span class="o">+</span> <span class="mi">12</span> <span class="o">*</span> <span class="n">n_trainable</span><span class="p">)</span> <span class="o">/</span> <span class="n">GB</span>
+<a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"一、静态三项是精确算术，算不出花来"</span><span class="p">)</span>
+<a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"  "</span> <span class="o">+</span> <span class="n">pad</span><span class="p">(</span><span class="s2">"配置"</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span><span class="p">(</span><span class="s2">"权重"</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span><span class="p">(</span><span class="s2">"梯度"</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a>      <span class="o">+</span> <span class="n">pad</span><span class="p">(</span><span class="s2">"Adam"</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span><span class="p">(</span><span class="s2">"合计"</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+<a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">nt</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">"全量 fp16 + Adam"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">P7</span><span class="p">),</span> <span class="p">(</span><span class="s2">"只推理, fp16"</span><span class="p">,</span> <span class="n">P7</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+<a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a>                     <span class="p">(</span><span class="s2">"LoRA r=64"</span><span class="p">,</span> <span class="n">P7</span><span class="p">,</span> <span class="n">lora</span><span class="p">(</span><span class="mi">64</span><span class="p">))):</span>
+<a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a>    <span class="n">w</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">nf</span> <span class="o">+</span> <span class="n">nt</span><span class="p">)</span> <span class="o">/</span> <span class="n">GB</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">nt</span> <span class="o">/</span> <span class="n">GB</span><span class="p">,</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">nt</span> <span class="o">/</span> <span class="n">GB</span>
+<a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">pad</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">)</span><span class="si">}{</span><span class="n">w</span><span class="si">:</span><span class="s2">&gt;7.1f</span><span class="si">}</span><span class="s2">G</span><span class="si">{</span><span class="n">g</span><span class="si">:</span><span class="s2">&gt;7.1f</span><span class="si">}</span><span class="s2">G</span><span class="si">{</span><span class="n">a</span><span class="si">:</span><span class="s2">&gt;7.1f</span><span class="si">}</span><span class="s2">G</span><span class="si">{</span><span class="n">w</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="si">:</span><span class="s2">&gt;7.1f</span><span class="si">}</span><span class="s2">G"</span><span class="p">)</span>
+<a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a><span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">g2</span><span class="p">):</span>                     <span class="c1"># 设 g = 固定项 + batch x 每样本项</span>
+<a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a>    <span class="n">per</span> <span class="o">=</span> <span class="p">(</span><span class="n">g2</span> <span class="o">-</span> <span class="n">g1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">b2</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span>
+<a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a>    <span class="k">return</span> <span class="n">g1</span> <span class="o">-</span> <span class="n">per</span> <span class="o">*</span> <span class="n">b1</span><span class="p">,</span> <span class="n">per</span>
+<a id="__codelineno-26-21" name="__codelineno-26-21" href="#__codelineno-26-21"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">二、同一张表里两行只差 batch，就能解出固定项与每样本项"</span><span class="p">)</span>
+<a id="__codelineno-26-22" name="__codelineno-26-22" href="#__codelineno-26-22"></a><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">g2</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">"07/03 ResNet-50"</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mf">14.0</span><span class="p">),</span>
+<a id="__codelineno-26-23" name="__codelineno-26-23" href="#__codelineno-26-23"></a>                             <span class="p">(</span><span class="s2">"07/04 hidden=256"</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">),</span>
+<a id="__codelineno-26-24" name="__codelineno-26-24" href="#__codelineno-26-24"></a>                             <span class="p">(</span><span class="s2">"07/07 DreamerV3"</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)):</span>
+<a id="__codelineno-26-25" name="__codelineno-26-25" href="#__codelineno-26-25"></a>    <span class="n">f</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">g2</span><span class="p">)</span>
+<a id="__codelineno-26-26" name="__codelineno-26-26" href="#__codelineno-26-26"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">pad</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">)</span><span class="si">}</span><span class="s2">固定项 </span><span class="si">{</span><span class="n">f</span><span class="si">:</span><span class="s2">&gt;5.2f</span><span class="si">}</span><span class="s2">G   每样本 </span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s2">&gt;6.3f</span><span class="si">}</span><span class="s2">G"</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="本地实测结果">本地实测结果<a class="headerlink" href="#本地实测结果" title="Permanent link">&para;</a></h3>
+<p>静态三项（7B 参数）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>  配置                          权重    梯度    Adam    合计 字节/参数
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>  全量 fp16 + Adam             13.0G   13.0G   52.2G   78.2G        12
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>  全量 fp32 + Adam             26.1G   26.1G   52.2G  104.3G        16
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>  只推理, fp16                 13.0G    0.0G    0.0G   13.0G         2
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>  LoRA r=16 (29M 可训练)       13.1G    0.1G    0.2G   13.4G         2
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>  LoRA r=64 (117M 可训练)      13.3G    0.2G    0.9G   14.4G         2
+</code></pre></div>
+<p>优化器状态这一项不是推的，是真建一个模型、真走一步 Adam 之后数出来的：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>二、优化器状态不是估的：真建一个 66K 参数的模型，真走一步 Adam
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>  实测 528408 字节 / 66049 参数 = 8.0 字节每可训练参数（一阶动量 fp32 + 二阶动量 fp32，正好 8）
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>  换算：7B 全量微调这一项要 52.2 GB；
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>        换成 LoRA r=16，可训练参数只剩 0.42%，这一项塌到 0.22 GB。
+</code></pre></div>
+<p>第四笔账要实测。激活用 <code>torch.autograd.graph.saved_tensors_hooks</code> 拦下反向图保留的每个张量：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>三、激活：ResNet-50（25.6M 参数，torchvision 原版结构）
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>  batch    权重+梯度+Adam     激活     合计
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>  16                0.29G    1.94G    2.23G
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>  32                0.29G    3.89G    4.17G
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>  两行相减解出：固定项 +0.00 GB，每样本 0.121 GB。
+<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>  固定项是 0 而不是参数那 0.10 GB——因为参数已经在上一段被剔掉了，
+<a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>  激活里本来就不该有它。两笔账各归各的，才不会重复计入。
+</code></pre></div>
+<p>同一套测量放到 7B 那个宽度上（隐藏 4096、512 个 token）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>四、激活随规模怎么涨（隐藏 4096、512 个 token）
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>  层数    batch       激活   每层每样本
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>  1           1    136.1MB      136.1MB
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>  1           2    272.1MB      136.1MB
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>  1           4    544.3MB      136.1MB
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>  2           1    272.1MB      136.1MB
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>  2           2    544.3MB      136.1MB
+<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>  2           4   1088.6MB      136.1MB
+<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>  4           1    544.3MB      136.1MB
+<a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a>  4           2   1088.6MB      136.1MB
+<a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a>  4           4   2177.1MB      136.1MB
+<a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a>  归一化之后九格里只差 0.0%——层数和 batch 都是一次方，所以能安全外推。
+</code></pre></div>
+<p>于是得到一把尺子：<strong>8.5 MB/token</strong>（32 层合计），与 batch 无关。它可以两用——先算真实配置的账，再拿去量出处不明的资源表：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>六、对账：先算真实配置的账，再把尺子用到资源表上
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>  六之一、06 号脚本写的是 3 x A100(40G)、per_device_batch 32、seq 2048、r=64
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>    每卡静态（r=64）= 14.4G，40G 卡留给激活 25.6G
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>    每卡需要激活 544G（65536 token x 8.5 MB），超预算 21 倍
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>    静态账怎么算都装得下，装不下的是激活——这就是脚本里
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>    --gradient_checkpointing True 存在的算术理由。
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>
+<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>  六之二、用这把尺子量两张出处不明的表（示例）
+<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a>  示例              配置                   文档   静态   余额 反解 token
+<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>  1               LoRA r=64, bs=2         18G  14.4G   3.6G        220
+<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a>  2               LoRA r=128, bs=4        24G  15.7G   8.3G        251
+<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a>  3               全量微调, 4 卡          80G  78.2G   1.8G        213
+<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a>  4               LoRA, bs=4, fp16        18G  13.4G   4.6G        139
+<a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a>  5               LoRA, bs=8, bf16        40G  13.4G  26.6G        401
+<a id="__codelineno-31-16" name="__codelineno-31-16" href="#__codelineno-31-16"></a>
+<a id="__codelineno-31-17" name="__codelineno-31-17" href="#__codelineno-31-17"></a>  统一按 256 token 重算，GeoChat 那三行几乎重合，UAV-Flow 两行还差一截：
+<a id="__codelineno-31-18" name="__codelineno-31-18" href="#__codelineno-31-18"></a>  配置                           文档   按 256 token 重算       差
+<a id="__codelineno-31-19" name="__codelineno-31-19" href="#__codelineno-31-19"></a>  LoRA r=64, bs=2                 18G               18.6G      +3%
+<a id="__codelineno-31-20" name="__codelineno-31-20" href="#__codelineno-31-20"></a>  LoRA r=128, bs=4                24G               24.2G      +1%
+<a id="__codelineno-31-21" name="__codelineno-31-21" href="#__codelineno-31-21"></a>  全量微调, 4 卡                  80G               80.4G      +0%
+<a id="__codelineno-31-22" name="__codelineno-31-22" href="#__codelineno-31-22"></a>  LoRA, bs=4, fp16                18G               21.9G     +22%
+<a id="__codelineno-31-23" name="__codelineno-31-23" href="#__codelineno-31-23"></a>  LoRA, bs=8, bf16                40G               30.4G     -24%
+</code></pre></div>
+<p>三件事从上面这几段里读出来。</p>
+<p><strong>第一，LoRA 真正省下的不是权重，是优化器状态。</strong> 权重从 13.0 GB 只涨到 14.4 GB，而 Adam 那一项从 52.2 GB 塌到 0.9 GB。所以第 1 节那张表里「VLM 推理 16 GB / 微调 24 GB」的差距，主要不在参数量，在要不要存两份动量。</p>
+<p><strong>第二，静态账怎么算都装得下，装不下的是激活。</strong> 本仓库 06 号那份复现指南的真实配置是 <code>batch 32 x 2048 token = 65536 token</code>，按这把尺子要 <strong>544 GB</strong>，而 40 GB 卡减去静态账只剩 25.6 GB —— 超预算 <strong>21 倍</strong>。这个缺口只能靠梯度检查点（重算换显存）来补，不可能靠调 LoRA 秩。<strong>想省显存和想省算力在这里是对着干的。</strong></p>
+<p><strong>第三，这把尺子能验「自洽」，验不了「有出处」。</strong> 上面那几行反解出来的序列长度落在 139 ~ 401 token —— 正是 VLM 读一张图加一句指令的量级，<strong>每一行看着都合理</strong>，算得通。它们之所以是编的，不是因为算不通，而是因为原论文与仓库里<strong>根本没有按配置分行的显存数据</strong>，那几个数无从产生。<strong>看表时先问「这个数在源头存在吗」，再问「它算得通吗」。</strong></p>
+<p><strong>第四，量小模型时这把尺子还会失灵。</strong> 一张常见的 ResNet-50 显存表自己解出来是固定项 2.0 GB、每样本 0.375 GB，而实测是固定项 <strong>0.00</strong> GB、每样本 0.121 GB —— 每样本差 3.1 倍，还凭空多出 2.0 GB。原因在实测那一段：ResNet-50 的参数一共才 0.29 GB，nvidia-smi 读到的东西里框架开销和显存碎片占了大头，那不是能按算法量算出来的。<strong>看表之前先看模型有多大。</strong></p>
+<p>顺带一个可迁移的算式：<strong>同一张表里只要有两行只差 batch，就能解出"固定项"和"每样本项"两个未知数</strong>，不需要任何额外信息。三张不同项目的表各自解出来的固定项都是 <strong>2.00 GB</strong> —— 更可能是同一种估算习惯，而不是三次独立的测量。</p>
+<blockquote>
+<p><strong>限制</strong>：激活那一项是 PyTorch eager 模式量出来的，而且 PyTorch 2.x 的 <code>nn.MultiheadAttention</code> 在 <code>need_weights=False</code> 时走 SDPA 融合核，<strong>不会</strong>把注意力矩阵留在图里 —— 所以这份账里不含 seq² 那一项，这是现代实现的正常样子。真机上 nvidia-smi 还会多出框架开销、cuDNN workspace 和显存碎片，本节没有算，也不该算进算法需求里。</p>
+<p>本节只算单卡。ZeRO、张量并行这类分片方案会把静态三项按卡数切开，07/02 和 07/06 里那些"4 卡"的行要按各自实际用的策略另算。</p>
+<p>反解出的"序列长度"依赖一个前提：那几行之间除了 batch 和 token 数没有别的变量。UAV-Flow 那两行换过精度（fp16 → bf16）和硬件（4090 → A100），所以它们重算后仍差 21% 和 24%，不能全记在序列长度头上。</p>
+</blockquote>
+<p><img alt="显存的三项是精确算术，第四项激活随规模走，而序列长度是那些表从没写过的自变量" src="../../figures/o_budget.png" /></p>
+<h3 id="运行完整脚本">运行完整脚本<a class="headerlink" href="#运行完整脚本" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>py<span class="w"> </span>-3.9<span class="w"> </span>code/o_budget.py<span class="w">    </span><span class="c1"># 约 2 分钟，CPU 即可，只需 torch 与 torchvision</span>
+</code></pre></div>
+<hr />
+<h2 id="下一步">下一步<a class="headerlink" href="#下一步" title="Permanent link">&para;</a></h2>
+<p>环境搭建完成后，你可以根据兴趣选择以下方向进行实践：</p>
+<ul>
+<li><a href="02-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-UAV-Flow.html">02 - 复现 UAV-Flow</a> — 视觉语言动作模型</li>
+<li><a href="03-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-CognitiveDrone.html">03 - 复现 CognitiveDrone</a> — 认知无人机数据采集</li>
+<li><a href="04-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-FlightDiffusion.html">04 - 复现 FlightDiffusion</a> — 扩散模型生成 FPV 视频</li>
+<li><a href="05-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-MotionScape.html">05 - 使用 MotionScape 数据集</a> — 运动场景数据集</li>
+<li><a href="06-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-GeoChat.html">06 - 复现 GeoChat</a> — 遥感视觉语言模型</li>
+<li><a href="07-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DreamerV3-Drone.html">07 - 复现 DreamerV3-Drone</a> — 世界模型无人机竞速</li>
+</ul>
+<hr />
+<h2 id="思考题">思考题<a class="headerlink" href="#思考题" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p><strong>选型判断</strong>：上面那张硬件需求表里，每一行都有"最低"和"推荐"两栏。如果手上只有一张 RTX 4090（24 GB），表里哪些项目跑得动、哪些跑不动？判断时说清楚你用的是哪一栏。</p>
+</li>
+<li>
+<p><strong>环境隔离</strong>：Q4 反复强调 ROS2 环境和深度学习环境不要混用。为什么混用会出问题？文档给出的具体操作规则是什么？</p>
+</li>
+<li>
+<p><strong>排障顺序</strong>：<code>torch.cuda.is_available()</code> 返回 <code>False</code> 时，Q1 列了四条可能原因。在 <strong>WSL2</strong> 这个特定环境下，你会按什么顺序排查？为什么某一条在 WSL2 里其实很少是真正的原因？</p>
+</li>
+<li>
+<p><strong>成本权衡</strong>：Q7 给了五种应对显存不足的方法。对一个 7B VLM 的 LoRA 微调任务、在 24 GB 卡上，你会优先选哪一种？为什么不是另外几种？</p>
+</li>
+<li>
+<p><strong>验证的边界</strong>：第 7 节那个环境验证脚本靠逐个 <code>import</code> 来检查。它检查不到哪些东西？"全部 [OK]" 能说明什么、不能说明什么？</p>
+</li>
+</ol>
+<details><summary>参考答案</summary>
+
+1. 关键是把两栏分开看。**推荐栏**里能对上 4090（24 GB）的是 VLM 推理（7B，24 GB）和世界模型训练 DreamerV3（24 GB）；**最低栏**里能跑的是 VLM 微调（24 GB）、VLA 模型（24 GB）、世界模型训练（12 GB），以及不需要 GPU 的 PX4 SITL 和数据集处理。而 VLM 微调（推荐 48 GB）用 4090 会吃紧——注意这一行"最低 24 GB"和"推荐 48 GB"差一倍，说明最低配置实际体验会很勉强。文档给的替代方案是云 GPU（Colab Pro / AutoDL / Lambda Cloud）。表里"视频生成推理（现成 I2V 模型）"那一行两栏都是"未实测"——**FlightDiffusion 并不训练扩散模型**（用的是现成的 Wan 2.2 I2V Fast），只有推理一档，且这一档尚未量过，两栏都给不出数。
+
+2. ROS2 Humble 默认绑定系统 Python 3.10，而 conda 环境会改写解释器和 `PYTHONPATH`。混用后 `import rclpy` 要么直接失败，要么加载到用错误 Python 版本编译的扩展模块。文档给的规则很明确：**ROS2 终端只 `source /opt/ros/humble/setup.bash`，不要 `conda activate`；深度学习终端只 `conda activate uavvla`，不要 source ROS2 的 setup.bash。** 也就是用两个终端把两套环境物理隔开。
+
+3. 先跑 `nvidia-smi` —— 成本最低，且能一票否决。WSL2 的特殊性在于：**不需要在 WSL2 里单独装 CUDA Toolkit**，Windows 端驱动会通过 `/usr/lib/wsl/lib/` 自动映射进来。所以"WSL2 里没装 cuda-toolkit"这条通常不是真因，该查的是 **Windows 端的驱动版本是否够新**。之后才轮到 PyTorch 版本与 CUDA 是否匹配，最后查 `CUDA_VISIBLE_DEVICES`。
+
+4. 优先 **4-bit 量化（bitsandbytes）+ gradient checkpointing**。理由：LoRA 本身已把可训练参数压得很低，配 4-bit 量化加载基座是这个组合的标准做法，而 6.3 节已经把 `peft` 和 `bitsandbytes` 装好了。半精度（方法 1）对本来就用 fp16 训练的任务收益有限；DeepSpeed ZeRO（方法 3）主要面向多卡或分片优化，单卡收益不如前两者直接；减小 batch_size（方法 4）直接拉长训练时间，通常留作最后手段。
+
+5. 它只覆盖 **Python 侧**。检查不到：CUDA 版本与 PyTorch 是否真正兼容（`is_available()` 为 `True` 时算子仍可能不匹配）、ROS2 / PX4 / MAVROS 这些非 Python 组件、MAVROS 需要的 GeographicLib 数据集是否安装，以及 `xformers` 这类只在运行时才报错的算子包。所以"全部 [OK]"是**必要不充分**条件 —— 它排除了一批低级问题，但不能保证后面复现时不出环境问题。
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Qxy661 · MIT License
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,4787 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="59 篇中文文档 · 195 篇论文 · 24 个纯 CPU 可跑 demo · 28.7 万字">
+      
+      
+      
+        <link rel="canonical" href="https://qxy661.github.io/UAV-WM-VLA-Learning/docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/08-%E8%81%94%E5%90%88%E5%B5%8C%E5%85%A5%E9%A2%84%E6%B5%8B%E4%B8%8E%E6%BD%9C%E7%A9%BA%E9%97%B4%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html">
+      
+      
+        <link rel="prev" href="07-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E6%B5%8B%E4%B8%8E%E8%AF%8A%E6%96%AD.html">
+      
+      
+        <link rel="next" href="09-%E9%95%BF%E6%97%B6%E7%A8%8B%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%94%9F%E6%88%90.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>08 联合嵌入预测与潜空间世界模型 - 世界模型 · VLA · VLM 学习库（无人机视角）</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#联合嵌入预测与潜空间世界模型不重建的那条路" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-header__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            世界模型 · VLA · VLM 学习库（无人机视角）
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              08 联合嵌入预测与潜空间世界模型
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到深色"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切到深色" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到浅色"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切到浅色" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  导读与学习路线
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  基础概念
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  世界模型专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLA 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLM 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  综述论文精读
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  论文导读合集
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  实践指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  研究前沿与开放问题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  专题自测与考察
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../mindmaps/field-overview.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  思维导图
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../references/paper-list.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  参考资料
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../code/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  可运行代码
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../en/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English Overview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../README.en.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English README
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CHANGELOG.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  更新日志
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  贡献指南
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-nav__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    世界模型 · VLA · VLM 学习库（无人机视角）
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读与学习路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础概念
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基础概念
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/01-%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 什么是世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/02-%E4%BB%80%E4%B9%88%E6%98%AFVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 什么是 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/03-%E4%BB%80%E4%B9%88%E6%98%AFVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 什么是 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/04-%E4%B8%89%E8%80%85%E5%85%B3%E7%B3%BB%E4%B8%8E%E5%8C%BA%E5%88%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 三者关系与区别
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/05-%E6%97%A0%E4%BA%BA%E6%9C%BAvs%E5%9C%B0%E9%9D%A2%E6%9C%BA%E5%99%A8%E4%BA%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机与地面机器人
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    世界模型专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95%E5%8F%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 世界模型发展史
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02-%E7%94%9F%E6%88%90%E5%BC%8F%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 生成式世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03-%E6%A8%A1%E5%9E%8B%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 模型强化学习世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04-3D%E5%9C%BA%E6%99%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 3D 场景世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="05-%E6%97%A0%E4%BA%BA%E6%9C%BA%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E7%BB%BC%E8%BF%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机世界模型综述
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 关键数据集与基准
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="07-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E6%B5%8B%E4%B8%8E%E8%AF%8A%E6%96%AD.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 世界模型评测与诊断
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 联合嵌入预测与潜空间世界模型
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="08-%E8%81%94%E5%90%88%E5%B5%8C%E5%85%A5%E9%A2%84%E6%B5%8B%E4%B8%8E%E6%BD%9C%E7%A9%BA%E9%97%B4%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 联合嵌入预测与潜空间世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-重建派与预测派的分岔" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 重建派与预测派的分岔
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-表征空间预测核心主张与它挡住的噪声" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 表征空间预测：核心主张与它挡住的噪声
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-丢掉重建挡住了什么" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 丢掉重建挡住了什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-三种用途" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 三种用途
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-与-rssm-类世界模型的关系" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 与 RSSM 类世界模型的关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-表征塌缩与信息瓶颈" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 表征塌缩与信息瓶颈
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-对无人机的含义" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 对无人机的含义
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-关键论文" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 关键论文
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 关键论文">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#路线来源" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        路线来源
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#规模化与新架构" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        规模化与新架构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#塌缩动力学信息与训练动态" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        塌缩、动力学信息与训练动态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#逆动力学与物理量保全" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        逆动力学与物理量保全
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#连续时间与流匹配" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        连续时间与流匹配
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#规划与不确定性" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        规划与不确定性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-动手验证重建式表征与预测式表征的分歧" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 动手验证：重建式表征与预测式表征的分歧
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 动手验证：重建式表征与预测式表征的分歧">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-核心代码" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 核心代码
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-本地实测结果" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 本地实测结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-运行完整脚本" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 运行完整脚本
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-延伸阅读" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 延伸阅读
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-思考题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 思考题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. 思考题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#题目-1为什么重建派优先装高方差方向" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 1：为什么重建派优先装高方差方向
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#题目-2预测派的重建误差比重建派差这是缺点吗" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 2：预测派的重建误差比重建派差，这是缺点吗
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#题目-3为什么必须破掉简并" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 3：为什么必须破掉简并
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="09-%E9%95%BF%E6%97%B6%E7%A8%8B%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%94%9F%E6%88%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 长时程世界模型与交互式生成
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLA 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/01-VLA%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 架构演进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BAVLA%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机 VLA 模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/03-%E8%AF%AD%E8%A8%80%E6%9D%A1%E4%BB%B6%E9%A3%9E%E8%A1%8C%E6%8E%A7%E5%88%B6.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 语言条件飞行控制
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/04-%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E8%BE%85%E5%8A%A9%E8%A7%84%E5%88%92.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 基础模型辅助规划
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/05-%E6%9C%BA%E8%BD%BD%E9%83%A8%E7%BD%B2%E4%B8%8E%E4%BC%98%E5%8C%96.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 机载部署与优化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/06-%E5%8A%A8%E4%BD%9C%E5%A4%B4%E4%B8%8E%E5%8A%A8%E4%BD%9C%E5%88%86%E5%9D%97.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 动作头与动作分块
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/07-%E6%95%B0%E6%8D%AE%E3%80%81%E9%A2%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%B7%A8%E5%85%B7%E8%BA%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 数据、预训练与跨具身
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/08-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%90%8E%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%87%AA%E6%88%91%E6%94%B9%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 强化学习后训练与自我改进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/09-%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E4%B8%8E%E6%8A%A5%E5%91%8A%E5%8F%A3%E5%BE%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 评测基准与报告口径
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/10-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%A2%9E%E5%BC%BAVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 世界模型增强 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLM 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/01-%E9%81%A5%E6%84%9FVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 遥感 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机场景理解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/03-LLM%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BAAgent.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 LLM 驱动的无人机 Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/04-%E8%BE%B9%E7%BC%98VLM%E9%83%A8%E7%BD%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 边缘 VLM 部署
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/05-%E9%80%9A%E7%94%A8VLM%E6%9E%B6%E6%9E%84%E4%B8%8E%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 通用 VLM 架构与视觉编码器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/06-VLM%E6%8C%87%E4%BB%A4%E5%BE%AE%E8%B0%83%E4%B8%8E%E5%AF%B9%E9%BD%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 VLM 指令微调与对齐
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/07-%E9%80%9A%E7%94%A8VLM%E8%AF%84%E6%B5%8B%E4%B8%8E%E5%B9%BB%E8%A7%89.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 通用 VLM 评测与幻觉
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    综述论文精读
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    综述论文精读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/01-%E7%BB%BC%E8%BF%B0%E6%A6%82%E8%A7%88%E4%B8%8E%E7%BB%93%E6%9E%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 综述概览与结构
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E7%AD%96%E7%95%A5.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型作为策略
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/03-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E6%A8%A1%E6%8B%9F%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 世界模型作为模拟器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/04-%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 视频生成世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/05-%E5%9F%BA%E5%87%86%E4%B8%8E%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 基准与评估
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文导读合集
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文导读合集
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/world-model-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vla-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vlm-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/benchmark-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基准与数据集论文
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实践指南
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    实践指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/01-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 环境搭建
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/02-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-UAV-Flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 复现指南 UAV-Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/03-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-CognitiveDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 复现指南 CognitiveDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/04-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-FlightDiffusion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 复现指南 FlightDiffusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/05-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-MotionScape.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 复现指南 MotionScape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/06-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-GeoChat.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 复现指南 GeoChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/07-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DreamerV3-Drone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 复现指南 DreamerV3-Drone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/08-%E5%8F%AF%E5%A4%8D%E7%8E%B0%E9%A1%B9%E7%9B%AE%E5%80%99%E9%80%89%E6%B8%85%E5%8D%95.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 可复现项目候选清单
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/09-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DeepDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 复现指南 DeepDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/10-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-RemoteCLIP.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 复现指南 RemoteCLIP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/11-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-Flightmare.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11 复现指南 Flightmare
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    研究前沿与开放问题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10" id="__nav_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    研究前沿与开放问题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/01-%E7%A0%94%E7%A9%B6%E8%B7%AF%E7%BA%BF%E5%9B%BE.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 研究路线图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/02-%E7%A0%94%E7%A9%B6%E7%A9%BA%E7%99%BD%E4%B8%8E%E6%9C%BA%E4%BC%9A.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 研究空白与机会
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/03-%E8%AE%BA%E6%96%87%E6%89%B9%E5%88%A4%E6%80%A7%E9%98%85%E8%AF%BB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 论文批判性阅读
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/04-%E6%9C%80%E6%96%B0%E8%BF%9B%E5%B1%95%E4%B8%8E%E5%9B%A2%E9%98%9F%E8%BF%BD%E8%B8%AA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 最新进展与团队追踪
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    专题自测与考察
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    专题自测与考察
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/01-VLA%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 VLA 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/03-VLM%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 VLM 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    思维导图
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    思维导图
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/field-overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    领域全景图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/world-model-taxonomy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型分类学
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/vla-evolution.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 演进路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/reading-order.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    推荐阅读顺序
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考资料
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    参考资料
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/paper-list.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完整论文列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/vla-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/wm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/vlm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/awesome-annotations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Awesome List 注释
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/citation-audit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    引用核查报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    可运行代码
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../en/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../README.en.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    更新日志
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    贡献指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-重建派与预测派的分岔" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 重建派与预测派的分岔
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-表征空间预测核心主张与它挡住的噪声" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 表征空间预测：核心主张与它挡住的噪声
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-丢掉重建挡住了什么" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 丢掉重建挡住了什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-三种用途" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 三种用途
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-与-rssm-类世界模型的关系" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 与 RSSM 类世界模型的关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-表征塌缩与信息瓶颈" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 表征塌缩与信息瓶颈
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-对无人机的含义" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 对无人机的含义
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-关键论文" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 关键论文
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 关键论文">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#路线来源" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        路线来源
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#规模化与新架构" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        规模化与新架构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#塌缩动力学信息与训练动态" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        塌缩、动力学信息与训练动态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#逆动力学与物理量保全" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        逆动力学与物理量保全
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#连续时间与流匹配" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        连续时间与流匹配
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#规划与不确定性" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        规划与不确定性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-动手验证重建式表征与预测式表征的分歧" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 动手验证：重建式表征与预测式表征的分歧
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 动手验证：重建式表征与预测式表征的分歧">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-核心代码" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 核心代码
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-本地实测结果" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 本地实测结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-运行完整脚本" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 运行完整脚本
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-延伸阅读" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 延伸阅读
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-思考题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 思考题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. 思考题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#题目-1为什么重建派优先装高方差方向" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 1：为什么重建派优先装高方差方向
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#题目-2预测派的重建误差比重建派差这是缺点吗" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 2：预测派的重建误差比重建派差，这是缺点吗
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#题目-3为什么必须破掉简并" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 3：为什么必须破掉简并
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="联合嵌入预测与潜空间世界模型不重建的那条路">联合嵌入预测与潜空间世界模型：不重建的那条路<a class="headerlink" href="#联合嵌入预测与潜空间世界模型不重建的那条路" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>预计阅读：16 分钟 | 前置知识：自监督学习基础、对比学习思想、序列预测指标、本卷 02/03 篇</strong></p>
+</blockquote>
+<hr />
+<h2 id="1-重建派与预测派的分岔">1. 重建派与预测派的分岔<a class="headerlink" href="#1-重建派与预测派的分岔" title="Permanent link">&para;</a></h2>
+<p>前面几篇讲的世界模型有一个共同点：<strong>它们都重建观测</strong>。生成式世界模型（<code>02</code> 篇）在像素空间生成下一帧；Dreamer 系列（<code>03</code> 篇）先从观测编码出潜状态，再用解码器把潜状态还原成观测，重建损失是训练的主信号。3D 场景世界模型（<code>04</code> 篇）更直接，重建就是它的输出。</p>
+<p>这条路很成功，但它有一个默认前提：<strong>把观测还原得越准，就代表理解得越好</strong>。这个前提值得质疑。一段无人机视频里，像素级最不可预测的部分往往是最无关的部分——树叶的抖动、光照的闪烁、纹理的高频细节。一个模型把大量容量花在这些东西上，还原指标很漂亮，但对「无人机会往哪飞」毫无增益。</p>
+<p>联合嵌入预测架构（Joint-Embedding Predictive Architecture，JEPA）提出的替代方案是：<strong>不在观测空间预测，而在表征空间预测</strong>。给编码器两个时刻的观测，得到两个表征；让预测器从 t 时刻的表征推出 t+1 时刻的<strong>表征</strong>，损失只作用于表征之间，完全不经过解码器。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph 重建派
+        A[观测 x_t] --&gt; B[编码器]
+        B --&gt; C[潜状态 z_t]
+        C --&gt; D[解码器]
+        D --&gt; E[重建 x_t]
+    end
+    subgraph 预测派
+        F[观测 x_t] --&gt; G[编码器]
+        G --&gt; H[表征 s_t]
+        H --&gt; I[预测器]
+        I --&gt; J[预测表征 s_t+1]
+        K[观测 x_t+1] --&gt; L[目标编码器]
+        L --&gt; M[目标表征 s_t+1]
+        J -.表征空间损失.-&gt; M
+    end</code></pre>
+<p>两条路的差别不在「有没有解码器」这一件事上，而在<strong>判据换了</strong>：重建派问「潜状态里有多少关于观测的信息」，预测派问「潜状态里有多少关于未来的信息」。这两个问题是不同的。</p>
+<hr />
+<h2 id="2-表征空间预测核心主张与它挡住的噪声">2. 表征空间预测：核心主张与它挡住的噪声<a class="headerlink" href="#2-表征空间预测核心主张与它挡住的噪声" title="Permanent link">&para;</a></h2>
+<p>JEPA 的原始构想来自 <code>2301.08243</code> <em>Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture</em>（I-JEPA，2023-01），视频版本是 <code>2404.08471</code> <em>Revisiting Feature Prediction for Learning Visual Representations from Video</em>，规模化的后续是 <code>2506.09985</code> <em>V-JEPA 2</em>（2025-06）。</p>
+<p>核心主张可以写成一句话：<strong>没被预测的细节就是不需要被预测的细节</strong>。因为损失不经过解码器，编码器没有动机去保留那些「无法从过去推出、也不影响未来」的信息。噪声类细节天然被过滤掉，模型容量被逼到真正可预测的那部分结构上。</p>
+<p>这在自监督学习里有一个很实在的收益：<strong>重建目标的「最短路径」是一条捷径</strong>。要让解码器还原每一片树叶，最省事的做法是把整张图的信息都塞进潜状态；模型学的是压缩，不是理解。JEPA 把这条捷径堵住了——预测器没法从过去推出随机的树叶位置，损失会惩罚它去尝试，于是编码器学会不编码这些。</p>
+<p>但挡住噪声这件事<strong>是双刃的</strong>。挡住的是「不可预测且不重要」的信息，可判据里没有「重要」这一项，只有「可预测」。于是<strong>重要但难预测的量也会被丢掉</strong>。<code>2610.04585</code> <em>Frozen in a Frame: The Velocity Blind Spot in JEPA World Models</em> 找到的就是这一类：在两帧之间移动幅度很小时，JEPA 类模型的潜表征几乎不变化——<strong>速度没有被编码进去</strong>。速度恰恰是无人机最需要的量，它难预测（需要至少两帧差分），但它对任务至关重要。</p>
+<hr />
+<h2 id="3-丢掉重建挡住了什么">3. 丢掉重建挡住了什么<a class="headerlink" href="#3-丢掉重建挡住了什么" title="Permanent link">&para;</a></h2>
+<p>第 2 节的收益之外，放弃重建还带来三个具体的代价。</p>
+<p><strong>第一，少了一个免费的辅助监督信号。</strong>重建损失给编码器提供了一个稠密的梯度来源，它对每个像素都有意见。丢掉它以后，剩下的只有「表征与目标表征一致」这一条，而这个信号有个退化解：<strong>编码器把所有输入映射到同一个点</strong>。这时预测误差恒为 0，损失完美，但表征毫无信息。这就是表征塌缩（representation collapse），第 6 节专门讲怎么防。</p>
+<p><strong>第二，物理量无处可查。</strong>重建派可以拿解码结果去对物理量——位置、速度、加速度能不能从潜状态线性读出，用探针一测就知道。预测派的潜空间通常不能还原成任何可读的观测，于是「模型有没有理解动力学」这个问题只剩间接证据。本卷 <code>07</code> 篇讲的 <code>2610.03632</code>（World Embedding Benchmark）与 <code>2610.03154</code>（在激活里定位物理量）正是为补这个缺口出现的——评测被迫下沉到表征层。</p>
+<p><strong>第三，调试与可视化变难。</strong>重建派出错时你能看见「预测的画面不对」；预测派出错时你只看到损失不再下降，而原因可能在任何一环。这一条工程代价常被低估。</p>
+<blockquote>
+<p><strong>判据</strong>：选择重建还是预测，取决于<strong>下游任务吃什么</strong>。下游用图像（生成、渲染、视觉伺服）→ 需要重建，因为输出必须回到像素空间。下游用特征（规划、控制、检索）→ 可以省掉重建，但必须补上别的信息保全机制（辅助任务、正则、探针监督），否则丢了什么你不知道。</p>
+</blockquote>
+<hr />
+<h2 id="4-三种用途">4. 三种用途<a class="headerlink" href="#4-三种用途" title="Permanent link">&para;</a></h2>
+<p>JEPA 类模型在机器人领域目前有三种用法，混用是常见的误读来源。</p>
+<p><strong>（1）当世界模型用，在潜空间里做规划。</strong>这是最直接的一种：有了编码器和预测器，就能在潜空间里 rollout 一串候选动作序列，用预测表征与目标表征的距离打分，选最好的那条执行。<code>2610.10515</code> <em>RoboJEPA</em> 走的就是把这条路线规模化的方向。这条路的关键约束是<strong>潜空间里的距离必须有意义</strong>——预测表征与目标表征的欧氏距离大，必须真的代表任务上差得远。这个前提不成立时，规划器会在潜空间里选出一条「数字上很近、实际做不到」的轨迹。<code>2610.03137</code> <em>Keeping JEPA World Models Plannable When Little of the Frame Moves</em> 处理的就是这个前提失效的情形：画面几乎不动时，潜表征的变化不足以支撑搜索。</p>
+<p><strong>（2）当表征预训练用，冻结后接下游策略头。</strong>这是目前工程上最稳的一种用法：编码器只负责把观测变成特征，规划或控制完全交给别的模块。好处是训练与部署解耦、可控性强；代价是编码器看不到下游任务，学到的表征不一定对齐任务。<code>2606.20104</code> <em>Sensorimotor World Models</em> 提出用<strong>逆动力学</strong>做辅助目标来缓解这一点：不但要能从 s_t 预测 s_{t+1}，还要能从 (s_t, s_{t+1}) 反推出动作 a_t。加了这个约束，表征必须保留「动作能改变什么」这层信息，光是压缩观测不够。<code>2610.07540</code> <em>Preserving Unstable Modes Through Inverse Dynamics in JEPA World Models</em> 沿着这条线走得更远——它指出逆动力学还能把<strong>不稳定模态</strong>保住。</p>
+<p><strong>（3）当 RL 的辅助损失，与重建或回报联合训练。</strong><code>2610.02922</code> <em>TwinJEPA</em> 用双路预测偏好来构造面向目标的表征。这条路线的动机是：世界模型的表征如果能直接编码「离目标还有多远」，控制问题会简单很多。<code>2610.06805</code> <em>H-JEPA</em> 加的是层次结构——不同时间尺度上各有一个预测器，对应从「下一步怎么动」到「这一段往哪去」的不同抽象层级。<code>2609.33563</code> <em>MA-JEPA</em> 处理多智能体场景，此时「未来」不只是自己的未来，还包括别人的反应。</p>
+<p>三种用途对表征的要求不完全一致：规划要求潜空间距离与任务代价对齐，控制要求表征含动作敏感信息，RL 要求表征含回报信息。<strong>一个只在重建上评测过的 JEPA 模型，不能直接搬到这三种用途里的任何一种。</strong></p>
+<hr />
+<h2 id="5-与-rssm-类世界模型的关系">5. 与 RSSM 类世界模型的关系<a class="headerlink" href="#5-与-rssm-类世界模型的关系" title="Permanent link">&para;</a></h2>
+<p>Dreamer 系列（<code>03</code> 篇）用的循环状态空间模型（RSSM）与 JEPA 常被拿来对比，但它们的差别不止「重建 vs 不重建」：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>RSSM（Dreamer 类）</th>
+<th>JEPA 类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>潜状态结构</td>
+<td>确定性路径 + 随机路径，显式建模不确定性</td>
+<td>通常只有确定性表征</td>
+</tr>
+<tr>
+<td>时间推进</td>
+<td>循环，逐步递推</td>
+<td>预测器可直接跳步（预测 t+k 的表征）</td>
+</tr>
+<tr>
+<td>训练信号</td>
+<td>重建 + 回报 + KL</td>
+<td>表征一致性（+ 正则 / 辅助任务）</td>
+</tr>
+<tr>
+<td>想象 rollout</td>
+<td>在潜空间里带随机性 rollout，可采样多条</td>
+<td>多为确定性单条预测</td>
+</tr>
+<tr>
+<td>与策略的关系</td>
+<td>世界模型与策略联合训练</td>
+<td>常先独立预训练，再冻结或微调</td>
+</tr>
+</tbody>
+</table>
+<p>两个要点值得单独提：</p>
+<p><strong>不确定性。</strong>无人机在遮挡下必须表达「我不确定目标在哪」。RSSM 的随机路径天然给出一个分布，能采样出多条可能的未来；确定性的 JEPA 表征只有一个点。<code>2610.07599</code> <em>Modeling Latent Disturbances for Robust Decision-Making in World Models</em> 处理的正是这件事——显式建模潜扰动，让确定性架构也能表达不确定性。这不是谁优谁劣，而是<strong>用途决定的</strong>：要强化学习需要探索、要做风险敏感规划，就需要分布。</p>
+<p><strong>时间抽象。</strong>RSSM 逐步递推，步长由采样率决定；JEPA 的预测器可以一次跳过若干帧。后者对长时程更友好（本卷 <code>09</code> 篇），代价是中间过程不可见——你没法检查「它在第 3 步时以为自己在哪」。</p>
+<blockquote>
+<p><strong>判据</strong>：需要不确定性和探索 → RSSM；需要长时程跳步预测和稳定表征 → JEPA；两者都要 → 双时程或双潜变量架构（见 <code>09</code> 篇）。</p>
+</blockquote>
+<hr />
+<h2 id="6-表征塌缩与信息瓶颈">6. 表征塌缩与信息瓶颈<a class="headerlink" href="#6-表征塌缩与信息瓶颈" title="Permanent link">&para;</a></h2>
+<p>第 3 节提到的塌缩是这条路线的核心风险。一个没有约束的表征预测目标有平凡的全局最优：<strong>编码器输出常数</strong>。此时预测误差恒为 0，损失完美，表征零信息。这不是训练不充分，是目标函数本身的退化解。</p>
+<p>工程上有三类对抗手段：</p>
+<ul>
+<li><strong>非对称结构</strong>：目标表征由一个不接梯度的编码器（通常是主编码器的指数移动平均）产生，主编码器只被单向拉动。这打破了「两边一起塌到同一点」的对称性。</li>
+<li><strong>方差-协方差正则</strong>：显式要求表征各维方差不得低于某个阈值、且各维之间不相关，从根上禁止塌缩。</li>
+<li><strong>结构约束</strong>：<code>2610.03587</code> <em>AVL-JEPA</em> 处理的是<strong>因果动力学信息塌缩</strong>——不是全塌，而是表征里关于动力学的那部分信息被压没了。它把「动力学信息」单独拎出来做保全。<code>2610.00727</code> <em>CF-JEPA</em> 换一个角度，把表征分解成「可控的」与「不可控的」两部分，只对可控部分做预测——因为不可控部分本来就不该被预测。</li>
+</ul>
+<p><strong>塌缩的成因与训练动态直接相关。</strong><code>2610.02344</code> <em>Drive vs. Decay: On the Training Dynamics of Joint-Embedding Predictive Architectures</em> 就是在拆这件事：哪些因素在把表征「推向」有效（drive），哪些在让它「衰减」（decay）。<code>2610.00368</code> <em>DeepJEPA</em> 从另一个方向给答案——<strong>从内部扩展世界模型</strong>，把容量加到预测器与编码器上而不是加到数据上。</p>
+<p><strong>瓶颈宽度是另一个独立变量。</strong>JEPA 把表征压到一个固定维数的潜空间，压多窄是个设计参数。压得太窄，有用的方向被挤掉；压得太宽，塌缩风险与无用的自由度都上升。第 9 节的实验量的就是这一条：<strong>在瓶颈宽度固定的前提下，损失主要来自「丢掉了几个信号方向」，而不是「多装了无用方向」</strong>。这个结论把「怎么加宽瓶颈」这类直觉问题换成了一个更准确的问题：<strong>你丢掉的是哪几个方向</strong>。</p>
+<p><strong>能量基模型是这条路线的一个近亲。</strong><code>2406.08862</code> <em>Cognitively Inspired Energy-Based World Models</em>（2024-06）用能量函数替代显式的预测损失：相容的 (状态, 状态') 对能量低，不相容的能高。它避免了塌缩（常数输出的能量处处相同，无法区分相容与不相容），代价是能量函数的训练本身更麻烦。这条线目前的量级很小——本卷 <code>tools/watch.py</code> 的词表查过，<code>abs:"energy-based" AND abs:"world model"</code> 在 2026 年 6–10 月这个窗口里 0 命中，不限窗口也只有 8 篇。<strong>可以写「稀疏」，不能写「没有」</strong>，结论与复核证据记在 <code>tools/watchlists.py</code> 的 <code>VERIFIED_ZEROS</code> 里。</p>
+<hr />
+<h2 id="7-对无人机的含义">7. 对无人机的含义<a class="headerlink" href="#7-对无人机的含义" title="Permanent link">&para;</a></h2>
+<p><strong>第一，速度必须被显式检查。</strong>无人机的控制器是二阶的，吃速度指令。<code>2610.04585</code> 的速度盲点在无人机上不是学术问题：一个位置预测完美、速度没编码进去的世界模型，喂给控制器会抖。检查方法很便宜——构造一对「位置相同、速度不同」的状态，看潜表征有没有分开。没分开就是盲的，加再多的数据也修不好，要改辅助任务（逆动力学是最直接的一种，见 <code>2606.20104</code>）。</p>
+<p><strong>第二，先定下游再选架构。</strong>本卷 <code>05</code> 篇讨论过无人机的几条技术路线。把第 4 节的三种用途对上去：</p>
+<ul>
+<li>用世界模型做<strong>在线规划</strong>（MPPI、CEM 在潜空间里搜）→ 需要潜空间距离与任务代价对齐，<code>2610.03137</code> 那条约束是硬约束不是优化项；</li>
+<li>用世界模型做<strong>表征预训练</strong>给下游策略 → 冻结编码器，加逆动力学辅助任务，评测用线性探针；</li>
+<li>用世界模型做<strong>RL 的想象环境</strong> → 需要不确定性，这时候 RSSM 那一路更合适，或者参考 <code>2610.07599</code> 的潜扰动建模。</li>
+</ul>
+<p><strong>第三，别把「重建差」当成缺点。</strong>第 9 节的实验会给出一个看起来不太好看的数字：预测派的 RMSE 比重建派差 1.1–1.57 倍。这在它的目标函数下是<strong>必然的</strong>——预测派压根没有为重建优化过。评估一个 JEPA 模型的重建误差，跟你评估一条鱼的爬树能力一样没有信息量。要评它，就用探针（表征里有没有任务信息）或闭环任务成功率。</p>
+<p><strong>第四，本卷 Demo U 是线性-高斯最小模型，结论有明确的外推边界。</strong>下面第 9 节会把边界写在结论旁边，不单独挪走。真实 JEPA 的编码器是非线性的，塌缩靠正则而非高斯噪声，时间连贯性也不会像最小模型里那样恰好分成两组常数。<strong>本节量的两个目标函数的分歧，不是某个真实 JEPA 的性能。</strong></p>
+<hr />
+<h2 id="8-关键论文">8. 关键论文<a class="headerlink" href="#8-关键论文" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>本节收 2026 年 6–10 月窗口内的 JEPA 与新架构新作，另加两篇路线来源；逐条 arXiv 号已通过 arXiv API 核对标题。</p>
+</blockquote>
+<h4 id="路线来源">路线来源<a class="headerlink" href="#路线来源" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p><strong>[arXiv'23.01] I-JEPA</strong> — <em>Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture</em>
+  <a href="https://arxiv.org/abs/2301.08243"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2301.08243-b31b1b.svg" /></a>
+  表征空间预测的原始构想。</p>
+</li>
+<li>
+<p><strong>[arXiv'25.06] V-JEPA 2</strong> — <em>Self-Supervised Video Models Enable Understanding, Prediction and Planning</em>
+  <a href="https://arxiv.org/abs/2506.09985"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2506.09985-b31b1b.svg" /></a>
+  视频版本规模化，并把表征接到规划上。</p>
+</li>
+</ul>
+<h4 id="规模化与新架构">规模化与新架构<a class="headerlink" href="#规模化与新架构" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p><strong>[arXiv'26.09] DeepJEPA</strong> — <em>Scaling World Models from Within</em>
+  <a href="https://arxiv.org/abs/2610.00368"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.00368-b31b1b.svg" /></a>
+  把容量加在模型内部而非数据上。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] RoboJEPA</strong> — <em>Scaling Robotic Latent World Models</em>
+  <a href="https://arxiv.org/abs/2610.10515"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.10515-b31b1b.svg" /></a>
+  潜空间世界模型在机器人域的规模化。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] H-JEPA</strong> — <em>End-to-End Learning of Hierarchical World Models for Visual Planning</em>
+  <a href="https://arxiv.org/abs/2610.06805"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.06805-b31b1b.svg" /></a>
+  多时间尺度的层次化预测器。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] MA-JEPA</strong> — <em>Joint-Embedding World Models for Multi-Agent Reinforcement Learning</em>
+  <a href="https://arxiv.org/abs/2609.33563"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2609.33563-b31b1b.svg" /></a>
+  把「别人的未来」也纳入预测目标。</p>
+</li>
+</ul>
+<h4 id="塌缩动力学信息与训练动态">塌缩、动力学信息与训练动态<a class="headerlink" href="#塌缩动力学信息与训练动态" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p><strong>[arXiv'26.10] AVL-JEPA</strong> — <em>Preventing Causal Dynamics Information Collapse in Joint Embedding Predictive Architecture World Models</em>
+  <a href="https://arxiv.org/abs/2610.03587"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.03587-b31b1b.svg" /></a>
+  不是全塌，而是动力学信息被压没。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.09] CF-JEPA</strong> — <em>Improving Robustness of JEPA World Models via Controllability Factorization</em>
+  <a href="https://arxiv.org/abs/2610.00727"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.00727-b31b1b.svg" /></a>
+  只预测可控部分，不可控部分不预测。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Drive vs. Decay</strong> — <em>On the Training Dynamics of Joint-Embedding Predictive Architectures</em>
+  <a href="https://arxiv.org/abs/2610.02344"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.02344-b31b1b.svg" /></a>
+  拆解训练中推动与衰减两股力量。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] DSReg</strong> — <em>Provably Recovering Individual World Latents without Reconstruction</em>
+  <a href="https://arxiv.org/abs/2610.09457"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.09457-b31b1b.svg" /></a>
+  不重建也能可证明地恢复个体潜变量。</p>
+</li>
+</ul>
+<h4 id="逆动力学与物理量保全">逆动力学与物理量保全<a class="headerlink" href="#逆动力学与物理量保全" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p><strong>[arXiv'26.06] Sensorimotor World Models</strong> — <em>Perception for Action via Inverse Dynamics</em>
+  <a href="https://arxiv.org/abs/2606.20104"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2606.20104-b31b1b.svg" /></a>
+  用逆动力学做辅助目标，逼表征保留动作敏感信息。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Preserving Unstable Modes Through Inverse Dynamics in JEPA World Models</strong>
+  <a href="https://arxiv.org/abs/2610.07540"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.07540-b31b1b.svg" /></a>
+  逆动力学还能把不稳定模态保住。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Frozen in a Frame</strong> — <em>The Velocity Blind Spot in JEPA World Models</em>
+  <a href="https://arxiv.org/abs/2610.04585"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.04585-b31b1b.svg" /></a>
+  帧间运动小则潜表征不变，速度进不去。</p>
+</li>
+</ul>
+<h4 id="连续时间与流匹配">连续时间与流匹配<a class="headerlink" href="#连续时间与流匹配" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p><strong>[arXiv'26.07] ODEWorld</strong> — <em>A Continuous Predictive Architecture via Physical-Time Flow</em>
+  <a href="https://arxiv.org/abs/2607.27924"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2607.27924-b31b1b.svg" /></a>
+  用物理时间连续流替代离散步预测。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.08] Flow-JEPA</strong> — <em>Robust Latent Dynamics for JEPA World Models via Flow Matching</em>
+  <a href="https://arxiv.org/abs/2608.29029"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2608.29029-b31b1b.svg" /></a>
+  流匹配给潜动力学。</p>
+</li>
+</ul>
+<h4 id="规划与不确定性">规划与不确定性<a class="headerlink" href="#规划与不确定性" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p><strong>[arXiv'26.10] Keeping JEPA World Models Plannable When Little of the Frame Moves</strong>
+  <a href="https://arxiv.org/abs/2610.03137"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.03137-b31b1b.svg" /></a>
+  画面几乎不动时潜表征变化不足以支撑搜索。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] TwinJEPA</strong> — <em>Action-Preferred Predictive Representations for Goal-Conditioned Control</em>
+  <a href="https://arxiv.org/abs/2610.02922"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.02922-b31b1b.svg" /></a>
+  双路预测构造面向目标的偏好表征。</p>
+</li>
+<li>
+<p><strong>[arXiv'26.10] Modeling Latent Disturbances for Robust Decision-Making in World Models</strong>
+  <a href="https://arxiv.org/abs/2610.07599"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2610.07599-b31b1b.svg" /></a>
+  给确定性架构补上不确定性表达。</p>
+</li>
+<li>
+<p><strong>[arXiv'24.06] Cognitively Inspired Energy-Based World Models</strong>
+  <a href="https://arxiv.org/abs/2406.08862"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2406.08862-b31b1b.svg" /></a>
+  能量基的近亲路线；这一线稀疏，证据见 <code>tools/watchlists.py</code> 的 <code>VERIFIED_ZEROS</code>。</p>
+</li>
+</ul>
+<hr />
+<h2 id="9-动手验证重建式表征与预测式表征的分歧">9. 动手验证：重建式表征与预测式表征的分歧<a class="headerlink" href="#9-动手验证重建式表征与预测式表征的分歧" title="Permanent link">&para;</a></h2>
+<p>这一节把第 1 节那个抽象的「判据换了」跑成数字。装置刻意做得极小：<strong>线性-高斯最小模型</strong>，两个编码器都有闭式解，<strong>不训练任何模型</strong>。</p>
+<p>潜空间 8 维，分成两组，各 4 维：</p>
+<table>
+<thead>
+<tr>
+<th>组</th>
+<th>方差</th>
+<th>自相关 a</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>连贯组</td>
+<td>[1.0, 0.8, 0.6, 0.4]</td>
+<td>[0.95, 0.93, 0.91, 0.89]</td>
+<td>时间上连贯、可预测，下游任务关心它</td>
+</tr>
+<tr>
+<td>无关组</td>
+<td>[2.0, 1.7, 1.4, 1.1]</td>
+<td>[0.30, 0.27, 0.24, 0.21]</td>
+<td>方差大但几乎不可预测，下游任务不关心</td>
+</tr>
+</tbody>
+</table>
+<p>每组内部四维的方差与自相关<strong>各不相同</strong>——这一点是必须的，原因见本节末尾的注。观测 = 随机正交基下的潜状态加高斯噪声（<code>build_world()</code> 从 <code>np.linalg.qr</code> 取固定正交阵 R）。两个编码器共用 6 维瓶颈：</p>
+<ul>
+<li><strong>重建派</strong>：取观测协方差 <code>Sig_x = R·diag(lam + sigma^2)·R^T</code> 的<strong>前 6 个特征向量</strong>（按方差排序）。</li>
+<li><strong>预测派</strong>：取 <code>M = D^{-1/2}·C·D^{-1/2}</code> 的前 6 个特征向量，其中 <code>C = diag(a·lam)</code>，再按 <code>D^{1/2}</code> 映射回原空间。这个判据来自最大化 <code>(wᵀCw)² / (wᵀDw)²</code>——即<strong>预测能力与方差之比</strong>，不是方差本身。</li>
+</ul>
+<p>任务标签 <code>y = c·s</code>，<code>c</code> 只在连贯组上非零、组内按 <code>1/√var</code> 加权，使得 <code>var(y) = 1.0000</code>（四维等贡献）。下游用一个线性 ridge 探针（<code>RIDGE_ALPHA = 1e-3</code>），训练 150 样本，200 次随机划分取均值。</p>
+<h3 id="91-核心代码">9.1 核心代码<a class="headerlink" href="#91-核心代码" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">SEED</span> <span class="o">=</span> <span class="mi">11</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">D</span><span class="p">,</span> <span class="n">N_COH</span><span class="p">,</span> <span class="n">N_NUI</span><span class="p">,</span> <span class="n">RANK</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span>                  <span class="c1"># 潜维数 / 两组各几维 / 瓶颈宽度</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">LAM_COH</span><span class="p">,</span> <span class="n">A_COH</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.93</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">LAM_NUI</span><span class="p">,</span> <span class="n">A_NUI</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.00</span><span class="p">,</span> <span class="mf">1.70</span><span class="p">,</span> <span class="mf">1.40</span><span class="p">,</span> <span class="mf">1.10</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.30</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.21</span><span class="p">]</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">SIGMA2</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">]</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">N_TRAIN</span><span class="p">,</span> <span class="n">N_TEST</span><span class="p">,</span> <span class="n">N_SPLIT</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">200</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">RIDGE_ALPHA</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_world</span><span class="p">():</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">Q</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">D</span><span class="p">)))</span>     <span class="c1"># 固定的随机正交基</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">lam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">LAM_COH</span> <span class="o">+</span> <span class="n">LAM_NUI</span><span class="p">)</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">A_COH</span> <span class="o">+</span> <span class="n">A_NUI</span><span class="p">)</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="k">return</span> <span class="n">Q</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">lam</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="k">def</span><span class="w"> </span><span class="nf">encoders</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">lam</span><span class="p">,</span> <span class="n">sigma2</span><span class="p">):</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">    </span><span class="sd">"""两个编码器都取「前 RANK 个特征向量」，只是判据不同，都有闭式解。"""</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">Sig_x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">lam</span> <span class="o">+</span> <span class="n">sigma2</span><span class="p">)</span> <span class="o">@</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">w</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">Sig_x</span><span class="p">)</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">E_recon</span> <span class="o">=</span> <span class="n">V</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">w</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="n">RANK</span><span class="p">]]</span>        <span class="c1"># 按观测方差排序</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">lam</span><span class="p">)</span>                              <span class="c1"># 预测增益</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">D_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">lam</span> <span class="o">+</span> <span class="n">sigma2</span><span class="p">)</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">Dh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">D_cov</span><span class="p">)))</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n">wm</span><span class="p">,</span> <span class="n">Vm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">Dh</span> <span class="o">@</span> <span class="n">C</span> <span class="o">@</span> <span class="n">Dh</span><span class="p">)</span>              <span class="c1"># 判据：预测能力 / 方差</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n">Vp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">D_cov</span><span class="p">)))</span> <span class="o">@</span> <span class="n">Vm</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n">E_pred</span> <span class="o">=</span> <span class="n">Vp</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">wm</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="n">RANK</span><span class="p">]]</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n">E_pred</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">E_pred</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   <span class="c1"># 列归一化</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="k">return</span> <span class="n">E_recon</span><span class="p">,</span> <span class="n">E_pred</span>
+</code></pre></div>
+<p><code>encoders()</code> 里那两行 <code>Dh</code>/<code>Vp</code> 不是随手写的。做变量替换 <code>w = D^{1/2}v</code> 之后，<strong>最大化预测能力与方差之比</strong>这个判据就变成 <code>(wᵀMw)² / ‖w‖²</code> 的广义特征问题，特征向量在 <code>w</code> 坐标下取，<code>Vp</code> 那一步是把它映射回潜空间坐标。少了这步映射，得到的基就不对。</p>
+<h3 id="92-本地实测结果">9.2 本地实测结果<a class="headerlink" href="#92-本地实测结果" title="Permanent link">&para;</a></h3>
+<p><strong>① 两个编码器选中的方向落在哪一组：</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>  sigma^2             重建派 连贯/无关             预测派 连贯/无关
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    0.010        0.333    0.667        0.667    0.333
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    0.100        0.333    0.667        0.667    0.333
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    0.500        0.333    0.667        0.667    0.333
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    1.000        0.333    0.667        0.667    0.333
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    3.000        0.333    0.667        0.667    0.333
+</code></pre></div>
+<p><strong>重建派把 4 个高方差方向全装了进来</strong>（那 4 个正好是无关组），连贯组只占 2 个位置；<strong>预测派反过来</strong>，连贯组占 4 个，无关组只占 2 个。这一栏与 σ² 无关——两个判据的<strong>排序</strong>都不随噪声改变，噪声只改变码字里信号与噪声的相对比重。</p>
+<p>这条数字有个直观解释：重建只看「信息量」，而无关组的方差是 2.0、连贯组只有 1.0，所以重建派优先装无关组。预测看「可预测的信息量」，无关组的自相关只有 0.3，乘上之后落后于连贯组。</p>
+<p><strong>② 重建误差：预测派为它自己的目标付出的代价</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>  sigma^2        重建派 RMSE        预测派 RMSE        相对
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    0.010          0.3571          0.5612     1.572
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    0.100          0.3873          0.5809     1.500
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    1.000          0.6124          0.7500     1.225
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    3.000          0.9354          1.0308     1.102
+</code></pre></div>
+<p>重建派的 RMSE 恒不高于预测派——<strong>它是这个指标下的最优解，预测派压根没为它优化过</strong>。噪声越大，两者差距越小：σ² = 0.01 时 1.57 倍，σ² = 3.0 时 1.10 倍。因为噪声占比一高，两边都留不住信号。</p>
+<p><strong>③ 下游线性探针：闭式（无限数据）与实测（少样本）</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>  sigma^2       闭式 重建       闭式 预测       实测 重建       实测 预测       实测 全维
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    0.010      0.4944      0.9842      0.4649      0.9835      0.9832
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    0.100      0.4495      0.8638      0.4785      0.8769      0.8748
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    0.500      0.3205      0.5680      0.2157      0.5345      0.5291
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    1.000      0.2361      0.4013      0.2345      0.3751      0.3662
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    3.000      0.1151      0.1862      0.0669      0.1432      0.1302
+</code></pre></div>
+<p>这一栏是本节的主结论所在。</p>
+<p><strong>闭式那一栏只反映「码字里有几个信号方向」</strong>：预测派 4 个信号方向全在，重建派只有 2 个。所以 σ² = 0.01 时预测派 0.9842、重建派 0.4944，差距接近一倍。</p>
+<p><strong>实测与闭式的差值就是有限样本的估计方差</strong>，量级是几个百分点，<strong>方向不固定</strong>——有的档实测反而更高（因为 ridge 收缩本身也能帮上忙）。这一点值得说明：<strong>这个最小模型量不出「无用方向额外拖累探针」这条更细的说法</strong>。要把那一条量出来，得把训练样本压到与瓶颈宽度同量级，那时测的是估计噪声，不是结论。</p>
+<p><strong>最后一行是对照组，也是本节最要紧的一条。</strong>「实测 全维」是不压瓶颈、用全部 8 维做探针的读数：0.9832 / 0.8748 / 0.5291 / 0.3662 / 0.1302。把它与「实测 预测」并排看——0.9835 vs 0.9832、0.8769 vs 0.8748、0.5345 vs 0.5291……<strong>预测派与上界几乎重合</strong>。这说明：在 6 维瓶颈下的损失，<strong>主要来自「丢掉了几个信号方向」，而不是「多装了无用方向」</strong>。预测派丢掉的那 2 个位置给了无关组，但它们没造成可见的拖累。</p>
+<p>所以「怎么加宽瓶颈」这个直觉问题要换一个更准确的问法：<strong>你丢掉的是哪几个方向</strong>。</p>
+<p><img alt="两派编码器的分组能量、重建误差与探针表现" src="../../figures/wm8_jepa_probe.png" /></p>
+<blockquote>
+<p><strong>外推边界</strong>：本实验是<strong>线性-高斯最小模型</strong>——编码器是线性正交投影，动力学是线性的，噪声是高斯的，两个判据都有闭式解。它量的是<strong>两个目标函数的分歧</strong>，不是某个真实 JEPA 或某个真实自编码器的性能。已知不能外推的部分：真实 JEPA 的编码器是非线性的；表征塌缩要靠专门的正则项（不是这里的高斯噪声）；真实世界的时间连贯性不会像这里一样恰好分成两组常数。<strong>把结论外推到真实模型规模，需要另做实验。</strong></p>
+<p><strong>一个必须记住的装置细节</strong>：每组内部四维的方差与自相关<strong>刻意取成互不相同</strong>。如果四维都取相同的 (λ, a)，协方差矩阵会出现四重简并特征值，此时 <code>np.linalg.eigh</code> 返回的是简并特征子空间里<strong>任意一组正交基</strong>——而这组基决定了编码器留下哪个子空间，于是测出来的探针精度由 LAPACK 的实现细节决定，不由模型决定。这个坑在本次实现里真实踩到过一次（同一份代码给出非单调、无规律的结果），改用互不相同的参数后结果才稳定。写这类最小模型时，<strong>简并一定要先破掉</strong>。</p>
+</blockquote>
+<h3 id="93-运行完整脚本">9.3 运行完整脚本<a class="headerlink" href="#93-运行完整脚本" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>py<span class="w"> </span>-3.9<span class="w"> </span>code/u_jepa_probe.py<span class="w">     </span><span class="c1"># CPU 即可，约 1 秒，依赖 numpy / torch / matplotlib</span>
+</code></pre></div>
+<p>完整脚本在 <a href="../../code/u_jepa_probe.py"><code>code/u_jepa_probe.py</code></a>，额外打印 <code>var(y) = 1.0000</code> 的归一化自检，并输出上面那张三面板图。</p>
+<hr />
+<h2 id="10-延伸阅读">10. 延伸阅读<a class="headerlink" href="#10-延伸阅读" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="01-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95%E5%8F%B2.html">01-世界模型发展史</a> — 世界模型脉络中预测式路线的位置</li>
+<li><a href="02-%E7%94%9F%E6%88%90%E5%BC%8F%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html">02-生成式世界模型</a> — 重建派的极致：像素空间生成</li>
+<li><a href="03-%E6%A8%A1%E5%9E%8B%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html">03-模型强化学习世界模型</a> — RSSM 路径，第 5 节对比的另一半</li>
+<li><a href="04-3D%E5%9C%BA%E6%99%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html">04-3D场景世界模型</a> — 显式几何重建，第三条腿</li>
+<li><a href="05-%E6%97%A0%E4%BA%BA%E6%9C%BA%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E7%BB%BC%E8%BF%B0.html">05-无人机世界模型综述</a> — 无人机场景下的技术路线</li>
+<li><a href="06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html">06-关键数据集与基准</a> — 训练与评测这些表征用什么数据</li>
+<li><a href="07-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E6%B5%8B%E4%B8%8E%E8%AF%8A%E6%96%AD.html">07-世界模型评测与诊断</a> — 为什么表征层评测要单列</li>
+<li><a href="09-%E9%95%BF%E6%97%B6%E7%A8%8B%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%94%9F%E6%88%90.html">09-长时程世界模型与交互式生成</a> — 时间抽象与双时程架构</li>
+</ul>
+<hr />
+<h2 id="11-思考题">11. 思考题<a class="headerlink" href="#11-思考题" title="Permanent link">&para;</a></h2>
+<h3 id="题目-1为什么重建派优先装高方差方向">题目 1：为什么重建派优先装高方差方向<a class="headerlink" href="#题目-1为什么重建派优先装高方差方向" title="Permanent link">&para;</a></h3>
+<p>第 9 节的 ① 节里，重建派把 4 个高方差方向（全部来自无关组）都装进了 6 维瓶颈。这是实现的问题还是必然？如果想让重建派也优先装连贯组，应该改什么？</p>
+<details>
+<summary>参考答案</summary>
+
+**是实现下的必然。**重建派的目标是最小化重建误差，而线性情况下这个目标的最优解就是把观测协方差矩阵 `Sig_x` 的前 k 个特征向量全留下——**按方差排序，与「可预测」无关**。无关组的方差是 2.0、1.7、1.4、1.1，连贯组只有 1.0、0.8、0.6、0.4，所以前 6 名里无关组占 4 个。代码没写错，目标函数就是这么定的。
+
+想让重建派也优先装连贯组，有几条路，各有代价：
+
+1. **给重建加各维权重**（按任务重要性加权重建损失）→ 这是在把下游信息注入重建目标。可行，但此时它已经不是纯重建派了。
+2. **降低无关组在观测里的方差**（预处理阶段归一化）→ 这是在用数据预处理代替算法选择。实际工程里很常见，也很有效，但需要事先知道哪组是哪组——真实数据里往往不知道。
+3. **换判据**（改成预测派）→ 那就直接用 JEPA 了。
+
+重要的一点是：**① 节的结果不能理解成「重建派学得差」**。在重建这个任务上它是最优的；问题只是重建这个任务不等于下游任务。这正是第 1 节「判据换了」的实证。
+
+</details>
+
+<h3 id="题目-2预测派的重建误差比重建派差这是缺点吗">题目 2：预测派的重建误差比重建派差，这是缺点吗<a class="headerlink" href="#题目-2预测派的重建误差比重建派差这是缺点吗" title="Permanent link">&para;</a></h3>
+<p>② 节显示预测派的 RMSE 比重建派差 1.10–1.57 倍。如果部署时你的下游模块需要还原观测（比如要把预测可视化给人看），预测派是不是就不能用了？</p>
+<details>
+<summary>参考答案</summary>
+
+**不是缺点，但确实是不能直接用的信号。**两件事要分开：
+
+**(a) 那个数字本身没有评价意义。**预测派的目标函数里没有重建项，它的编码器在重建指标上天然是次优的，这与「它的编码器学得差」不是一回事。拿一个没有为该指标优化过的模块去比该指标，得到的差值只是「目标函数分歧」的度量——这正是本实验要量的东西。
+
+**(b) 但下游需要观测时，确实要补东西。**三条路：
+
+1. **额外挂一个解码器**。冻结 JEPA 编码器，单独训一个小解码器做可视化。注意：这个解码器精度不代表编码器质量，只说明「潜状态里还剩多少关于观测的信息」。它通常比纯重建派差，因为编码器当初就没保留那些细节。
+2. **换架构**。本卷 `09` 篇的双时程/双潜变量架构就是为这种「既要跳步预测、又要过程可见」的需求出现的——一条潜路径管长时程抽象预测，另一条管短期可还原的细节。
+3. **接受它做不了这件事，换用途**。如果下游真的要吃像素，重建派（`02` 篇）或显式几何（`04` 篇）本来就更合适。
+
+**判据**：先看下游吃什么（第 3 节的判据），再看评测用什么指标。用错指标评估一个模块，得到的排名是假的——`07` 篇讲的就是这件事的一般形式。
+
+</details>
+
+<h3 id="题目-3为什么必须破掉简并">题目 3：为什么必须破掉简并<a class="headerlink" href="#题目-3为什么必须破掉简并" title="Permanent link">&para;</a></h3>
+<p>第 9 节末尾提到：如果每组四维取相同的 (λ, a)，<code>np.linalg.eigh</code> 返回的简并子空间基底由 LAPACK 实现细节决定，测出来的结果就不可复现。为什么「不可复现」在这里是致命的，而不只是「有点吵」？</p>
+<details>
+<summary>参考答案</summary>
+
+因为**它把一个模型性质的问题变成了一个数值库实现的问题，而两者的边界完全看不出来**。
+
+具体推演：四维取相同的 (λ, a) 时，观测协方差在那一组内有四重简并特征值。`eigh` 必须返回一组正交基，但简并子空间内的基底**不唯一**，任何正交变换都是合法答案。LAPACK 返回哪一个取决于实现、版本、甚至内存对齐——但对本实验来说，这组基**就是编码器保留的那个子空间**（因为瓶颈宽度 6 < 8，必须选）。于是：
+
+- 探针精度的分子（保留了多少信号方向）由这组基决定；
+- 这批基是任意的，所以结果可以是非单调、无规律的；
+- **更要紧的是：它会伪装成结论。**跑两次得到两个数，你会以为是随机种子或有限样本的问题，去调 N_TRAIN、加 seed、换 ridge α——全都无效，因为根源不在那里。
+
+破简并的做法是让每组内部各维参数互不相同（本实验的 LAM_COH/A_COH/LAM_NUI/A_NUI 四维各不相同）。这样特征值互异，特征子空间唯一，结果由模型决定。
+
+**衍生判据**：任何用 `eigh`/`svd` 做「选前 k 个方向」的实验，先检查有没有重根。有重根就必须先破掉，或者明说「这里的结果依赖于数值库的任意选择」——后者在写结论时基本等于没结论。
+
+</details>
+
+<hr />
+<blockquote>
+<p><strong>下一节</strong>：<a href="09-%E9%95%BF%E6%97%B6%E7%A8%8B%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%94%9F%E6%88%90.html">09-长时程世界模型与交互式生成</a> — horizon 拉长到上百步之后才显形的三种失效。</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Qxy661 · MIT License
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

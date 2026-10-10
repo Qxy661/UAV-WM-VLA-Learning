@@ -1,0 +1,5193 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="59 篇中文文档 · 195 篇论文 · 24 个纯 CPU 可跑 demo · 28.7 万字">
+      
+      
+      
+        <link rel="canonical" href="https://qxy661.github.io/UAV-WM-VLA-Learning/docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/05-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-MotionScape.html">
+      
+      
+        <link rel="prev" href="04-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-FlightDiffusion.html">
+      
+      
+        <link rel="next" href="06-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-GeoChat.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>05 复现指南 MotionScape - 世界模型 · VLA · VLM 学习库（无人机视角）</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#05-复现指南motionscape-无人机视角的未来视频生成评测基准" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-header__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            世界模型 · VLA · VLM 学习库（无人机视角）
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              05 复现指南 MotionScape
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到深色"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切到深色" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到浅色"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切到浅色" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  导读与学习路线
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  基础概念
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  世界模型专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLA 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLM 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  综述论文精读
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  论文导读合集
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  实践指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  研究前沿与开放问题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  专题自测与考察
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../mindmaps/field-overview.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  思维导图
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../references/paper-list.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  参考资料
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../code/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  可运行代码
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../en/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English Overview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../README.en.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English README
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CHANGELOG.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  更新日志
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  贡献指南
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-nav__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    世界模型 · VLA · VLM 学习库（无人机视角）
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读与学习路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础概念
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基础概念
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/01-%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 什么是世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/02-%E4%BB%80%E4%B9%88%E6%98%AFVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 什么是 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/03-%E4%BB%80%E4%B9%88%E6%98%AFVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 什么是 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/04-%E4%B8%89%E8%80%85%E5%85%B3%E7%B3%BB%E4%B8%8E%E5%8C%BA%E5%88%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 三者关系与区别
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/05-%E6%97%A0%E4%BA%BA%E6%9C%BAvs%E5%9C%B0%E9%9D%A2%E6%9C%BA%E5%99%A8%E4%BA%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机与地面机器人
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    世界模型专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/01-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95%E5%8F%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 世界模型发展史
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/02-%E7%94%9F%E6%88%90%E5%BC%8F%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 生成式世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/03-%E6%A8%A1%E5%9E%8B%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 模型强化学习世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/04-3D%E5%9C%BA%E6%99%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 3D 场景世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/05-%E6%97%A0%E4%BA%BA%E6%9C%BA%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E7%BB%BC%E8%BF%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机世界模型综述
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 关键数据集与基准
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/07-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E6%B5%8B%E4%B8%8E%E8%AF%8A%E6%96%AD.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 世界模型评测与诊断
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/08-%E8%81%94%E5%90%88%E5%B5%8C%E5%85%A5%E9%A2%84%E6%B5%8B%E4%B8%8E%E6%BD%9C%E7%A9%BA%E9%97%B4%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 联合嵌入预测与潜空间世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/09-%E9%95%BF%E6%97%B6%E7%A8%8B%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%94%9F%E6%88%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 长时程世界模型与交互式生成
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLA 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/01-VLA%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 架构演进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BAVLA%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机 VLA 模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/03-%E8%AF%AD%E8%A8%80%E6%9D%A1%E4%BB%B6%E9%A3%9E%E8%A1%8C%E6%8E%A7%E5%88%B6.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 语言条件飞行控制
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/04-%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E8%BE%85%E5%8A%A9%E8%A7%84%E5%88%92.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 基础模型辅助规划
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/05-%E6%9C%BA%E8%BD%BD%E9%83%A8%E7%BD%B2%E4%B8%8E%E4%BC%98%E5%8C%96.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 机载部署与优化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/06-%E5%8A%A8%E4%BD%9C%E5%A4%B4%E4%B8%8E%E5%8A%A8%E4%BD%9C%E5%88%86%E5%9D%97.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 动作头与动作分块
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/07-%E6%95%B0%E6%8D%AE%E3%80%81%E9%A2%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%B7%A8%E5%85%B7%E8%BA%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 数据、预训练与跨具身
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/08-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%90%8E%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%87%AA%E6%88%91%E6%94%B9%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 强化学习后训练与自我改进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/09-%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E4%B8%8E%E6%8A%A5%E5%91%8A%E5%8F%A3%E5%BE%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 评测基准与报告口径
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/10-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%A2%9E%E5%BC%BAVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 世界模型增强 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLM 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/01-%E9%81%A5%E6%84%9FVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 遥感 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机场景理解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/03-LLM%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BAAgent.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 LLM 驱动的无人机 Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/04-%E8%BE%B9%E7%BC%98VLM%E9%83%A8%E7%BD%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 边缘 VLM 部署
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/05-%E9%80%9A%E7%94%A8VLM%E6%9E%B6%E6%9E%84%E4%B8%8E%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 通用 VLM 架构与视觉编码器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/06-VLM%E6%8C%87%E4%BB%A4%E5%BE%AE%E8%B0%83%E4%B8%8E%E5%AF%B9%E9%BD%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 VLM 指令微调与对齐
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/07-%E9%80%9A%E7%94%A8VLM%E8%AF%84%E6%B5%8B%E4%B8%8E%E5%B9%BB%E8%A7%89.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 通用 VLM 评测与幻觉
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    综述论文精读
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    综述论文精读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/01-%E7%BB%BC%E8%BF%B0%E6%A6%82%E8%A7%88%E4%B8%8E%E7%BB%93%E6%9E%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 综述概览与结构
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E7%AD%96%E7%95%A5.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型作为策略
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/03-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E6%A8%A1%E6%8B%9F%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 世界模型作为模拟器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/04-%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 视频生成世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/05-%E5%9F%BA%E5%87%86%E4%B8%8E%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 基准与评估
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文导读合集
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文导读合集
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/world-model-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vla-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vlm-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/benchmark-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基准与数据集论文
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实践指南
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    实践指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 环境搭建
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-UAV-Flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 复现指南 UAV-Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-CognitiveDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 复现指南 CognitiveDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-FlightDiffusion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 复现指南 FlightDiffusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 复现指南 MotionScape
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="05-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-MotionScape.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 复现指南 MotionScape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#目录" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-基准概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 基准概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 基准概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-关键数字" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 关键数字
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-它是评测不是训练" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 它是「评测」不是「训练」
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-仓库与数据获取" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 仓库与数据获取
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 仓库与数据获取">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-仓库结构" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 仓库结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-环境准备" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 环境准备
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-拿到的是标注不是视频" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 拿到的是标注，不是视频
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-数据格式详解" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 数据格式详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 数据格式详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-source_manifestjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 source_manifest.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 annotations/
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-dynamicity_bucketsjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 dynamicity_buckets.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-重建产物" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 重建产物
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-重建与运动分层" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 重建与运动分层
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 重建与运动分层">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-重建" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 重建
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-运动分层把每一步的参数都对一遍" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 运动分层：把每一步的参数都对一遍
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-语义标注与生成提示词" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 语义标注与生成提示词
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 语义标注与生成提示词">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-标注怎么生成" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 标注怎么生成
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-四套生成提示词" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 四套生成提示词
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-基线推理与评测" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 基线推理与评测
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 基线推理与评测">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-五个基线" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 五个基线
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-指标与预处理" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 指标与预处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-环境别互相污染" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 环境别互相污染
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-常见问题与解决方案" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 常见问题与解决方案
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 常见问题与解决方案">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q1-重建时某些样本的源视频抓不下来" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q1: 重建时某些样本的源视频抓不下来
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q2-下载器报记录的流不可用" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q2: 下载器报「记录的流不可用」
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q3-ffmpeg-command-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q3: ffmpeg: command not found
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q4-fvd-装不上-与主环境冲突" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q4: FVD 装不上 / 与主环境冲突
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q5-想用-8-gb-显存跑一个基线" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q5: 想用 8 GB 显存跑一个基线
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q6-clipsim-用哪段文本" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q6: CLIPSim 用哪段文本？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#参考资源" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资源
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#延伸阅读" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        延伸阅读
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#思考题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        思考题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="06-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-GeoChat.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 复现指南 GeoChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="07-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DreamerV3-Drone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 复现指南 DreamerV3-Drone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="08-%E5%8F%AF%E5%A4%8D%E7%8E%B0%E9%A1%B9%E7%9B%AE%E5%80%99%E9%80%89%E6%B8%85%E5%8D%95.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 可复现项目候选清单
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="09-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DeepDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 复现指南 DeepDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="10-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-RemoteCLIP.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 复现指南 RemoteCLIP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="11-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-Flightmare.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11 复现指南 Flightmare
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    研究前沿与开放问题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10" id="__nav_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    研究前沿与开放问题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/01-%E7%A0%94%E7%A9%B6%E8%B7%AF%E7%BA%BF%E5%9B%BE.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 研究路线图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/02-%E7%A0%94%E7%A9%B6%E7%A9%BA%E7%99%BD%E4%B8%8E%E6%9C%BA%E4%BC%9A.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 研究空白与机会
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/03-%E8%AE%BA%E6%96%87%E6%89%B9%E5%88%A4%E6%80%A7%E9%98%85%E8%AF%BB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 论文批判性阅读
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/04-%E6%9C%80%E6%96%B0%E8%BF%9B%E5%B1%95%E4%B8%8E%E5%9B%A2%E9%98%9F%E8%BF%BD%E8%B8%AA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 最新进展与团队追踪
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    专题自测与考察
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    专题自测与考察
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/01-VLA%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 VLA 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/03-VLM%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 VLM 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    思维导图
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    思维导图
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/field-overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    领域全景图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/world-model-taxonomy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型分类学
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/vla-evolution.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 演进路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/reading-order.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    推荐阅读顺序
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考资料
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    参考资料
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/paper-list.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完整论文列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/vla-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/wm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/vlm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/awesome-annotations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Awesome List 注释
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/citation-audit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    引用核查报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    可运行代码
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../en/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../README.en.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    更新日志
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    贡献指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#目录" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-基准概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 基准概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 基准概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-关键数字" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 关键数字
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-它是评测不是训练" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 它是「评测」不是「训练」
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-仓库与数据获取" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 仓库与数据获取
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 仓库与数据获取">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-仓库结构" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 仓库结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-环境准备" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 环境准备
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-拿到的是标注不是视频" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 拿到的是标注，不是视频
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-数据格式详解" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 数据格式详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 数据格式详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-source_manifestjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 source_manifest.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 annotations/
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-dynamicity_bucketsjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 dynamicity_buckets.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-重建产物" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 重建产物
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-重建与运动分层" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 重建与运动分层
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 重建与运动分层">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-重建" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 重建
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-运动分层把每一步的参数都对一遍" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 运动分层：把每一步的参数都对一遍
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-语义标注与生成提示词" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 语义标注与生成提示词
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 语义标注与生成提示词">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-标注怎么生成" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 标注怎么生成
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-四套生成提示词" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 四套生成提示词
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-基线推理与评测" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 基线推理与评测
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 基线推理与评测">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-五个基线" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 五个基线
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-指标与预处理" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 指标与预处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-环境别互相污染" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 环境别互相污染
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-常见问题与解决方案" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 常见问题与解决方案
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 常见问题与解决方案">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q1-重建时某些样本的源视频抓不下来" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q1: 重建时某些样本的源视频抓不下来
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q2-下载器报记录的流不可用" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q2: 下载器报「记录的流不可用」
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q3-ffmpeg-command-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q3: ffmpeg: command not found
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q4-fvd-装不上-与主环境冲突" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q4: FVD 装不上 / 与主环境冲突
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q5-想用-8-gb-显存跑一个基线" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q5: 想用 8 GB 显存跑一个基线
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q6-clipsim-用哪段文本" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q6: CLIPSim 用哪段文本？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#参考资源" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参考资源
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#延伸阅读" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        延伸阅读
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#思考题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        思考题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="05-复现指南motionscape-无人机视角的未来视频生成评测基准">05 - 复现指南：MotionScape — 无人机视角的未来视频生成评测基准<a class="headerlink" href="#05-复现指南motionscape-无人机视角的未来视频生成评测基准" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>预计阅读：16 分钟 | 前置知识：Python 与 ffmpeg 使用、光流基本概念</strong></p>
+</blockquote>
+<p>MotionScape 是<strong>真实拍摄</strong>的无人机第一人称视频基准，用途是<strong>评测</strong>世界模型与未来视频生成——不是训练用的数据集。它给 228 段固定长度的片段、每段配语义标注与运动强度分级，再用一套统一协议去量各种生成模型的输出质量。</p>
+<blockquote>
+<p><strong>本指南的可复现边界</strong>
+- <strong>能跑通的</strong>：仓库克隆、源视频重建、运动分层、语义标注。这几步只要有 Python、ffmpeg 和网络就能做，<strong>不需要 GPU</strong>。
+- <strong>跑不动的</strong>：基线推理与 FVD。五个基线里最小的是 Cosmos-Predict2.5-<strong>2B</strong>，最大的是 MAGI-1-<strong>24B</strong>，加一个独立的 TensorFlow 环境算 I3D-FVD。<strong>8 GB 显存的机器到运动分层为止。</strong>
+- <strong>一个绕不开的限制</strong>：原作者<strong>不分发原视频</strong>（README 原文：<em>"The original audiovisual content is not redistributed"</em>）。你拿到的是元数据与标注，视频要按 manifest 里的 URL 自己去抓。源被下架，对应样本就重建不出来。</p>
+</blockquote>
+<hr />
+<h2 id="目录">目录<a class="headerlink" href="#目录" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#1-基准概述">基准概述</a></li>
+<li><a href="#2-仓库与数据获取">仓库与数据获取</a></li>
+<li><a href="#3-数据格式详解">数据格式详解</a></li>
+<li><a href="#4-重建与运动分层">重建与运动分层</a></li>
+<li><a href="#5-语义标注与生成提示词">语义标注与生成提示词</a></li>
+<li><a href="#6-基线推理与评测">基线推理与评测</a></li>
+<li><a href="#7-常见问题与解决方案">常见问题与解决方案</a></li>
+</ol>
+<hr />
+<h2 id="1-基准概述">1. 基准概述<a class="headerlink" href="#1-基准概述" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>GitHub</strong>：<a href="https://github.com/Thelegendzz/MotionScape">Thelegendzz/MotionScape</a>（8 stars）</li>
+<li><strong>数据集（元数据与标注）</strong>：<a href="https://huggingface.co/datasets/thelegendzz/MotionScape">HF <code>thelegendzz/MotionScape</code></a> · <a href="https://doi.org/10.5281/zenodo.21954342">Zenodo DOI 10.5281/zenodo.21954342</a></li>
+<li><strong>论文</strong>：arXiv:2604.07991</li>
+<li><strong>定位</strong>（README 原句）：<em>"a real-world first-person UAV-view benchmark for evaluating world models and future video generation under different conditioning settings and visual-motion intensities"</em></li>
+</ul>
+<h3 id="11-关键数字">1.1 关键数字<a class="headerlink" href="#11-关键数字" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>数值</th>
+<th>出处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>片段数</td>
+<td><strong>228</strong></td>
+<td>论文 Table 1 / manifest</td>
+</tr>
+<tr>
+<td>每段帧数</td>
+<td><strong>275</strong>（固定，无例外）</td>
+<td>manifest 全部 228 项的 <code>frame_count</code></td>
+</tr>
+<tr>
+<td>总帧数</td>
+<td><strong>62,700</strong></td>
+<td>228 × 275</td>
+</tr>
+<tr>
+<td>总时长</td>
+<td><strong>约 34.9 分钟</strong></td>
+<td>论文</td>
+</tr>
+<tr>
+<td>每段时长</td>
+<td><strong>约 9.2 秒</strong></td>
+<td>论文（275 帧 @ 29.97 FPS）</td>
+</tr>
+<tr>
+<td>统一帧率</td>
+<td><strong>30000/1001 ≈ 29.97 FPS</strong></td>
+<td>manifest <code>benchmark_specification</code></td>
+</tr>
+<tr>
+<td>分段</td>
+<td>观测前缀 <strong>1–200 帧</strong> + 未来目标 <strong>201–275 帧</strong></td>
+<td>同上</td>
+</tr>
+<tr>
+<td>前缀/目标总帧数</td>
+<td>45,600 / 17,100</td>
+<td>论文</td>
+</tr>
+<tr>
+<td>源视频</td>
+<td><strong>67 个</strong>，平均每源取 3.4 段</td>
+<td>论文</td>
+</tr>
+<tr>
+<td>源分辨率</td>
+<td><strong>≥ 1080p</strong>；manifest 里 170/228 是 3840×2160</td>
+<td>论文 Table 1 + manifest</td>
+</tr>
+<tr>
+<td>位姿真值</td>
+<td><strong>无</strong></td>
+<td>论文与发布内容</td>
+</tr>
+<tr>
+<td>运动分级</td>
+<td>Low / Medium / High = <strong>75 / 75 / 78</strong></td>
+<td>论文 + <code>dynamicity_buckets.json</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-它是评测不是训练">1.2 它是「评测」不是「训练」<a class="headerlink" href="#12-它是评测不是训练" title="Permanent link">&para;</a></h3>
+<p>这个区分决定了整份指南的用法。228 段、34.9 分钟的体量<strong>不足以训练一个世界模型</strong>，它的角色是<strong>考卷</strong>：每段都切好了「看 200 帧、预测后 75 帧」，条件可以是文本、图像或视频，评测时用同一套协议跑所有模型。</p>
+<p>它也<strong>不给位姿</strong>。没有相机轨迹、没有 GPS/IMU 真值，能评的是<strong>生成得像不像、动力学对不对</strong>，不能评定位精度——这一点在设计下游任务时会先撞上。</p>
+<hr />
+<h2 id="2-仓库与数据获取">2. 仓库与数据获取<a class="headerlink" href="#2-仓库与数据获取" title="Permanent link">&para;</a></h2>
+<h3 id="21-仓库结构">2.1 仓库结构<a class="headerlink" href="#21-仓库结构" title="Permanent link">&para;</a></h3>
+<p>真实顶层（每个目录都有用）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>MotionScape/
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── Dockerfile
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── LICENSE                       # MIT（evaluate_video_metrics.py 保留 NVIDIA 的 Apache-2.0）
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── README.md
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── requirements.txt
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── reconstruction/               # 源视频下载 + 基准重建
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│   ├── download_sources.py
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   └── reconstruct_benchmark.py
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>├── motion_stratification/        # 光流运动分层
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   ├── compute_motion_strata.py
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   └── motion_scoring.py
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>├── annotation/                   # 语义标注生成
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   └── generate_semantic_annotations.py
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>├── evaluation/                   # 最终评测实现
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   ├── evaluate_video_metrics.py
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│   ├── i3d_fvd.py
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│   ├── regroup_metrics_by_motion.py
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│   ├── requirements-frame-metrics.txt
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│   └── requirements-i3d-fvd.txt
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>├── inference/                    # 五个基线的适配器 + 权重下载器
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│   ├── cosmos/  cogvideox/  wan/  longcat/  magi/
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│   ├── docker/                   # 统一基线容器
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│   ├── download_model_weights.py
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│   └── requirements-download.txt
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>└── prompts/                      # 语义标注与四套生成提示词
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    ├── semantic_annotation.txt
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    ├── text2world.txt  image2world.txt
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    ├── video2world_task_level.txt  video2world_clip_level.txt
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    └── clip_assisted_inspection.txt
+</code></pre></div>
+<h3 id="22-环境准备">2.2 环境准备<a class="headerlink" href="#22-环境准备" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Thelegendzz/MotionScape.git
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>MotionScape
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</code></pre></div>
+<p>README 推荐 <strong>Python 3.10 或更新</strong>。系统侧还需要 <strong><code>ffmpeg</code> 与 <code>ffprobe</code></strong> 两个可执行文件——重建脚本靠它们做时间重采样与抽帧，缺了会在第一步就报错。下载侧固定 <code>yt-dlp==2026.03.17</code>（manifest 里记录的就是这个版本）。</p>
+<h3 id="23-拿到的是标注不是视频">2.3 拿到的是标注，不是视频<a class="headerlink" href="#23-拿到的是标注不是视频" title="Permanent link">&para;</a></h3>
+<p>Hugging Face 与 Zenodo 上发布的是<strong>元数据与标注</strong>：<code>source_manifest.json</code>、<code>annotations/</code>、<code>dynamicity_buckets.json</code>。原视频<strong>不分发</strong>。</p>
+<p>所以要还原基准，路径只有一条：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 第 1 步：按 manifest 抓源视频（yt-dlp 抓 YouTube，保留 manifest 里的文件名）</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>python<span class="w"> </span>reconstruction/download_sources.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>--manifest<span class="w">  </span>/path/to/MotionScape/source_manifest.json<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span>--output-dir<span class="w"> </span>/path/to/MotionScape_raw
+</code></pre></div>
+<blockquote>
+<p><strong>下载</strong>：仓库里没有 <code>scripts/download_dataset.sh</code>；<code>huggingface-cli download --repo-type dataset Thelegendzz/MotionScape</code> 下到的也只是标注，<strong>没有视频</strong>——发布方明确不分发视听内容，版权与可用性仍归源平台与版权方。</p>
+</blockquote>
+<p><code>download_sources.py</code> 按 manifest 记录的<strong>分辨率、标称帧率、编码</strong>去选流，并且会在记录的流不可用时<strong>直接报错，而不是悄悄换一个编码</strong>。可选参数里比较有用的是 <code>--proxy</code>、<code>--cookies-from-browser</code>、<code>--limit</code>、<code>--dry-run</code>。<strong>已存在的源文件不会被覆盖。</strong></p>
+<hr />
+<h2 id="3-数据格式详解">3. 数据格式详解<a class="headerlink" href="#3-数据格式详解" title="Permanent link">&para;</a></h2>
+<h3 id="31-source_manifestjson">3.1 <code>source_manifest.json</code><a class="headerlink" href="#31-source_manifestjson" title="Permanent link">&para;</a></h3>
+<p>顶层四个键：<code>source_acquisition</code> / <code>benchmark_specification</code> / <code>items</code> / <code>summary</code>。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>{
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  "source_acquisition": {
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    "tool": "yt-dlp",
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    "format_selector": "bv[height=2160]+ba/bv+ba",
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    "merge_output_format": "mp4",
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    "extractor_args": "youtube:player_client=android",
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    "yt_dlp_version": "2026.03.17"
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>  },
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>  "benchmark_specification": { "fps": "30000/1001", "num_frames": 275,
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>                               "observed_frames": 200, "future_frames": 75 },
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>  "summary": { "source_videos": 67, "benchmark_samples": 228 },
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>  "items": [ /* 228 项 */ ]
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>}
+</code></pre></div>
+<p><code>items[]</code> 每项七个字段：<code>sample_id</code>、<code>video</code>、<code>video_index</code>、<code>segment_index</code>、<code>url</code>、<code>start_s</code>、<code>frame_count</code>、<code>resolution</code>、<code>fps</code>、<code>codec</code>。</p>
+<p><strong>实测分布</strong>（228 项逐条统计，可复算）：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>分布</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>frame_count</code></td>
+<td><code>275</code> × 228（<strong>无例外</strong>）</td>
+</tr>
+<tr>
+<td><code>codec</code></td>
+<td>vp9 <strong>169</strong> · h264 <strong>39</strong> · av1 <strong>20</strong></td>
+</tr>
+<tr>
+<td><code>resolution</code></td>
+<td>3840×2160 <strong>170</strong> · 1920×1080 <strong>43</strong> · 2560×1440 <strong>12</strong> · 3840×1634 2 · 7680×3268 1</td>
+</tr>
+<tr>
+<td><code>fps</code>（源）</td>
+<td>30/1 <strong>92</strong> · 30000/1001 <strong>50</strong> · 50/1 <strong>40</strong> · 60/1 <strong>34</strong> · 60000/1001 <strong>12</strong></td>
+</tr>
+</tbody>
+</table>
+<p>这张表解释了两件事。<strong>一是编码不只有 H.264</strong>：H.264 只占 39/228，主力是 VP9。<strong>二是源帧率很杂</strong>（30 / 29.97 / 50 / 60 / 59.94），统一到 29.97 是重建阶段做的重采样，不是源本身就整齐。</p>
+<p><code>start_s</code> 是<strong>每段在源视频时间轴上的定点</strong>（例如 <code>44.0</code>、<code>15.047</code>），不是随机取。</p>
+<h3 id="32-annotations">3.2 <code>annotations/</code><a class="headerlink" href="#32-annotations" title="Permanent link">&para;</a></h3>
+<p>每个样本一个扁平 JSON，只有四个字段：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span><span class="w"> </span><span class="nt">"sample_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"weather"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Overcast"</span><span class="p">,</span><span class="w"> </span><span class="nt">"environment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Urban parking structure"</span><span class="p">,</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">"caption"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p><code>weather</code> 与 <code>environment</code> 是<strong>自由文本</strong>，不是枚举——<strong>写下游代码时不要按固定类别去 match</strong>。<code>caption</code> 描述的是相机视角的运动，提示词里特意用 "the camera viewpoint" 或 "the onboard camera"，<strong>不暗示能看到无人机本体</strong>。</p>
+<h3 id="33-dynamicity_bucketsjson">3.3 <code>dynamicity_buckets.json</code><a class="headerlink" href="#33-dynamicity_bucketsjson" title="Permanent link">&para;</a></h3>
+<p>给每个样本的运动分数与 Low / Medium / High 归属。<strong>这个分数是在缩放后的图像空间里量的，是视觉动态性/视角运动强度的代理量，不是物理相机速度</strong>——README 专门写了这一句，引用数字时别把它当速度用。</p>
+<h3 id="34-重建产物">3.4 重建产物<a class="headerlink" href="#34-重建产物" title="Permanent link">&para;</a></h3>
+<p><code>reconstruct_benchmark.py</code> 为每个 <code>sample_id</code> 产出四份东西：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>MotionScape_reconstructed/
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>├── full_frames/&lt;sample_id&gt;/          # 275 帧图像序列
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>├── full_videos/&lt;sample_id&gt;.mp4       # 275 帧整段
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>├── observed_prefix_videos/&lt;sample_id&gt;.mp4   # 1–200 帧（条件输入）
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>└── last_75_videos/&lt;sample_id&gt;.mp4    # 201–275 帧（预测目标 / GT）
+</code></pre></div>
+<p>最后一步会<strong>校验帧数正是 275 / 200 / 75</strong>，对不上就报错。评测时 <code>--gt-dir</code> 指的就是 <code>last_75_videos</code>。</p>
+<hr />
+<h2 id="4-重建与运动分层">4. 重建与运动分层<a class="headerlink" href="#4-重建与运动分层" title="Permanent link">&para;</a></h2>
+<h3 id="41-重建">4.1 重建<a class="headerlink" href="#41-重建" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>python<span class="w"> </span>reconstruction/reconstruct_benchmark.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>--input-json<span class="w"> </span>/path/to/MotionScape/source_manifest.json<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>--video-root<span class="w"> </span>/path/to/MotionScape_raw<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--output-dir<span class="w"> </span>/path/to/MotionScape_reconstructed
+</code></pre></div>
+<p>对每个 <code>sample_id</code>，脚本依次做七件事：</p>
+<ol>
+<li>定位到源时间轴上的 <code>start_s</code>；</li>
+<li>时间重采样到 <strong>30000/1001 FPS</strong>；</li>
+<li>取<strong>前 275 个连续输出帧</strong>；</li>
+<li>写出 275 帧图像序列与整段视频；</li>
+<li>写出 1–200 帧的观测前缀视频；</li>
+<li>写出 201–275 帧的未来目标视频；</li>
+<li>校验 275 / 200 / 75 三个帧数。</li>
+</ol>
+<p>两个容易踩的点：<strong>公开的扁平 manifest 模式下 <code>end_s</code> 不作为抽取边界</strong>——边界就是「起点 + 275 帧」；<strong>已完整的样本默认跳过</strong>，要覆盖必须显式加 <code>--overwrite</code>。</p>
+<h3 id="42-运动分层把每一步的参数都对一遍">4.2 运动分层：把每一步的参数都对一遍<a class="headerlink" href="#42-运动分层把每一步的参数都对一遍" title="Permanent link">&para;</a></h3>
+<p>论文的最终协议<strong>只用未来目标段 201–275 帧</strong>来算运动分数（因为分层要刻画的是「未来有多难预测」）。整条链路的参数都是可核的：</p>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>设置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>源帧率</td>
+<td>30000/1001</td>
+</tr>
+<tr>
+<td>时间降采样</td>
+<td>每 3 帧取 1（得 25 帧、24 个相邻帧对）</td>
+</tr>
+<tr>
+<td>缩放</td>
+<td>854×480，area 插值</td>
+</tr>
+<tr>
+<td>光流</td>
+<td>灰度 Farnebäck 稠密光流，OpenCV 参数 <code>(0.5, 3, 15, 3, 5, 1.2, 0)</code></td>
+</tr>
+<tr>
+<td>帧对统计量</td>
+<td>光流幅值的<strong>空间 75 分位</strong></td>
+</tr>
+<tr>
+<td>片段分数</td>
+<td>24 个帧对统计量的<strong>均值</strong></td>
+</tr>
+<tr>
+<td>分档</td>
+<td>全局 <strong>33 / 66 分位</strong>切成 Low / Medium / High</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>python<span class="w"> </span>-m<span class="w"> </span>motion_stratification.compute_motion_strata<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>--frames-root<span class="w"> </span>/path/to/MotionScape_reconstructed/full_frames<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>--manifest-json<span class="w"> </span>/path/to/MotionScape/source_manifest.json<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>--output-json<span class="w"> </span>/path/to/dynamicity_buckets_detailed.json
+</code></pre></div>
+<p>最终 228 段的分档是 <strong>Low 75 / Medium 75 / High 78</strong>。</p>
+<blockquote>
+<p>一个反直觉的地方：降采样到「每 3 帧取 1」后，等效帧率只有约 9.99 FPS。<strong>分层的分辨率与帧率都比评测时低得多</strong>——这是刻意的，运动强度只需要一个相对排序，不需要精细的流场。</p>
+</blockquote>
+<hr />
+<h2 id="5-语义标注与生成提示词">5. 语义标注与生成提示词<a class="headerlink" href="#5-语义标注与生成提示词" title="Permanent link">&para;</a></h2>
+<h3 id="51-标注怎么生成">5.1 标注怎么生成<a class="headerlink" href="#51-标注怎么生成" title="Permanent link">&para;</a></h3>
+<p>标注由 <code>prompts/semantic_annotation.txt</code> 驱动，经 OpenAI 兼容的 API 生成：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ANNOTATION_API_KEY</span><span class="o">=</span><span class="s1">'...'</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>python<span class="w"> </span>annotation/generate_semantic_annotations.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span>--input-path<span class="w"> </span>/path/to/MotionScape_reconstructed/full_frames<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--mode<span class="w"> </span>prediction<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--dynamicity-json<span class="w"> </span>/path/to/MotionScape/dynamicity_buckets.json<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--prompt-file<span class="w"> </span>prompts/semantic_annotation.txt<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span>--output-dir<span class="w"> </span>/path/to/new_annotations<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">  </span>--response-json
+</code></pre></div>
+<p>两个必须照做的细节：<strong>时序不能乱</strong>——条件帧 196–200 先发，随后才是抽样的未来帧 201–275；<strong>温度固定 <code>0.1</code></strong>。196–200 这五帧<strong>只作时序上下文</strong>，提示词要求模型只描述 201–275。</p>
+<h3 id="52-四套生成提示词">5.2 四套生成提示词<a class="headerlink" href="#52-四套生成提示词" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prompts/text2world.txt</code></td>
+<td>纯文本</td>
+</tr>
+<tr>
+<td><code>prompts/image2world.txt</code></td>
+<td>单帧图像</td>
+</tr>
+<tr>
+<td><code>prompts/video2world_task_level.txt</code></td>
+<td>只看<strong>固定任务提示词 + 观测视频</strong>，不读任何逐样本标注</td>
+</tr>
+<tr>
+<td><code>prompts/video2world_clip_level.txt</code></td>
+<td><code>weather + environment + caption</code> 按此顺序拼接</td>
+</tr>
+</tbody>
+</table>
+<p><code>clip_assisted_inspection.txt</code> 记的是<strong>预处理阶段的负面提示词</strong>（字幕文字、标题/logo/片头、转场特效、第三人称无人机画面四类），用来在选片阶段剔掉非目标片段，<strong>不喂给生成模型</strong>。</p>
+<p>评测里还有一个口径要分清：<strong>CLIPSim 只用 <code>caption</code></strong>，因为它是评测输入而不是生成提示词。</p>
+<hr />
+<h2 id="6-基线推理与评测">6. 基线推理与评测<a class="headerlink" href="#6-基线推理与评测" title="Permanent link">&para;</a></h2>
+<h3 id="61-五个基线">6.1 五个基线<a class="headerlink" href="#61-五个基线" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>基线</th>
+<th>入口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cosmos-Predict2.5-2B</td>
+<td><code>inference/cosmos/</code> 的补丁与资产</td>
+</tr>
+<tr>
+<td>CogVideoX1.5-5B / I2V</td>
+<td><code>inference/cogvideox/t2v.py</code> · <code>i2v.py</code></td>
+</tr>
+<tr>
+<td>Wan2.2 T2V / I2V（A14B）</td>
+<td><code>inference/wan/t2v.py</code> · <code>i2v.py</code></td>
+</tr>
+<tr>
+<td>LongCat-Video</td>
+<td><code>inference/longcat/v2w.py</code></td>
+</tr>
+<tr>
+<td>MAGI-1-24B</td>
+<td><code>inference/magi/v2w.py</code></td>
+</tr>
+</tbody>
+</table>
+<p>各模型用的条件帧数与原生帧率都不一样，论文的评测按各自原生时序配置跑：</p>
+<table>
+<thead>
+<tr>
+<th>模型 / 任务</th>
+<th style="text-align: right;">条件帧数</th>
+<th style="text-align: right;">原生 FPS</th>
+<th style="text-align: right;">输出帧数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cosmos-Predict2.5-2B（T2W / I2W / V2W）</td>
+<td style="text-align: right;">0 / 1 / 5</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">93 / 92 / 88</td>
+</tr>
+<tr>
+<td>CogVideoX1.5-5B（T2W / I2W）</td>
+<td style="text-align: right;">0 / 1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">41</td>
+</tr>
+<tr>
+<td>Wan2.2-A14B（T2W / I2W）</td>
+<td style="text-align: right;">0 / 1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr>
+<td>LongCat-Video（V2W）</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr>
+<td>MAGI-1-24B（V2W）</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">40</td>
+</tr>
+</tbody>
+</table>
+<p>权重要自己下（仓库不分发第三方权重）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv-download<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>.venv-download/bin/activate
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>inference/requirements-download.txt
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>python<span class="w"> </span>inference/download_model_weights.py<span class="w"> </span>--output-root<span class="w"> </span>/data/MotionScape_models<span class="w"> </span>--model<span class="w"> </span>all<span class="w"> </span>--dry-run
+</code></pre></div>
+<p>Cosmos 权重是 <strong>gated</strong> 的，得先在 Hugging Face 上接受 NVIDIA 许可再登录。</p>
+<blockquote>
+<p><strong>那条 <code>huggingface-hub==0.36.0</code> 的钉版本只属于下载环境</strong>，不要拿它去替换任何基线的推理环境——README 专门警告过。</p>
+</blockquote>
+<h3 id="62-指标与预处理">6.2 指标与预处理<a class="headerlink" href="#62-指标与预处理" title="Permanent link">&para;</a></h3>
+<p>最终评测器是 <code>evaluation/evaluate_video_metrics.py</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>python<span class="w"> </span>evaluation/evaluate_video_metrics.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span>--gt-dir<span class="w"> </span>/path/to/MotionScape_reconstructed/last_75_videos<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>--pred-dir<span class="w"> </span>/path/to/model_outputs<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span>--dynamicity-buckets-json<span class="w"> </span>/path/to/MotionScape/dynamicity_buckets.json<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span>--clipsim-caption-dir<span class="w"> </span>/path/to/MotionScape/annotations<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span>--clipsim-caption-field<span class="w"> </span>caption<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span>--clipsim-model<span class="w"> </span>openai/clip-vit-base-patch32<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">  </span>--output-json<span class="w"> </span>/path/to/metrics_per_clip.json<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">  </span>--output-dynamicity-json<span class="w"> </span>/path/to/metrics_by_dynamicity.json<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">  </span>--frame-alignment<span class="w"> </span>timestamp<span class="w"> </span>--frame-metric-size<span class="w"> </span>704x1280<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">  </span>--fvd-mode<span class="w"> </span>Video2World<span class="w"> </span>--model-name<span class="w"> </span>MODEL_NAME<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">  </span>--i3d-python<span class="w"> </span>.venv-i3d/bin/python
+</code></pre></div>
+<p>六项指标的口径<strong>不是随便取的</strong>，每一条都会影响可比性：</p>
+<ul>
+<li><strong>PSNR / SSIM / LPIPS / Warping Error</strong> 在各模型<strong>原生帧率</strong>上做时间戳对齐后按片段算；GT 与预测的 RGB 帧<strong>各自独立</strong>缩放到 <strong>1280×704</strong>；PSNR/SSIM/Warping Error 用 <code>[0,1]</code> 区间，<strong>LPIPS 用 <code>[-1,1]</code></strong>。</li>
+<li><strong>Warping Error</strong> 先用相邻 GT 帧估计光流，把前一张预测帧 warp 过来，再对有效像素取平均。</li>
+<li><strong>CLIPSim</strong> 固定取最多 75 个连续可用预测帧。<strong>运动分层只用于聚合，不改动 CLIPSim 的帧选择。</strong></li>
+<li><strong>FVD 是分布级的</strong>：在每个运动档内，把所有片段的 I3D 嵌入<strong>合起来比一次</strong>，得到 Low / Medium / High 各一个 FVD——<strong>不是</strong>片段级 FVD 的平均。FVD 在 GT/预测对的公共时长上均匀采 75 个时间戳，转成 224×224 与 <code>[-1,1]</code>，每段抽一个 DeepMind I3D Mean 嵌入。</li>
+</ul>
+<p>FVD 需要<strong>独立的 TensorFlow 环境</strong>（官方 TF-Hub I3D 实现与主环境冲突）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv-i3d
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>.venv-i3d/bin/pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>evaluation/requirements-i3d-fvd.txt
+</code></pre></div>
+<h3 id="63-环境别互相污染">6.3 环境别互相污染<a class="headerlink" href="#63-环境别互相污染" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>环境</th>
+<th>PyTorch</th>
+<th>Transformers</th>
+<th>Diffusers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cosmos-Predict2.5-2B</td>
+<td>2.7.1+cu128</td>
+<td>4.57.1</td>
+<td>0.35.2</td>
+</tr>
+<tr>
+<td>CogVideoX1.5-5B / I2V</td>
+<td>2.8.0+cu128</td>
+<td>5.13.1</td>
+<td>0.39.0</td>
+</tr>
+<tr>
+<td>Wan2.2 T2V / I2V</td>
+<td>2.8.0+cu128</td>
+<td>4.51.3</td>
+<td>0.39.0</td>
+</tr>
+<tr>
+<td>LongCat-Video</td>
+<td>2.8.0+cu128</td>
+<td>4.41.0</td>
+<td>0.35.1</td>
+</tr>
+<tr>
+<td>帧指标 / CLIPSim</td>
+<td>2.8.0+cu128</td>
+<td>5.13.1</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MAGI 自带一整套独立运行时</strong>（Python 3.10.20、PyTorch 2.11.0+cu130、FlashAttention/FlashInfer、CUDA 13.0/Blackwell），README 明确要求<strong>不要与上面任何一个环境合并</strong>。统一的基线容器说明在 <code>inference/docker/README.md</code>。</p>
+<blockquote>
+<p>对 8 GB 显存：这五个基线一个都放不下。<strong>本篇能在这类机器上跑完的只有 §2–§4</strong>（重建 + 分层），语义标注走 API 不需要本地 GPU。生成质量部分只能引论文数字，不能自己出数。</p>
+</blockquote>
+<hr />
+<h2 id="7-常见问题与解决方案">7. 常见问题与解决方案<a class="headerlink" href="#7-常见问题与解决方案" title="Permanent link">&para;</a></h2>
+<h3 id="q1-重建时某些样本的源视频抓不下来">Q1: 重建时某些样本的源视频抓不下来<a class="headerlink" href="#q1-重建时某些样本的源视频抓不下来" title="Permanent link">&para;</a></h3>
+<p>源被下架、换区、或变成会员可见都会导致 yt-dlp 失败。先 <code>--dry-run</code> 看清单，再用 <code>--cookies-from-browser</code> 或 <code>--proxy</code> 重试，<code>--limit</code> 可以先小批量试通。<strong>发布方不分发视频，这个风险无法绕过</strong>——抓不到的样本就重建不出来，评测时要按实际重建成功的样本数报告。</p>
+<h3 id="q2-下载器报记录的流不可用">Q2: 下载器报「记录的流不可用」<a class="headerlink" href="#q2-下载器报记录的流不可用" title="Permanent link">&para;</a></h3>
+<p>这是<strong>设计如此</strong>：<code>download_sources.py</code> 按 manifest 的 <code>resolution / fps / codec</code> 精确选流，找不到就报错，<strong>不会静默换一个编码</strong>。因为编码变了会让重建结果的画质基线漂移。要放宽只能改 manifest 或接受缺样本，不要绕过去改脚本。</p>
+<h3 id="q3-ffmpeg-command-not-found">Q3: <code>ffmpeg: command not found</code><a class="headerlink" href="#q3-ffmpeg-command-not-found" title="Permanent link">&para;</a></h3>
+<p>重建依赖系统级的 <code>ffmpeg</code> 与 <code>ffprobe</code>，pip 装的 Python 包不能替代：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>ffmpeg<span class="w"> </span>-version<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ffprobe<span class="w"> </span>-version<span class="w">    </span><span class="c1"># 两个都要有</span>
+</code></pre></div>
+<h3 id="q4-fvd-装不上-与主环境冲突">Q4: FVD 装不上 / 与主环境冲突<a class="headerlink" href="#q4-fvd-装不上-与主环境冲突" title="Permanent link">&para;</a></h3>
+<p>官方 TF-Hub I3D 实现自带一套 TensorFlow 依赖，<strong>必须单独建环境</strong>（<code>evaluation/requirements-i3d-fvd.txt</code>），并用 <code>--i3d-python</code> 把那个解释器路径传给评测脚本。官方权重不是 HF checkpoint，而是从 TF-Hub 解析 <code>deepmind/i3d-kinetics-400/1</code>，评测器会校验固定的聚合 SHA-256。</p>
+<h3 id="q5-想用-8-gb-显存跑一个基线">Q5: 想用 8 GB 显存跑一个基线<a class="headerlink" href="#q5-想用-8-gb-显存跑一个基线" title="Permanent link">&para;</a></h3>
+<p>跑不动。最小的是 Cosmos-Predict2.5-<strong>2B</strong>（且显存需求远大于参数量本身，还要扛 93 帧的时间维），最大的是 MAGI-<strong>24B</strong>。可行的替代是：用你自己的小模型生成预测视频，<strong>只要帧数对得上、能落到 <code>--pred-dir</code></strong>，就能接进这套评测协议——这也是把 MotionScape 当基准用的意义：<strong>协议与模型解耦</strong>。</p>
+<h3 id="q6-clipsim-用哪段文本">Q6: CLIPSim 用哪段文本？<a class="headerlink" href="#q6-clipsim-用哪段文本" title="Permanent link">&para;</a></h3>
+<p>只用 <code>caption</code>，不用 <code>weather + environment</code>。生成侧的 clip-level Video2World 提示词要拼 <code>weather + environment + caption</code>，但 <strong>CLIPSim 是评测输入，口径就窄一档</strong>。两者别混。</p>
+<hr />
+<h2 id="参考资源">参考资源<a class="headerlink" href="#参考资源" title="Permanent link">&para;</a></h2>
+<ul>
+<li>MotionScape GitHub: https://github.com/Thelegendzz/MotionScape</li>
+<li>数据集（HF）: https://huggingface.co/datasets/thelegendzz/MotionScape</li>
+<li>Zenodo 记录: https://doi.org/10.5281/zenodo.21954342</li>
+<li>论文: https://arxiv.org/abs/2604.07991</li>
+<li>yt-dlp: https://github.com/yt-dlp/yt-dlp</li>
+<li>TensorFlow Hub I3D (Kinetics-400): https://tfhub.dev/deepmind/i3d-kinetics-400/1</li>
+</ul>
+<h2 id="延伸阅读">延伸阅读<a class="headerlink" href="#延伸阅读" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html">关键数据集与基准</a> — MotionScape 的理论背景</li>
+<li><a href="../02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/02-%E7%94%9F%E6%88%90%E5%BC%8F%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html">生成式世界模型</a> — 视频生成世界模型详解</li>
+<li><a href="08-%E5%8F%AF%E5%A4%8D%E7%8E%B0%E9%A1%B9%E7%9B%AE%E5%80%99%E9%80%89%E6%B8%85%E5%8D%95.html">可复现项目候选清单</a> — 更多可复现项目</li>
+</ul>
+<h2 id="思考题">思考题<a class="headerlink" href="#思考题" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p><strong>定位判断</strong>：228 段、34.9 分钟、无位姿真值。如果给你一个自研的无人机世界模型，MotionScape 能用来做什么、不能用来做什么？分别说出理由。</p>
+</li>
+<li>
+<p><strong>分层的分辨率</strong>：运动分层把帧缩到 854×480、每 3 帧取 1，等效约 9.99 FPS。评测时的图像处理却是 1280×704、各模型原生帧率。<strong>为什么两处的分辨率差这么多还能用同一套分层结果？</strong></p>
+</li>
+<li>
+<p><strong>步骤归属</strong>：仓库里没有 <code>scripts/preprocess.py</code>。按上面给出的真实仓库结构，降低分辨率这个需求应该落在哪一步、由谁负责？</p>
+</li>
+<li>
+<p><strong>FVD 的口径</strong>：为什么 FVD 要在每个运动档内把片段嵌入<strong>合起来比一次</strong>，而不是算每个片段的 FVD 再平均？这两种算法在什么情况下会给出一致的结论？</p>
+</li>
+<li>
+<p><strong>条件帧的差异</strong>：LongCat 用 13 个条件帧、MAGI 用 32 个，Cosmos 的 V2W 只用 5 个。如果想让三者在同一条件下比，需要改动什么？改了之后还算不算「各自原生配置的报告」？</p>
+</li>
+</ol>
+<details><summary>参考答案</summary>
+
+1. **能做的**：当**评测集**。它切好了「200 帧观测 + 75 帧未来」的固定格式，条件可文本/图像/视频，还有统一的指标实现与运动分层聚合——这正是「考卷」的三要素：题目固定、条件可控、评分口径统一。**不能做的**：当**训练集**。228 段 34.9 分钟的量级不足以训一个世界模型；也**不能评定位/轨迹精度**，因为没有位姿真值，只有视频帧与语义标注。所以「用 MotionScape 训练一个视频预测模型，再用它评定位误差」这条路两头都走不通。
+
+2. **因为分层的产物是一个相对排序，不是一个精确量。** 运动分档只需要「哪段比哪段更动」，用低分辨率、低帧率算出来的 75 分位光流均值足以稳定地排出这个次序——相邻帧的运动趋势在缩到 854×480 后依然保留。而评测阶段要的是**像素级可比性**，所以必须按各模型原生帧率做时间对齐、按统一尺寸 1280×704 缩放。**两者用的是分层结果的「档位标签」，不是「分数数值」**，所以口径不一致不影响。反过来说：如果下游有人直接把 `dynamicity_score` 当物理速度用，那就错了——README 明确说它是图像空间里的代理量。
+
+3. 落在**重建脚本里，由源分辨率与评测侧缩放共同决定，不存在一个独立的「预处理降分辨率」步骤**。真实链路是：`download_sources.py` 按 manifest 记录的原始分辨率（多为 3840×2160）抓源视频，`reconstruct_benchmark.py` 只做**时间**上的重采样与切帧（不降空间分辨率，输出仍是源分辨率），空间缩放发生在**用到的时候**——运动分层缩到 854×480，帧指标缩到 1280×704（GT 与预测各自独立缩）。所以「720p 副本」这个需求在本仓库里没有对应的入口；真要省存储，是在抓源视频那一步用 `--extra-arg` 之类的手段换流，代价是让重建结果偏离 manifest 记录的口径。
+
+4. 因为 **FVD 是分布间的距离**（这里用 Fréchet 距离），不是逐样本的误差。它比较的是**两组嵌入的均值与协方差**，单看一个片段根本算不出 FVD——片段级根本没有「分布」。在一个档位内把 75 段左右的嵌入合起来比一次，得到的是「这个模型在这个运动强度档上的预测分布与真实分布有多远」，这正是想报的量。两种算法只有在**每个片段自成一个档**的退化情形下才会趋于一致，或者当所有片段的嵌入分布足够接近时，平均值与合并值约等于——实务上没人会这么用。
+
+5. LongCat 与 MAGI 用的是 Video2World 的**逐帧条件**（每 2 帧取 1，得 13 / 32 帧），Cosmos 的 V2W 只给 5 帧连续条件，三者原生口径本来就不同。要对齐，得**从同一段 200 帧前缀里按统一规则抽条件帧**（比如统一抽最后 5 帧或等间隔 13 帧），再把抽好的条件喂给每个适配器——这是改 `inference/*/v2w.py` 的输入，不是改评测器。**改完就不再是「各自原生配置」的报告了**：论文那张表的意义正是「大家都按自己最擅长的配置跑，看谁在同一个考卷上分高」；统一条件后报的是「同一条件下谁更强」，两个结论都成立，但**必须在报告里写清是哪一种**，混着比就不可比。
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Qxy661 · MIT License
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

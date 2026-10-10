@@ -1,0 +1,5981 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="59 篇中文文档 · 195 篇论文 · 24 个纯 CPU 可跑 demo · 28.7 万字">
+      
+      
+      
+        <link rel="canonical" href="https://qxy661.github.io/UAV-WM-VLA-Learning/docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/05-%E6%97%A0%E4%BA%BA%E6%9C%BA%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E7%BB%BC%E8%BF%B0.html">
+      
+      
+        <link rel="prev" href="04-3D%E5%9C%BA%E6%99%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html">
+      
+      
+        <link rel="next" href="06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>05 无人机世界模型综述 - 世界模型 · VLA · VLM 学习库（无人机视角）</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#无人机世界模型综述从感知到决策的全景视图" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-header__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            世界模型 · VLA · VLM 学习库（无人机视角）
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              05 无人机世界模型综述
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到深色"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切到深色" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到浅色"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切到浅色" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  导读与学习路线
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  基础概念
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  世界模型专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLA 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLM 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  综述论文精读
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  论文导读合集
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  实践指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  研究前沿与开放问题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  专题自测与考察
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../mindmaps/field-overview.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  思维导图
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../references/paper-list.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  参考资料
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../code/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  可运行代码
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../en/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English Overview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../README.en.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English README
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CHANGELOG.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  更新日志
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  贡献指南
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-nav__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    世界模型 · VLA · VLM 学习库（无人机视角）
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读与学习路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础概念
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基础概念
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/01-%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 什么是世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/02-%E4%BB%80%E4%B9%88%E6%98%AFVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 什么是 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/03-%E4%BB%80%E4%B9%88%E6%98%AFVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 什么是 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/04-%E4%B8%89%E8%80%85%E5%85%B3%E7%B3%BB%E4%B8%8E%E5%8C%BA%E5%88%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 三者关系与区别
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/05-%E6%97%A0%E4%BA%BA%E6%9C%BAvs%E5%9C%B0%E9%9D%A2%E6%9C%BA%E5%99%A8%E4%BA%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机与地面机器人
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    世界模型专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95%E5%8F%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 世界模型发展史
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02-%E7%94%9F%E6%88%90%E5%BC%8F%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 生成式世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03-%E6%A8%A1%E5%9E%8B%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 模型强化学习世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04-3D%E5%9C%BA%E6%99%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 3D 场景世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机世界模型综述
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="05-%E6%97%A0%E4%BA%BA%E6%9C%BA%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E7%BB%BC%E8%BF%B0.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机世界模型综述
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-为什么无人机需要世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 为什么无人机需要世界模型？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-aeroverse无人机具身世界模型基准套件" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. AeroVerse：无人机具身世界模型基准套件
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. AeroVerse：无人机具身世界模型基准套件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-论文概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 论文概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-aeroverse-的构成" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 AeroVerse 的构成
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-五个下游任务" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 五个下游任务
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-评测skyagenteval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 评测：SkyAgentEval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-背景无人机世界模型通常涉及哪些子问题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 背景：无人机世界模型通常涉及哪些子问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-对比世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 对比世界模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 对比世界模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-论文概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 论文概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-为什么对比学习能帮到世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 为什么对比学习能帮到世界模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-对比学习的核心思想" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 对比学习的核心思想
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-外推到无人机导航对应组件" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 外推到无人机导航：对应组件
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-hdvio混合动力学-vio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. HDVIO：混合动力学 VIO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. HDVIO：混合动力学 VIO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-论文概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 论文概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-架构设计" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 架构设计
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-混合方法的优势" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 混合方法的优势
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-hdvio-作为世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 HDVIO 作为世界模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-物理引导学习-on-se3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 物理引导学习 on SE(3)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 物理引导学习 on SE(3)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-论文概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 论文概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-se3-群上的无人机动力学" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 SE(3) 群上的无人机动力学
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-物理引导的学习方法" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 物理引导的学习方法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-lie-群上的神经网络" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Lie 群上的神经网络
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-wireless-dreamer面向低空无线网络的世界模型框架" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Wireless Dreamer：面向低空无线网络的世界模型框架
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Wireless Dreamer：面向低空无线网络的世界模型框架">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-论文概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 论文概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-世界模型与相邻概念的区分" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 世界模型与相邻概念的区分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-为什么低空无线网络需要世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 为什么低空无线网络需要世界模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-案例天气感知的无人机轨迹规划" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 案例：天气感知的无人机轨迹规划
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-无人机世界模型的技术路线对比" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 无人机世界模型的技术路线对比
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 无人机世界模型的技术路线对比">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-方法对比" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 方法对比
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-技术路线选择指南" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 技术路线选择指南
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-这五个不在同一个比较维度上" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 这五个不在同一个比较维度上
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-无人机世界模型的未来方向" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 无人机世界模型的未来方向
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 无人机世界模型的未来方向">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-技术趋势" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 技术趋势
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-开放问题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 开放问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-研究路线图" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 研究路线图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-关键论文" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 关键论文
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-动手验证物理残差损失救回了什么" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 动手验证：物理残差损失救回了什么？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 动手验证：物理残差损失救回了什么？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-残差项与三组训练" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 残差项与三组训练
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-本地实测结果" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 本地实测结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-运行完整脚本" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 运行完整脚本
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-延伸阅读" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 延伸阅读
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-思考题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 思考题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. 思考题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#题目-1城市巡检该先做哪个任务" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 1：城市巡检该先做哪个任务
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#题目-2物理引导-vs-数据驱动" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 2：物理引导 vs. 数据驱动
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#题目-3通信感知决策" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 3：通信感知决策
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#题目-4sim-to-real-迁移" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 4：Sim-to-Real 迁移
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 关键数据集与基准
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="07-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E6%B5%8B%E4%B8%8E%E8%AF%8A%E6%96%AD.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 世界模型评测与诊断
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="08-%E8%81%94%E5%90%88%E5%B5%8C%E5%85%A5%E9%A2%84%E6%B5%8B%E4%B8%8E%E6%BD%9C%E7%A9%BA%E9%97%B4%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 联合嵌入预测与潜空间世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="09-%E9%95%BF%E6%97%B6%E7%A8%8B%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%94%9F%E6%88%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 长时程世界模型与交互式生成
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLA 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/01-VLA%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 架构演进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BAVLA%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机 VLA 模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/03-%E8%AF%AD%E8%A8%80%E6%9D%A1%E4%BB%B6%E9%A3%9E%E8%A1%8C%E6%8E%A7%E5%88%B6.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 语言条件飞行控制
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/04-%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E8%BE%85%E5%8A%A9%E8%A7%84%E5%88%92.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 基础模型辅助规划
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/05-%E6%9C%BA%E8%BD%BD%E9%83%A8%E7%BD%B2%E4%B8%8E%E4%BC%98%E5%8C%96.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 机载部署与优化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/06-%E5%8A%A8%E4%BD%9C%E5%A4%B4%E4%B8%8E%E5%8A%A8%E4%BD%9C%E5%88%86%E5%9D%97.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 动作头与动作分块
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/07-%E6%95%B0%E6%8D%AE%E3%80%81%E9%A2%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%B7%A8%E5%85%B7%E8%BA%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 数据、预训练与跨具身
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/08-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%90%8E%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%87%AA%E6%88%91%E6%94%B9%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 强化学习后训练与自我改进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/09-%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E4%B8%8E%E6%8A%A5%E5%91%8A%E5%8F%A3%E5%BE%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 评测基准与报告口径
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-VLA%E4%B8%93%E9%A2%98/10-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%A2%9E%E5%BC%BAVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 世界模型增强 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLM 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/01-%E9%81%A5%E6%84%9FVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 遥感 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机场景理解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/03-LLM%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BAAgent.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 LLM 驱动的无人机 Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/04-%E8%BE%B9%E7%BC%98VLM%E9%83%A8%E7%BD%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 边缘 VLM 部署
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/05-%E9%80%9A%E7%94%A8VLM%E6%9E%B6%E6%9E%84%E4%B8%8E%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 通用 VLM 架构与视觉编码器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/06-VLM%E6%8C%87%E4%BB%A4%E5%BE%AE%E8%B0%83%E4%B8%8E%E5%AF%B9%E9%BD%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 VLM 指令微调与对齐
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-VLM%E4%B8%93%E9%A2%98/07-%E9%80%9A%E7%94%A8VLM%E8%AF%84%E6%B5%8B%E4%B8%8E%E5%B9%BB%E8%A7%89.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 通用 VLM 评测与幻觉
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    综述论文精读
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    综述论文精读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/01-%E7%BB%BC%E8%BF%B0%E6%A6%82%E8%A7%88%E4%B8%8E%E7%BB%93%E6%9E%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 综述概览与结构
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E7%AD%96%E7%95%A5.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型作为策略
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/03-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E6%A8%A1%E6%8B%9F%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 世界模型作为模拟器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/04-%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 视频生成世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/05-%E5%9F%BA%E5%87%86%E4%B8%8E%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 基准与评估
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文导读合集
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文导读合集
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/world-model-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vla-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vlm-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/benchmark-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基准与数据集论文
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实践指南
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    实践指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/01-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 环境搭建
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/02-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-UAV-Flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 复现指南 UAV-Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/03-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-CognitiveDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 复现指南 CognitiveDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/04-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-FlightDiffusion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 复现指南 FlightDiffusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/05-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-MotionScape.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 复现指南 MotionScape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/06-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-GeoChat.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 复现指南 GeoChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/07-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DreamerV3-Drone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 复现指南 DreamerV3-Drone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/08-%E5%8F%AF%E5%A4%8D%E7%8E%B0%E9%A1%B9%E7%9B%AE%E5%80%99%E9%80%89%E6%B8%85%E5%8D%95.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 可复现项目候选清单
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/09-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DeepDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 复现指南 DeepDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/10-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-RemoteCLIP.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 复现指南 RemoteCLIP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/11-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-Flightmare.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11 复现指南 Flightmare
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    研究前沿与开放问题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10" id="__nav_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    研究前沿与开放问题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/01-%E7%A0%94%E7%A9%B6%E8%B7%AF%E7%BA%BF%E5%9B%BE.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 研究路线图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/02-%E7%A0%94%E7%A9%B6%E7%A9%BA%E7%99%BD%E4%B8%8E%E6%9C%BA%E4%BC%9A.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 研究空白与机会
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/03-%E8%AE%BA%E6%96%87%E6%89%B9%E5%88%A4%E6%80%A7%E9%98%85%E8%AF%BB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 论文批判性阅读
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/04-%E6%9C%80%E6%96%B0%E8%BF%9B%E5%B1%95%E4%B8%8E%E5%9B%A2%E9%98%9F%E8%BF%BD%E8%B8%AA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 最新进展与团队追踪
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    专题自测与考察
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    专题自测与考察
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/01-VLA%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 VLA 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/03-VLM%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 VLM 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    思维导图
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    思维导图
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/field-overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    领域全景图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/world-model-taxonomy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型分类学
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/vla-evolution.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 演进路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mindmaps/reading-order.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    推荐阅读顺序
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考资料
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    参考资料
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/paper-list.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完整论文列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/vla-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/wm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/vlm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/awesome-annotations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Awesome List 注释
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/citation-audit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    引用核查报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    可运行代码
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../en/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../README.en.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    更新日志
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    贡献指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-为什么无人机需要世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 为什么无人机需要世界模型？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-aeroverse无人机具身世界模型基准套件" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. AeroVerse：无人机具身世界模型基准套件
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. AeroVerse：无人机具身世界模型基准套件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-论文概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 论文概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-aeroverse-的构成" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 AeroVerse 的构成
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-五个下游任务" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 五个下游任务
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-评测skyagenteval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 评测：SkyAgentEval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-背景无人机世界模型通常涉及哪些子问题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 背景：无人机世界模型通常涉及哪些子问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-对比世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 对比世界模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 对比世界模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-论文概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 论文概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-为什么对比学习能帮到世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 为什么对比学习能帮到世界模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-对比学习的核心思想" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 对比学习的核心思想
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-外推到无人机导航对应组件" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 外推到无人机导航：对应组件
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-hdvio混合动力学-vio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. HDVIO：混合动力学 VIO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. HDVIO：混合动力学 VIO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-论文概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 论文概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-架构设计" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 架构设计
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-混合方法的优势" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 混合方法的优势
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-hdvio-作为世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 HDVIO 作为世界模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-物理引导学习-on-se3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 物理引导学习 on SE(3)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 物理引导学习 on SE(3)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-论文概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 论文概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-se3-群上的无人机动力学" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 SE(3) 群上的无人机动力学
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-物理引导的学习方法" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 物理引导的学习方法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-lie-群上的神经网络" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Lie 群上的神经网络
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-wireless-dreamer面向低空无线网络的世界模型框架" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Wireless Dreamer：面向低空无线网络的世界模型框架
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Wireless Dreamer：面向低空无线网络的世界模型框架">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-论文概述" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 论文概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-世界模型与相邻概念的区分" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 世界模型与相邻概念的区分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-为什么低空无线网络需要世界模型" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 为什么低空无线网络需要世界模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-案例天气感知的无人机轨迹规划" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 案例：天气感知的无人机轨迹规划
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-无人机世界模型的技术路线对比" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 无人机世界模型的技术路线对比
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 无人机世界模型的技术路线对比">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-方法对比" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 方法对比
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-技术路线选择指南" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 技术路线选择指南
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-这五个不在同一个比较维度上" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 这五个不在同一个比较维度上
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-无人机世界模型的未来方向" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 无人机世界模型的未来方向
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 无人机世界模型的未来方向">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-技术趋势" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 技术趋势
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-开放问题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 开放问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-研究路线图" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 研究路线图
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-关键论文" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 关键论文
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-动手验证物理残差损失救回了什么" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 动手验证：物理残差损失救回了什么？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 动手验证：物理残差损失救回了什么？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-残差项与三组训练" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 残差项与三组训练
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-本地实测结果" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 本地实测结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-运行完整脚本" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 运行完整脚本
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-延伸阅读" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 延伸阅读
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-思考题" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 思考题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. 思考题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#题目-1城市巡检该先做哪个任务" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 1：城市巡检该先做哪个任务
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#题目-2物理引导-vs-数据驱动" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 2：物理引导 vs. 数据驱动
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#题目-3通信感知决策" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 3：通信感知决策
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#题目-4sim-to-real-迁移" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        题目 4：Sim-to-Real 迁移
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="无人机世界模型综述从感知到决策的全景视图">无人机世界模型综述：从感知到决策的全景视图<a class="headerlink" href="#无人机世界模型综述从感知到决策的全景视图" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>预计阅读：20 分钟 | 前置知识：无人机基础、强化学习概念、视觉 SLAM 基础</strong></p>
+</blockquote>
+<hr />
+<h2 id="1-为什么无人机需要世界模型">1. 为什么无人机需要世界模型？<a class="headerlink" href="#1-为什么无人机需要世界模型" title="Permanent link">&para;</a></h2>
+<p>无人机在三维空间中高速运动，面临独特的感知和决策挑战。世界模型为 UAV 提供了"内部模拟器"，使其能够在脑海中预演飞行轨迹、评估风险、优化策略，而无需在真实环境中试错。</p>
+<pre class="mermaid"><code>graph TB
+    A[无人机世界模型的价值] --&gt; B[安全性&lt;br/&gt;在想象中测试危险场景]
+    A --&gt; C[效率性&lt;br/&gt;减少真实飞行次数]
+    A --&gt; D[适应性&lt;br/&gt;快速适应新环境]
+    A --&gt; E[自主性&lt;br/&gt;减少人工干预]</code></pre>
+<p>本节综述无人机专用世界模型的最新研究进展，涵盖感知建模、动力学学习、决策规划等多个层面。</p>
+<hr />
+<h2 id="2-aeroverse无人机具身世界模型基准套件">2. AeroVerse：无人机具身世界模型基准套件<a class="headerlink" href="#2-aeroverse无人机具身世界模型基准套件" title="Permanent link">&para;</a></h2>
+<h3 id="21-论文概述">2.1 论文概述<a class="headerlink" href="#21-论文概述" title="Permanent link">&para;</a></h3>
+<p><strong>论文：</strong> <em>"AeroVerse: UAV-Agent Benchmark Suite for Simulating, Pre-training, Finetuning, and Evaluating Aerospace Embodied World Models"</em>
+<strong>作者：</strong> Fanglong Yao, Yuanchang Yue, Youzhi Liu, Xian Sun, Kun Fu
+<strong>arXiv：</strong> <a href="https://arxiv.org/abs/2408.15511">2408.15511</a>
+<strong>核心贡献：</strong> 面向航空航天具身世界模型的基准套件：构建大规模真实图像-文本预训练数据集，并给出仿真、预训练、微调、评测的统一流程。它是一套基准与数据，不是一篇综述。</p>
+<h3 id="22-aeroverse-的构成">2.2 AeroVerse 的构成<a class="headerlink" href="#22-aeroverse-的构成" title="Permanent link">&para;</a></h3>
+<p>AeroVerse 不是一套分类法，而是一整套基准：数据集、任务定义、评测指标、仿真器，以及已经接进去的一批模型。</p>
+<table>
+<thead>
+<tr>
+<th>组成</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>预训练数据集</td>
+<td>AerialAgent-Ego10k（真实城市无人机第一人称图像-文本）、CyberAgent Ego500k（虚拟图像-文本-位姿对齐）</td>
+</tr>
+<tr>
+<td>5 个下游任务</td>
+<td>场景感知、空间推理、导航探索、任务规划、运动决策</td>
+</tr>
+<tr>
+<td>微调指令数据集</td>
+<td>SkyAgent-Scene3k / Reason3k / Nav3k / Plan3k / Act3k，与上面 5 个任务一一对应</td>
+</tr>
+<tr>
+<td>评测</td>
+<td>SkyAgentEval，基于 GPT-4 的下游任务评测指标</td>
+</tr>
+<tr>
+<td>基准套件</td>
+<td>10+ 个 2D/3D 视觉语言模型、2 个预训练数据集、5 个微调数据集、10+ 项指标、1 个仿真器</td>
+</tr>
+</tbody>
+</table>
+<p>论文的出发点是：已有的具身世界模型几乎都面向室内的地面智能体，无人机智能体这块是空白；而无人机需要的是第一人称视角、能主动与人及环境交互的表示。</p>
+<h3 id="23-五个下游任务">2.3 五个下游任务<a class="headerlink" href="#23-五个下游任务" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    A[AeroVerse 下游任务] --&gt; B[场景感知&lt;br/&gt;scene awareness]
+    A --&gt; C[空间推理&lt;br/&gt;spatial reasoning]
+    A --&gt; D[导航探索&lt;br/&gt;navigational exploration]
+    A --&gt; E[任务规划&lt;br/&gt;task planning]
+    A --&gt; F[运动决策&lt;br/&gt;motion decision]</code></pre>
+<table>
+<thead>
+<tr>
+<th>任务</th>
+<th>要解决什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>场景感知</td>
+<td>从第一人称视角理解城市空域里有什么</td>
+</tr>
+<tr>
+<td>空间推理</td>
+<td>判断物体之间的相对位置与关系</td>
+</tr>
+<tr>
+<td>导航探索</td>
+<td>在未知环境中规划并执行探索</td>
+</tr>
+<tr>
+<td>任务规划</td>
+<td>把高层目标拆成可执行步骤</td>
+</tr>
+<tr>
+<td>运动决策</td>
+<td>输出底层飞行动作</td>
+</tr>
+</tbody>
+</table>
+<h3 id="24-评测skyagenteval">2.4 评测：SkyAgentEval<a class="headerlink" href="#24-评测skyagenteval" title="Permanent link">&para;</a></h3>
+<p>AeroVerse 的评测不走 ATE / RPE 这类几何指标，而是用 GPT-4 对下游任务的作答打分，论文的说法是「comprehensively, flexibly, and objectively」。论文用它评估了一批 2D/3D 视觉语言模型在无人机任务上的表现，报告了这些模型的潜力与局限。</p>
+<blockquote>
+<p>用 GPT-4 当裁判能覆盖开放式作答，代价是分数依赖裁判模型本身，横向比较时要留意版本。</p>
+</blockquote>
+<h3 id="25-背景无人机世界模型通常涉及哪些子问题">2.5 背景：无人机世界模型通常涉及哪些子问题<a class="headerlink" href="#25-背景无人机世界模型通常涉及哪些子问题" title="Permanent link">&para;</a></h3>
+<p>下面这张表是本节对领域常见子问题的归纳，<strong>不是 AeroVerse 的分类</strong>，放在这里是为了给后面几章的论文一个坐标系。</p>
+<table>
+<thead>
+<tr>
+<th>层面</th>
+<th>典型子问题</th>
+<th>常用方法</th>
+<th>主要难点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>感知</td>
+<td>视觉 SLAM、深度估计、语义理解</td>
+<td>ORB-SLAM、VINS-Mono、单双目深度、分割与检测</td>
+<td>快速运动与光照变化、尺度模糊、实时性</td>
+</tr>
+<tr>
+<td>动力学</td>
+<td>运动学建模、气动效应、环境扰动</td>
+<td>SE(3) 上的动力学、CFD、数据驱动模型</td>
+<td>非线性与耦合、流场复杂、风场不确定</td>
+</tr>
+<tr>
+<td>任务</td>
+<td>路径规划、任务分配、资源管理</td>
+<td>A<em>、RRT</em>、优化方法、多智能体规划</td>
+<td>实时性、组合爆炸、约束满足</td>
+</tr>
+<tr>
+<td>交互</td>
+<td>多智能体协同、人机交互、环境接触</td>
+<td>MARL、博弈论、意图识别、共享控制</td>
+<td>非平稳性、通信延迟、接触建模精度</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-对比世界模型">3. 对比世界模型<a class="headerlink" href="#3-对比世界模型" title="Permanent link">&para;</a></h2>
+<h3 id="31-论文概述">3.1 论文概述<a class="headerlink" href="#31-论文概述" title="Permanent link">&para;</a></h3>
+<p><strong>论文：</strong> <em>"Contrastive Learning of Structured World Models"</em>（C-SWM）
+<strong>作者：</strong> Thomas Kipf, Elise van der Pol, Max Welling
+<strong>arXiv：</strong> <a href="https://arxiv.org/abs/1911.12247">1911.12247</a>（ICLR 2020）
+<strong>核心贡献：</strong> 用对比学习学「结构化」的状态表征。它把每个状态嵌入拆成一组物体表征及其相互关系，用图神经网络建模，物体无需直接监督就能从原始像素里被发现。在有组合结构的环境里，它比基于像素重建的世界模型更强，学到的表征也更具可解释性。</p>
+<blockquote>
+<p>这篇论文本身不做无人机导航，它的实验环境是组合式环境、Atari 与多物体物理仿真。3.4 节那张无人机导航的组件表是本节把该范式外推到无人机场景的整理，不是原文内容。所以本章的定位是「对比世界模型这类方法是什么」，而不是「某篇无人机论文做了什么」。</p>
+</blockquote>
+<h3 id="32-为什么对比学习能帮到世界模型">3.2 为什么对比学习能帮到世界模型<a class="headerlink" href="#32-为什么对比学习能帮到世界模型" title="Permanent link">&para;</a></h3>
+<p>世界模型要先有一个状态表征，再在这个表征上预测动力学。像素重建类方法把大量容量花在重建背景纹理上，而对比学习只要求「同一状态的不同视角靠近、不同状态远离」，把容量逼到真正区分状态的维度上。这也是 C-SWM 能绕开像素重建局限的原因。</p>
+<h3 id="33-对比学习的核心思想">3.3 对比学习的核心思想<a class="headerlink" href="#33-对比学习的核心思想" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    A[正样本对&lt;br/&gt;同一状态的不同视角] --&gt; C[对比损失]
+    B[负样本对&lt;br/&gt;不同状态的视角] --&gt; C
+    C --&gt; D[学习状态表征]</code></pre>
+<p><strong>对比损失函数：</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">contrastive_loss</span><span class="p">(</span><span class="n">anchors</span><span class="p">,</span> <span class="n">positives</span><span class="p">,</span> <span class="n">negatives</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="sd">"""InfoNCE：锚点与正样本的相似度，要在「正样本 + K 个负样本」里排第一。</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="sd">    anchors/positives: (B, D)   negatives: (B, K, D)</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="sd">    """</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">a</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">anchors</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">positives</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">n</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">negatives</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">pos_logit</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">/</span> <span class="n">temperature</span>        <span class="c1"># (B, 1)</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">neg_logit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"bd,bkd-&gt;bk"</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">temperature</span>     <span class="c1"># (B, K)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="c1"># 正样本放第 0 列，于是「正确答案」恒为 0，交叉熵即 -log softmax(正样本)</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">pos_logit</span><span class="p">,</span> <span class="n">neg_logit</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">target</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">anchors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="34-外推到无人机导航对应组件">3.4 外推到无人机导航：对应组件<a class="headerlink" href="#34-外推到无人机导航对应组件" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>功能</th>
+<th>训练方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>视觉编码器</td>
+<td>提取场景特征</td>
+<td>对比学习</td>
+</tr>
+<tr>
+<td>动态模型</td>
+<td>预测下一状态</td>
+<td>对比 + 预测</td>
+</tr>
+<tr>
+<td>价值函数</td>
+<td>评估状态价值</td>
+<td>TD 学习</td>
+</tr>
+<tr>
+<td>策略网络</td>
+<td>输出飞行动作</td>
+<td>Actor-Critic</td>
+</tr>
+</tbody>
+</table>
+<p><strong>对比世界模型的优势：</strong></p>
+<table>
+<thead>
+<tr>
+<th>优势</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>样本效率</td>
+<td>对比学习充分利用正负样本</td>
+</tr>
+<tr>
+<td>泛化能力</td>
+<td>学到的状态表征更具语义性</td>
+</tr>
+<tr>
+<td>鲁棒性</td>
+<td>对视角变化、光照变化更鲁棒</td>
+</tr>
+<tr>
+<td>可迁移性</td>
+<td>预训练表征可迁移到新场景</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-hdvio混合动力学-vio">4. HDVIO：混合动力学 VIO<a class="headerlink" href="#4-hdvio混合动力学-vio" title="Permanent link">&para;</a></h2>
+<h3 id="41-论文概述">4.1 论文概述<a class="headerlink" href="#41-论文概述" title="Permanent link">&para;</a></h3>
+<p><strong>论文：</strong> <em>"HDVIO: Improving Localization and Disturbance Estimation with Hybrid Dynamics VIO"</em>
+<strong>作者：</strong> Giovanni Cioffi, Leonard Bauersfeld, Davide Scaramuzza（苏黎世大学 UZH）
+<strong>arXiv：</strong> <a href="https://arxiv.org/abs/2306.11429">2306.11429</a>
+<strong>核心贡献：</strong> 名字里的 "HD" 是 <strong>Hybrid Dynamics</strong> 不是 "Hybrid Deep"。它把质点模型与一个学习到的气动效应分量拼成混合动力学模型，用实际运动与模型预测之间的残差估计外部风扰与完整机器人状态。相比纯动力学辅助的 VIO，它在车辆模型不准、持续受扰时退化更慢。</p>
+<h3 id="42-架构设计">4.2 架构设计<a class="headerlink" href="#42-架构设计" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph 传统 VIO
+        A[相机图像] --&gt; B[特征提取]
+        C[IMU 数据] --&gt; D[预积分]
+        B --&gt; E[视觉里程计]
+        D --&gt; E
+        E --&gt; F[位姿估计]
+    end
+
+    subgraph 深度学习增强
+        A --&gt; G[深度网络]
+        G --&gt; H[深度图]
+        H --&gt; I[深度融合]
+        I --&gt; E
+        A --&gt; J[学习特征]
+        J --&gt; K[特征增强]
+        K --&gt; E
+    end
+
+    F --&gt; L[状态估计]</code></pre>
+<h3 id="43-混合方法的优势">4.3 混合方法的优势<a class="headerlink" href="#43-混合方法的优势" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>方面</th>
+<th>纯传统方法</th>
+<th>纯学习方法</th>
+<th>HDVIO (混合)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>精度</td>
+<td>中</td>
+<td>高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>鲁棒性</td>
+<td>中</td>
+<td>低（分布外）</td>
+<td>高</td>
+</tr>
+<tr>
+<td>实时性</td>
+<td>高</td>
+<td>中</td>
+<td>高</td>
+</tr>
+<tr>
+<td>可解释性</td>
+<td>高</td>
+<td>低</td>
+<td>中</td>
+</tr>
+<tr>
+<td>泛化能力</td>
+<td>中</td>
+<td>低</td>
+<td>高</td>
+</tr>
+</tbody>
+</table>
+<h3 id="44-hdvio-作为世界模型">4.4 HDVIO 作为世界模型<a class="headerlink" href="#44-hdvio-作为世界模型" title="Permanent link">&para;</a></h3>
+<p>HDVIO 不仅是状态估计器，也可以被视为一种世界模型：</p>
+<ul>
+<li><strong>状态表征</strong>：提供精确的 6-DoF 位姿估计</li>
+<li><strong>动态预测</strong>：基于 IMU 和视觉预测下一时刻状态</li>
+<li><strong>不确定性估计</strong>：协方差矩阵提供不确定性</li>
+<li><strong>规划支持</strong>：精确的状态估计支持路径规划</li>
+</ul>
+<hr />
+<h2 id="5-物理引导学习-on-se3">5. 物理引导学习 on SE(3)<a class="headerlink" href="#5-物理引导学习-on-se3" title="Permanent link">&para;</a></h2>
+<h3 id="51-论文概述">5.1 论文概述<a class="headerlink" href="#51-论文概述" title="Permanent link">&para;</a></h3>
+<p><strong>论文：</strong> <em>"Physics-guided Learning-based Adaptive Control on the SE(3) Manifold"</em>
+<strong>作者：</strong> Thai Duong, Nikolay Atanasov
+<strong>arXiv：</strong> <a href="https://arxiv.org/abs/2201.04339">2201.04339</a>（NeurIPS 2021 "Physical Reasoning and Inductive Biases for the Real World" workshop）
+<strong>姊妹篇：</strong> <a href="https://arxiv.org/abs/2109.09974">2109.09974</a> <em>"Adaptive Control of SE(3) Hamiltonian Dynamics with Learned Disturbance Features"</em>，系统更长的一版
+<strong>核心贡献：</strong> 把 Hamilton 运动方程的结构直接写进 neural ODE，让 SE(3) 运动学约束与能量守恒<strong>由构造保证</strong>，再据此导出基于能量的自适应控制器，在欠驱动四旋翼上验证。</p>
+<h3 id="52-se3-群上的无人机动力学">5.2 SE(3) 群上的无人机动力学<a class="headerlink" href="#52-se3-群上的无人机动力学" title="Permanent link">&para;</a></h3>
+<p>无人机的位姿在 SE(3) 群上，包含位置和旋转：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>SE(3) = { (R, t) | R ∈ SO(3), t ∈ R³ }
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>其中:
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>- R: 旋转矩阵 (3x3, 正交, det=1)
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>- t: 平移向量 (3维)
+</code></pre></div>
+<p><strong>无人机动力学方程：</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>位置: m * a = f_thrust * R * e₃ + f_gravity + f_drag
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>旋转: J * α + ω × (J * ω) = τ
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>其中:
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>- m: 质量
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>- a: 加速度
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>- f_thrust: 推力
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>- R: 旋转矩阵
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>- e₃: [0,0,1]^T
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>- f_gravity: 重力
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>- f_drag: 阻力
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>- J: 转动惯量
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>- α: 角加速度
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>- ω: 角速度
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>- τ: 力矩
+</code></pre></div>
+<h3 id="53-物理引导的学习方法">5.3 物理引导的学习方法<a class="headerlink" href="#53-物理引导的学习方法" title="Permanent link">&para;</a></h3>
+<p>物理怎么进网络，有两条路线。下面的图和表说的是<strong>路线一：软约束</strong>，也是物理信息神经网络这个大类里最常见的写法。</p>
+<pre class="mermaid"><code>graph TB
+    A[数据驱动损失&lt;br/&gt;L_data] --&gt; E[总损失 L]
+    B[物理约束损失&lt;br/&gt;L_physics] --&gt; E
+    C[SE(3) 几何损失&lt;br/&gt;L_geometry] --&gt; E
+    E --&gt; D[神经网络参数更新]</code></pre>
+<p><strong>三种损失函数：</strong></p>
+<table>
+<thead>
+<tr>
+<th>损失项</th>
+<th>公式</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据损失</td>
+<td>L_data = ||ŷ - y||²</td>
+<td>拟合观测数据</td>
+</tr>
+<tr>
+<td>物理损失</td>
+<td>L_physics = ||F(ŷ) - 0||²</td>
+<td>满足物理方程</td>
+</tr>
+<tr>
+<td>几何损失</td>
+<td>L_geometry = ||R^T R - I||²</td>
+<td>保持 SO(3) 约束</td>
+</tr>
+</tbody>
+</table>
+<p>软约束把物理写进损失函数，物理只是「被鼓励」满足，不是「必然」满足：权重调小了约束不住，调大了压过数据。<strong>2201.04339 走的是路线二：结构约束</strong>。它把 Hamilton 运动方程的结构直接编进 neural ODE，网络只输出这类方程允许的动力学，SE(3) 运动学约束和能量守恒由构造保证。好处是没有权重可调，也不存在「约束被违反」这种失败模式；代价是网络结构被物理形式锁死，能表达的动力学族比自由 MLP 窄。</p>
+<p>第 10 节在四旋翼仿真上实测路线一：软约束救回了哪些通道、没救回哪些通道。</p>
+<p><strong>物理引导的优势：</strong></p>
+<table>
+<thead>
+<tr>
+<th>优势</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据效率</td>
+<td>物理先验减少数据需求（原文明确主张）</td>
+</tr>
+<tr>
+<td>外推能力</td>
+<td>物理约束在分布外仍然有效</td>
+</tr>
+<tr>
+<td>安全性</td>
+<td>物理合理的预测更安全</td>
+</tr>
+<tr>
+<td>可解释性</td>
+<td>满足已知物理规律</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>后两行是这类方法的普遍期望，2201.04339 没有逐条量化；第 10 节的实测也只覆盖了「外推能力」这一行，且结论是<strong>分通道</strong>的。</p>
+</blockquote>
+<h3 id="54-lie-群上的神经网络">5.4 Lie 群上的神经网络<a class="headerlink" href="#54-lie-群上的神经网络" title="Permanent link">&para;</a></h3>
+<p>在 SE(3) 上设计神经网络需要特殊考虑：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">skew</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="sd">"""反对称矩阵：skew(w) @ x == np.cross(w, x)"""</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">w</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>                     <span class="p">[</span><span class="n">w</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>                     <span class="p">[</span><span class="o">-</span><span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">]])</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">def</span><span class="w"> </span><span class="nf">exp_map</span><span class="p">(</span><span class="n">se3_vec</span><span class="p">):</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="sd">"""se(3) -&gt; SE(3) 的指数映射。se3_vec = [ω, v]，返回 4x4 齐次变换矩阵。"""</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="n">omega</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">se3_vec</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">se3_vec</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">omega</span><span class="p">)</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="n">K</span> <span class="o">=</span> <span class="n">skew</span><span class="p">(</span><span class="n">omega</span><span class="p">)</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="k">if</span> <span class="n">theta</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>        <span class="c1"># 小角度：sin θ ≈ θ，cos θ ≈ 1，两式都退化成一阶项</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">K</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">K</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>        <span class="n">K</span> <span class="o">=</span> <span class="n">K</span> <span class="o">/</span> <span class="n">theta</span>                                 <span class="c1"># 换成单位转轴</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">K</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">K</span> <span class="o">@</span> <span class="n">K</span><span class="p">)</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>        <span class="c1"># 分子分母同时趋于 0：theta 很小时直接除会得到 nan，必须走上面的分支</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">K</span> \
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>            <span class="o">+</span> <span class="p">(</span><span class="n">theta</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">*</span> <span class="p">(</span><span class="n">K</span> <span class="o">@</span> <span class="n">K</span><span class="p">)</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>    <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>    <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>    <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">V</span> <span class="o">@</span> <span class="n">v</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>    <span class="k">return</span> <span class="n">T</span>
+</code></pre></div>
+<blockquote>
+<p>上面的 <code>V</code> 用的是单位转轴写法 <code>I + (1-cosθ)/θ·K + (θ-sinθ)/θ·K²</code>（<code>K = [ω/θ]×</code>）。若按未归一化的 <code>[ω]×</code> 展开，分母会变成 <code>θ²</code> 与 <code>θ³</code>，theta 趋零时是 0/0，小角度分支不能省。这份实现与 <code>scipy.spatial.transform.Rotation.from_rotvec</code> 在机器精度内一致（含 <code>θ = 0</code>）。</p>
+</blockquote>
+<hr />
+<h2 id="6-wireless-dreamer面向低空无线网络的世界模型框架">6. Wireless Dreamer：面向低空无线网络的世界模型框架<a class="headerlink" href="#6-wireless-dreamer面向低空无线网络的世界模型框架" title="Permanent link">&para;</a></h2>
+<h3 id="61-论文概述">6.1 论文概述<a class="headerlink" href="#61-论文概述" title="Permanent link">&para;</a></h3>
+<p><strong>论文：</strong> <em>"World Models for Cognitive Agents: Transforming Edge Intelligence in Future Networks"</em>
+<strong>作者：</strong> Changyuan Zhao, Ruichen Zhang, Jiacheng Wang, Gaosheng Zhao, Dusit Niyato, Geng Sun, Shiwen Mao, Dong In Kim
+<strong>arXiv：</strong> <a href="https://arxiv.org/abs/2506.00417">2506.00417</a>（7 页概述，4 张图）
+<strong>核心贡献：</strong> 分两部分。一是对世界模型的综合概述，并把它与数字孪生、元宇宙、基础模型这几个容易混为一谈的概念划清界限；二是提出 <strong>Wireless Dreamer</strong>，一个面向无线边缘智能优化的世界模型强化学习框架，落地场景是低空无线网络（LAWN），并给出一个天气感知的无人机轨迹规划案例。</p>
+<blockquote>
+<p>Wireless Dreamer 是这篇论文提出的<strong>框架名</strong>，不是论文标题。论文报告的结论是框架改善了学习效率与决策质量；摘要层面没有给出可比的数值指标，所以本节不做量化对比。</p>
+</blockquote>
+<h3 id="62-世界模型与相邻概念的区分">6.2 世界模型与相邻概念的区分<a class="headerlink" href="#62-世界模型与相邻概念的区分" title="Permanent link">&para;</a></h3>
+<p>这三个词经常被混用，论文对它们做了明确切分：</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>它是什么</th>
+<th>与世界模型的差别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数字孪生</td>
+<td>对物理系统的高保真镜像，靠外部仿真器与实时数据同步</td>
+<td>数字孪生追求「像」，世界模型追求「预测动作的后果」，且以可学的隐表示为载体</td>
+</tr>
+<tr>
+<td>元宇宙</td>
+<td>面向人的沉浸式交互环境</td>
+<td>元宇宙的主语是人，世界模型的主语是智能体</td>
+</tr>
+<tr>
+<td>基础模型</td>
+<td>大规模预训练的通用模型</td>
+<td>基础模型是实现世界模型的一种手段，不是同义词：世界模型强调对动力学的建模，基础模型强调规模与通用性</td>
+</tr>
+</tbody>
+</table>
+<p>论文把世界模型的角色定义为<strong>嵌入式认知引擎</strong>：嵌在智能体内部，用学到的隐动力学支撑预测、生成、规划、因果推理四类用途。</p>
+<h3 id="63-为什么低空无线网络需要世界模型">6.3 为什么低空无线网络需要世界模型<a class="headerlink" href="#63-为什么低空无线网络需要世界模型" title="Permanent link">&para;</a></h3>
+<p>低空无线网络里的无人机同时受两套约束：自身飞行动力学，以及它与地面节点之间的无线链路。论文选了「无线边缘智能优化」作为框架的落点，并指出世界模型在数据受限或安全攸关的场景下价值最大，这正是无线频谱与空域资源都紧张的 LAWN 的处境。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph 世界模型
+        A[智能体状态] --&gt; B[隐动力学]
+        D[动作] --&gt; B
+        B --&gt; E[下一状态预测]
+    end
+    subgraph 决策
+        E --&gt; F[策略网络]
+        F --&gt; G[行动]
+    end</code></pre>
+<blockquote>
+<p>上图是本节按论文文字整理的通用回路，<strong>不是论文原图</strong>。论文是一篇 7 页概述，正文没有在这个层次给出模块框图，因此这里不复刻所谓的「Wireless Dreamer 架构」。</p>
+</blockquote>
+<h3 id="64-案例天气感知的无人机轨迹规划">6.4 案例：天气感知的无人机轨迹规划<a class="headerlink" href="#64-案例天气感知的无人机轨迹规划" title="Permanent link">&para;</a></h3>
+<p>论文用一个天气感知的轨迹规划案例说明框架的效果，天气同时影响飞行与链路，是一个把「无线」和「无人机」耦合起来的合适切口。论文报告的结果是学习效率与决策质量两项都有改善，没有给出可直接引用的数值。</p>
+<hr />
+<h2 id="7-无人机世界模型的技术路线对比">7. 无人机世界模型的技术路线对比<a class="headerlink" href="#7-无人机世界模型的技术路线对比" title="Permanent link">&para;</a></h2>
+<h3 id="71-方法对比">7.1 方法对比<a class="headerlink" href="#71-方法对比" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>类型</th>
+<th>核心技术</th>
+<th>优势</th>
+<th>局限</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AeroVerse</td>
+<td>基准套件</td>
+<td>数据集 + 5 任务 + GPT-4 评测</td>
+<td>覆盖预训练到评测全流程</td>
+<td>是评测基准，不是可部署的方法</td>
+<td>选型对比、模型评测</td>
+</tr>
+<tr>
+<td>C-SWM</td>
+<td>表征学习</td>
+<td>对比学习 + 图神经网络</td>
+<td>样本效率、物体级可解释表征</td>
+<td>原文实验不涉及无人机</td>
+<td>有组合结构的场景表征</td>
+</tr>
+<tr>
+<td>HDVIO</td>
+<td>状态估计</td>
+<td>质点模型 + 学习到的气动分量</td>
+<td>车辆模型不准、持续受扰时退化慢</td>
+<td>计算开销</td>
+<td>有风扰的 VIO</td>
+</tr>
+<tr>
+<td>SE(3) 物理引导</td>
+<td>动力学</td>
+<td>Hamilton 结构写进 neural ODE</td>
+<td>约束由构造保证，可解释</td>
+<td>网络结构被物理形式锁死</td>
+<td>需要能量守恒的控制</td>
+</tr>
+<tr>
+<td>Wireless Dreamer</td>
+<td>框架提案</td>
+<td>世界模型 + RL，面向 LAWN</td>
+<td>把无线边缘纳入优化目标</td>
+<td>7 页概述，未给可比数值</td>
+<td>低空无线网络边缘智能</td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-技术路线选择指南">7.2 技术路线选择指南<a class="headerlink" href="#72-技术路线选择指南" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    A[选择无人机世界模型] --&gt; B{主要需求?}
+
+    B --&gt;|精确状态估计| C[HDVIO / VIO]
+    B --&gt;|结构化表征| D[C-SWM]
+    B --&gt;|物理精确控制| E[SE(3) 学习]
+    B --&gt;|低空无线边缘| F[Wireless Dreamer]
+    B --&gt;|要一套评测基准| G[AeroVerse]
+
+    C --&gt; H[传统 + 学习混合]
+    D --&gt; I[数据驱动]
+    E --&gt; J[物理引导]
+    F --&gt; K[通信感知]
+    G --&gt; L[数据集 + 指标 + 仿真器]</code></pre>
+<h3 id="73-这五个不在同一个比较维度上">7.3 这五个不在同一个比较维度上<a class="headerlink" href="#73-这五个不在同一个比较维度上" title="Permanent link">&para;</a></h3>
+<p>给上面五个对象打「感知精度 高 / 中 / 低」是把不可比的东西摆成了可比的：AeroVerse 是一套评测基准，本身不做预测；C-SWM 是表征学习方法，原文不涉及无人机；HDVIO 是完整的里程计系统；SE(3) 物理引导是动力学建模方法；Wireless Dreamer 是一篇 7 页的框架提案。</p>
+<p>真要比较，得先认准一条轴：</p>
+<table>
+<thead>
+<tr>
+<th>想比什么</th>
+<th>该拿谁比</th>
+<th>用什么量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>状态估计精度</td>
+<td>HDVIO vs 其他 VIO</td>
+<td>ATE / RPE</td>
+</tr>
+<tr>
+<td>动力学外推</td>
+<td>SE(3) 物理引导 vs 纯数据模型</td>
+<td>分布外单步误差、rollout 漂移（见第 10 节）</td>
+</tr>
+<tr>
+<td>表征质量</td>
+<td>C-SWM vs 像素重建类世界模型</td>
+<td>下游任务准确率、表征可解释性</td>
+</tr>
+<tr>
+<td>模型在无人机任务上的能力</td>
+<td>接进 AeroVerse 的各 VLM</td>
+<td>SkyAgentEval 分数</td>
+</tr>
+</tbody>
+</table>
+<p>Wireless Dreamer 目前给不出可比数字，原文只报告了「学习效率与决策质量改善」这一句结论。</p>
+<hr />
+<h2 id="8-无人机世界模型的未来方向">8. 无人机世界模型的未来方向<a class="headerlink" href="#8-无人机世界模型的未来方向" title="Permanent link">&para;</a></h2>
+<h3 id="81-技术趋势">8.1 技术趋势<a class="headerlink" href="#81-技术趋势" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    A[当前技术] --&gt; B[未来趋势]
+    B --&gt; C[基础模型&lt;br/&gt;大规模预训练]
+    B --&gt; D[多模态融合&lt;br/&gt;视觉+惯性+通信]
+    B --&gt; E[可解释性&lt;br/&gt;物理引导]
+    B --&gt; F[实时性&lt;br/&gt;边缘计算]
+    B --&gt; G[安全性&lt;br/&gt;形式化验证]</code></pre>
+<h3 id="82-开放问题">8.2 开放问题<a class="headerlink" href="#82-开放问题" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>描述</th>
+<th>可能的解决方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sim-to-Real 差距</td>
+<td>仿真中学到的模型难以迁移到真实</td>
+<td>域随机化、真实数据微调</td>
+</tr>
+<tr>
+<td>长期预测</td>
+<td>长时间预测的准确性下降</td>
+<td>层次化模型、不确定性感知</td>
+</tr>
+<tr>
+<td>动态环境</td>
+<td>移动物体、变化光照</td>
+<td>动态场景建模、在线适应</td>
+</tr>
+<tr>
+<td>安全保证</td>
+<td>无法保证学习模型的安全性</td>
+<td>安全层、形式化验证</td>
+</tr>
+<tr>
+<td>计算资源</td>
+<td>复杂模型难以机载部署</td>
+<td>模型压缩、边缘计算</td>
+</tr>
+</tbody>
+</table>
+<h3 id="83-研究路线图">8.3 研究路线图<a class="headerlink" href="#83-研究路线图" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>时间</th>
+<th>目标</th>
+<th>关键技术</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>近期 (1-2年)</td>
+<td>单机自主导航</td>
+<td>3DGS-SLAM + 世界模型</td>
+</tr>
+<tr>
+<td>中期 (3-5年)</td>
+<td>多智能体协作</td>
+<td>交互世界模型</td>
+</tr>
+<tr>
+<td>长期 (5-10年)</td>
+<td>完全自主</td>
+<td>基础世界模型</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-关键论文">9. 关键论文<a class="headerlink" href="#9-关键论文" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>[arXiv'24.08] AeroVerse</strong> — <em>AeroVerse: UAV-Agent Benchmark Suite for Simulating, Pre-training, Finetuning, and Evaluating Aerospace Embodied World Models</em><br />
+<a href="https://arxiv.org/abs/2408.15511"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2408.15511-b31b1b.svg" /></a>
+  基准套件, 数据集</p>
+</li>
+<li>
+<p><strong>[ICLR'20] C-SWM</strong> — <em>Contrastive Learning of Structured World Models</em><br />
+<a href="https://arxiv.org/abs/1911.12247"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-1911.12247-b31b1b.svg" /></a>
+  对比学习, 结构化表征</p>
+</li>
+<li>
+<p><strong>[arXiv'23.06] HDVIO</strong> — <em>HDVIO: Improving Localization and Disturbance Estimation with Hybrid Dynamics VIO</em><br />
+<a href="https://arxiv.org/abs/2306.11429"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2306.11429-b31b1b.svg" /></a>
+  混合动力学 VIO</p>
+</li>
+<li>
+<p><strong>[arXiv'22.01] Physics-guided Learning-based Adaptive Control on the SE(3) Manifold</strong> — <em>Duong, Atanasov</em><br />
+<a href="https://arxiv.org/abs/2201.04339"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2201.04339-b31b1b.svg" /></a>
+  物理引导, Lie 群</p>
+</li>
+<li>
+<p><strong>[arXiv'25.06] Wireless Dreamer</strong> — <em>World Models for Cognitive Agents: Transforming Edge Intelligence in Future Networks</em><br />
+<a href="https://arxiv.org/abs/2506.00417"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2506.00417-b31b1b.svg" /></a>
+  无线边缘, 世界模型</p>
+</li>
+</ul>
+<hr />
+<h2 id="10-动手验证物理残差损失救回了什么">10. 动手验证：物理残差损失救回了什么？<a class="headerlink" href="#10-动手验证物理残差损失救回了什么" title="Permanent link">&para;</a></h2>
+<p>第 5 章把物理引导讲成一条从 Hamilton 结构到自适应控制器的路线，5.3 节的表还列了数据效率、外推能力、安全性、可解释性四条优势。这一节挑其中能在 CPU 上量出来的一条做实验：<strong>往数据损失里加一项物理残差，模型的分布外预测会不会变好？</strong></p>
+<p>做法是 5.3 节路线一（软约束）的最小实现。状态是四旋翼的 12 维 <code>[p, v, rpy, ω]</code>，动作是 4 维 <code>[推力, ω_x, ω_y, ω_z]</code>，网络学一阶增量 <code>Δs = s' - s</code>。残差项只写三条<strong>不依赖标签</strong>的运动学关系：</p>
+<ul>
+<li>位置由速度积分：<code>p' = p + v·dt</code></li>
+<li>姿态由角速率积分：<code>rpy' = rpy + a[1:]·ω_max·dt</code></li>
+<li>角速率一阶保持：<code>ω' = a[1:]·ω_max</code></li>
+</ul>
+<p>速度通道的 <code>v' = v + a·dt</code> 依赖具体动力学，写不成不含标签的形式，所以残差里<strong>故意没有它</strong>。这个漏洞是下面最关键的对照。</p>
+<p>三组模型：A 只用数据损失；B 加残差，但只施加在训练分布内的状态上；C 用同一个残差，额外施加在随机采样的分布外状态上。三组的网络、种子、步数完全相同。</p>
+<h3 id="101-残差项与三组训练">10.1 残差项与三组训练<a class="headerlink" href="#101-残差项与三组训练" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span><span class="o">,</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">common.quad_sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">OMEGA_MAX</span><span class="p">,</span> <span class="n">QuadSim</span><span class="p">,</span> <span class="n">expert</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">DT</span><span class="p">,</span> <span class="n">OM</span><span class="p">,</span> <span class="n">SC</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">OMEGA_MAX</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">.7</span><span class="p">,</span> <span class="mf">.7</span><span class="p">,</span> <span class="mf">.7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">g</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">()</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">goal</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="n">g</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.4</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="n">g</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">env</span> <span class="o">=</span> <span class="n">QuadSim</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">DT</span><span class="p">);</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">();</span> <span class="n">obs</span><span class="p">,</span> <span class="n">act</span><span class="p">,</span> <span class="n">nxt</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">150</span><span class="p">):</span>                                  <span class="c1"># 专家控制器采轨迹，状态都靠近悬停</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">obs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">obs</span><span class="p">());</span> <span class="n">a</span> <span class="o">=</span> <span class="n">expert</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">goal</span><span class="p">);</span> <span class="n">act</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="n">nxt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="n">st</span><span class="p">,</span> <span class="n">ac</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">((</span><span class="n">obs</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="n">act</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="n">nxt</span><span class="p">,</span> <span class="mi">12</span><span class="p">))]</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="n">g2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">()</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>                 <span class="c1"># 分布外状态：|v| 到 5 m/s、倾角到 0.6 rad</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">so</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="n">g2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">5</span><span class="p">)],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="n">ao</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="n">g2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">true_delta</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>                                 <span class="c1"># 残差不吃标签，这个函数只是评测需要</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="n">e</span> <span class="o">=</span> <span class="n">QuadSim</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dt</span><span class="o">=</span><span class="n">DT</span><span class="p">);</span> <span class="n">e</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">rpy</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">om</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">s</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">s</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">],</span> <span class="n">s</span><span class="p">[:,</span> <span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="n">s</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>                                <span class="c1"># 只写 p'=p+v·dt、rpy'=rpy+a[1:]ωdt、ω'=a[1:]ω 三条</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    <span class="k">return</span> <span class="p">((</span><span class="n">d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">s</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">*</span> <span class="n">DT</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">DT</span><span class="p">))</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> \
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>         <span class="o">+</span> <span class="p">((</span><span class="n">d</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">*</span> <span class="n">OM</span> <span class="o">*</span> <span class="n">DT</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">OM</span> <span class="o">*</span> <span class="n">DT</span><span class="p">))</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> \
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>         <span class="o">+</span> <span class="p">((</span><span class="n">d</span><span class="p">[:,</span> <span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">*</span> <span class="n">OM</span> <span class="o">-</span> <span class="n">s</span><span class="p">[:,</span> <span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">]))</span> <span class="o">/</span> <span class="n">OM</span><span class="p">)</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>   <span class="c1"># 速度通道没有先验</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="k">class</span><span class="w"> </span><span class="nc">Net</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">):</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">();</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">"sc"</span><span class="p">,</span> <span class="n">sc</span><span class="p">)</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">SiLU</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">SiLU</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">s</span> <span class="o">/</span> <span class="n">SC</span><span class="p">,</span> <span class="n">a</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">ac</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">);</span> <span class="n">tgt</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">-</span> <span class="n">st</span><span class="p">;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">tgt</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">))</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>    <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">3e-3</span><span class="p">);</span> <span class="n">gg</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">()</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>        <span class="n">i</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="mi">256</span><span class="p">,),</span> <span class="n">generator</span><span class="o">=</span><span class="n">gg</span><span class="p">)</span>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">st</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ac</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">tgt</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>        <span class="k">if</span> <span class="n">lam</span><span class="p">:</span>                                       <span class="c1"># 残差不吃标签，分布外状态可以随便造</span>
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>            <span class="n">j</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">so</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="mi">256</span><span class="p">,),</span> <span class="n">generator</span><span class="o">=</span><span class="n">gg</span><span class="p">)</span>
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">lam</span> <span class="o">*</span> <span class="p">(</span><span class="n">residual</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">st</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ac</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">st</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ac</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">residual</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">so</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">ao</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="n">so</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">ao</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>        <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">();</span> <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">();</span> <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="n">do</span><span class="p">,</span> <span class="n">di</span> <span class="o">=</span> <span class="n">true_delta</span><span class="p">(</span><span class="n">so</span><span class="p">[:</span><span class="mi">1024</span><span class="p">],</span> <span class="n">ao</span><span class="p">[:</span><span class="mi">1024</span><span class="p">]),</span> <span class="n">true_delta</span><span class="p">(</span><span class="n">st</span><span class="p">[:</span><span class="mi">1024</span><span class="p">],</span> <span class="n">ac</span><span class="p">[:</span><span class="mi">1024</span><span class="p">])</span>
+<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">"A 纯数据"</span><span class="p">,</span> <span class="n">train</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">ac</span><span class="p">,</span> <span class="n">nx</span><span class="p">)),</span> <span class="p">(</span><span class="s2">"C 残差+分布外"</span><span class="p">,</span> <span class="n">train</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">ac</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mf">1.0</span><span class="p">))):</span>
+<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a>    <span class="n">eo</span><span class="p">,</span> <span class="n">ei</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">so</span><span class="p">[:</span><span class="mi">1024</span><span class="p">],</span> <span class="n">ao</span><span class="p">[:</span><span class="mi">1024</span><span class="p">])</span> <span class="o">-</span> <span class="n">do</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">st</span><span class="p">[:</span><span class="mi">1024</span><span class="p">],</span> <span class="n">ac</span><span class="p">[:</span><span class="mi">1024</span><span class="p">])</span> <span class="o">-</span> <span class="n">di</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">  分布内[位置 </span><span class="si">{</span><span class="n">ei</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2"> 速度 </span><span class="si">{</span><span class="n">ei</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">]   分布外[位置 </span><span class="si">{</span><span class="n">eo</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2"> 速度 </span><span class="si">{</span><span class="n">eo</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="102-本地实测结果">10.2 本地实测结果<a class="headerlink" href="#102-本地实测结果" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>训练集 32 条轨迹 x 150 步 = 4800 条转移
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  训练状态：|v| 上界 0.37 m/s，|rpy| 上界 0.160 rad，|ω| 上界 3.23 rad
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  随机分布外状态 2048 条：|v| 上界 8.44 m/s，|rpy| 上界 0.984 rad，标注成本为 0
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>[2] 单步预测误差（分布内 1024 条转移 / 随机分布外状态 1024 条）
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>                                        位置          速度          姿态         角速率
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    单位                                 m         m/s           °       rad/s
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    A 纯数据 分布内                 1.26e-03    1.78e-03    4.36e-02    8.32e-04
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    A 纯数据 分布外                 5.09e-02    1.24e-01    2.35e+00    1.56e+00
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    B 残差只在训练状态 分布内            1.76e-04    1.85e-03    2.58e-03    1.55e-03
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    B 残差只在训练状态 分布外            2.70e-02    1.38e-01    1.78e+00    1.90e+00
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    C 残差 + 随机分布外状态 分布内        1.04e-04    1.65e-03    5.54e-03    4.33e-03
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    C 残差 + 随机分布外状态 分布外        9.14e-04    1.21e-01    1.01e+00    1.14e+00
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>[3] 分布外单步误差相对于纯数据模型的比值（&lt; 1 表示这一路被先验救回来了）
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>                                    位置          速度          姿态         角速率
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    B 残差只在训练状态                  0.53        1.11        0.76        1.22
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    C 残差 + 随机分布外状态              0.02        0.97        0.43        0.73
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    残差是否写死这一路                    是           否           是           是
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    B 与 C 的差别只在残差加在哪批状态上：B 的位置通道只降 1.9 倍，C 降 55.7 倍。
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>[4] 数据效率（单步误差，2 个种子平均）——把轨迹数从 32 砍到 4
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>                                       分布内位置         分布外位置         分布外速度
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>    32 条轨迹（4800 转移） A 纯数据         1.27e-03      5.10e-02      1.26e-01
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>    32 条轨迹（4800 转移） C 残差          1.26e-04      8.92e-04      1.21e-01
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>    4 条轨迹（600 转移） A 纯数据           1.20e-03      5.09e-02      1.33e-01
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>    4 条轨迹（600 转移） C 残差            1.08e-04      9.23e-04      1.22e-01
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>    数据砍到 1/8，两边的误差几乎没变——这个任务上量不出「物理先验省数据」：
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>    600 条转移就已经把模型喂饱了，瓶颈不在数据量。要量数据效率得换一个
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>    更难拟合的任务，或者把网络容量放大到数据成为瓶颈为止。
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>[5] 开环 rollout（同一串专家动作分别喂给真仿真和学到的模型，150 步 = 3 秒）
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>    分布外触限检查：真值轨迹 |rpy| 最大 0.600 rad，限幅 1.2 rad，未触限，姿态残差成立
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>                                         分布内 0.5/1/3 s             分布外 0.5/1/3 s
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>    A 纯数据                    0.082 / 0.168 / 0.377 m      0.814 / 1.286 / 3.050 m
+<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>    B 残差只在训练状态               0.103 / 0.246 / 0.754 m      0.479 / 1.582 / 5.857 m
+<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>    C 残差 + 随机分布外状态           0.137 / 0.314 / 0.874 m      0.574 / 1.884 / 6.785 m
+</code></pre></div>
+<p>第一组是数据。专家控制器采出来的 32 条轨迹里，速度上界只有 0.37 m/s、倾角上界 0.160 rad，状态全挤在悬停附近；而随机采样的分布外状态速度上界 8.44 m/s、倾角上界 0.984 rad。这里的关键是：残差项只用状态和动作，<strong>不需要标签</strong>，所以这批分布外状态可以凭空造出来，标注成本是 0。数据损失没这个自由，它只能用在有 <code>s'</code> 的地方。</p>
+<p>第二组是单步误差。纯数据模型在分布内已经很好（位置 1.26e-03 m），一出分布就崩到 5.09e-02 m，涨了 40 倍。</p>
+<p>第三组是本节的核心，把分布外误差按通道拆开，看相对纯数据模型的比值。位置 0.02、姿态 0.43、角速率 0.73，都明显小于 1；<strong>速度 0.97，基本没动</strong>。对照最后一行「残差是否写死这一路」的 是 / 否 / 是 / 是，规律很干净：先验只救它写下来的那几路，没写的（速度）它救不了。</p>
+<p>B 和 C 用的是<strong>同一个残差公式</strong>，唯一差别是残差加在哪批状态上。B 只在训练状态上施加，位置通道只降到 0.53 倍；C 把它也施加在随机分布外状态上，同一个公式把位置通道降到 0.02 倍，也就是 55.7 倍。差别不在公式本身，而在<strong>能不能在没有标签的状态上用它</strong>。</p>
+<p>第四组是一个否定结果。把轨迹数从 32 条砍到 4 条（4800 条转移砍到 600 条），A 和 C 的误差都几乎没变：A 的分布外位置是 5.10e-02 对 5.09e-02，C 是 8.92e-04 对 9.23e-04。<strong>这个任务上量不出「物理先验省数据」</strong>，600 条转移就已经把模型喂饱了，瓶颈不在数据量。要真正量数据效率，得换一个更难拟合的任务，或者把网络容量放大到数据成为瓶颈为止。这一条如实记下，不当作支持物理先验的证据。</p>
+<p>第五组是警告，也是本节最该记住的一条：<strong>单步精度不等于长期精度</strong>。分布外 rollout 的前 0.5 秒，带先验的两组确实领先（B 0.479 m、C 0.574 m，纯数据 0.814 m）；到 1 秒时已被反超（A 1.286 m 对 B 1.582 m、C 1.884 m）；3 秒时 B 5.857 m、C 6.785 m，纯数据反而是 3.050 m，带先验的落后接近一倍。</p>
+<p>原因不难找。位置每一拍都由 <code>p' = p + v·dt</code> 从速度积分而来，而速度通道恰恰没有先验兜底（比值 0.97）。速度上那点微小偏差每一步都灌进位置，150 步累积下来就盖过了先验在位置通道上的优势。分布内的 rollout 更直白：纯数据模型在<strong>每一条单步通道上都输</strong>，但 3 秒后的位置误差 0.377 m 反而小于带先验的 0.874 m。</p>
+<p>所以 5.3 节那张优势表里，「外推能力」这一行得加限定：先验只在它写死的那几路上、且只在短时域内成立。</p>
+<blockquote>
+<p><strong>限制</strong>：这里的分布外状态是<strong>在状态空间里随机采样</strong>出来的，不是真实的分布偏移。真实世界里模型失配来自风扰、载荷变化、电池衰减这类有结构的原因，那些偏移落在状态空间的哪个位置、残差是否仍然成立，本节没有回答。另外三组模型共用同一个 64 宽的两层 MLP，写死的通道和自由的通道会互相抢容量，先验通道的表现有一部分被这个共享结构压着。最后，第 [4] 组的数据效率是否定结果，本节没有测出「物理先验省数据」，只测出这个任务太容易、600 条转移就够。</p>
+</blockquote>
+<p><img alt="物理残差损失在分布内外的效果" src="../../figures/k_physics_prior.png" /></p>
+<h3 id="103-运行完整脚本">10.3 运行完整脚本<a class="headerlink" href="#103-运行完整脚本" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>py<span class="w"> </span>-3.9<span class="w"> </span>code/k_physics_prior.py<span class="w">     </span><span class="c1"># 约 50 秒，CPU 即可，只需 torch</span>
+</code></pre></div>
+<p>完整脚本在 <a href="../../code/k_physics_prior.py"><code>code/k_physics_prior.py</code></a>，额外打印第 [1] 组的三组配置、第 [4] 组的数据效率扫描，并输出上面这张三面板的图。</p>
+<hr />
+<h2 id="11-延伸阅读">11. 延伸阅读<a class="headerlink" href="#11-延伸阅读" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="01-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95%E5%8F%B2.html">01-世界模型发展史</a> — 世界模型的整体发展脉络</li>
+<li><a href="02-%E7%94%9F%E6%88%90%E5%BC%8F%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html">02-生成式世界模型</a> — 生成式方法在无人机中的应用</li>
+<li><a href="03-%E6%A8%A1%E5%9E%8B%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html">03-模型强化学习世界模型</a> — Dreamer 系列与模型 RL</li>
+<li><a href="04-3D%E5%9C%BA%E6%99%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html">04-3D场景世界模型</a> — NeRF 和 3DGS 作为世界模型</li>
+<li><a href="06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html">06-关键数据集与基准</a> — 评估世界模型的基准</li>
+<li><a href="../08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/02-%E7%A0%94%E7%A9%B6%E7%A9%BA%E7%99%BD%E4%B8%8E%E6%9C%BA%E4%BC%9A.html">研究空白与机会</a> — 世界模型方向的开放问题</li>
+</ul>
+<hr />
+<h2 id="12-思考题">12. 思考题<a class="headerlink" href="#12-思考题" title="Permanent link">&para;</a></h2>
+<h3 id="题目-1城市巡检该先做哪个任务">题目 1：城市巡检该先做哪个任务<a class="headerlink" href="#题目-1城市巡检该先做哪个任务" title="Permanent link">&para;</a></h3>
+<p>AeroVerse 定义了五个下游任务：场景感知、空间推理、导航探索、任务规划、运动决策。对一个城市巡检无人机，应该优先发展哪一个？</p>
+<details>
+<summary>参考答案</summary>
+
+**推荐优先级：场景感知 > 空间推理 > 运动决策 > 导航探索 > 任务规划**
+
+**理由：**
+
+1. **场景感知（最优先）：**
+   - 城市环境复杂：高楼、电线、行人、车辆
+   - 第一人称视角下先要看清「有什么」，这一环不成立后面四项都没有输入
+   - 对应的公开数据是 AerialAgent-Ego10k 这类第一人称图像-文本
+
+2. **空间推理（第二优先）：**
+   - 看清之后要判断「电线在我左前方 3 米」这类相对关系
+   - 这是避障与决策的直接依据，比单纯识别更难
+
+3. **运动决策（第三优先）：**
+   - 巡检终究是飞行任务，最终要落到动作上
+   - 有了感知与空间关系，决策才有可靠输入
+
+4. **导航探索（第四优先）：**
+   - 城市巡检通常有既定航线，探索需求弱于沿航线飞行
+   - 若任务改成未知环境搜救，这一项应大幅提前
+
+5. **任务规划（最后）：**
+   - 巡检的顶层目标相对固定（覆盖若干检查点）
+   - 在感知与运动能力具备后再做规划，收益更大
+
+**具体方案：**
+- 第一阶段：用 SkyAgentEval 一类评测摸清现有 VLM 在场景感知上的水位
+- 第二阶段：补空间推理的指令数据，验证模型能否给出可靠的距离与方位判断
+- 第三阶段：接入运动决策，在仿真里闭环跑通
+- 第四阶段：扩展到导航探索与多机任务规划
+
+> 这道题没有唯一答案，判据是「哪一环卡住整条链路」。上面给的是一个默认排序，不是定律。
+</details>
+
+<h3 id="题目-2物理引导-vs-数据驱动">题目 2：物理引导 vs. 数据驱动<a class="headerlink" href="#题目-2物理引导-vs-数据驱动" title="Permanent link">&para;</a></h3>
+<p>比较 SE(3) 物理引导学习和纯数据驱动方法的优劣，以及何时选择哪种方法。第 10 节给出了其中一部分的实测结果。</p>
+<details>
+<summary>参考答案</summary>
+
+**物理引导学习（SE(3)）的优势：**
+- 数据效率高：物理先验减少数据需求
+- 外推能力强：物理约束在分布外仍然有效
+- 安全性好：物理合理的预测更安全
+- 可解释性高：满足已知物理规律
+
+**物理引导学习的劣势：**
+- 建模简化：实际物理比模型更复杂
+- 计算开销：物理约束需要额外计算
+- 灵活性差：难以处理未知的物理现象
+- 开发难度：需要领域专家知识
+
+**数据驱动方法的优势：**
+- 灵活性高：可以从数据中学习任意模式
+- 开发简单：不需要领域专家知识
+- 适应性强：可以处理复杂的非线性关系
+- 端到端：直接从输入到输出
+
+**数据驱动方法的劣势：**
+- 数据需求大：需要大量训练数据
+- 泛化能力弱：在分布外表现差
+- 安全性差：可能产生不安全的预测
+- 可解释性低：黑盒模型
+
+**选择指南：**
+
+| 场景 | 推荐方法 | 原因 |
+|------|---------|------|
+| 精确控制 | 物理引导 | 需要物理准确性 |
+| 复杂感知 | 数据驱动 | 感知模式复杂 |
+| 数据稀缺 | 物理引导 | 物理先验补偿数据不足 |
+| 快速开发 | 数据驱动 | 不需要领域知识 |
+| 安全关键 | 物理引导 | 物理约束保证安全 |
+| 新环境 | 数据驱动 | 物理模型可能不适用 |
+
+**混合方案：**
+- 底层控制：物理引导（精确、安全）
+- 高层感知：数据驱动（灵活、适应）
+- 融合方式：物理模型提供先验，数据驱动修正
+</details>
+
+<h3 id="题目-3通信感知决策">题目 3：通信感知决策<a class="headerlink" href="#题目-3通信感知决策" title="Permanent link">&para;</a></h3>
+<p>Wireless Dreamer 把世界模型用于无线边缘智能优化，落地场景是低空无线网络（LAWN）。下面讨论把无线链路纳入世界模型决策回路时，会遇到哪些挑战、有哪些可能的解法。</p>
+<details>
+<summary>参考答案</summary>
+
+**挑战分析：**
+
+1. **通信建模的复杂性：**
+   - 无线信道受多径效应、遮挡、干扰影响
+   - 信道状态快速变化（毫秒级）
+   - 难以建立准确的信道模型
+
+2. **实时性要求：**
+   - 通信状态需要高频更新
+   - 世界模型需要实时预测
+   - 决策延迟必须极低
+
+3. **不确定性：**
+   - 通信质量有随机性
+   - 难以预测未来的通信状态
+   - 需要不确定性量化
+
+4. **多目标优化：**
+   - 任务完成 vs. 通信质量 vs. 能量效率
+   - 目标之间可能冲突
+   - 需要权衡
+
+**可能的解决方案：**
+
+1. **数据驱动的信道建模：**
+   - 收集真实通信数据
+   - 使用神经网络学习信道模型
+   - 在线更新以适应环境变化
+
+2. **不确定性感知决策：**
+   - 使用贝叶斯方法估计通信不确定性
+   - 在不确定性高时保守决策
+   - 集成多个信道模型
+
+3. **分层决策：**
+   - 底层：高频通信状态监测
+   - 中层：中频路径调整
+   - 高层：低频任务重规划
+
+4. **冗余设计：**
+   - 多条通信链路
+   - 自主模式作为备份
+   - 预定义的安全行为
+
+**实际部署建议：**
+- 从简单场景开始（视距通信）
+- 逐步增加复杂性（遮挡、干扰）
+- 建立通信状态的历史数据库
+- 定期更新信道模型
+</details>
+
+<h3 id="题目-4sim-to-real-迁移">题目 4：Sim-to-Real 迁移<a class="headerlink" href="#题目-4sim-to-real-迁移" title="Permanent link">&para;</a></h3>
+<p>讨论如何将仿真中训练的无人机世界模型迁移到真实环境，分析 Sim-to-Real 差距的来源和解决方案。</p>
+<details>
+<summary>参考答案</summary>
+
+**Sim-to-Real 差距的来源：**
+
+1. **视觉差距：**
+   - 仿真图像与真实图像的差异
+   - 光照、纹理、反射的不同
+   - 渲染引擎的局限性
+
+2. **动力学差距：**
+   - 简化的空气动力学模型
+   - 未建模的振动、延迟
+   - 电机响应的非线性
+
+3. **传感器差距：**
+   - 相机噪声模型不准确
+   - IMU 偏置和漂移
+   - GPS 精度差异
+
+4. **环境差距：**
+   - 仿真环境的简化
+   - 动态物体的不同
+   - 天气条件的差异
+
+**解决方案：**
+
+1. **域随机化（Domain Randomization）：**
+   - 随机化视觉参数（光照、纹理）
+   - 随机化动力学参数（质量、阻力）
+   - 随机化传感器参数（噪声、偏置）
+   - 效果：模型对变化鲁棒
+
+2. **域适应（Domain Adaptation）：**
+   - 使用真实数据微调仿真模型
+   - GAN 将仿真图像转换为真实风格
+   - 特征对齐减少域差异
+
+3. **渐进式迁移：**
+   - 从简单仿真开始
+   - 逐步增加真实感
+   - 最后在真实环境中微调
+
+4. **混合训练：**
+   - 仿真和真实数据混合训练
+   - 调整混合比例
+   - 使用课程学习
+
+5. **系统辨识：**
+   - 使用真实数据辨识仿真参数
+   - 建立精确的仿真模型
+   - 定期更新辨识结果
+
+**实际案例：**
+- Dream to Fly（[arXiv:2501.14377](https://arxiv.org/abs/2501.14377)，ICRA 2026）：训练全程在仿真里（Flightmare + Agilicious 动力学、Habitat 渲染），真机走 hardware-in-the-loop 部署——**图像仍来自仿真器，没有在真实数据上微调**
+- 效果：DreamerV3 在 2000 万步环境交互内收敛到三条赛道；PPO / SAC 在同预算内完全学不动；真机速度最高约 9 m/s。**论文未给完赛率数字**
+- 关键：仿真与真机共享同一套策略输入端，代价是"真机"结论受渲染器保真度限制
+
+</details>
+
+<hr />
+<blockquote>
+<p><strong>下一节</strong>：<a href="06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html">06-关键数据集与基准</a> — 了解评估无人机世界模型的基准和数据集。</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Qxy661 · MIT License
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

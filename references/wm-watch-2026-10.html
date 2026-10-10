@@ -1,0 +1,5904 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="59 篇中文文档 · 195 篇论文 · 24 个纯 CPU 可跑 demo · 28.7 万字">
+      
+      
+      
+        <link rel="canonical" href="https://qxy661.github.io/UAV-WM-VLA-Learning/references/wm-watch-2026-10.html">
+      
+      
+        <link rel="prev" href="vla-watch-2026-10.html">
+      
+      
+        <link rel="next" href="vlm-watch-2026-10.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>世界模型追踪台账 - 世界模型 · VLA · VLM 学习库（无人机视角）</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#世界模型-前沿增量-2026-10" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-header__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            世界模型 · VLA · VLM 学习库（无人机视角）
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              世界模型追踪台账
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到深色"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切到深色" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切到浅色"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切到浅色" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../docs/00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  导读与学习路线
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  基础概念
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  世界模型专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLA 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  VLM 专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  综述论文精读
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  论文导读合集
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  实践指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  研究前沿与开放问题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../docs/09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  专题自测与考察
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../mindmaps/field-overview.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  思维导图
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="paper-list.html" class="md-tabs__link">
+          
+  
+  
+    
+  
+  参考资料
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../code/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  可运行代码
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../docs/en/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English Overview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../README.en.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  English README
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../CHANGELOG.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  更新日志
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../CONTRIBUTING.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  贡献指南
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="世界模型 · VLA · VLM 学习库（无人机视角）" class="md-nav__button md-logo" aria-label="世界模型 · VLA · VLM 学习库（无人机视角）" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    世界模型 · VLA · VLM 学习库（无人机视角）
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Qxy661/UAV-WM-VLA-Learning" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Qxy661/UAV-WM-VLA-Learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/00-%E5%AF%BC%E8%AF%BB%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读与学习路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础概念
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基础概念
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/01-%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 什么是世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/02-%E4%BB%80%E4%B9%88%E6%98%AFVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 什么是 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/03-%E4%BB%80%E4%B9%88%E6%98%AFVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 什么是 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/04-%E4%B8%89%E8%80%85%E5%85%B3%E7%B3%BB%E4%B8%8E%E5%8C%BA%E5%88%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 三者关系与区别
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/01-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/05-%E6%97%A0%E4%BA%BA%E6%9C%BAvs%E5%9C%B0%E9%9D%A2%E6%9C%BA%E5%99%A8%E4%BA%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机与地面机器人
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    世界模型专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/01-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95%E5%8F%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 世界模型发展史
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/02-%E7%94%9F%E6%88%90%E5%BC%8F%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 生成式世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/03-%E6%A8%A1%E5%9E%8B%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 模型强化学习世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/04-3D%E5%9C%BA%E6%99%AF%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 3D 场景世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/05-%E6%97%A0%E4%BA%BA%E6%9C%BA%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E7%BB%BC%E8%BF%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 无人机世界模型综述
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/06-%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E5%9F%BA%E5%87%86.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 关键数据集与基准
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/07-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E6%B5%8B%E4%B8%8E%E8%AF%8A%E6%96%AD.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 世界模型评测与诊断
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/08-%E8%81%94%E5%90%88%E5%B5%8C%E5%85%A5%E9%A2%84%E6%B5%8B%E4%B8%8E%E6%BD%9C%E7%A9%BA%E9%97%B4%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 联合嵌入预测与潜空间世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98/09-%E9%95%BF%E6%97%B6%E7%A8%8B%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%94%9F%E6%88%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 长时程世界模型与交互式生成
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLA 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/01-VLA%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 架构演进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BAVLA%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机 VLA 模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/03-%E8%AF%AD%E8%A8%80%E6%9D%A1%E4%BB%B6%E9%A3%9E%E8%A1%8C%E6%8E%A7%E5%88%B6.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 语言条件飞行控制
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/04-%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E8%BE%85%E5%8A%A9%E8%A7%84%E5%88%92.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 基础模型辅助规划
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/05-%E6%9C%BA%E8%BD%BD%E9%83%A8%E7%BD%B2%E4%B8%8E%E4%BC%98%E5%8C%96.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 机载部署与优化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/06-%E5%8A%A8%E4%BD%9C%E5%A4%B4%E4%B8%8E%E5%8A%A8%E4%BD%9C%E5%88%86%E5%9D%97.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 动作头与动作分块
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/07-%E6%95%B0%E6%8D%AE%E3%80%81%E9%A2%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%B7%A8%E5%85%B7%E8%BA%AB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 数据、预训练与跨具身
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/08-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%90%8E%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%87%AA%E6%88%91%E6%94%B9%E8%BF%9B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 强化学习后训练与自我改进
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/09-%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%E4%B8%8E%E6%8A%A5%E5%91%8A%E5%8F%A3%E5%BE%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 评测基准与报告口径
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/03-VLA%E4%B8%93%E9%A2%98/10-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E5%A2%9E%E5%BC%BAVLA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 世界模型增强 VLA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 专题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VLM 专题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/01-%E9%81%A5%E6%84%9FVLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 遥感 VLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/02-%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 无人机场景理解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/03-LLM%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BAAgent.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 LLM 驱动的无人机 Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/04-%E8%BE%B9%E7%BC%98VLM%E9%83%A8%E7%BD%B2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 边缘 VLM 部署
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/05-%E9%80%9A%E7%94%A8VLM%E6%9E%B6%E6%9E%84%E4%B8%8E%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 通用 VLM 架构与视觉编码器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/06-VLM%E6%8C%87%E4%BB%A4%E5%BE%AE%E8%B0%83%E4%B8%8E%E5%AF%B9%E9%BD%90.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 VLM 指令微调与对齐
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/04-VLM%E4%B8%93%E9%A2%98/07-%E9%80%9A%E7%94%A8VLM%E8%AF%84%E6%B5%8B%E4%B8%8E%E5%B9%BB%E8%A7%89.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 通用 VLM 评测与幻觉
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    综述论文精读
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    综述论文精读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/01-%E7%BB%BC%E8%BF%B0%E6%A6%82%E8%A7%88%E4%B8%8E%E7%BB%93%E6%9E%84.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 综述概览与结构
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E7%AD%96%E7%95%A5.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型作为策略
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/03-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%BD%9C%E4%B8%BA%E6%A8%A1%E6%8B%9F%E5%99%A8.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 世界模型作为模拟器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/04-%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 视频生成世界模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/05-%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/05-%E5%9F%BA%E5%87%86%E4%B8%8E%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 基准与评估
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文导读合集
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文导读合集
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/world-model-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vla-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/vlm-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 论文卡片
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/06-%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB%E5%90%88%E9%9B%86/benchmark-papers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基准与数据集论文
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实践指南
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    实践指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/01-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 环境搭建
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/02-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-UAV-Flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 复现指南 UAV-Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/03-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-CognitiveDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 复现指南 CognitiveDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/04-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-FlightDiffusion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 复现指南 FlightDiffusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/05-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-MotionScape.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 复现指南 MotionScape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/06-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-GeoChat.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 复现指南 GeoChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/07-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DreamerV3-Drone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 复现指南 DreamerV3-Drone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/08-%E5%8F%AF%E5%A4%8D%E7%8E%B0%E9%A1%B9%E7%9B%AE%E5%80%99%E9%80%89%E6%B8%85%E5%8D%95.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 可复现项目候选清单
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/09-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-DeepDrone.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 复现指南 DeepDrone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/10-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-RemoteCLIP.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 复现指南 RemoteCLIP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/07-%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/11-%E5%A4%8D%E7%8E%B0%E6%8C%87%E5%8D%97-Flightmare.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11 复现指南 Flightmare
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    研究前沿与开放问题
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10" id="__nav_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    研究前沿与开放问题
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/01-%E7%A0%94%E7%A9%B6%E8%B7%AF%E7%BA%BF%E5%9B%BE.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 研究路线图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/02-%E7%A0%94%E7%A9%B6%E7%A9%BA%E7%99%BD%E4%B8%8E%E6%9C%BA%E4%BC%9A.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 研究空白与机会
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/03-%E8%AE%BA%E6%96%87%E6%89%B9%E5%88%A4%E6%80%A7%E9%98%85%E8%AF%BB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 论文批判性阅读
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/08-%E7%A0%94%E7%A9%B6%E5%89%8D%E6%B2%BF%E4%B8%8E%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98/04-%E6%9C%80%E6%96%B0%E8%BF%9B%E5%B1%95%E4%B8%8E%E5%9B%A2%E9%98%9F%E8%BF%BD%E8%B8%AA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 最新进展与团队追踪
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../docs/09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    专题自测与考察
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    专题自测与考察
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/01-VLA%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 VLA 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/02-%E4%B8%96%E7%95%8C%E6%A8%A1%E5%9E%8B%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 世界模型专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/09-%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B%E4%B8%8E%E8%80%83%E5%AF%9F/03-VLM%E4%B8%93%E9%A2%98%E8%87%AA%E6%B5%8B.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 VLM 专题自测
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    思维导图
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    思维导图
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mindmaps/field-overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    领域全景图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mindmaps/world-model-taxonomy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型分类学
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mindmaps/vla-evolution.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 演进路线
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mindmaps/reading-order.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    推荐阅读顺序
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考资料
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    参考资料
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="paper-list.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完整论文列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="vla-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLA 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型追踪台账
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="wm-watch-2026-10.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界模型追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#07-世界模型评测与诊断" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        07 · 世界模型评测与诊断
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#08-联合嵌入预测与潜空间" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        08 · 联合嵌入预测与潜空间
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#09-长时程与交互式生成" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        09 · 长时程与交互式生成
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uav-无人机主线" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        uav · 无人机主线
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="vlm-watch-2026-10.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLM 追踪台账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="awesome-annotations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Awesome List 注释
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="citation-audit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    引用核查报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    可运行代码
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/en/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../README.en.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CHANGELOG.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    更新日志
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CONTRIBUTING.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    贡献指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#07-世界模型评测与诊断" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        07 · 世界模型评测与诊断
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#08-联合嵌入预测与潜空间" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        08 · 联合嵌入预测与潜空间
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#09-长时程与交互式生成" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        09 · 长时程与交互式生成
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uav-无人机主线" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        uav · 无人机主线
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="世界模型-前沿增量-2026-10">世界模型 前沿增量 · 2026-10<a class="headerlink" href="#世界模型-前沿增量-2026-10" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>生成：<code>py -3.9 tools/watch.py --volume wm --write</code>｜窗口 2026-06-11 ~ 2026-10-09（120 天）｜词表 24 条｜请求失败 0 条｜新增 346 条</p>
+</blockquote>
+<p>词表按 docs/02-世界模型专题/07–09 三篇 分节。</p>
+<p><strong>读法</strong>（纪律 F 的镜像规则）：TOTAL 是<strong>题摘层面的命中数，不是相关论文数</strong>。一条宽查询命中几百条不含任何信息，所以下表只列<strong>仓库尚未收录</strong>的条目。<code>NULL</code> 表示请求失败（429/超时），<strong>不是 0 命中</strong>；<code>0</code> 表示确实没有，但第一反应应当是怀疑查询措辞，换个提法复核后再下结论。</p>
+<p>arXiv 的 <code>all:</code> / <code>abs:</code> 只覆盖题名/摘要/作者/注释，<strong>不覆盖全文</strong>。</p>
+<p><strong>去重范围是整仓</strong>：<code>docs/</code>、<code>references/</code>、<code>mindmaps/</code>、<code>paper/</code> 下的 <code>.md</code>，加 <code>README.md</code> / <code>CONTRIBUTING.md</code> / <code>code/README.md</code>。<code>paper/</code> 下的 <code>_work*/</code> 取数缓存（json/xml/html/pdf）<strong>不算收录</strong>，故不计入——那里放的是原始查询结果，不是读过的文献。所以某条 ID 不在本表，只能推出<strong>整仓没写过</strong>，推不出"这个专题没有"。
+（2026-10-08 修：<code>paper/</code> 原先漏扫，加上 ID 正则不吃 <code>v1</code> 版本号后缀，两条合起来让 27 条早已在 <code>paper/</code> 笔记里读过的论文被标成"新增"。三卷的台账互为已收录，故 <code>&lt;卷&gt;-watch-*.md</code> 一律排除。）</p>
+<h2 id="07-世界模型评测与诊断">07 · 世界模型评测与诊断<a class="headerlink" href="#07-世界模型评测与诊断" title="Permanent link">&para;</a></h2>
+<p><strong><code>abs:"world model" AND abs:"evaluation"</code></strong> — 命中 471，其中新增 21（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09763v1</code></td>
+<td>Beyond Policy Support: Interaction Constrained Offline Reinforcement Learning for Autonomous Driving</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09546v1</code></td>
+<td>PCDT: A Predictive Cognitive Digital Twin Framework for Intelligent and Autonomous 6G Network Ecosystems</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09438v1</code></td>
+<td>Controllable Crowd Generation through World-Model Planning</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09307v1</code></td>
+<td>vLLM-Omni Technical Report: A Unified Serving Runtime for Omni-Modality Generation</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09305v1</code></td>
+<td>Kuration SDK: Addressing the Virtual2Real Gap via Data Curation</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.09048v1</code></td>
+<td>Towards Financial World Modeling</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08780v1</code></td>
+<td>DepthWorld: 3D World Model for Robot Manipulation</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08777v1</code></td>
+<td>CtrlCache: Accelerating Interactive Video World Models with Control-Aware Caching</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08640v1</code></td>
+<td>RIWANav: Recursive World-Action Models with Self-Improvement for Urban Navigation</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08469v1</code></td>
+<td>A Belief-State World Model for Catheter Navigation under Sparse Fluoroscopy: A Planar Proof of Concept</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08464v1</code></td>
+<td>Federated Bayesian Surveillance of Mechanical Thrombectomy Adverse Events: A Population Risk Layer for Surgica</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08267v1</code></td>
+<td>WM4ISAC: World Model for Proactive ISAC Under Dynamic Blockage</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08033v1</code></td>
+<td>Learning in Dreams, Winning in Reality: A Continuous Dyna Loop for a Ten-Hero MOBA</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.07704v1</code></td>
+<td>Independent Multi-Agent Reinforcement Learning with Counterfactual Semantic-Social World Models</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.06814v2</code></td>
+<td>TAPDreamer: Transferable Adversarial Patches for World Action Models</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.06349v1</code></td>
+<td>KineWorld: Action-Induced Transport Fields for Embodied World Modeling</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.06100v1</code></td>
+<td>From Traces to Agentic Worlds: Agentic Language World Models for Interactive Environment Simulation</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.05912v1</code></td>
+<td>MiniCorp: The Last Mile of the AI Agent Firm</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.05861v1</code></td>
+<td>Imagine to Act: High-Fidelity Data Synthesis via Image Editing World Model for Scalable GUI Agent Training</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.07028v1</code></td>
+<td>Identifiable World Models from Pretrained Diffusion Representations</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.05240v1</code></td>
+<td>Pythia: Toward Foundation World Models for Multimodal Time Series</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"world model" AND abs:"benchmark"</code></strong> — 命中 288，其中新增 17（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.10274v1</code></td>
+<td>Sparse Planning in Visual World Models via Cost Gradients</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09546v1</code></td>
+<td>PCDT: A Predictive Cognitive Digital Twin Framework for Intelligent and Autonomous 6G Network Ecosystems</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09514v1</code></td>
+<td>STRIKE: Learning Visual State Transitions for Physical World Modeling</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09305v1</code></td>
+<td>Kuration SDK: Addressing the Virtual2Real Gap via Data Curation</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08760v1</code></td>
+<td>WorldSonus: Bringing Sound to Worlds</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08464v1</code></td>
+<td>Federated Bayesian Surveillance of Mechanical Thrombectomy Adverse Events: A Population Risk Layer for Surgica</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.07704v1</code></td>
+<td>Independent Multi-Agent Reinforcement Learning with Counterfactual Semantic-Social World Models</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.06814v2</code></td>
+<td>TAPDreamer: Transferable Adversarial Patches for World Action Models</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.05861v1</code></td>
+<td>Imagine to Act: High-Fidelity Data Synthesis via Image Editing World Model for Scalable GUI Agent Training</td>
+</tr>
+<tr>
+<td>2026-10-03</td>
+<td><code>2610.04475v1</code></td>
+<td>VCLMU: Mechanism-Centric Virtual Cell World Modeling for Perturbation Response</td>
+</tr>
+<tr>
+<td>2026-10-03</td>
+<td><code>2610.04301v1</code></td>
+<td>EnvDreamer: Large-Scale Multimodal-to-Environment Generation for Embodied AI</td>
+</tr>
+<tr>
+<td>2026-10-03</td>
+<td><code>2610.04168v1</code></td>
+<td>Agentic Cognitive Depth: Operational Criteria for Evaluating LLM Agents</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.03713v1</code></td>
+<td>What Should World Models Forget? Stratified Retention for Continual Adaptation</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.03356v1</code></td>
+<td>ReFract: Benchmarking Perspective Awareness in Language Model Agents with Text World Models</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.02957v1</code></td>
+<td>Understanding Trajectory Heterogeneity in Federated World Model Learning</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.02368v1</code></td>
+<td>Rethinking World-Action Model for Compositional and In-Context Robotic Manipulation</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.02331v1</code></td>
+<td>World Editing: Intervening on Executable Worlds at Increasing Depth</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"rollout" AND abs:"error accumulation"</code></strong> — 命中 40，其中新增 29（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.03313v1</code></td>
+<td>SDECast: Probabilistic Weather Forecasting in Continuous Time with Neural SDEs</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.02779v1</code></td>
+<td>TRAC: Trajectory-aware Reuse and Adaptive Correction for Efficient Autoregressive Video Generation</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.01765v1</code></td>
+<td>Physics-Refined Spatiotemporal Forecasting on Open-Boundary Hydrologic Graphs</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.38114v1</code></td>
+<td>Self-Aligned Forcing: Streaming Video Diffusion with Differentiable Noisy History</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34697v2</code></td>
+<td>Triangular Resampling for Long-Horizon Motion Generation</td>
+</tr>
+<tr>
+<td>2026-09-27</td>
+<td><code>2609.33412v1</code></td>
+<td>Resolving State-Representation Mismatch: State-Space Visual Reasoning for Open-Loop VLA Planning</td>
+</tr>
+<tr>
+<td>2026-09-17</td>
+<td><code>2609.19674v2</code></td>
+<td>Conservation Buys Stability and Factoring Buys Counterfactuals in Physical World Models</td>
+</tr>
+<tr>
+<td>2026-09-15</td>
+<td><code>2609.16621v1</code></td>
+<td>Stable by Construction: Variational Latent Markov Operators for Long-Horizon PDE Prediction</td>
+</tr>
+<tr>
+<td>2026-09-08</td>
+<td><code>2609.09123v1</code></td>
+<td>Mask Forcing: Improving Autoregressive Video Diffusion Distillation via Dual-Noise Masking Rollout</td>
+</tr>
+<tr>
+<td>2026-09-03</td>
+<td><code>2609.03225v2</code></td>
+<td>Long-Horizon Consistent and Interaction-Aware World Models for Multi-Style End-to-End Driving</td>
+</tr>
+<tr>
+<td>2026-08-23</td>
+<td><code>2608.22277v3</code></td>
+<td>Dynamics-Aware Weighting for Deep Learning Forecasts of Chaotic Systems</td>
+</tr>
+<tr>
+<td>2026-08-16</td>
+<td><code>2608.15815v1</code></td>
+<td>KOALA: Koopman Operator Learning for WiFi-Based Anticipatory Hum</td>
+</tr>
+<tr>
+<td>2026-08-12</td>
+<td><code>2608.12107v1</code></td>
+<td>Avatar-Forever: Decoupled Parallel Training for High-Quality Real-Time Infinite Avatars</td>
+</tr>
+<tr>
+<td>2026-08-12</td>
+<td><code>2608.11623v1</code></td>
+<td>FM-LLM: A frequency-enhanced mixture-of-experts framework for adapting LLMs to time series forecasting</td>
+</tr>
+<tr>
+<td>2026-08-07</td>
+<td><code>2608.07189v1</code></td>
+<td>Autoregressive rollout error in latent-space reduced-order models of bluff-body wakes is accumulated phase dri</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td><code>2608.06241v1</code></td>
+<td>Timestep-Conditioned Transformers for Global Weather Forecasting</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td><code>2608.05925v1</code></td>
+<td>Local-Global Feature Mixer and Trend-Guided Consistent Learning for Remaining Useful Life Prediction of Rotati</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td><code>2608.05806v1</code></td>
+<td>Hierarchical Latent Prediction for Language Models</td>
+</tr>
+<tr>
+<td>2026-08-02</td>
+<td><code>2608.01164v1</code></td>
+<td>Hybrid Lagrangian-Eulerian Model for Lagrangian Fluid Simulation</td>
+</tr>
+<tr>
+<td>2026-07-31</td>
+<td><code>2609.20309v1</code></td>
+<td>Hypernetwork-Parameterized Spatially Adaptive Neural Operators for PDE Learning</td>
+</tr>
+<tr>
+<td>2026-07-31</td>
+<td><code>2607.29135v1</code></td>
+<td>HERO: History-Enriched Rollout Training for Long-Horizon Autoregressive Neural Operators</td>
+</tr>
+<tr>
+<td>2026-07-31</td>
+<td><code>2608.11237v1</code></td>
+<td>Geometry-aware Incremental Neural Operator for Long-Horizon PDE prediction</td>
+</tr>
+<tr>
+<td>2026-07-29</td>
+<td><code>2607.27110v2</code></td>
+<td>FreqForcing: Autoregressive Long Video Generation via Spectral Self-Anchoring</td>
+</tr>
+<tr>
+<td>2026-07-29</td>
+<td><code>2607.27036v1</code></td>
+<td>Mitigating Compounding Error via Video Representation Regularization</td>
+</tr>
+<tr>
+<td>2026-07-22</td>
+<td><code>2607.19719v2</code></td>
+<td>Koopman Dreamer: Spectrally Constrained Latent Dynamics for Stable World-Model Imagination</td>
+</tr>
+<tr>
+<td>2026-07-20</td>
+<td><code>2607.18082v4</code></td>
+<td>CriPO: Enhancing Rubric-based RL via Self-Distillation</td>
+</tr>
+<tr>
+<td>2026-07-17</td>
+<td><code>2607.18309v1</code></td>
+<td>Spatio-Temporal Prediction of Unsteady Airfoil Aerodynamics Using Augmented Graph Neural Ordinary Differential</td>
+</tr>
+<tr>
+<td>2026-07-13</td>
+<td><code>2607.11971v1</code></td>
+<td>Uncertainty-Aware Crack Growth Forecasting via Conditional Denoising Diffusion Models for Phase-Field Fracture</td>
+</tr>
+<tr>
+<td>2026-07-11</td>
+<td><code>2607.10504v1</code></td>
+<td>SUREFlow: State-space Uncertainty-aware REsidual Flow Matching for Robust Robot Manipulation</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"video prediction" AND abs:"evaluation metrics"</code></strong> — 命中 0。<strong>复核过：词汇层面的假空白。</strong>同窗口换提法 —— <code>abs:"video prediction" AND abs:"benchmark"</code> 命中 <strong>14</strong>、<code>abs:"video generation" AND abs:"evaluation metrics"</code> 命中 <strong>6</strong>、<code>abs:"video prediction" AND abs:"metrics"</code> 命中 <strong>2</strong>。不限窗口时原提法本身也只有 <strong>3</strong> 条，且全部止于 2021 年。「evaluation metrics」是评测论文的写法，生成类论文写 benchmark / metric（单数）。<strong>不得记录为「视频预测没有评测工作」。</strong></p>
+<p><strong><code>abs:"world model" AND abs:"diagnostic"</code></strong> — 命中 55，其中新增 23（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09305v1</code></td>
+<td>Kuration SDK: Addressing the Virtual2Real Gap via Data Curation</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08960v1</code></td>
+<td>Directed Temporal Representations for Offline Visual Control</td>
+</tr>
+<tr>
+<td>2026-10-03</td>
+<td><code>2610.04168v1</code></td>
+<td>Agentic Cognitive Depth: Operational Criteria for Evaluating LLM Agents</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.40003v1</code></td>
+<td>DashVMC: Real-Time Discrete World Model Control in Geometry Dash</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.36333v2</code></td>
+<td>ATLAS: Aligned Transport of Latent Structure for Reliable World Model Planning</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.35463v1</code></td>
+<td>A.D.A.M.O. (Agent for language-Driven Actions with Multimodal Observations): A Visual-Symbolic Framework for V</td>
+</tr>
+<tr>
+<td>2026-09-26</td>
+<td><code>2609.32679v1</code></td>
+<td>The GUI Is Not the State: Diagnosing State Aliasing in GUI World Models</td>
+</tr>
+<tr>
+<td>2026-09-25</td>
+<td><code>2609.30711v1</code></td>
+<td>Recommendation World Models for Future-State Control</td>
+</tr>
+<tr>
+<td>2026-09-25</td>
+<td><code>2609.30650v1</code></td>
+<td>Causal Retention in Interactive Agents: Interface Factorization and Selective Adaptation</td>
+</tr>
+<tr>
+<td>2026-09-24</td>
+<td><code>2609.30264v2</code></td>
+<td>AD-WM: Action-Discriminative World Models for Counterfactual Model Predictive Control</td>
+</tr>
+<tr>
+<td>2026-09-23</td>
+<td><code>2609.27621v2</code></td>
+<td>SHRAV: State-Hypothesis-Reason-Action-Verify Framework for Physical Modeling and Inverse Design</td>
+</tr>
+<tr>
+<td>2026-09-14</td>
+<td><code>2609.15781v1</code></td>
+<td>When the World Lies: Backdoor Attacks on Latent World Models for Downstream Control</td>
+</tr>
+<tr>
+<td>2026-09-13</td>
+<td><code>2609.14854v1</code></td>
+<td>AutoLab: An Internet-Accessible Experimental Platform for Operational World Models in Wireless Networks</td>
+</tr>
+<tr>
+<td>2026-09-07</td>
+<td><code>2609.07719v1</code></td>
+<td>A radiographic world model for clinical reasoning and evidence generation</td>
+</tr>
+<tr>
+<td>2026-08-30</td>
+<td><code>2608.29998v1</code></td>
+<td>The Intervention Gap in Latent World Models</td>
+</tr>
+<tr>
+<td>2026-08-23</td>
+<td><code>2608.22358v1</code></td>
+<td>Tracing the Unlabeled Storm: Cross-Variable Transfer in a Lagrangian Atmospheric JEPA Framework</td>
+</tr>
+<tr>
+<td>2026-08-23</td>
+<td><code>2608.22294v2</code></td>
+<td>Beyond Instance Slots: Semantically Rich World Models for Physical Interaction Planning</td>
+</tr>
+<tr>
+<td>2026-08-19</td>
+<td><code>2608.19085v2</code></td>
+<td>DA-WAM: Decision-Aligned Future Latents for Driving World Models</td>
+</tr>
+<tr>
+<td>2026-08-17</td>
+<td><code>2608.16859v2</code></td>
+<td>HarnessEval-W: Agentifying the Evaluation of Visual Worlds</td>
+</tr>
+<tr>
+<td>2026-08-15</td>
+<td><code>2608.15156v4</code></td>
+<td>Low-Rank Dynamics-Effective Latent Carriers for Counterfactual Rollout in Learned World Models</td>
+</tr>
+<tr>
+<td>2026-08-13</td>
+<td><code>2608.13049v1</code></td>
+<td>H2R-Bench: Benchmarking Human-to-Robot Manipulation Video Generation in World Models</td>
+</tr>
+<tr>
+<td>2026-08-12</td>
+<td><code>2609.05461v1</code></td>
+<td>ARC-Bench: Closed-Loop Replanning Masks Broken Action Ranking in Frozen JEPA World Models</td>
+</tr>
+<tr>
+<td>2026-08-10</td>
+<td><code>2608.10145v1</code></td>
+<td>The Evaluation Protocol Determines the Result: An Independent Reproduction of LeWorldModel on TwoRoom</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"world model" AND abs:"failure modes"</code></strong> — 命中 33，其中新增 26（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.10274v1</code></td>
+<td>Sparse Planning in Visual World Models via Cost Gradients</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.06582v1</code></td>
+<td>Mind the Execution Gap: Action-Semantic Mismatch in World-Model Control</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.39604v1</code></td>
+<td>Why Do Conventional World Models Fail to Learn Cellular Automata?</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.35463v1</code></td>
+<td>A.D.A.M.O. (Agent for language-Driven Actions with Multimodal Observations): A Visual-Symbolic Framework for V</td>
+</tr>
+<tr>
+<td>2026-09-27</td>
+<td><code>2609.33940v1</code></td>
+<td>Behavioral Monitoring of JEPA World Models with Jacobian Centroids</td>
+</tr>
+<tr>
+<td>2026-09-26</td>
+<td><code>2609.32761v1</code></td>
+<td>From Feed-Forward to Flow: Unifying Reconstruction and Generation Is Easier Than You Think</td>
+</tr>
+<tr>
+<td>2026-09-26</td>
+<td><code>2609.32679v1</code></td>
+<td>The GUI Is Not the State: Diagnosing State Aliasing in GUI World Models</td>
+</tr>
+<tr>
+<td>2026-09-22</td>
+<td><code>2609.26293v2</code></td>
+<td>Dual-Frontier: When Can an Agent Trust Its World Model?</td>
+</tr>
+<tr>
+<td>2026-09-15</td>
+<td><code>2609.17325v1</code></td>
+<td>Intrinsic Motivation in Reinforcement Learning: A Research Agenda for Adaptive Self-Organisation</td>
+</tr>
+<tr>
+<td>2026-09-12</td>
+<td><code>2609.13845v1</code></td>
+<td>LePlanner: An Iterative Amortized Controller For World Models</td>
+</tr>
+<tr>
+<td>2026-09-05</td>
+<td><code>2609.05834v1</code></td>
+<td>Learning Counterfactual World Models for Embodied Reasoning under Partial Observability</td>
+</tr>
+<tr>
+<td>2026-09-02</td>
+<td><code>2609.04264v3</code></td>
+<td>Spectral-Target Physical Latent Structuring for JEPA-Style World Models</td>
+</tr>
+<tr>
+<td>2026-08-25</td>
+<td><code>2608.26200v2</code></td>
+<td>GameWAM: A World Action Model for Video Games</td>
+</tr>
+<tr>
+<td>2026-08-24</td>
+<td><code>2608.23526v1</code></td>
+<td>Correcting a learned physical invariant improves world-model rollouts</td>
+</tr>
+<tr>
+<td>2026-08-23</td>
+<td><code>2608.22421v1</code></td>
+<td>Where World Models Break: Natural-Input Failure Discovery</td>
+</tr>
+<tr>
+<td>2026-08-11</td>
+<td><code>2608.10618v1</code></td>
+<td>Toward the Cognitive--Physical Limits of Embodied Intelligence through a World-Model-Centric Autonomous Racing</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td><code>2608.05720v2</code></td>
+<td>PhyLatent: Learning Dynamics-Relevant Representations for JEPA World Models</td>
+</tr>
+<tr>
+<td>2026-07-29</td>
+<td><code>2607.27511v1</code></td>
+<td>Failure Detection for Surgical Robot Imitation Policies via Flow-Matching World Modeling</td>
+</tr>
+<tr>
+<td>2026-07-29</td>
+<td><code>2607.26752v1</code></td>
+<td>CalTwin: Towards Calibrated, Shift-Robust Medical World Models via Fisher-Information Regularisation</td>
+</tr>
+<tr>
+<td>2026-07-29</td>
+<td><code>2607.26712v2</code></td>
+<td>ActSWM: Action-Sensitive World Models for Long-Horizon Planning in Open-World Games</td>
+</tr>
+<tr>
+<td>2026-07-22</td>
+<td><code>2607.19749v1</code></td>
+<td>The World Model Remembers, the Actor Forgets: Dream Rehearsal for Continual Model-Based RL</td>
+</tr>
+<tr>
+<td>2026-07-17</td>
+<td><code>2607.15620v1</code></td>
+<td>AEGIS: Assay-Aware Protocol Validation and Runtime Monitoring for Open-Source Liquid Handling Robots</td>
+</tr>
+<tr>
+<td>2026-07-15</td>
+<td><code>2607.13681v1</code></td>
+<td>Towards Spatial Supersensing in the Wild</td>
+</tr>
+<tr>
+<td>2026-07-08</td>
+<td><code>2607.07763v1</code></td>
+<td>Unlocking Temporal Generalization in Hamiltonian Video Dynamics Models</td>
+</tr>
+<tr>
+<td>2026-07-06</td>
+<td><code>2607.05352v2</code></td>
+<td>Multiplayer Interactive World Models with Representation Autoencoders</td>
+</tr>
+<tr>
+<td>2026-06-26</td>
+<td><code>2606.27806v3</code></td>
+<td>Agent vs. Parametric World Models: Hybrid Planning for Reliable Language Agents</td>
+</tr>
+</tbody>
+</table>
+<h2 id="08-联合嵌入预测与潜空间">08 · 联合嵌入预测与潜空间<a class="headerlink" href="#08-联合嵌入预测与潜空间" title="Permanent link">&para;</a></h2>
+<p><strong><code>abs:"JEPA"</code></strong> — 命中 266，其中新增 20（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09940v1</code></td>
+<td>Juno: Taming Predictive Latents for Vision-Language-Action Models</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.09194v1</code></td>
+<td>Patient, Place, Prior (P$^3$): What Counts as Personalization in Medical World Models?</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.09048v1</code></td>
+<td>Towards Financial World Modeling</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08400v1</code></td>
+<td>Atom-JEPA: Joint-Embedding Predictive Architecture for 3D Atomistic Systems</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08192v1</code></td>
+<td>MacJEPA: Missingness-Robust Audio-Visual Recognition from Untrimmed Egocentric Videos</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.06008v1</code></td>
+<td>Ultrasound Operator Guidance Using World Modeling and Retrieval Based Action Planning</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.05996v1</code></td>
+<td>EpicWorldModel: Exploration-driven Planning with Latent World Models</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.05731v1</code></td>
+<td>T-JEPA: A Temporal Joint-Embedding Predictive Architecture for Learning Better Remote Sensing Representations</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.05409v1</code></td>
+<td>BeliefGraph-JEPA: Structured Latent World Models for Action-Conditioned Time Series</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.07025v1</code></td>
+<td>WiSPER: Pose-Supervised Predictive and Residual Flow Refinement For Multi-Person 3D Pose Estimation With WiFi</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.07006v1</code></td>
+<td>STOCK-JEPA: Prior-Anchored Latent Revision Representation Learning in Equity Markets</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.05043v1</code></td>
+<td>CI-JEPA: A Counterfactual Analysis of Latent Representations in Joint-Embedding Predictive Architectures for S</td>
+</tr>
+<tr>
+<td>2026-10-03</td>
+<td><code>2610.04778v1</code></td>
+<td>Repeated-Measure Leakage, Distribution Shift, and Reliability under Partial Observation in Patient World Model</td>
+</tr>
+<tr>
+<td>2026-10-03</td>
+<td><code>2610.06965v1</code></td>
+<td>ACG-WAM: World-Action Modeling via Action-Conditioned Geometric Latent Prediction</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.03374v1</code></td>
+<td>EVEWorld: Physical Evolution Supervision for Embodied World Models</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.03106v1</code></td>
+<td>S2S-JEPA: Predicting the Predictable at Subseasonal-to-Seasonal Timescales</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.02864v1</code></td>
+<td>NeuroLens: Learning Latent Embeddings of Neural Semantics from Chronic Recordings</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.01947v1</code></td>
+<td>Latent JEPA: Abstract Future Prediction for Latent Reasoning in Chemistry</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.00976v2</code></td>
+<td>Variational Streaming Flow: Probabilistic Forecasting in Physical Time</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2610.00722v1</code></td>
+<td>JEPA-TTT: Persistent Test-Time Training of Latent World Models for Planning under Dynamics Shifts</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"joint embedding" AND abs:"prediction"</code></strong> — 命中 152，其中新增 20（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09940v1</code></td>
+<td>Juno: Taming Predictive Latents for Vision-Language-Action Models</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08400v1</code></td>
+<td>Atom-JEPA: Joint-Embedding Predictive Architecture for 3D Atomistic Systems</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.05996v1</code></td>
+<td>EpicWorldModel: Exploration-driven Planning with Latent World Models</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.05731v1</code></td>
+<td>T-JEPA: A Temporal Joint-Embedding Predictive Architecture for Learning Better Remote Sensing Representations</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.05543v1</code></td>
+<td>AngularWM: Wireless World Modeling for AoA Prediction from Multi-Antenna I/Q</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.05409v1</code></td>
+<td>BeliefGraph-JEPA: Structured Latent World Models for Action-Conditioned Time Series</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.05240v1</code></td>
+<td>Pythia: Toward Foundation World Models for Multimodal Time Series</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.07006v1</code></td>
+<td>STOCK-JEPA: Prior-Anchored Latent Revision Representation Learning in Equity Markets</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.05043v1</code></td>
+<td>CI-JEPA: A Counterfactual Analysis of Latent Representations in Joint-Embedding Predictive Architectures for S</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.03106v1</code></td>
+<td>S2S-JEPA: Predicting the Predictable at Subseasonal-to-Seasonal Timescales</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.02864v1</code></td>
+<td>NeuroLens: Learning Latent Embeddings of Neural Semantics from Chronic Recordings</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.01947v1</code></td>
+<td>Latent JEPA: Abstract Future Prediction for Latent Reasoning in Chemistry</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.00976v2</code></td>
+<td>Variational Streaming Flow: Probabilistic Forecasting in Physical Time</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2610.00722v1</code></td>
+<td>JEPA-TTT: Persistent Test-Time Training of Latent World Models for Planning under Dynamics Shifts</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.40129v1</code></td>
+<td>VR-JEPA: Learning Contrastive-State Latent Guidance for Generation-based Video Reasoning</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.36952v1</code></td>
+<td>ER-JEPA: Experience Replay Improves Joint-Embedding Predictive Learning in Language Models</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.35603v2</code></td>
+<td>Control-Geometry Straightening for Sampling-Based Latent Planning</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34407v1</code></td>
+<td>Beyond Textual Chain-of-Thought: JEPA-Conditioned Latent Reasoning for Large Audio Language Models</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34085v1</code></td>
+<td>AD-E2E-JEPA: A Joint-Embedding Predictive Architecture For End-to-End Autonomous Driving</td>
+</tr>
+<tr>
+<td>2026-09-27</td>
+<td><code>2609.33698v1</code></td>
+<td>One Latent, Many Tokens: Jointly Learning Compressed Embeddings for Efficient Language Diffusion</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"representation collapse" AND abs:"world model"</code></strong> — 命中 6，其中新增 2</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.36305v1</code></td>
+<td>Bilinear World Models: Learning Representations with Structured Dynamics for Efficient Control</td>
+</tr>
+<tr>
+<td>2026-09-02</td>
+<td><code>2609.04264v3</code></td>
+<td>Spectral-Target Physical Latent Structuring for JEPA-Style World Models</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"latent space" AND abs:"world model"</code></strong> — 命中 83，其中新增 22（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.06008v1</code></td>
+<td>Ultrasound Operator Guidance Using World Modeling and Retrieval Based Action Planning</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.04009v1</code></td>
+<td>SUAVE: Unified Video-Action Models via Masked Diffusion</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.01942v1</code></td>
+<td>Latent-Foresight: End-to-End Learning Predictable Representations for Latent World Models</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.01842v1</code></td>
+<td>On the Divergence of Accuracy and Mechanism Consistency in Time Series World Models</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.01224v1</code></td>
+<td>Supervise What Decides Success: Criterion-Aligned Auxiliary Losses for Latent World-Model Planning</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.38927v1</code></td>
+<td>World-as-Graph: Relational World Modeling Through Latent Space Graphs</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.36985v1</code></td>
+<td>Abductive World Modeling via Causal Representation Learning</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.36845v1</code></td>
+<td>DSWM: Decomposed Spatio-Temporal World Model for Demand-Driven UAV Base Station Repositioning</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34375v1</code></td>
+<td>LRC-JEPA: Disentangling Dynamics and Residual Context for Efficient World Models</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34300v1</code></td>
+<td>When World Models Lie: Adaptive Safety Analysis Under Wrong Imaginations</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34206v1</code></td>
+<td>WorldGuide: Learning Success-Failure Boundaries in Latent World Models for Vision-Language-Action Policies</td>
+</tr>
+<tr>
+<td>2026-09-25</td>
+<td><code>2609.31162v1</code></td>
+<td>WorldTS: World Modeling for Multimodal Covariate-aware Time Series Forecasting</td>
+</tr>
+<tr>
+<td>2026-09-24</td>
+<td><code>2609.30436v1</code></td>
+<td>WALT: Learning World-Model-Aligned Latent Trajectories for Autonomous Driving</td>
+</tr>
+<tr>
+<td>2026-09-24</td>
+<td><code>2609.30214v1</code></td>
+<td>Underwater C3-JEPA: An Object-Centric Cross-View World Model for ROV Salvage</td>
+</tr>
+<tr>
+<td>2026-09-23</td>
+<td><code>2609.28414v1</code></td>
+<td>Frozen Flows Forget: Diagnosing and Restoring Lost Motion in a Latent-flow World Model</td>
+</tr>
+<tr>
+<td>2026-09-21</td>
+<td><code>2609.24048v1</code></td>
+<td>What Matters in Designing World Action Models: An Empirical Study</td>
+</tr>
+<tr>
+<td>2026-09-18</td>
+<td><code>2609.22521v2</code></td>
+<td>Latent Policy Steering: An Efficient and Flexible Framework for Cross-Embodiment Transfer</td>
+</tr>
+<tr>
+<td>2026-09-12</td>
+<td><code>2609.13845v1</code></td>
+<td>LePlanner: An Iterative Amortized Controller For World Models</td>
+</tr>
+<tr>
+<td>2026-09-11</td>
+<td><code>2609.12874v1</code></td>
+<td>VideoTok4D: A 4D-Aware Video Tokenizer for Compact World Representation</td>
+</tr>
+<tr>
+<td>2026-09-11</td>
+<td><code>2609.12347v1</code></td>
+<td>DWMP: Leveraging Dual World Models for Humanoid Obstacle Traversal</td>
+</tr>
+<tr>
+<td>2026-09-02</td>
+<td><code>2609.04264v3</code></td>
+<td>Spectral-Target Physical Latent Structuring for JEPA-Style World Models</td>
+</tr>
+<tr>
+<td>2026-08-29</td>
+<td><code>2608.28995v2</code></td>
+<td>Hydra: A Navigation World Action Model with Discrete Latent Planning and Continuous Flow-Matching Execution</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"energy-based" AND abs:"world model"</code></strong> — 命中 0。<strong>复核过：低频真线，只是这 120 天恰好空窗。</strong>不限窗口命中 <strong>8</strong>，且集中在 2026 上半年：<code>2605.07199</code>（Three-in-One World Model，能量一致性）、<code>2602.23058</code>（GeoWorld）。同族提法 <code>abs:"EBM" AND abs:"world model"</code> 不限窗口命中 <strong>1</strong>（<code>2406.08862</code> Cognitively Inspired Energy-Based World Models）。对照：<code>abs:"energy-based model"</code> 不限窗口 <strong>630</strong>、同窗口 <strong>35</strong>，说明词本身不冷，是「energy-based + world model」这个组合少。<strong>可以写「这一线稀疏」，不得写「没有」。</strong></p>
+<p><strong><code>abs:"self-supervised" AND abs:"world model"</code></strong> — 命中 36，其中新增 27（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.05543v1</code></td>
+<td>AngularWM: Wireless World Modeling for AoA Prediction from Multi-Antenna I/Q</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.02515v1</code></td>
+<td>IGNITE Tokamak World Model Architecture</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.01201v1</code></td>
+<td>iSEE: Object Permanence Through Self-Supervision</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2610.00722v1</code></td>
+<td>JEPA-TTT: Persistent Test-Time Training of Latent World Models for Planning under Dynamics Shifts</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.39182v1</code></td>
+<td>MEND: Label-Free Detection, Localisation, and Correction of Latent Hallucination in World Models</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.38278v1</code></td>
+<td>Masked Swingers: Harnessing Data Augmentation to Advance Autoencoders for Self-Supervised Learning</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34375v1</code></td>
+<td>LRC-JEPA: Disentangling Dynamics and Residual Context for Efficient World Models</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34085v1</code></td>
+<td>AD-E2E-JEPA: A Joint-Embedding Predictive Architecture For End-to-End Autonomous Driving</td>
+</tr>
+<tr>
+<td>2026-09-25</td>
+<td><code>2609.32013v2</code></td>
+<td>TriO: Tri-Modal Unsupervised Occupancy World Model for Anything Perception</td>
+</tr>
+<tr>
+<td>2026-09-25</td>
+<td><code>2609.30667v1</code></td>
+<td>StarWM: Self-Supervised Trained Attention Routing for Robust World Models</td>
+</tr>
+<tr>
+<td>2026-09-23</td>
+<td><code>2609.28414v1</code></td>
+<td>Frozen Flows Forget: Diagnosing and Restoring Lost Motion in a Latent-flow World Model</td>
+</tr>
+<tr>
+<td>2026-09-23</td>
+<td><code>2609.28049v1</code></td>
+<td>Prompt, Probe, Train, or Annotate? Single-camera sports video understanding in amateur settings</td>
+</tr>
+<tr>
+<td>2026-09-22</td>
+<td><code>2609.25541v1</code></td>
+<td>A JEPA Recipe for Tabular Foundation Models</td>
+</tr>
+<tr>
+<td>2026-09-18</td>
+<td><code>2609.21740v1</code></td>
+<td>Sandwich-Residuals: Parameter-Efficient Test-time Adaptation of World Models</td>
+</tr>
+<tr>
+<td>2026-09-09</td>
+<td><code>2609.09627v1</code></td>
+<td>Seven Sources of Physical AI Capability Formation</td>
+</tr>
+<tr>
+<td>2026-08-30</td>
+<td><code>2608.29998v1</code></td>
+<td>The Intervention Gap in Latent World Models</td>
+</tr>
+<tr>
+<td>2026-08-11</td>
+<td><code>2608.11174v2</code></td>
+<td>VIScore: Diagnosing Planning-Relevant Quality in Latent World Models</td>
+</tr>
+<tr>
+<td>2026-08-11</td>
+<td><code>2608.11026v1</code></td>
+<td>MAJEPPA: Morphing and Assessing in a Unified Piano Performance Space</td>
+</tr>
+<tr>
+<td>2026-08-10</td>
+<td><code>2608.09771v1</code></td>
+<td>SLIM-0.5B: Learning Action-Grounded Predictive Latents for Robot Manipulation</td>
+</tr>
+<tr>
+<td>2026-08-10</td>
+<td><code>2609.26118v1</code></td>
+<td>GDLAM: Group-Disentangled Latent Action Model for Highly Disentangled Embodied Pretraining</td>
+</tr>
+<tr>
+<td>2026-08-07</td>
+<td><code>2608.07409v1</code></td>
+<td>UniJEPA: A Unified Joint-Embedding Predictive Architecture for Task-Agnostic Visual World Modeling</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td><code>2608.05706v1</code></td>
+<td>LAWM-3D: Learning 3D-Aware Latent Actions from Human Videos for Generalizable Robot World Models</td>
+</tr>
+<tr>
+<td>2026-08-05</td>
+<td><code>2608.04378v1</code></td>
+<td>Helping Music Co-Creation Agents 'Listen' Well: Hierarchical Self-Supervised World Models for Understanding an</td>
+</tr>
+<tr>
+<td>2026-07-30</td>
+<td><code>2607.28624v1</code></td>
+<td>PhiZero: A World Model Built Around Physical Language</td>
+</tr>
+<tr>
+<td>2026-07-24</td>
+<td><code>2607.22000v1</code></td>
+<td>Music-JEPA: Learning a World Model of Sound from Action</td>
+</tr>
+<tr>
+<td>2026-07-05</td>
+<td><code>2607.04500v1</code></td>
+<td>Geographic Diversity Beats Data Volume for Cross-Domain Generalization in Zero-Label JEPA Driving World Models</td>
+</tr>
+<tr>
+<td>2026-07-03</td>
+<td><code>2607.03198v2</code></td>
+<td>Reduced-Order Models: The Mother of World Models</td>
+</tr>
+</tbody>
+</table>
+<h2 id="09-长时程与交互式生成">09 · 长时程与交互式生成<a class="headerlink" href="#09-长时程与交互式生成" title="Permanent link">&para;</a></h2>
+<p><strong><code>abs:"long-horizon" AND abs:"world model"</code></strong> — 命中 179，其中新增 17（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08640v1</code></td>
+<td>RIWANav: Recursive World-Action Models with Self-Improvement for Urban Navigation</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.06637v1</code></td>
+<td>Long-Horizon Textual World Modeling through Structured Reasoning</td>
+</tr>
+<tr>
+<td>2026-10-05</td>
+<td><code>2610.06100v1</code></td>
+<td>From Traces to Agentic Worlds: Agentic Language World Models for Interactive Environment Simulation</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.04916v1</code></td>
+<td>PreAct-Nav: Agentic Reasoning Before Action for Urban Navigation</td>
+</tr>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.04009v1</code></td>
+<td>SUAVE: Unified Video-Action Models via Masked Diffusion</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.02368v1</code></td>
+<td>Rethinking World-Action Model for Compositional and In-Context Robotic Manipulation</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.00976v2</code></td>
+<td>Variational Streaming Flow: Probabilistic Forecasting in Physical Time</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.40003v1</code></td>
+<td>DashVMC: Real-Time Discrete World Model Control in Geometry Dash</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.39727v1</code></td>
+<td>OverForge: Reasoning Through Strategies and Tactics Helps Cooperative Lifelong Adaptation</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.39101v1</code></td>
+<td>Beyond Prediction: Steering VLM Agents with Retrospective World Modeling</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.38839v1</code></td>
+<td>FrameMorrow: Future-guided Frame Selection with Prospective Tokens for Long-Horizon Video Generation</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.38562v1</code></td>
+<td>LongTake: Learning to Sustain Dynamics in Long-Horizon Video Generation</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.36851v2</code></td>
+<td>RoXDrive: Closed-Loop Reinforcement Learning for End-to-End Autonomous Driving via Action-Faithful Rollouts</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.36344v1</code></td>
+<td>DeepRewind: Predicting and Repairing Premature Commitments in Deep Research Agents</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.35375v1</code></td>
+<td>From Pixel to Poses: Object-centric Tool Manipulation Learning from Human Demonstrations</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.35138v2</code></td>
+<td>FlexiWorld: Learning and Planning via Flexible Action Chunks Across Multiple Time Scales</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34470v1</code></td>
+<td>Precise Editing and Flexible Referencing for Interactable Worlds</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"interactive world model"</code></strong> — 命中 35，其中新增 21（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09785v1</code></td>
+<td>UltraWorld: Learning Interactive Ultrasound World Models from Untracked Clinical Videos with Acoustic Sampling</td>
+</tr>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.08941v1</code></td>
+<td>SPW-Nav: A Streaming Panoramic World Model for Language-Guided Navigation</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.04920v1</code></td>
+<td>PWM: Personalized World Models with Online Reinforcement Learning</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.02331v1</code></td>
+<td>World Editing: Intervening on Executable Worlds at Increasing Depth</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.38123v1</code></td>
+<td>HelixWorld: A Real-time Interactive Audio-Visual World Model</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34144v1</code></td>
+<td>CAST: Reconstruction-Coupled Acceleration of Interactive World Models</td>
+</tr>
+<tr>
+<td>2026-09-25</td>
+<td><code>2609.31893v1</code></td>
+<td>CyberWorld: World Models for Sample-Efficient Autonomous Cyber Defense</td>
+</tr>
+<tr>
+<td>2026-09-07</td>
+<td><code>2609.07532v1</code></td>
+<td>PhysReal: Learning Real-World Deformable Object Physics via Hybrid Constitutive Modeling</td>
+</tr>
+<tr>
+<td>2026-09-07</td>
+<td><code>2609.07051v1</code></td>
+<td>TrojanWorld: Backdooring World-Model Agents via Imagination Steering</td>
+</tr>
+<tr>
+<td>2026-09-01</td>
+<td><code>2609.01560v1</code></td>
+<td>H3-World: Turning Language Understanding into World Control</td>
+</tr>
+<tr>
+<td>2026-08-26</td>
+<td><code>2608.25479v3</code></td>
+<td>4DStreamCtrl: Interactive Video Generation with Online 4D Control</td>
+</tr>
+<tr>
+<td>2026-08-18</td>
+<td><code>2608.21439v1</code></td>
+<td>WorldMind: Decoupled Game World Model for State-Aware NPC Behavior</td>
+</tr>
+<tr>
+<td>2026-08-14</td>
+<td><code>2608.14022v1</code></td>
+<td>ForgeWM: Progressive Causal Training for Few-Step Action-Conditioned Video World Models</td>
+</tr>
+<tr>
+<td>2026-08-13</td>
+<td><code>2608.13546v2</code></td>
+<td>Alaya-EVOKE: From Linear-Scaling Supervision to Endless World</td>
+</tr>
+<tr>
+<td>2026-08-10</td>
+<td><code>2608.09449v2</code></td>
+<td>Sekai2: From World Exploration to Interactive World Modeling</td>
+</tr>
+<tr>
+<td>2026-07-30</td>
+<td><code>2607.28624v1</code></td>
+<td>PhiZero: A World Model Built Around Physical Language</td>
+</tr>
+<tr>
+<td>2026-07-30</td>
+<td><code>2607.28362v1</code></td>
+<td>ShadowDancer: Teaching Video World Models Any Action by Learning Unified Dynamics Representations from a Video</td>
+</tr>
+<tr>
+<td>2026-07-23</td>
+<td><code>2607.21594v1</code></td>
+<td>Streaming Multi-Agent Autoregressive Diffusion Model with World State Registers</td>
+</tr>
+<tr>
+<td>2026-07-21</td>
+<td><code>2607.18703v1</code></td>
+<td>Generative World Renderer at the Speed of Play</td>
+</tr>
+<tr>
+<td>2026-07-11</td>
+<td><code>2607.10389v1</code></td>
+<td>Stateful Worlds, Stateless Elasticity: Exact-State Serving for Interactive World Models</td>
+</tr>
+<tr>
+<td>2026-07-07</td>
+<td><code>2607.06216v2</code></td>
+<td>MoWorld: A Flash World Model</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"action-conditioned" AND abs:"video generation"</code></strong> — 命中 24，其中新增 21</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.40153v1</code></td>
+<td>Dream4ACT: A Shared Visual Action Interface for Multi-Embodiment Video-Action Modeling</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.38839v1</code></td>
+<td>FrameMorrow: Future-guided Frame Selection with Prospective Tokens for Long-Horizon Video Generation</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.38059v1</code></td>
+<td>WorldLine: Action-Driven Visual Simulation for Robotic Manipulation</td>
+</tr>
+<tr>
+<td>2026-09-23</td>
+<td><code>2609.28811v1</code></td>
+<td>DeltaWAM: Delta World Action Models for Bimanual Manipulation</td>
+</tr>
+<tr>
+<td>2026-08-31</td>
+<td><code>2608.30897v1</code></td>
+<td>CAER: Causal Action Effect Reweighting for World Model Training</td>
+</tr>
+<tr>
+<td>2026-08-27</td>
+<td><code>2608.27406v2</code></td>
+<td>CLAP: Cross-Embodiment Video World Models are Zero-Shot Physical Simulators</td>
+</tr>
+<tr>
+<td>2026-08-25</td>
+<td><code>2608.24199v2</code></td>
+<td>NVIDIA Cosmos-H-Dreams: Real-Time Generative Physics Simulation for Surgical Robotics</td>
+</tr>
+<tr>
+<td>2026-08-23</td>
+<td><code>2608.22403v1</code></td>
+<td>LD4WAM: Learning Latent Dynamics from Human Videos for World Action Models</td>
+</tr>
+<tr>
+<td>2026-08-18</td>
+<td><code>2608.18077v1</code></td>
+<td>Hydra-0: Action Flow for Generalist World Modeling and Control</td>
+</tr>
+<tr>
+<td>2026-08-14</td>
+<td><code>2608.14022v1</code></td>
+<td>ForgeWM: Progressive Causal Training for Few-Step Action-Conditioned Video World Models</td>
+</tr>
+<tr>
+<td>2026-07-31</td>
+<td><code>2607.29302v1</code></td>
+<td>BWM: A Low-Cost High-Fidelity World Simulator for Robot Learning</td>
+</tr>
+<tr>
+<td>2026-07-29</td>
+<td><code>2607.26579v1</code></td>
+<td>ContactFlow: A video action conditioning that transfers across embodiments</td>
+</tr>
+<tr>
+<td>2026-07-07</td>
+<td><code>2607.06018v1</code></td>
+<td>RoboTALES: Learning Reasoning-Guided Robot Policies via Task-Aligned Simulated Futures</td>
+</tr>
+<tr>
+<td>2026-06-28</td>
+<td><code>2606.29501v1</code></td>
+<td>Learning Transferable Dynamics Priors from Action to World Modeling</td>
+</tr>
+<tr>
+<td>2026-06-24</td>
+<td><code>2606.26410v2</code></td>
+<td>Neural Voxel Dynamics: Learning Volumetric Feature Advection for 3D Physics in V-JEPA Latent Space</td>
+</tr>
+<tr>
+<td>2026-06-24</td>
+<td><code>2606.25473v1</code></td>
+<td>Causal-rCM: A Unified Teacher-Forcing and Self-Forcing Open Recipe for Autoregressive Diffusion Distillation i</td>
+</tr>
+<tr>
+<td>2026-06-22</td>
+<td><code>2606.23296v1</code></td>
+<td>IOI: Decoupling Kinematics and Physics for Interactive World Models</td>
+</tr>
+<tr>
+<td>2026-06-17</td>
+<td><code>2606.18610v3</code></td>
+<td>SC3-Eval: Evaluating Robot Foundation Models via Self-Consistent Video Generation</td>
+</tr>
+<tr>
+<td>2026-06-16</td>
+<td><code>2606.18180v1</code></td>
+<td>EgoCS-400K: An Egocentric Gameplay Dataset for World Models</td>
+</tr>
+<tr>
+<td>2026-06-14</td>
+<td><code>2606.15768v1</code></td>
+<td>LaWAM: Latent World Action Models for Efficient Dynamics-Aware Robot Policies</td>
+</tr>
+<tr>
+<td>2026-06-13</td>
+<td><code>2606.15341v1</code></td>
+<td>CausalDrive: Real-time Causal World Models for Autonomous Driving</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"object permanence"</code></strong> — 命中 13，其中新增 13</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-02</td>
+<td><code>2610.03713v1</code></td>
+<td>What Should World Models Forget? Stratified Retention for Continual Adaptation</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td><code>2610.01201v1</code></td>
+<td>iSEE: Object Permanence Through Self-Supervision</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34554v1</code></td>
+<td>Where Memory Belongs: Ledger, an Object Ledger for Memory-Augmented VLAs</td>
+</tr>
+<tr>
+<td>2026-09-23</td>
+<td><code>2609.28654v1</code></td>
+<td>Training Object Permanence in World Models</td>
+</tr>
+<tr>
+<td>2026-09-17</td>
+<td><code>2609.20819v2</code></td>
+<td>Can 4D Foundation Models Remember?</td>
+</tr>
+<tr>
+<td>2026-08-27</td>
+<td><code>2608.26794v1</code></td>
+<td>Ring Forcing: Towards Precise Long-Term Memory for Autoregressive Video Diffusion</td>
+</tr>
+<tr>
+<td>2026-08-03</td>
+<td><code>2608.02289v1</code></td>
+<td>Extended Field of View Analysis for VideoGAN-based Trajectory Generation</td>
+</tr>
+<tr>
+<td>2026-08-03</td>
+<td><code>2608.01614v1</code></td>
+<td>Linear Multi-Timescale Retention as a Memory-Efficient Vision-Language Bridge</td>
+</tr>
+<tr>
+<td>2026-07-14</td>
+<td><code>2607.12231v1</code></td>
+<td>The GEST-Engine: From Event Graphs to Synthetic Video. A Full Technical Report</td>
+</tr>
+<tr>
+<td>2026-07-10</td>
+<td><code>2607.09138v1</code></td>
+<td>BeyondSight: Object Permanence for End-to-End Autonomous Driving</td>
+</tr>
+<tr>
+<td>2026-06-29</td>
+<td><code>2606.30481v1</code></td>
+<td>Situation Perception: A Necessary Primitive to Artificial Superintelligence</td>
+</tr>
+<tr>
+<td>2026-06-26</td>
+<td><code>2606.28455v3</code></td>
+<td>Event-Conditioned Diagnostics of Kinematic, Contact, and Object-Permanence Structure in Passive Object-State W</td>
+</tr>
+<tr>
+<td>2026-06-15</td>
+<td><code>2606.20707v1</code></td>
+<td>GEOPHYS: The Geometry of Physical Plausibility</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"autoregressive" AND abs:"video prediction"</code></strong> — 命中 4，其中新增 3</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-06</td>
+<td><code>2610.09090v1</code></td>
+<td>Tucker Bottleneck Attention for Multi-Dimensional Sequence Modeling</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td><code>2609.18430v1</code></td>
+<td>StrucPhysVideo: Learning Physical Dynamics from Structured Captions and Robot Actions</td>
+</tr>
+<tr>
+<td>2026-07-14</td>
+<td><code>2607.13031v1</code></td>
+<td>The Seriality Gap in Video Diffusion Models</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"memory" AND abs:"long-horizon" AND abs:"navigation"</code></strong> — 命中 41，其中新增 26（只取了最近 30 条，新增数是<strong>下界</strong>）</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.05024v1</code></td>
+<td>LightVLN: Efficient Aerial Vision-and-Language Navigation with Compact Memory and History-Guided Local Aggrega</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td><code>2610.04916v1</code></td>
+<td>PreAct-Nav: Agentic Reasoning Before Action for Urban Navigation</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td><code>2609.39915v1</code></td>
+<td>NavHarness: Adaptive Goals for Agentic Vision-Language Navigation</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.35431v1</code></td>
+<td>Memory in the Sky: Low-Altitude Question Answering with Multi-Agent Memory Aggregation</td>
+</tr>
+<tr>
+<td>2026-09-28</td>
+<td><code>2609.34163v1</code></td>
+<td>Reliability-Aware Sparse Route Memory for Round-Trip Vision-Language Navigation</td>
+</tr>
+<tr>
+<td>2026-09-26</td>
+<td><code>2609.32626v1</code></td>
+<td>World SLAM Model: Joint World Modeling for SLAM and Navigation</td>
+</tr>
+<tr>
+<td>2026-09-23</td>
+<td><code>2609.27612v1</code></td>
+<td>RegenHarness: A Robot Agent Harness with Evidence-Gated Recursive Self-Improvement</td>
+</tr>
+<tr>
+<td>2026-09-22</td>
+<td><code>2609.25666v1</code></td>
+<td>Deploying Foundation Models for Embodied Navigation</td>
+</tr>
+<tr>
+<td>2026-09-20</td>
+<td><code>2609.23465v1</code></td>
+<td>Propose, Verify, Commit: Evidence-Grounded Memory for Long-Horizon Multi-Actor Conversations</td>
+</tr>
+<tr>
+<td>2026-09-08</td>
+<td><code>2609.08442v1</code></td>
+<td>AirAnchor: Bridging Local and Global Spatial Information for Zero-Shot Aerial Vision-and-Language Navigation</td>
+</tr>
+<tr>
+<td>2026-09-08</td>
+<td><code>2609.08159v1</code></td>
+<td>OmniNav: Robust Long-Horizon Target Navigation in Dynamic Environments</td>
+</tr>
+<tr>
+<td>2026-08-31</td>
+<td><code>2608.30396v1</code></td>
+<td>Scaffolding Foundation Models into Physical-World Agents Pushes the Frontier of Long-Horizon Navigation</td>
+</tr>
+<tr>
+<td>2026-08-30</td>
+<td><code>2608.29596v2</code></td>
+<td>A Systematic Survey of Agentic Skills: Architecture, Lifecycle, and Security</td>
+</tr>
+<tr>
+<td>2026-08-29</td>
+<td><code>2608.29114v1</code></td>
+<td>CGFM-Nav: Cognitive Graph-Field Memory for Semantic-Guided Lifelong Multimodal Embodied Navigation</td>
+</tr>
+<tr>
+<td>2026-08-26</td>
+<td><code>2609.29555v1</code></td>
+<td>Visual Representation and History Modeling for Navigation World Models</td>
+</tr>
+<tr>
+<td>2026-08-24</td>
+<td><code>2608.23383v2</code></td>
+<td>Long-Horizon Audio-Visual Generation for Persistent Stories and Interactive Worlds</td>
+</tr>
+<tr>
+<td>2026-08-21</td>
+<td><code>2608.21690v1</code></td>
+<td>Context as an Environment: Programmatic Context Management for Long-Horizon Agents</td>
+</tr>
+<tr>
+<td>2026-08-04</td>
+<td><code>2608.05013v1</code></td>
+<td>OneDayAgent: Towards a Long-Horizon Harness for Autonomous Agents</td>
+</tr>
+<tr>
+<td>2026-08-02</td>
+<td><code>2608.01456v1</code></td>
+<td>Long-Horizon Embodied Decision-Making via Multimodal Memory Compression</td>
+</tr>
+<tr>
+<td>2026-07-31</td>
+<td><code>2607.29600v1</code></td>
+<td>HAM-VLN: Harnessing Hierarchical Agentic Memory for Zero-Shot Vision-and-Language Navigation</td>
+</tr>
+<tr>
+<td>2026-07-26</td>
+<td><code>2607.23504v1</code></td>
+<td>MemVLN: Episodic and Procedural Memory for Vision-and-Language Navigation</td>
+</tr>
+<tr>
+<td>2026-07-20</td>
+<td><code>2607.17599v1</code></td>
+<td>ConsiSpace: Learning Geometric Consistency Matters for Video Spatial Reasoning</td>
+</tr>
+<tr>
+<td>2026-07-19</td>
+<td><code>2607.17038v1</code></td>
+<td>Reward-Driven LLM Agent Workflows: Synthesizing POMDP Routing and Self-Correction for Autonomous Decision-Maki</td>
+</tr>
+<tr>
+<td>2026-07-14</td>
+<td><code>2607.12370v1</code></td>
+<td>StratMamba: Strategic and Reactive Stream Partitioning for Path-Efficient LiDAR-Based Obstacle Avoidance</td>
+</tr>
+<tr>
+<td>2026-07-13</td>
+<td><code>2607.11377v1</code></td>
+<td>A Glimpse into Long-term Physical Coexistence with Intelligent Robots</td>
+</tr>
+<tr>
+<td>2026-07-11</td>
+<td><code>2607.10350v3</code></td>
+<td>ABot-AgentOS: A General Robotic Agent OS with Lifelong Multi-modal Memory</td>
+</tr>
+</tbody>
+</table>
+<h2 id="uav-无人机主线">uav · 无人机主线<a class="headerlink" href="#uav-无人机主线" title="Permanent link">&para;</a></h2>
+<p><strong><code>abs:"UAV" AND abs:"world model"</code></strong> — 命中 17，其中新增 14</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09335v1</code></td>
+<td>SearchWorld: Spatial Value-Grounded Imagination for UAV Object Search via World Models</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.36845v1</code></td>
+<td>DSWM: Decomposed Spatio-Temporal World Model for Demand-Driven UAV Base Station Repositioning</td>
+</tr>
+<tr>
+<td>2026-09-20</td>
+<td><code>2609.23656v1</code></td>
+<td>WOLF: World Model Guided LiDAR Exploration with Predictive Frontiers</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td><code>2609.18326v1</code></td>
+<td>UAVs Meet Embodied Intelligence: Bridging Human Intents and Flying Dynamics Via Harnessing Physical-Digital AI</td>
+</tr>
+<tr>
+<td>2026-08-31</td>
+<td><code>2609.00106v1</code></td>
+<td>Deploying and Evaluating a Smart-Agriculture Agentic Engine for Full-Season Soybean Farm Operations</td>
+</tr>
+<tr>
+<td>2026-08-20</td>
+<td><code>2608.20126v1</code></td>
+<td>RMWorld: Task-Aware Radio World Models with Value-of-Information Guided Multi-Trial Learning for Multi-UAV Com</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td><code>2608.05792v1</code></td>
+<td>When Agentic AI Meets Integrated Sensing and Communication</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td><code>2608.05597v1</code></td>
+<td>Uncertainty-Aware World Model for Aerial Image-Goal Navigation</td>
+</tr>
+<tr>
+<td>2026-07-30</td>
+<td><code>2607.27865v1</code></td>
+<td>Learning to Understand Body Language from Flight through Robust 3D Avatar Placing</td>
+</tr>
+<tr>
+<td>2026-07-28</td>
+<td><code>2607.25728v1</code></td>
+<td>Shared Voxel-Map-Based Cooperative Indoor UAV Guidance with a Multi-Agent Soft Actor-Critic Controller</td>
+</tr>
+<tr>
+<td>2026-07-22</td>
+<td><code>2607.19719v2</code></td>
+<td>Koopman Dreamer: Spectrally Constrained Latent Dynamics for Stable World-Model Imagination</td>
+</tr>
+<tr>
+<td>2026-07-10</td>
+<td><code>2607.09078v1</code></td>
+<td>Toward Active Object Detection for UAVs in the Wild: A Large-Scale Dataset, Benchmark and Method</td>
+</tr>
+<tr>
+<td>2026-07-07</td>
+<td><code>2607.06706v1</code></td>
+<td>Vision Language Action (VLA) Models for Unmanned Aerial Robotics and Bimanual Manipulation: A Review</td>
+</tr>
+<tr>
+<td>2026-07-05</td>
+<td><code>2607.04352v1</code></td>
+<td>Last-Meter Precision Navigation for UAVs: A Diffusion-Refined Aerial Visual Servoing Approach</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"aerial" AND abs:"world model"</code></strong> — 命中 18，其中新增 14</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-07</td>
+<td><code>2610.09335v1</code></td>
+<td>SearchWorld: Spatial Value-Grounded Imagination for UAV Object Search via World Models</td>
+</tr>
+<tr>
+<td>2026-09-29</td>
+<td><code>2609.36845v1</code></td>
+<td>DSWM: Decomposed Spatio-Temporal World Model for Demand-Driven UAV Base Station Repositioning</td>
+</tr>
+<tr>
+<td>2026-09-23</td>
+<td><code>2609.27621v2</code></td>
+<td>SHRAV: State-Hypothesis-Reason-Action-Verify Framework for Physical Modeling and Inverse Design</td>
+</tr>
+<tr>
+<td>2026-09-20</td>
+<td><code>2609.23656v1</code></td>
+<td>WOLF: World Model Guided LiDAR Exploration with Predictive Frontiers</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td><code>2609.18326v1</code></td>
+<td>UAVs Meet Embodied Intelligence: Bridging Human Intents and Flying Dynamics Via Harnessing Physical-Digital AI</td>
+</tr>
+<tr>
+<td>2026-08-20</td>
+<td><code>2608.20126v1</code></td>
+<td>RMWorld: Task-Aware Radio World Models with Value-of-Information Guided Multi-Trial Learning for Multi-UAV Com</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td><code>2608.05792v1</code></td>
+<td>When Agentic AI Meets Integrated Sensing and Communication</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td><code>2608.05597v1</code></td>
+<td>Uncertainty-Aware World Model for Aerial Image-Goal Navigation</td>
+</tr>
+<tr>
+<td>2026-08-02</td>
+<td><code>2608.01049v1</code></td>
+<td>FactorJEPA: Factorizing Monolithic Futures into Layout-Agent-Interaction Channels for Crowded and Chaotic Glob</td>
+</tr>
+<tr>
+<td>2026-07-30</td>
+<td><code>2607.27865v1</code></td>
+<td>Learning to Understand Body Language from Flight through Robust 3D Avatar Placing</td>
+</tr>
+<tr>
+<td>2026-07-10</td>
+<td><code>2607.09661v1</code></td>
+<td>PanoWorld: Real-World Panoramic Generation</td>
+</tr>
+<tr>
+<td>2026-07-10</td>
+<td><code>2607.09078v1</code></td>
+<td>Toward Active Object Detection for UAVs in the Wild: A Large-Scale Dataset, Benchmark and Method</td>
+</tr>
+<tr>
+<td>2026-07-07</td>
+<td><code>2607.06706v1</code></td>
+<td>Vision Language Action (VLA) Models for Unmanned Aerial Robotics and Bimanual Manipulation: A Review</td>
+</tr>
+<tr>
+<td>2026-07-05</td>
+<td><code>2607.04352v1</code></td>
+<td>Last-Meter Precision Navigation for UAVs: A Diffusion-Refined Aerial Visual Servoing Approach</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"drone" AND abs:"world model"</code></strong> — 命中 7，其中新增 6</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-08-31</td>
+<td><code>2609.00106v1</code></td>
+<td>Deploying and Evaluating a Smart-Agriculture Agentic Engine for Full-Season Soybean Farm Operations</td>
+</tr>
+<tr>
+<td>2026-07-30</td>
+<td><code>2607.27865v1</code></td>
+<td>Learning to Understand Body Language from Flight through Robust 3D Avatar Placing</td>
+</tr>
+<tr>
+<td>2026-07-28</td>
+<td><code>2607.25728v1</code></td>
+<td>Shared Voxel-Map-Based Cooperative Indoor UAV Guidance with a Multi-Agent Soft Actor-Critic Controller</td>
+</tr>
+<tr>
+<td>2026-07-20</td>
+<td><code>2607.17669v2</code></td>
+<td>Attention from Above: A Multimodal Model for Drone-Based Object Localization</td>
+</tr>
+<tr>
+<td>2026-07-07</td>
+<td><code>2607.06706v1</code></td>
+<td>Vision Language Action (VLA) Models for Unmanned Aerial Robotics and Bimanual Manipulation: A Review</td>
+</tr>
+<tr>
+<td>2026-06-23</td>
+<td><code>2606.24152v2</code></td>
+<td>Autonomous Video Generation with Counterfactual Controllability for Self-Evolving World Models</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>abs:"aerial" AND abs:"video generation"</code></strong> — 命中 0。<strong>复核过：纯粹是窗口假象。</strong>不限窗口命中 <strong>6</strong>，最近三条就在窗口外几周：<code>2605.19728</code>（Aero-World，2026-05-19）、<code>2605.15964</code>（WorldVLN，2026-05-15）、<code>2604.07991</code>（MotionScape，2026-04-09）。同窗口换提法 <code>abs:"drone" AND abs:"video generation"</code> 命中 <strong>1</strong>（<code>2606.24152</code>）、<code>abs:"UAV" AND abs:"video generation"</code> 命中 <strong>1</strong>（<code>2610.02451</code>）。<strong>这是本轮最该记的一条：窗口起点卡在 6 月 10 日，把 2026 年 4–5 月空中世界模型那一批整批切掉了</strong>——写「近期空白」之前必须先看不限窗口的命中。</p>
+<p><strong><code>abs:"UAV" AND abs:"video prediction"</code></strong> — 命中 0。<strong>复核过：同上是窗口假象。</strong>不限窗口命中 <strong>2</strong>：<code>2606.06147</code>（WorldFly，2026-06-04，比窗口起点早 6 天）、<code>2512.21710</code>（RAPTOR，2025-12-25）。同窗口换提法 <code>abs:"aerial" AND abs:"video prediction"</code>、<code>abs:"aerial" AND abs:"future frame prediction"</code> 也都命中 <strong>0</strong>。<strong>不得写成「无人机不做视频预测」。</strong></p>
+<p><strong><code>abs:"aerial" AND abs:"navigation" AND abs:"world model"</code></strong> — 命中 5，其中新增 4</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>arXiv</th>
+<th>标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-09-16</td>
+<td><code>2609.18326v1</code></td>
+<td>UAVs Meet Embodied Intelligence: Bridging Human Intents and Flying Dynamics Via Harnessing Physical-Digital AI</td>
+</tr>
+<tr>
+<td>2026-08-06</td>
+<td><code>2608.05597v1</code></td>
+<td>Uncertainty-Aware World Model for Aerial Image-Goal Navigation</td>
+</tr>
+<tr>
+<td>2026-07-07</td>
+<td><code>2607.06706v1</code></td>
+<td>Vision Language Action (VLA) Models for Unmanned Aerial Robotics and Bimanual Manipulation: A Review</td>
+</tr>
+<tr>
+<td>2026-07-05</td>
+<td><code>2607.04352v1</code></td>
+<td>Last-Meter Precision Navigation for UAVs: A Diffusion-Refined Aerial Visual Servoing Approach</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>本文件由 <code>tools/watch.py</code> 生成，重跑即可刷新。收录进正文前，ID 与标题一律以 arXiv API 为准。</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Qxy661 · MIT License
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
