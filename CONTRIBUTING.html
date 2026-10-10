@@ -4510,17 +4510,17 @@
 <code>tools/check_citations.py</code> 对着 arXiv API 核对：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>py<span class="w"> </span>-3.9<span class="w"> </span>tools/check_citations.py<span class="w">                    </span><span class="c1"># 核查并打印摘要</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>py<span class="w"> </span>-3.9<span class="w"> </span>tools/check_citations.py<span class="w"> </span>--write<span class="w">            </span><span class="c1"># 额外写出 references/citation-audit.md</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>py<span class="w"> </span>-3.9<span class="w"> </span>tools/check_citations.py<span class="w"> </span>--fail-on-bad<span class="w">      </span><span class="c1"># 号配错 / 查无此文时退出码 1（CI 用）</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>py<span class="w"> </span>-3.9<span class="w"> </span>tools/check_citations.py<span class="w"> </span>--fail-on-bad<span class="w">      </span><span class="c1"># 号配错 / 查无此文时退出码 1（当门禁用）</span>
 </code></pre></div>
 <p>只依赖标准库。判据是 API 返回的真实标题，与文档在号附近写的标题做比对；
 相似度低只代表「值得人看一眼」，<strong>不是「这篇论文不存在」</strong>。请求失败的号会
 单独列出来，重跑即可——<strong>绝不能把请求失败当成论文不存在</strong>。</p>
 <p>在本机跑需要走代理，脚本用 <code>urllib</code> 会自动读环境变量，所以直接带上即可
-（CI 里直连 arXiv，无需设置）：</p>
+（能直连 arXiv 的环境不必设置）：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">HTTPS_PROXY</span><span class="o">=</span>http://127.0.0.1:7897<span class="w"> </span>py<span class="w"> </span>-3.9<span class="w"> </span>tools/check_citations.py
 </code></pre></div>
 <p><code>--fail-on-bad</code> <strong>只对「号配错」「API 明确查无」判失败</strong>；请求失败（限流/超时）
-只打 <code>::warning::</code>。这条边界是刻意的：把请求失败当失败，一次网络抖动就会让 CI 变红，
+只打 <code>::warning::</code>。这条边界是刻意的：把请求失败当失败，一次网络抖动就会让检查变红，
 而它证明不了任何事。</p>
 <p>工具认三种在文档里写标题的写法：链接文字、引号、<strong>斜体</strong>（条目式的
 <code>**[会议'年月] 名称** — *English Title*</code>）。所以清单层改条目式之后，核查不会
@@ -4569,12 +4569,19 @@
 <p><strong><code>edit_uri</code> 是 <code>edit/main/</code>，不带 <code>docs/</code>。</strong> 它拼在「相对 <code>docs_dir</code>」的页面路径前面，
 而 <code>build-docs/</code> 是仓库镜像：README 的页面路径就是 <code>README.md</code>，卷文档是 <code>docs/xx.md</code>。
 写 <code>edit/main/docs/</code> 会让 README 的「编辑此页」指向仓库里并不存在的 <code>docs/README.md</code>。</p>
-<p><strong>提交前先跑这三条</strong>，前两条也是 CI 的检查项：</p>
+<p><strong>提交前先跑这三条</strong>：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>py<span class="w"> </span>-3.9<span class="w"> </span>tools/check_links.py<span class="w">       </span><span class="c1"># 全仓相对链接</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>py<span class="w"> </span>-3.9<span class="w"> </span>tools/check_nav.py<span class="w">         </span><span class="c1"># mkdocs.yml 的 nav 与仓库文档是否对得上</span>
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>py<span class="w"> </span>-3.9<span class="w"> </span>tools/gen_en_index.py<span class="w"> </span>--check<span class="w">   </span><span class="c1"># 英文总览页是否覆盖了全部文档</span>
 </code></pre></div>
 <p>新增文档忘了加进 <code>mkdocs.yml</code> 的 nav，<code>check_nav.py</code> 会把缺的那篇直接打印出来。</p>
+<p><strong>线上站点目前是手动更新的：</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>py<span class="w"> </span>-3.9<span class="w"> </span>tools/build_docs.py<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mkdocs<span class="w"> </span>gh-deploy<span class="w"> </span>--force
+</code></pre></div>
+<p>推到 <code>gh-pages</code> 分支，GitHub Pages 从那里发布。<strong>还没有接 CI</strong>：GitHub 规定推送
+<code>.github/workflows/</code> 下的文件必须用带 <code>workflow</code> scope 的凭据，而本机现有两份凭据都只有
+<code>gist, read:org, repo</code>，所以两个 workflow（链接/nav 检查 + 站点发布、每周引用核查）
+暂时留在仓库外，凭据补上 scope 之后再进仓。</p>
 <p><strong>英文门面</strong>：<code>README.en.md</code> 是英文首页，<code>docs/en/index.md</code> 是英文文档总览
 （每篇的英文标题 + 一句英文说明 + 链回中文正文）；正文不翻译。
 总览页里的英文是人写的，所以 <code>tools/gen_en_index.py</code> <strong>只校验、不重写</strong>：

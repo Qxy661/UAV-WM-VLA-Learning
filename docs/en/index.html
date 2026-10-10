@@ -4262,8 +4262,8 @@ the figures, tables and code blocks carry most of the argument anyway.</p>
 intentions:</p>
 <ol>
 <li><strong>Every arXiv ID comes from the arXiv API.</strong> <a href="../../tools/check_citations.py"><code>tools/check_citations.py</code></a>
-   re-verifies all of them and regenerates the audit report weekly in CI. A paper that cannot be
-   found is reported as not found — never silently kept.</li>
+   re-verifies all of them and regenerates the audit report; the audit is re-run weekly. A paper
+   that cannot be found is reported as not found — never silently kept.</li>
 <li><strong>Every number comes from a real run.</strong> The demos under <a href="../../code/index.html"><code>code/</code></a> are
    CPU-only and take about two minutes each; if a figure appears in the text, the script that
    produced it is in the repository.</li>
