@@ -187,8 +187,8 @@ Two rules run through the whole repository, and they are enforced by tooling rat
 intentions:
 
 1. **Every arXiv ID comes from the arXiv API.** [`tools/check_citations.py`](../../tools/check_citations.py)
-   re-verifies all of them and regenerates the audit report weekly in CI. A paper that cannot be
-   found is reported as not found — never silently kept.
+   re-verifies all of them and regenerates the audit report; the audit is re-run weekly. A paper
+   that cannot be found is reported as not found — never silently kept.
 2. **Every number comes from a real run.** The demos under [`code/`](../../code/README.md) are
    CPU-only and take about two minutes each; if a figure appears in the text, the script that
    produced it is in the repository.
