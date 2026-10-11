@@ -351,16 +351,19 @@ py -3.9 tools/gen_en_index.py --check   # 英文总览页是否覆盖了全部�
 
 新增文档忘了加进 `mkdocs.yml` 的 nav，`check_nav.py` 会把缺的那篇直接打印出来。
 
-**线上站点目前是手动更新的：**
+**线上站点由 CI 发布。** 推到 `main` 之后，`.github/workflows/ci.yml` 里 `docs` job 会跑
+`build_docs.py` 加 `mkdocs gh-deploy --force`，把站点推到 `gh-pages` 分支，GitHub Pages 从那里发布。
+改完文档不用手动发站。想在本机看效果仍可手动来一遍：
 
 ```bash
-py -3.9 tools/build_docs.py && mkdocs gh-deploy --force
+py -3.9 tools/build_docs.py && mkdocs serve
 ```
 
-推到 `gh-pages` 分支，GitHub Pages 从那里发布。**还没有接 CI**：GitHub 规定推送
-`.github/workflows/` 下的文件必须用带 `workflow` scope 的凭据，而本机现有两份凭据都只有
-`gist, read:org, repo`，所以两个 workflow（链接/nav 检查 + 站点发布、每周引用核查）
-暂时留在仓库外，凭据补上 scope 之后再进仓。
+**改 workflow 文件要留意凭据 scope。** GitHub 规定推送 `.github/workflows/` 下的文件必须用带
+`workflow` scope 的凭据，而默认的 classic PAT 只有 `gist, read:org, repo`。缺了会看到
+`refusing to allow an OAuth App to create or update workflow ... without workflow scope`。
+补法：`gh auth refresh -s workflow`（设备授权，需账号本人在网页确认），再
+`gh auth setup-git` 让 git 用上 gh 这份凭据——否则 git 仍走凭据管理器里那份旧的。
 
 **英文门面**：`README.en.md` 是英文首页，`docs/en/index.md` 是英文文档总览
 （每篇的英文标题 + 一句英文说明 + 链回中文正文）；正文不翻译。
