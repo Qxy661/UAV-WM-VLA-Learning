@@ -15,8 +15,7 @@
   `tools/build_docs.py`（站点暂存树）；前两个已接进 CI。
 - **文档站上线**：<https://qxy661.github.io/UAV-WM-VLA-Learning/>（由 `mkdocs gh-deploy`
   发布到 `gh-pages` 分支）。
-- **持续集成**：`.github/workflows/ci.yml`（相对链接 / nav / 英文总览三项检查，main 上构建并发布站点）、
-  `citations.yml`（每周核对 arXiv 号并刷新审计报告）。
+- **持续集成**：`.github/workflows/ci.yml`（相对链接 / nav / 英文总览三项检查，main 上构建并发布站点）。
 - **`CITATION.cff`**：GitHub 侧可直接导出 BibTeX / APA 引用格式。
 - **三卷自测**（Part 9）：VLA / 世界模型 / VLM 各一篇，正文只给指针不给答案。
 - **三卷前沿增量台账**：`references/{vla,wm,vlm}-watch-2026-10.md`。
@@ -28,7 +27,6 @@
   无人机作为贯穿 9 卷的专章。
 - README 首屏重做：hero 图、可点徽章、一句话量化承诺、60 秒快速开始、路线图。
 - 论文清单改为条目式排版（arXiv / GitHub / 主页三类徽章）。
-- `tools/check_citations.py` 增加 `--fail-on-bad`，可作 CI 门禁（请求失败的号只警告，不判失败）。
 
 ### 修复
 

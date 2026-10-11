@@ -148,8 +148,8 @@ code/                     # 可运行 demo（真实 PyTorch）
 mindmaps/                 # 思维导图
 references/               # 参考资料
 figures/                  # 由 code/ 脚本生成的配图
-tools/                    # 自检与生成脚本（引用核查、前沿追踪、站点构建、链接/nav 检查）
-.github/                  # Issue 表单、PR 模板与两个 workflow
+tools/                    # 自检与生成脚本（前沿追踪、站点构建、链接/nav 检查）
+.github/                  # Issue 表单、PR 模板与 CI workflow
 ```
 
 ---
@@ -249,38 +249,8 @@ tools/                    # 自检与生成脚本（引用核查、前沿追踪�
    - 方法要点
    - 实验结果亮点
    - 论文链接和代码链接（如有）
-4. **arXiv 号必须来自 API，不是凭印象写的**：写完跑一遍引用核查（见下），
-   号对不上标题的会被工具当场揪出来
 
-### 引用核查
-
-`references/paper-list.md` 与各篇文档里的 arXiv 号，统一由
-`tools/check_citations.py` 对着 arXiv API 核对：
-
-```bash
-py -3.9 tools/check_citations.py                    # 核查并打印摘要
-py -3.9 tools/check_citations.py --write            # 额外写出 references/citation-audit.md
-py -3.9 tools/check_citations.py --fail-on-bad      # 号配错 / 查无此文时退出码 1（当门禁用）
-```
-
-只依赖标准库。判据是 API 返回的真实标题，与文档在号附近写的标题做比对；
-相似度低只代表「值得人看一眼」，**不是「这篇论文不存在」**。请求失败的号会
-单独列出来，重跑即可——**绝不能把请求失败当成论文不存在**。
-
-在本机跑需要走代理，脚本用 `urllib` 会自动读环境变量，所以直接带上即可
-（能直连 arXiv 的环境不必设置）：
-
-```bash
-HTTPS_PROXY=http://127.0.0.1:7897 py -3.9 tools/check_citations.py
-```
-
-`--fail-on-bad` **只对「号配错」「API 明确查无」判失败**；请求失败（限流/超时）
-只打 `::warning::`。这条边界是刻意的：把请求失败当失败，一次网络抖动就会让检查变红，
-而它证明不了任何事。
-
-工具认三种在文档里写标题的写法：链接文字、引号、**斜体**（条目式的
-`**[会议'年月] 名称** — *English Title*`）。所以清单层改条目式之后，核查不会
-因为「标题不在表格里了」而失效。
+arXiv 号以 arXiv 官方页面为准，不要凭印象写。
 
 ### 前沿追踪
 

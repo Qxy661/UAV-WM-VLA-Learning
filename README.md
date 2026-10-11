@@ -59,7 +59,7 @@
 | **保姆级教学** | 每篇文档配有阅读时间、前置知识、核心内容、思考题与参考答案，适合零基础入门 |
 | **认知优先，代码可选验证** | 主线是把原理、架构、演进脉络和论文思想讲清楚；关键结论另配**可运行的迷你 demo**（[`code/`](code/README.md)），跑不跑都不影响阅读 |
 | **系统化梳理** | 从基础概念到前沿论文，从理论到实践指南，完整学习路径 |
-| **论文精读** | 195 篇关键论文逐条核对 arXiv 编号与标题，见 [`references/paper-list.md`](references/paper-list.md) |
+| **论文精读** | 195 篇关键论文分类精读，见 [`references/paper-list.md`](references/paper-list.md) |
 | **结论可复跑** | 每个重要结论尽量附一条能重跑的验证路径；量不出来的地方**明说不作为结论** |
 
 ### 三大核心概念
@@ -81,12 +81,11 @@ VLM (视觉语言模型)          VLA (视觉语言动作模型)        World Mo
 
 ## 这个仓库有什么不一样
 
-> 论文列表类仓库很多。本仓库想多做四件事：**能跑、能核、能追、能自测**。
+> 论文列表类仓库很多。本仓库想多做三件事：**能跑、能追、能自测**。
 
 | 资产 | 说明 |
 |------|------|
 | **24 个纯 CPU 可跑 demo** | 全部不训模型、不占显存、两分钟内出图；每个只验证正文里的一条结论，量不出来时直接写「不作为结论」。见下方 [可运行代码](#可运行代码)。 |
-| **可复现的引用纪律** | [`tools/check_citations.py`](tools/check_citations.py) 把全仓 arXiv 号逐条对官方 API 核对标题，结果落在 [`references/citation-audit.md`](references/citation-audit.md)。 |
 | **三卷前沿增量台账** | [`tools/watch.py`](tools/watch.py) 按月对世界模型 / VLA / VLM 三卷做增量检索，产出 [`references/*-watch-2026-10.md`](references/vla-watch-2026-10.md)。 |
 | **三卷自测** | [`docs/09-专题自测与考察/`](docs/09-专题自测与考察/)：正文只给指针、答案不许脱离材料，末尾是跨篇综合题。 |
 | **诚实的硬件边界** | 所有数字来自实跑；硬件上限是单张 8 GB 显卡，因此本仓库不训大模型，只讲跑得动的部分。 |
@@ -290,12 +289,11 @@ graph TD
 | [世界模型分类学](mindmaps/world-model-taxonomy.md) | 世界模型分类体系 |
 | [VLA演进路线](mindmaps/vla-evolution.md) | VLA 模型发展时间线 |
 | [推荐阅读顺序](mindmaps/reading-order.md) | 论文阅读顺序建议 |
-| [完整论文列表](references/paper-list.md) | 195 篇论文分类汇总，逐条核对 arXiv 编号与标题 |
+| [完整论文列表](references/paper-list.md) | 195 篇论文分类汇总 |
 | [VLA 追踪台账](references/vla-watch-2026-10.md) | 按专题分节的 arXiv 检索记录 |
 | [世界模型追踪台账](references/wm-watch-2026-10.md) | 同上，世界模型卷 |
 | [VLM 追踪台账](references/vlm-watch-2026-10.md) | 同上，VLM 卷 |
 | [Awesome List 注释](references/awesome-annotations.md) | 对 NTUMARS 仓库的补充 |
-| [引用核查报告](references/citation-audit.md) | 全仓 arXiv 编号与标题的一致性核查 |
 
 ---
 

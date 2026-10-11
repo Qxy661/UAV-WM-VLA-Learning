@@ -80,13 +80,12 @@ VLM (vision-language model)   VLA (vision-language-action)   World Model
 
 ## What is different
 
-> Paper lists are not scarce. This repository tries to add four things they usually lack: **you
-> can run it, check it, track it, and test yourself on it.**
+> Paper lists are not scarce. This repository tries to add three things they usually lack: **you
+> can run it, track it, and test yourself on it.**
 
 | Asset | What it is |
 |-------|------------|
 | **24 CPU-only demos** | No training, no VRAM, each produces a figure in about two minutes. Every demo verifies exactly one claim in the text — and where a claim cannot be measured, the text says so instead of implying otherwise. See [`code/`](code/README.md). |
-| **Reproducible citation discipline** | [`tools/check_citations.py`](tools/check_citations.py) verifies every arXiv ID in the repository against the official API by title. Results land in [`references/citation-audit.md`](references/citation-audit.md), refreshed by a weekly audit run (see [`CONTRIBUTING.md`](CONTRIBUTING.md)). |
 | **Frontier logs for all three topics** | [`tools/watch.py`](tools/watch.py) re-queries world models / VLA / VLM monthly, producing [`references/*-watch-2026-10.md`](references/vla-watch-2026-10.md). |
 | **Self-assessment sets** | [`docs/09-专题自测与考察/`](docs/09-专题自测与考察/01-VLA专题自测.md) — questions only; the body text gives pointers, never answers. |
 | **A hardware limit stated up front** | Every number comes from a real run. The ceiling is a single 8 GB GPU, so this repository does not train large models — it covers what actually runs. |
@@ -155,7 +154,7 @@ Also in the repository:
 - [`mindmaps/`](mindmaps/field-overview.md) — 4 mind maps (field overview, world-model taxonomy,
   VLA timeline, reading order).
 - [`code/`](code/README.md) — the 24 demos.
-- [`tools/`](tools/check_citations.py) — citation checking, frontier watching, link and nav linting.
+- [`tools/`](tools/watch.py) — frontier watching, link and nav linting.
 
 ---
 
@@ -180,8 +179,8 @@ repository** button with BibTeX and APA exports:
 ## Contributing
 
 The contribution guide is in Chinese: [`CONTRIBUTING.md`](CONTRIBUTING.md). In short — open an
-issue with the file and line number, or send a PR that passes `tools/check_links.py`,
-`tools/check_nav.py` and `tools/check_citations.py`. Issues are welcome in Chinese or English.
+issue with the file and line number, or send a PR that passes `tools/check_links.py` and
+`tools/check_nav.py`. Issues are welcome in Chinese or English.
 
 ## License
 

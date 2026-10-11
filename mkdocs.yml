@@ -181,7 +181,6 @@ nav:
       - 世界模型追踪台账: references/wm-watch-2026-10.md
       - VLM 追踪台账: references/vlm-watch-2026-10.md
       - Awesome List 注释: references/awesome-annotations.md
-      - 引用核查报告: references/citation-audit.md
   - 可运行代码: code/README.md
   - English Overview: docs/en/index.md
   - English README: README.en.md

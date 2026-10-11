@@ -51,7 +51,7 @@ NS = {"a": "http://www.w3.org/2005/Atom",
       "os": "http://a9.com/-/spec/opensearch/1.1/"}
 UA = "uav-wm-vla-learning-watch/1.0"
 
-RETRY = 4          # 单条查询失败重试次数（照抄 check_citations.py）
+RETRY = 4          # 单条查询失败重试次数
 SLEEP = 4.0        # 查询间隔，arXiv 建议 3 秒以上
 PER_QUERY = 30     # 每条查询取回的条目数上限
 

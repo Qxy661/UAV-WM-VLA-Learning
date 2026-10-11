@@ -6,8 +6,7 @@ Chinese original. If a title here interests you, open the link and read it with 
 the figures, tables and code blocks carry most of the argument anyway.
 
 - **59 documents** across nine sections, plus 4 mind maps and 6 reference files.
-- **195 papers**, every arXiv ID checked against the arXiv API (see
-  [citation audit](../../references/citation-audit.md)).
+- **195 papers**, catalogued by topic with arXiv IDs and recommendation ratings.
 - **24 CPU-only demos** under [`code/`](../../code/README.md) — no GPU, no training, each runnable
   in about two minutes.
 - **Drones are a running thread, not the whole scope.** The spine is general world-model / VLA /
@@ -176,22 +175,15 @@ Questions only — the body text gives pointers, never answers.
 - **[VLM Watch, 2026-10](../../references/vlm-watch-2026-10.md)**
 - **[Awesome-List Annotations](../../references/awesome-annotations.md)** — Notes on
   NTUMARS/Awesome-World-Model-for-Robotics-Policy and what we add on top.
-- **[Citation Audit Report](../../references/citation-audit.md)** — Every arXiv ID checked against
-  the arXiv API, with the failures listed.
 
 ---
 
 ## How the numbers stay trustworthy
 
-Two rules run through the whole repository, and they are enforced by tooling rather than by good
-intentions:
-
-1. **Every arXiv ID comes from the arXiv API.** [`tools/check_citations.py`](../../tools/check_citations.py)
-   re-verifies all of them and regenerates the audit report; the audit is re-run weekly. A paper
-   that cannot be found is reported as not found — never silently kept.
-2. **Every number comes from a real run.** The demos under [`code/`](../../code/README.md) are
-   CPU-only and take about two minutes each; if a figure appears in the text, the script that
-   produced it is in the repository.
+One rule runs through the whole repository, and it is enforced by tooling rather than by good
+intentions: **every number comes from a real run.** The demos under [`code/`](../../code/README.md)
+are CPU-only and take about two minutes each; if a figure appears in the text, the script that
+produced it is in the repository.
 
 Known limit, stated rather than hidden: the reference hardware is a single laptop GPU with **8 GB
 of VRAM**, so nothing here trains a world model or a VLA from scratch. Anything that would need
@@ -205,5 +197,5 @@ See [`CITATION.cff`](../../CITATION.cff) in the repository root — GitHub rende
 ## Contributing
 
 The full contribution guide is in Chinese: [`CONTRIBUTING.md`](../../CONTRIBUTING.md). In short —
-open an issue with the file and line, or send a PR that passes `tools/check_links.py`,
-`tools/check_nav.py` and `tools/check_citations.py`.
+open an issue with the file and line, or send a PR that passes `tools/check_links.py` and
+`tools/check_nav.py`.
