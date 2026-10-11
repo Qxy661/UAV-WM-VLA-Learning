@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 相对链接检查
+        run: python tools/check_links.py
+      - name: nav 一致性检查
+        run: python tools/check_nav.py
+      - name: 英文总览覆盖检查
+        run: python tools/gen_en_index.py --check
+
+  docs:
+    # 只在 main 上发布；PR 只跑上面的检查，不动线上站点
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 安装 mkdocs-material 与 jieba
+        # 版本钉住：material 自 2025-11 转入维护模式，9.7.* 是最后一个把中文分词
+        # 对所有人免费开放的版本。jieba 必须显式装——material 不含它，
+        # 缺了会静默退回英文式切分，中文搜索看起来正常其实搜不到。
+        run: pip install "mkdocs-material==9.7.*" "mkdocs<2" jieba
+      - name: 生成暂存树
+        run: python tools/build_docs.py
+      - name: 构建并发布到 gh-pages
+        run: mkdocs gh-deploy --force
