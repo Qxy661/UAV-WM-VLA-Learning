@@ -88,6 +88,7 @@ def wilson(k, n):
 
 def halfwidth_at(x01, n, reps=400):
     """在 x01 里无放回抽 n 个回合，复现 k 次，报 Wilson 半宽的均值。"""
+    assert 0 < n <= x01.numel(), f"只能从 {x01.numel()} 个回合里抽 n 个，收到 n={n}"
     g = torch.Generator().manual_seed(SEED + n)
     hs = []
     for _ in range(reps):
@@ -147,11 +148,17 @@ def main():
         hw[n] = h
         print(f"  {n:>7}{h * 100:>18.1f}pp{gap / h:>17.2f}")
     need = None
-    for n in range(8, 4097, 8):
+    pool = x_cold.numel()
+    for n in range(8, pool + 1, 8):
         if halfwidth_at(x_cold, n, reps=60) <= gap:
             need = n
             break
-    print(f"  半宽降到实测差距（{gap * 100:.1f}pp）以下，每臂约需 {need} 回合")
+    if need is None:
+        print(f"  池子只有 {pool} 个回合，半宽始终没降到实测差距（{gap * 100:.1f}pp）以下。"
+              f"\n  这不是「再多抽几次就好」：同一个池里抽不同子集只会让区间在同一个宽度附近抖，"
+              f"\n  要更窄的区间得重新跑更多回合，不能拿重抽样凑数。")
+    else:
+        print(f"  半宽降到实测差距（{gap * 100:.1f}pp）以下，每臂约需 {need} 回合")
 
     # ---- 第 3 格：独立单元是回合还是模型
     print(f"\n第 3 格：同一个方法跑 {K_SEEDS} 次独立训练，评测回合数相同")

@@ -325,7 +325,7 @@ def main():
     cnt = [r[3] for r in sub]
     bnd = [r[4] for r in sub]
     ax.fill_between(xs3, cnt, bnd, color="#c0392b", alpha=0.10)
-    ax.plot(xs3, bnd, "s--", color="#7f8c8d", lw=1.5, label="上界：前两名间隔 < 步长/2 的行占比")
+    ax.plot(xs3, bnd, "s--", color="#7f8c8d", lw=1.5, label="上界：前两名间隔 < 步长 的行占比")
     ax.plot(xs3, cnt, "o-", color="#c0392b", lw=2, label="实测 argmax 翻转率")
     ax.set_xticks(xs3)
     ax.set_xticklabels([f"INT{r[1]}" for r in sub])

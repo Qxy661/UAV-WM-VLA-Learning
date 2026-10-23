@@ -29,6 +29,8 @@ SEED = 0
 OBS_DIM, ACT_DIM = 12, 4
 T = 40                 # 每条轨迹 40 步 = 0.8 秒
 N_ENV = 256            # 并行环境数
+N_TRAIN_ENV = 192      # 训练用轨迹条数（其余留作 held-out）
+N_EVAL_ENV = N_ENV - N_TRAIN_ENV
 SEQ, BATCH = 16, 32    # 训练时的子序列长度与批大小
 TRAIN_STEPS = 1200
 
@@ -67,12 +69,20 @@ def kl_balanced(mu_p, ls_p, mu_q, ls_q, alpha=0.8):
 
     alpha*kl.detach() 这一项只推动先验去追后验（不回流到编码器），
     (1-alpha)*kl 则同时训练两边。DreamerV3 用这个技巧避免后验塌缩。
+
+    公式必须是同一个方向上的 KL。对角高斯下 KL(q||p) 为
+        0.5 * [ (mu_q-mu_p)^2/sigma_p^2 + sigma_q^2/sigma_p^2 - 1 + 2(ln sigma_p - ln sigma_q) ]
+    均值项用 sigma_p^2 作分母、方差比取 sigma_q^2/sigma_p^2、对数项写 ln(sigma_p/sigma_q)，
+    三处方向要一致；混用会把 KL(p||q) 的方差项接在 KL(q||p) 的均值项上，值可以变成负数。
     """
     ls_p = ls_p.clamp(-4, 4)
     ls_q = ls_q.clamp(-4, 4)
-    kl = 0.5 * ((mu_q - mu_p).pow(2) / ls_p.exp().pow(2)
-                + ls_p.exp().pow(2) / ls_q.exp().pow(2)
-                - 1 + 2 * (ls_q - ls_p))
+    var_p = (2 * ls_p).exp()
+    var_q = (2 * ls_q).exp()
+    kl = 0.5 * ((mu_q - mu_p).pow(2) / var_p
+                + var_q / var_p
+                - 1 + 2 * (ls_p - ls_q))
+    assert float(kl.min()) > -1e-5, "KL 不该为负，先查方向是否混用"
     return (alpha * kl.detach() + (1 - alpha) * kl).sum(-1).mean()
 
 
@@ -106,7 +116,7 @@ def train(wm, OBS, ACT, REW):
     hist = {"step": [], "重建": [], "KL": [], "奖励": [], "总损失": []}
     print(f"{'step':>6} {'重建':>9} {'KL':>9} {'奖励':>9} {'总损失':>10}")
     for step in range(1, TRAIN_STEPS + 1):
-        i = torch.randint(0, N_ENV, (BATCH,))
+        i = torch.randint(0, N_TRAIN_ENV, (BATCH,))
         t0 = int(torch.randint(0, T - SEQ, (1,)))
         o = OBS[i, t0:t0 + SEQ]
         a = ACT[i, t0:t0 + SEQ]
@@ -141,14 +151,18 @@ def train(wm, OBS, ACT, REW):
 
 
 @torch.no_grad()
-def rollout(wm, OBS, ACT, REW, t0=5, n=64, open_loop=False):
+def rollout(wm, OBS, ACT, REW, env_idx, t0=5, mode="teacher"):
     """从 t0 开始在潜空间里往前推演，累积预测奖励。
 
-    open_loop=False: 先验潜变量 rollout —— z 由先验采样，但 GRU 的输入
-                     仍喂真实观测（编码器没被绕过，误差不会累积）
-    open_loop=True : 完全开环 —— 把解码出来的观测再喂回去，误差会滚雪球
+    两种模式都不是"纯先验"：
+      mode="teacher": z 从先验采样，但 GRU 每步仍吃真实观测（单步纠偏）
+      mode="open"   : z 从先验采样，GRU 吃的是上一步解码出来的观测（误差会滚雪球）
+
+    真正的纯先验推演在观测无关的潜空间里才可能；本 demo 的观测是 12 维状态，
+    不喂观测就没有输入，所以只能给这两种口径。想量开环误差，看 mode="open"。
     """
-    i = torch.arange(n)
+    i = torch.as_tensor(env_idx, dtype=torch.long)
+    n = i.numel()
     hx = torch.zeros(n, wm.h)
     z = torch.zeros(n, wm.z)
     for k in range(t0):
@@ -162,9 +176,9 @@ def rollout(wm, OBS, ACT, REW, t0=5, n=64, open_loop=False):
         true.append(REW[i, k])
         mu_p, ls_p = wm.prior(hx).chunk(2, dim=-1)                  # 只用先验，不看观测
         z = mu_p + ls_p.clamp(-4, 4).exp() * torch.randn_like(mu_p)
-        obs_in = obs_recon if open_loop else OBS[i, k]
+        obs_in = obs_recon if mode == "open" else OBS[i, k]
         hx = wm.gru(torch.cat([wm.enc(obs_in), ACT[i, k]], dim=-1), hx)
-        if open_loop:
+        if mode == "open":
             obs_recon, _ = wm.decode(torch.cat([hx, z], dim=-1))
     pred = torch.stack(pred, 1)
     true = torch.stack(true, 1)
@@ -178,21 +192,24 @@ def main():
     print(f"字体: {font or '未找到 CJK 字体，图中中文可能显示为方块'}\n")
 
     OBS, ACT, REW = collect_data()
-    print(f"数据集 obs {tuple(OBS.shape)}  act {tuple(ACT.shape)}  rew {tuple(REW.shape)}\n")
+    print(f"数据集 obs {tuple(OBS.shape)}  act {tuple(ACT.shape)}  rew {tuple(REW.shape)}")
+    print(f"划分：前 {N_TRAIN_ENV} 条轨迹训练，后 {N_EVAL_ENV} 条 held-out（评估只碰后者）\n")
 
     wm = RSSM()
     hist = train(wm, OBS, ACT, REW)
 
-    # ---- 想象 rollout ----
-    pred, true = rollout(wm, OBS, ACT, REW, open_loop=False)
+    # ---- 想象 rollout（只用 held-out 轨迹）----
+    eval_idx = torch.arange(N_TRAIN_ENV, N_ENV)
+    pred, true = rollout(wm, OBS, ACT, REW, eval_idx, mode="teacher")
     p_sum, t_sum = pred.sum(1), true.sum(1)
     dev = abs(p_sum.mean().item() - t_sum.mean().item()) / abs(t_sum.mean().item()) * 100
-    print(f"\n想象 rollout 回报  预测 {p_sum.mean():.1f} | 真实 {t_sum.mean():.1f} | 偏差 {dev:.1f}%")
+    print(f"\n单步纠偏 rollout（每步喂真观测） 预测 {p_sum.mean():.1f} | 真实 {t_sum.mean():.1f} | 偏差 {dev:.1f}%")
 
-    p2, t2 = rollout(wm, OBS, ACT, REW, open_loop=True)
+    p2, t2 = rollout(wm, OBS, ACT, REW, eval_idx, mode="open")
     p2_sum = p2.sum(1)
     dev2 = abs(p2_sum.mean().item() - t2.sum(1).mean().item()) / abs(t2.sum(1).mean().item()) * 100
-    print(f"完全开环 rollout   预测 {p2_sum.mean():.1f} | 真实 {t2.sum(1).mean():.1f} | 偏差 {dev2:.1f}%")
+    print(f"完全开环 rollout（喂解码观测）  预测 {p2_sum.mean():.1f} | 真实 {t2.sum(1).mean():.1f} | 偏差 {dev2:.1f}%")
+    print(f"两者差 {dev2 - dev:+.1f} 个百分点：这就是“每步被观测纠正”与“自己走下去”的距离")
 
     # ---- 图 1：损失曲线 ----
     fig, ax = plotting.plt.subplots(figsize=(8, 4.5))

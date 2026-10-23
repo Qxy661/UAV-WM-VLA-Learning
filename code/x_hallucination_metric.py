@@ -82,6 +82,7 @@ def build_questions(rng, beta=BETA):
     present = np.searchsorted(cum_b, rng.random(N_PER_CLASS))
     # adversarial 候选池：与每个正题类最相似的 K 个类，池内再按 p^beta 抽
     sim = emb @ emb[present].T
+    sim[present, np.arange(N_PER_CLASS)] = -np.inf            # 负题不能正好是这道题的正题类
     topk = np.argpartition(-sim, K_SIM, axis=0)[:K_SIM]        # (K, N)
     w = p[topk] ** beta
     w /= w.sum(axis=0, keepdims=True)
