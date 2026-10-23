@@ -25,6 +25,26 @@ jobs:
       - name: 英文总览覆盖检查
         run: python tools/gen_en_index.py --check
 
+  numbers:
+    # 数字对账：文档里引用的指标要在 demo 里重新算得出来。
+    # 单独一个 job，因为要装 torch、跑几分钟，不该拖慢提交反馈的主链路。
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 安装 CPU 版 torch 与绘图依赖
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install numpy matplotlib
+      - name: 中文字体（图里要写中文，缺字体 matplotlib 会警告但不算失败）
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk
+      - name: 比对 code/expected/metrics.json
+        env:
+          MPLBACKEND: Agg
+        run: python tools/check_numbers.py
+
   docs:
     # 只在 main 上发布；PR 只跑上面的检查，不动线上站点
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

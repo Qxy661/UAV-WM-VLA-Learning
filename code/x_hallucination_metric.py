@@ -47,6 +47,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import plotting
+from common.metrics import emit
 
 SEED = 21
 VOCAB = 1000                     # 词表大小
@@ -202,6 +203,10 @@ def main():
               f"{a['M_vision']:>10.4f}{max(a, key=a.get):>10}"
               f"{res[(split, 'M_prior')][4]:>20.4f}")
     r1, r2 = res[("random", "M_prior")][0], res[("popular", "M_prior")][0]
+    emit(adv_prior_top1=res[("adversarial", "M_prior")][0],
+         adv_vision_top1=res[("adversarial", "M_vision")][0],
+         random_prior_top1=r1, popular_prior_top1=r2,
+         prior_yes_adv=res[("adversarial", "M_prior")][4])
     print(f"   -> 图像盲的 M_prior 在 random 档拿到 {r1:.4f} 并排第一，换成 popular 负样本")
     print(f"      掉到 {r2:.4f}（差 {r1 - r2:.4f}）。同一套词表、同一个阈值、同一个模型，")
     print(f"      差别只在负样本怎么抽。它的 Recall 在三档上都是 "

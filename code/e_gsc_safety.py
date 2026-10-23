@@ -42,6 +42,7 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common.quad_sim import QuadSim
+from common.metrics import emit
 from common import plotting
 
 SEED = 0
@@ -191,6 +192,13 @@ def main():
         h1, s1, l1, _ = res[(kind, True)]
         print(f"{'':<10} 变化   {(h1 - h0) * 100:>+7.1f} 点 {(s1 - s0) * 100:>+7.1f} 点 "
               f"{(l1 - l0) * 100:>+7.1f} 点\n")
+
+    emit(d_thresh=D_THRESH,
+         convex_off_hit=res[("convex", False)][0] * 100,
+         convex_on_hit=res[("convex", True)][0] * 100,
+         convex_on_succ=res[("convex", True)][1] * 100,
+         concave_off_hit=res[("concave", False)][0] * 100,
+         concave_on_hit=res[("concave", True)][0] * 100)
 
     # ---------------- 图 ----------------
     fig, (ax1, ax2) = plotting.plt.subplots(1, 2, figsize=(13, 5.0))

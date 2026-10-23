@@ -161,6 +161,32 @@ Questions only — the body text gives pointers, never answers.
 - **[World-Model Self-Assessment](../../docs/09-专题自测与考察/02-世界模型专题自测.md)**
 - **[VLM Self-Assessment](../../docs/09-专题自测与考察/03-VLM专题自测.md)**
 
+## 10. Cross-Cutting Criteria
+
+Ten pages that are not a stage of the reading path but a ruler for every stage. Each one states
+the failure mode, the check you can run today, and one worked counter-example from this repo.
+
+- **[Metrics Cannot Be Compared Across Setups](../../docs/10-横切判据/01-口径不可横比.md)** — Splits,
+  metric definitions, and budget differences that silently invalidate a comparison.
+- **[Compute and Latency Budget](../../docs/10-横切判据/02-算力与延迟预算.md)** — FLOPs, effective
+  throughput, and the memory-bandwidth ceiling that dominates small-batch inference.
+- **[From Bandwidth to Control Frequency](../../docs/10-横切判据/03-带宽与频率换算.md)** — Why a VLA
+  cannot close a 50 Hz loop, and how chunk length follows from two rates.
+- **[Choosing an Action Representation](../../docs/10-横切判据/04-动作表示选择.md)** — Six action
+  spaces, what each one costs to learn, and why regression averages modes.
+- **[State, Observation, Belief](../../docs/10-横切判据/05-状态观测信念.md)** — Three ways the
+  distinction gets blurred, and what each one does to the number you report.
+- **[Data Leakage and Splitting](../../docs/10-横切判据/06-数据泄漏与划分.md)** — Four leakage paths
+  and the grouping unit that decides how many independent samples you really have.
+- **[Diagnosing a World Model](../../docs/10-横切判据/07-世界模型诊断.md)** — Representation,
+  dynamics and decision error, each with the degradation family it is blind to.
+- **[Safety Layer and Degradation](../../docs/10-横切判据/08-安全层与降级.md)** — An independent veto,
+  four failure classes, hysteresis, and a three-step degradation ladder.
+- **[Minimum Training Engineering](../../docs/10-横切判据/09-训练工程最小集.md)** — Config, seeding,
+  splitting, checkpoints, logging, and an evaluation that is actually held out.
+- **[Export and Tail Latency](../../docs/10-横切判据/10-导出与尾部延迟.md)** — Fixed shapes, P99,
+  and post-training quantization checked against closed-loop metrics.
+
 ## Mind Maps
 
 - **[Field Overview](../../mindmaps/field-overview.md)** — How world models, VLA and VLM relate.
@@ -170,6 +196,9 @@ Questions only — the body text gives pointers, never answers.
 
 ## References
 
+- **[Knowledge-Point Registry](../../references/knowledge-points.md)** — 134 knowledge points with
+  ID, layer, prerequisites, acceptance criterion, source page and runnable demo. The machine-readable
+  version of the reading path; `tools/kp.py check` enforces it.
 - **[Full Paper List](../../references/paper-list.md)** — 195 entries with a ★★★ / ★★☆ / ★☆☆
   recommendation scale.
 - **[VLA Watch, 2026-10](../../references/vla-watch-2026-10.md)** — Incremental frontier log.

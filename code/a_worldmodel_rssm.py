@@ -23,6 +23,7 @@ import torch.nn.functional as F
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common.quad_sim import QuadSim, reward
+from common.metrics import emit
 from common import plotting
 
 SEED = 0
@@ -210,6 +211,9 @@ def main():
     dev2 = abs(p2_sum.mean().item() - t2.sum(1).mean().item()) / abs(t2.sum(1).mean().item()) * 100
     print(f"完全开环 rollout（喂解码观测）  预测 {p2_sum.mean():.1f} | 真实 {t2.sum(1).mean():.1f} | 偏差 {dev2:.1f}%")
     print(f"两者差 {dev2 - dev:+.1f} 个百分点：这就是“每步被观测纠正”与“自己走下去”的距离")
+    emit(teacher_dev_pct=dev, open_dev_pct=dev2,
+         teacher_pred=p_sum.mean().item(), open_pred=p2_sum.mean().item(),
+         true_return=t2.sum(1).mean().item())
 
     # ---- 图 1：损失曲线 ----
     fig, ax = plotting.plt.subplots(figsize=(8, 4.5))

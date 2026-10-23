@@ -48,6 +48,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import plotting
+from common.metrics import emit
 
 SEED = 11
 D = 8                       # 潜变量维数
@@ -217,6 +218,11 @@ def main():
           f"sigma^2 = {SIGMA2[-1]} 时 "
           f"{recon_rmse(enc[SIGMA2[-1]][1], R, lam, SIGMA2[-1]) / recon_rmse(enc[SIGMA2[-1]][0], R, lam, SIGMA2[-1]):.2f} 倍。"
           f"因为噪声占比一高，谁也留不住。")
+
+    emit(jepa_gap_low_noise=recon_rmse(enc[SIGMA2[0]][1], R, lam, SIGMA2[0])
+         / recon_rmse(enc[SIGMA2[0]][0], R, lam, SIGMA2[0]),
+         jepa_gap_high_noise=recon_rmse(enc[SIGMA2[-1]][1], R, lam, SIGMA2[-1])
+         / recon_rmse(enc[SIGMA2[-1]][0], R, lam, SIGMA2[-1]))
 
     print("\n" + "-" * 78)
     print("③ 下游线性探针：闭式（无限数据）与实测（少样本）")

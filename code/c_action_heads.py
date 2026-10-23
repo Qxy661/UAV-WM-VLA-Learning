@@ -31,6 +31,7 @@ import torch.nn.functional as F
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import plotting
+from common.metrics import emit
 
 SEED = 0
 H, D = 8, 4          # 动作块：8 步，每步 4 维
@@ -190,6 +191,13 @@ def main():
     print(f"   落在两个模态附近（±{true_mode:.2f}±{TOL}）的比例：{near.float().mean() * 100:.1f}%")
     print(f"   左绕 {n_left} 条 | 中间（两不像）{n_mid} 条 | 右绕 {n_right} 条")
     print(f"   -> 中间只有 {n_mid} 条，说明扩散头几乎不做模态平均")
+
+    emit(reg_lateral_terminal=lat_reg.mean().item(),
+         reg_params_k=n_reg / 1e3,
+         diff_params_k=n_den / 1e3,
+         diff_mode_frac=near.float().mean().item() * 100,
+         diff_mid_count=n_mid,
+         true_mode=true_mode)
 
     # ---------------- 图 ----------------
     fig, (ax1, ax2) = plotting.plt.subplots(1, 2, figsize=(12.5, 4.6))

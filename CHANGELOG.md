@@ -18,16 +18,24 @@
   训练工程最小集、导出与尾部延迟。每篇一张判据表、一个反例、一次对本库既有 demo 的指认。
 - **`tools/kp.py`**：`derive`（从 H2 抽候选）、`check`（注册表 + 头部校验）、`stats`（覆盖率）。
 - **工程层骨架**（`projects/uav-inspect/`）：三机协同巡检的分层频率设计与 M0 悬停验收（尚未验证）。
+- **数字对账**（`tools/check_numbers.py` + `code/expected/metrics.json`）：参与核对的六个 demo 用
+  `common.metrics.emit` 打一行 `[metrics] k=v`，CI 单独一个 job 重跑并与基线逐项比（相对容差 1e-3）。
 
 ### 变更
 
 - 世界模型卷按依赖重排：评测与诊断升到 06（先立判据），关键数据集与基准降到 07；VLM 卷把通用主干
   01–03 前置、应用 04–07 后置。导航、正文交叉引用与「第 NN 篇」表述同步。
 - README 首屏由"多做三件事"改为四件，文档目录新增 Part 10 与注册表入口。
+- 三个 demo 换了能站住脚的对照：`e_gsc_safety` 同场景开/关共用种子（凸形 100%→0、凹形 50.0%→77.0%），
+  `c_action_heads` 两个头对齐为 256 宽 / 8000 步（参数量 77.3k 对 101.9k），`b_lang_cond_policy` 改报
+  hold-out 损失（0.00203→0.09763）并配上闭环误差（1.89→2.15 m）。相关文档里的旧数字与旧结论一并更正。
 
 ### 修复
 
 - 修正 VLM 卷导读里"先读 01/02"与重排后编号不符的推荐顺序。
+- 修掉六个静默 bug：`r_eval_protocol` 抽样池越界、`x_hallucination_metric` 对抗档负样本混入正题类、
+  `t_wm_diagnostics` 打印恒为 0 的净增量、`n_quant_bits` 图例与判据不一致、`u_jepa_probe` 测试集被截断、
+  `a_worldmodel_rssm` 的 KL 方向混用与"开环"实际每步喂真观测。
 
 ## [1.0.0] - 2026-10-10
 

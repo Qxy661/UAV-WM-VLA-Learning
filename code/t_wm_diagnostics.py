@@ -55,6 +55,7 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common.quad_sim import QuadSim, expert
+from common.metrics import emit
 from common import plotting
 
 SEED = 7
@@ -289,6 +290,9 @@ def main():
           f"{r_last['D3'] - base3:.4f} m，差 "
           f"{(r_last['D3'] - base3) / (r_last['D1b'] - base1b):.1f} 倍。"
           f"遮挡占的步数比例越小，这个差越大。")
+    emit(d3_nominal=base3, d1a_forget=0.0,
+         forget_ratio=(r_last["D3"] - base3) / (r_last["D1b"] - base1b),
+         d3_forget=r_last["D3"], d1b_forget=r_last["D1b"])
 
     print("\n" + "-" * 78)
     print("读法")
