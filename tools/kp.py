@@ -283,7 +283,7 @@ def cmd_check(args) -> int:
 
     pending = sum(1 for r in rows if r.get("承载文档", "").startswith("待建"))
     print(f"注册表：{len(rows)} 条 KP（待建 {pending}）；文档 {len(docs)} 篇")
-    print(f"头部缺失「本篇 KP」：{missing_header}/{len(docs)} 篇（P1.3 待办）")
+    print(f"头部缺失「本篇 KP」：{missing_header}/{len(docs)} 篇")
     if exempted:
         print(f"豁免五字段：{exempted} 篇（文首 <!-- kp-exempt: 原因 -->）")
     if problems:
