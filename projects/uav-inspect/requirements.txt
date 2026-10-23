@@ -1,0 +1,5 @@
+﻿# 只列直接依赖；版本下限而非精确钉死，避免 Windows 上无 wheel 时卡死
+pybullet>=3.2.6
+numpy>=1.24
+PyYAML>=6.0
+pytest>=7.0

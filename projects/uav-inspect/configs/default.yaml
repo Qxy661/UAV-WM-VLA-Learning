@@ -1,0 +1,36 @@
+# uav-inspect 唯一参数真源（ADR-006）。任何代码里出现可调数字都属于 bug。
+seed: 0
+
+sim:
+  physics_dt: 0.004166666666666667   # 240 Hz，对齐 PX4 内环
+  control_dt: 0.020833333333333334   # 48 Hz，对齐 Offboard 设定点流
+  policy_dt: 0.1                     # 10 Hz，VLA 单次推理上限
+  camera_dt: 0.2                     # 5 Hz，机载算力下的保守值
+  gravity: -9.81
+  real_time: false                   # true 时按墙钟节流，用于可视化调试
+
+drone:
+  mass: 1.0
+  arm: 0.15                # 中心到桨轴的臂长（m）
+  collision_radius: 0.08
+  drag_quadratic: 0.12     # F = -k*|v|*v，N/(m/s)^2
+  rotor:
+    w_hover: 1500.0        # 悬停转速，用来反解 kf（rad/s）
+    w_max: 2200.0
+    time_constant: 0.03    # 电机一阶滞后，s
+    torque_ratio: 0.016    # km/kf，反扭矩/推力，m
+
+control:
+  pos_kp: 1.0              # 外环位置 P
+  pos_kd: 2.0              # 外环速度 D
+  att_kp: 6.0              # 姿态环（误差四元数 → 期望角速率）
+  rate_kp: 20.0            # 角速率环
+  max_tilt_deg: 30.0
+  thrust_margin: 0.95      # 推力上限只用 95%，留控制余量
+
+task:
+  hover_height: 1.5
+  duration: 20.0
+  settle_time: 5.0         # 前 5 s 不计入 RMSE
+  accept_rmse: 0.20
+  accept_final_z: 0.15
