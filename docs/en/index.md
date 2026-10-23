@@ -1,5 +1,7 @@
 # Documentation Overview (English)
 
+<!-- kp-exempt: 英文导航索引页，只做标题与一句话说明，没有教学段落 -->
+
 **The body of this repository is written in Chinese.** This page is a map, not a translation:
 every document gets an English title and a one-line description, and each entry links to the
 Chinese original. If a title here interests you, open the link and read it with a translator —

@@ -90,6 +90,7 @@ class Doc:
     sections: list[tuple[int, str]] = field(default_factory=list)
     lines: int = 0
     part: str = ""
+    exempt: str = ""        # 非空表示豁免原因（文首注释 <!-- kp-exempt: 原因 -->）
 
 
 def iter_docs() -> list[Doc]:
@@ -109,6 +110,9 @@ def iter_docs() -> list[Doc]:
                 continue
             if header_open:
                 stripped = line.strip()
+                m = re.match(r"<!--\s*kp-exempt:\s*(.+?)\s*-->", stripped)
+                if m and not d.exempt:
+                    d.exempt = m.group(1)
                 if stripped.startswith(">"):
                     for key, val in parse_header_line(stripped):
                         d.header.setdefault(key, val)
@@ -219,7 +223,8 @@ def cmd_check(args) -> int:
                 problems.append(f"{rid} 的前置 {pre} 不存在")
         doc = r.get("承载文档", "")
         if doc and not doc.startswith("待建"):
-            for piece in re.split(r"[,，、\s]+", doc):
+            # 多篇承载文档用「；」分隔：文件名本身可能带顿号（如 07-数据、预训练与跨具身.md）
+            for piece in re.split(r"[；;\n]+", doc):
                 if piece and not (DOCS / piece).is_file():
                     problems.append(f"{rid} 承载文档不存在：{piece}")
 
@@ -244,11 +249,13 @@ def cmd_check(args) -> int:
     docs = iter_docs()
     covered: dict[str, list[str]] = {r.get("ID", ""): [] for r in rows}
     for r in rows:
-        for piece in re.split(r"[,，、\s]+", r.get("承载文档", "")):
+        # 多篇承载文档用「；」分隔：文件名本身可能带顿号（如 07-数据、预训练与跨具身.md）
+        for piece in re.split(r"[；;\n]+", r.get("承载文档", "")):
             if piece and not piece.startswith("待建"):
                 covered.setdefault(r.get("ID", ""), []).append(piece)
 
     missing_header = 0
+    exempted = 0
     bad_refs = 0
     KP_TOKEN = re.compile(r"KP-(?:X\d{2}|\d{3})")
     for d in docs:
@@ -259,7 +266,10 @@ def cmd_check(args) -> int:
                     problems.append(f"{d.rel} 头部字段「{key}」引用了不存在的 {ref}")
                     bad_refs += 1
         if "本篇 KP" not in d.header:
-            missing_header += 1
+            if d.exempt:
+                exempted += 1
+            else:
+                missing_header += 1
             continue
         refs = [x for x in re.split(r"[,，、\s]+", d.header["本篇 KP"]) if x]
         for ref in refs:
@@ -274,6 +284,8 @@ def cmd_check(args) -> int:
     pending = sum(1 for r in rows if r.get("承载文档", "").startswith("待建"))
     print(f"注册表：{len(rows)} 条 KP（待建 {pending}）；文档 {len(docs)} 篇")
     print(f"头部缺失「本篇 KP」：{missing_header}/{len(docs)} 篇（P1.3 待办）")
+    if exempted:
+        print(f"豁免五字段：{exempted} 篇（文首 <!-- kp-exempt: 原因 -->）")
     if problems:
         print(f"\n问题 {len(problems)} 条：")
         for p in problems[:40]:
@@ -290,15 +302,19 @@ def cmd_stats(args) -> int:
     total = sum(d.lines for d in docs)
     secs = sum(len(d.sections) for d in docs)
     no_h2 = [d.rel for d in docs if not d.sections]
+    exempt = [d.rel for d in docs if d.exempt]
+    denom = len(docs) - len(exempt)
     print(f"文档 {len(docs)} 篇 / {total} 行 / H2 {secs} 个 / 平均 {total / len(docs):.0f} 行")
     print(f"无 H2 的文档：{no_h2 or '无'}")
+    if exempt:
+        print(f"豁免五字段：{len(exempt)} 篇（{', '.join(exempt)}）")
     keys: dict[str, int] = {}
     for d in docs:
         for k in d.header:
             keys[k] = keys.get(k, 0) + 1
-    print("目标头部字段覆盖（P1.3 要把这五项做到 60/60）：")
+    print(f"目标头部字段覆盖（P1.3 要把这五项做到 {denom}/{denom}）：")
     for k in CANON_KEYS:
-        print(f"  {k:<8} {keys.get(k, 0):>2}/{len(docs)}")
+        print(f"  {k:<8} {keys.get(k, 0):>2}/{denom}")
     other = {k: v for k, v in keys.items() if k not in CANON_KEYS}
     if other:
         print("其他既有字段：")
