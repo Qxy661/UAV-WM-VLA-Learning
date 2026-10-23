@@ -17,7 +17,8 @@ Demo E — 几何安全校正（GSC）管用到什么程度？
         同一个机制：只看最近障碍，用的是局部信息）。
 
 同一个凸形场景，GSC 把碰撞率从 100% 压到 0；同一个凹形场景，它把碰撞率
-从 53% 抬到 73%。差别不在代码，在几何。
+从 50.0% 抬到 77.0%。差别不在代码，在几何。同一场景的「开/关」两组传
+同一个 seed，飞的是同一批起点，否则组间差异里混着采样差异。
 
 两个容易被忽略的地方（本脚本都已避开，改动时请留意）：
 
@@ -28,7 +29,7 @@ Demo E — 几何安全校正（GSC）管用到什么程度？
 
   2) 触发距离要盖过刹车距离。倾角限幅 0.6 rad 对应最大水平加速度 5.3 m/s²，
      3 m/s 巡航的刹车距离是 0.85 m。D_THRESH 小于它时，滤掉速度指令
-     也来不及减速——凸形场景同样会撞（实测 D_THRESH=1.0 时凸形还有 83.6% 撞）。
+     也来不及减速——凸形场景同样会撞（D_THRESH=1.0 时实测凸形 80.9% 撞）。
 
 运行：py -3.9 code/e_gsc_safety.py
 """
@@ -125,20 +126,25 @@ def collided(p_xy, obstacles):
 
 
 @torch.no_grad()
-def run(kind, use_gsc, n=N, d_thresh=D_THRESH):
-    """跑一个场景，返回 (碰撞率, 到达率, 卡住率, 轨迹记录)。"""
+def run(kind, use_gsc, n=N, d_thresh=D_THRESH, seed=None):
+    """跑一个场景，返回 (碰撞率, 到达率, 卡住率, 轨迹记录)。
+
+    seed 决定出生点。同一场景的「GSC 开 / 关」两行必须传同一个 seed，
+    否则两组飞的不是同一批起点，"唯一的变量是 GSC"这句话就不成立。
+    """
     cen, rad, goal3 = make_scene(kind)
     obstacles = (cen, rad)
     goal = goal3[None, :].repeat(n, 1)
 
+    gen = torch.Generator().manual_seed(SEED if seed is None else seed)
     env = QuadSim(n)
     # 起点铺在障碍带之前的一条横线上，横向铺开±3 m：
     # 这样接近角分散，才看得出 GSC 在斜向接近和正前方接近上的差别。
     # 不能用大 pos_std 的随机出生点——那样会有无人机直接出生在球内部，
     # 把碰撞率污染成接近 100%。
     env.reset()
-    env.p[:, 0] = -2.5 + 0.3 * torch.randn(n)
-    env.p[:, 1] = 3.0 * (torch.rand(n) * 2 - 1)
+    env.p[:, 0] = -2.5 + 0.3 * torch.randn(n, generator=gen)
+    env.p[:, 1] = 3.0 * (torch.rand(n, generator=gen) * 2 - 1)
     env.p[:, 2] = 1.5
 
     start_hit = collided(env.p[:, :2], obstacles)
@@ -175,8 +181,9 @@ def main():
     print(f"{'场景':<10} {'GSC':<5} {'碰撞率':>8} {'到达率':>8} {'卡住率':>8}")
     res = {}
     for kind, label in (("convex", "凸形球"), ("concave", "凹形缝")):
+        scene_seed = SEED + (0 if kind == "convex" else 1)   # 同一场景两组共用起点
         for use_gsc in (False, True):
-            hit, suc, stl, traj = run(kind, use_gsc)
+            hit, suc, stl, traj = run(kind, use_gsc, seed=scene_seed)
             res[(kind, use_gsc)] = (hit, suc, stl, traj)
             print(f"{label:<12} {'开' if use_gsc else '关':<5} "
                   f"{hit * 100:>7.1f}% {suc * 100:>7.1f}% {stl * 100:>7.1f}%")

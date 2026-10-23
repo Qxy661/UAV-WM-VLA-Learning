@@ -63,9 +63,13 @@ def cosine_schedule(ns, s=0.008):
 
 # ---------------------------------------------------------------- ① 回归头
 class RegHead(nn.Module):
-    """MSE 回归：直接从条件映射到一整块动作。"""
+    """MSE 回归：直接从条件映射到一整块动作。
 
-    def __init__(self, cond_dim=12, h=128):
+    宽度与训练步数要和 Denoiser 对齐（256 宽、8000 步），否则"回归头学不会多峰"
+    会被"回归头容量更小 / 训得更少"解释掉。
+    """
+
+    def __init__(self, cond_dim=12, h=256):
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(cond_dim, h), nn.SiLU(),
@@ -128,7 +132,7 @@ def main():
     # ---------------- ① 回归头 ----------------
     reg = RegHead()
     opt = torch.optim.Adam(reg.parameters(), lr=1e-3)
-    for _ in range(1500):
+    for _ in range(8000):          # 与扩散头同步数，避免"训得更少"成为解释
         b = torch.randint(0, N_DATA, (128,))
         loss = F.mse_loss(reg(cond[b]), X[b])
         opt.zero_grad()
@@ -143,6 +147,10 @@ def main():
     # ---------------- ② 扩散头 ----------------
     alphas, ab, betas = cosine_schedule(NS)
     den = Denoiser()
+    n_reg = sum(p.numel() for p in reg.parameters())
+    n_den = sum(p.numel() for p in den.parameters())
+    print(f"\n参数量：回归头 {n_reg / 1e3:.1f}k / 扩散头 {n_den / 1e3:.1f}k"
+          f"（同为 256 宽、8000 步；扩散头多一组时间编码与拼接输入）")
     opt = torch.optim.Adam(den.parameters(), lr=2e-3)
     print(f"\n{'step':>6} {'扩散损失':>12}")
     for step in range(1, 8001):

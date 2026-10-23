@@ -1,11 +1,16 @@
 """
-Demo B — 语言条件飞行策略：为什么"模仿损失低"不等于"飞得好"
+Demo B — 语言条件飞行策略：模仿损失和闭环飞得好，是一回事吗？
 
 对应文档：docs/03-VLA专题/03-语言条件飞行控制.md
 
-要验证的结论：纯行为克隆（BC）学出来的策略，模仿损失可以低到 1e-5，
-但闭环飞行反而更差 —— 这就是分布漂移（distribution shift）。
-给专家数据加动作噪声 / 随机化初始状态能缓解它（DAgger 的核心思想）。
+量的是分布漂移（distribution shift）：用脚本专家采数据、训一个语言条件
+策略，再让策略自己闭环飞四条指令。指标有两套——
+hold-out 模仿损失（按样本切出 20%）与闭环终点误差，两者不同序。
+
+要留意的是：指标口径一换，结论会变。早先拿最后一个 minibatch 的训练
+损失当指标，得到的是"噪声越大损失越高、闭环反而更好"；改成 hold-out 后
+戏剧性消失，只剩 ③④ 之间的次序反转。噪声配方（DAgger 的数据侧动机）
+在本装置上量不出收益。
 
 四个数据配置做对照：
   ① 纯专家数据          ② +随机初始状态
@@ -107,7 +112,13 @@ def expert_path(nm):
 
 
 def run(noise, rand_init, tag):
-    """采数据 -> 训练 -> 闭环评估。返回 (最后一个 minibatch 的 BC 损失, 四条指令的终点误差)。"""
+    """采数据 -> 训练 -> 闭环评估。
+
+    返回 (训练损失, 训练前 hold-out 损失, 训练后 hold-out 损失, 四条指令的终点误差)。
+    hold-out 是按样本切出来的 20%：训练只用前 80% 的状态-动作对，
+    否则"模仿损失"报的是拟合损失，四组配置之间也没法比——
+    噪声越大，训练集越难拟合，损失必然更大，这和"学得好不好"是两件事。
+    """
     torch.manual_seed(1)                      # 固定种子，让四组配置的对比公平
     env = QuadSim(N)
     obs = env.reset(rand=rand_init)
@@ -126,17 +137,32 @@ def run(noise, rand_init, tag):
     Tt = torch.stack(Tt, 1)
     A = torch.stack(A, 1)
 
+    ntr = int(N * 0.8)
+    tr = torch.arange(ntr)
+    ev = torch.arange(ntr, N)
+
     pol = LangPolicy()
     opt = torch.optim.Adam(pol.parameters(), lr=LR)
+
+    @torch.no_grad()
+    def heldout_loss():
+        """hold-out 上的逐时刻 BC 损失（全部时间步平均，不是最后一个 minibatch）。"""
+        se = 0.0
+        for t in range(T):
+            se = se + F.mse_loss(pol(O[ev, t], Tt[ev, t]), A[ev, t]).item()
+        return se / T
+
+    ho_before = heldout_loss()
     for ep in range(EPOCHS):
-        b = torch.randint(0, N, (128,))
+        b = tr[torch.randint(0, ntr, (128,))]
         t = int(torch.randint(0, T, (1,)))
         loss = F.mse_loss(pol(O[b, t], Tt[b, t]), A[b, t])
         opt.zero_grad()
         loss.backward()
         opt.step()
+    ho_after = heldout_loss()
     dists, paths = eval_policy(pol)
-    return loss.item(), dists, paths
+    return loss.item(), ho_before, ho_after, dists, paths
 
 
 def main():
@@ -166,9 +192,9 @@ def main():
     print(f"\n四指令闭环最终距目标 (m)   红建筑  蓝建筑  向前巡航  目标后方")
     results = []
     for noise, rand_init, tag, short in configs:
-        loss, dists, paths = run(noise, rand_init, tag)
-        results.append((short, loss, dists, paths))
-        print(f"  [{tag:<24}] BC损失 {loss:.5f} | "
+        loss, ho0, ho1, dists, paths = run(noise, rand_init, tag)
+        results.append((short, ho1, dists, paths))
+        print(f"  [{tag:<24}] 训练损失 {loss:.5f} | hold-out {ho0:.5f} -> {ho1:.5f} | "
               + "  ".join(f"{d:5.2f}" for d in dists)
               + f" | 平均 {sum(dists) / 4:5.2f} m")
 
@@ -181,8 +207,8 @@ def main():
     ax1.set_yscale("log")
     ax1.set_xticks(list(xs))
     ax1.set_xticklabels(labels, fontsize=8)
-    ax1.set_ylabel("行为克隆损失（对数轴）")
-    ax1.set_title(f"模仿损失：④ 是 ① 的约 {ratio:.0f} 倍")
+    ax1.set_ylabel("行为克隆损失（hold-out，对数轴）")
+    ax1.set_title(f"hold-out 损失：④ 是 ① 的约 {ratio:.0f} 倍")
     for x, r in zip(xs, results):
         ax1.text(x, r[1], f"{r[1]:.5f}", ha="center", va="bottom", fontsize=8)
     ax1.grid(alpha=0.3, axis="y")
@@ -191,12 +217,12 @@ def main():
     ax2.set_xticks(list(xs))
     ax2.set_xticklabels(labels, fontsize=8)
     ax2.set_ylabel("闭环终点误差（米，越小越好）")
-    ax2.set_title("闭环误差：损失最高的 ④ 反而最小")
+    ax2.set_title("闭环误差：与 hold-out 损失不同序")
     for x, r in zip(xs, results):
         v = sum(r[2]) / 4
         ax2.text(x, v, f"{v:.2f}", ha="center", va="bottom", fontsize=8)
     ax2.grid(alpha=0.3, axis="y")
-    fig.suptitle("分布漂移：模仿损失低 ≠ 闭环飞得好（②③ 的次序有单次实验噪声）", y=1.02)
+    fig.suptitle("分布漂移：hold-out 损失与闭环误差不同序（③ 损失居中，闭环最差）", y=1.02)
     plotting.save(fig, "bc_distribution_shift.png")
 
     # ---- 图 2：俯视轨迹，专家 vs 训练后策略 ----

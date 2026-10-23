@@ -457,7 +457,7 @@ graph TD
 | 脚本 | 验证的结论 |
 |------|------|
 | [Demo A：RSSM 世界模型](code/a_worldmodel_rssm.py) | 潜空间"想象"能多准地预测回报 |
-| [Demo B：语言条件策略](code/b_lang_cond_policy.py) | 模仿损失低 ≠ 闭环飞得好 |
+| [Demo B：语言条件策略](code/b_lang_cond_policy.py) | hold-out 模仿损失与闭环终点误差不同序 |
 | [Demo C：动作头对比](code/c_action_heads.py) | MSE 回归塌到模态平均，扩散头能采样出两个模态 |
 | [Demo D：团队追踪](code/d_track_papers.py) | 从 arXiv 号解析年月画研究时间线，可选联网核对元数据 |
 | [Demo E：几何安全校正](code/e_gsc_safety.py) | 同一个过滤器，凸形障碍上把碰撞率压到 0，凹形上反而抬高 |
