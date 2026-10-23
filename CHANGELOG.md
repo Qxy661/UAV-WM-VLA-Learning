@@ -20,6 +20,8 @@
 - **工程层骨架**（`projects/uav-inspect/`）：三机协同巡检的分层频率设计与 M0 悬停验收（尚未验证）。
 - **数字对账**（`tools/check_numbers.py` + `code/expected/metrics.json`）：参与核对的六个 demo 用
   `common.metrics.emit` 打一行 `[metrics] k=v`，CI 单独一个 job 重跑并与基线逐项比（相对容差 1e-3）。
+- **论文卡片回指索引**：四册共 45 张卡片各配一张「回到正文」表，指向正文里讲它的那一节；
+  45 张里有 5 张在正文中没有落位，表里如实标出，不再让读者以为卡片等于体系。
 
 ### 变更
 
