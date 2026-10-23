@@ -20,6 +20,8 @@ jobs:
         run: python tools/check_links.py
       - name: nav 一致性检查
         run: python tools/check_nav.py
+      - name: 知识点注册表检查
+        run: python tools/kp.py check
       - name: 英文总览覆盖检查
         run: python tools/gen_en_index.py --check
 

@@ -429,7 +429,7 @@
 - **[arXiv'25.03] UAV-VLRR** — *UAV-VLRR: Vision-Language Informed NMPC for Rapid Response in UAV Search and Rescue* · ★★☆  
   [![arXiv](https://img.shields.io/badge/arXiv-2503.02465-b31b1b.svg)](https://arxiv.org/abs/2503.02465)
 
-> 注：更多无人机 VLM 论文请参考 [无人机场景理解](../docs/04-VLM专题/02-无人机场景理解.md) 和 [LLM驱动的无人机Agent](../docs/04-VLM专题/03-LLM驱动的无人机Agent.md)。
+> 注：更多无人机 VLM 论文请参考 [无人机场景理解](../docs/04-VLM专题/05-无人机场景理解.md) 和 [LLM驱动的无人机Agent](../docs/04-VLM专题/06-LLM驱动的无人机Agent.md)。
 
 ---
 

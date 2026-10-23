@@ -197,8 +197,8 @@ graph TD
 | [模型强化学习世界模型](docs/02-世界模型专题/03-模型强化学习世界模型.md) | Dreamer 系列、Dream to Fly | ★★☆ 推荐 |
 | [3D场景世界模型](docs/02-世界模型专题/04-3D场景世界模型.md) | NeRF、3DGS 作为世界模型 | ★☆☆ 了解 |
 | [无人机世界模型综述](docs/02-世界模型专题/05-无人机世界模型综述.md) | 无人机专属世界模型论文解读 | ★★☆ 推荐 |
-| [关键数据集与基准](docs/02-世界模型专题/06-关键数据集与基准.md) | MotionScape、AeroVerse 等 | ★☆☆ 了解 |
-| [世界模型评测与诊断](docs/02-世界模型专题/07-世界模型评测与诊断.md) | 单步准 ≠ rollout 可用；注入退化看指标会不会看走眼 | ★★★ 必读 |
+| [关键数据集与基准](docs/02-世界模型专题/07-关键数据集与基准.md) | MotionScape、AeroVerse 等 | ★☆☆ 了解 |
+| [世界模型评测与诊断](docs/02-世界模型专题/06-世界模型评测与诊断.md) | 单步准 ≠ rollout 可用；注入退化看指标会不会看走眼 | ★★★ 必读 |
 | [联合嵌入预测与潜空间世界模型](docs/02-世界模型专题/08-联合嵌入预测与潜空间世界模型.md) | JEPA 路线：不重建输入，在表征空间预测未来 | ★★★ 必读 |
 | [长时程世界模型与交互式生成](docs/02-世界模型专题/09-长时程世界模型与交互式生成.md) | horizon 拉到上百步后，漂移、遗忘、恒存性缺失才显形 | ★★☆ 推荐 |
 
@@ -221,13 +221,13 @@ graph TD
 
 | 文档 | 内容 | 推荐度 |
 |------|------|--------|
-| [遥感VLM](docs/04-VLM专题/01-遥感VLM.md) | GeoChat、RSGPT、SkySenseGPT | ★★☆ 推荐 |
-| [无人机场景理解](docs/04-VLM专题/02-无人机场景理解.md) | UAVBench、BEDI 基准 | ★☆☆ 了解 |
-| [LLM驱动的无人机Agent](docs/04-VLM专题/03-LLM驱动的无人机Agent.md) | CityNavAgent、ACDC 等 | ★☆☆ 了解 |
-| [边缘VLM部署](docs/04-VLM专题/04-边缘VLM部署.md) | 轻量化、知识蒸馏、BLIP-2 | ★☆☆ 了解 |
-| [通用VLM架构与视觉编码器](docs/04-VLM专题/05-通用VLM架构与视觉编码器.md) | 四部件、CLIP→原生分辨率、连接器、token 预算 | ★★★ 必读 |
-| [VLM指令微调与对齐](docs/04-VLM专题/06-VLM指令微调与对齐.md) | 指令数据构造、LoRA 边界、冻结还是联合训练 | ★★☆ 推荐 |
-| [通用VLM评测与幻觉](docs/04-VLM专题/07-通用VLM评测与幻觉.md) | MMMU/MMBench/POPE、负样本划分与 yes-偏差 | ★★★ 必读 |
+| [遥感VLM](docs/04-VLM专题/04-遥感VLM.md) | GeoChat、RSGPT、SkySenseGPT | ★★☆ 推荐 |
+| [无人机场景理解](docs/04-VLM专题/05-无人机场景理解.md) | UAVBench、BEDI 基准 | ★☆☆ 了解 |
+| [LLM驱动的无人机Agent](docs/04-VLM专题/06-LLM驱动的无人机Agent.md) | CityNavAgent、ACDC 等 | ★☆☆ 了解 |
+| [边缘VLM部署](docs/04-VLM专题/07-边缘VLM部署.md) | 轻量化、知识蒸馏、BLIP-2 | ★☆☆ 了解 |
+| [通用VLM架构与视觉编码器](docs/04-VLM专题/01-通用VLM架构与视觉编码器.md) | 四部件、CLIP→原生分辨率、连接器、token 预算 | ★★★ 必读 |
+| [VLM指令微调与对齐](docs/04-VLM专题/02-VLM指令微调与对齐.md) | 指令数据构造、LoRA 边界、冻结还是联合训练 | ★★☆ 推荐 |
+| [通用VLM评测与幻觉](docs/04-VLM专题/03-通用VLM评测与幻觉.md) | MMMU/MMBench/POPE、负样本划分与 yes-偏差 | ★★★ 必读 |
 
 ### Part 5 · 综述论文精读
 

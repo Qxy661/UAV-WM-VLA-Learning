@@ -318,7 +318,7 @@ GeoChat 将 bounding box token 纳入词表的设计影响了后续工作，使�
 - [SkySenseGPT GitHub](https://github.com/Luo-Z13/SkySenseGPT)
 - [EarthGPT GitHub](https://github.com/wivizhang/EarthGPT)
 - 相关章节：[什么是VLM](../01-基础概念/02-什么是VLM.md) — VLM 基础架构
-- 相关章节：[无人机场景理解](./02-无人机场景理解.md)
+- 相关章节：[无人机场景理解](./05-无人机场景理解.md)
 
 ---
 
@@ -381,4 +381,4 @@ EarthGPT 的解决方案：
 
 ---
 
-> **下一节**：[02-无人机场景理解](./02-无人机场景理解.md) — 从卫星视角下沉到无人机视角，理解任务要处理的新变量
+> **下一节**：[02-无人机场景理解](./05-无人机场景理解.md) — 从卫星视角下沉到无人机视角，理解任务要处理的新变量

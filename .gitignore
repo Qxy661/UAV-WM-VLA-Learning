@@ -32,3 +32,9 @@ figures/kh*.png
 # 文档站构建产物（by tools/build_docs.py 与 mkdocs build），每次重建
 build-docs/
 site/
+
+# 审计/临时工作区（agent 产出，不进仓库）
+.work/
+
+# 工程层运行产物（指标、指纹、轨迹），每次跑重新生成
+projects/*/runs/

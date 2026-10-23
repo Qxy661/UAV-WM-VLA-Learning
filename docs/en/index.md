@@ -47,9 +47,9 @@ the figures, tables and code blocks carry most of the argument anyway.
   Gaussian Splatting read as world models rather than as rendering tricks.
 - **[Aerial World Models: Overview](../../docs/02-世界模型专题/05-无人机世界模型综述.md)** — The
   papers that are specifically about UAV world models, perception to decision.
-- **[Key Datasets and Benchmarks](../../docs/02-世界模型专题/06-关键数据集与基准.md)** — MotionScape,
+- **[Key Datasets and Benchmarks](../../docs/02-世界模型专题/07-关键数据集与基准.md)** — MotionScape,
   AeroVerse, and what each one can and cannot measure.
-- **[Evaluating and Diagnosing World Models](../../docs/02-世界模型专题/07-世界模型评测与诊断.md)** —
+- **[Evaluating and Diagnosing World Models](../../docs/02-世界模型专题/06-世界模型评测与诊断.md)** —
   One-step accuracy is not rollout usability; the diagnostics that separate them.
 - **[JEPA and Latent World Models](../../docs/02-世界模型专题/08-联合嵌入预测与潜空间世界模型.md)** —
   Predicting in representation space instead of reconstructing pixels, and what that buys.
@@ -81,19 +81,19 @@ the figures, tables and code blocks carry most of the argument anyway.
 
 ## 4. VLMs
 
-- **[Remote-Sensing VLMs](../../docs/04-VLM专题/01-遥感VLM.md)** — GeoChat, RSGPT, SkySenseGPT and
+- **[Remote-Sensing VLMs](../../docs/04-VLM专题/04-遥感VLM.md)** — GeoChat, RSGPT, SkySenseGPT and
   why overhead imagery breaks ordinary VLMs.
-- **[Aerial Scene Understanding Benchmarks](../../docs/04-VLM专题/02-无人机场景理解.md)** — UAVBench,
+- **[Aerial Scene Understanding Benchmarks](../../docs/04-VLM专题/05-无人机场景理解.md)** — UAVBench,
   BEDI, and what "understanding" is actually scored as.
-- **[LLM-Powered UAV Agents](../../docs/04-VLM专题/03-LLM驱动的无人机Agent.md)** — CityNavAgent,
+- **[LLM-Powered UAV Agents](../../docs/04-VLM专题/06-LLM驱动的无人机Agent.md)** — CityNavAgent,
   ACDC: language models as planners and tool users for flight.
-- **[Edge VLM Deployment](../../docs/04-VLM专题/04-边缘VLM部署.md)** — Lightweighting,
+- **[Edge VLM Deployment](../../docs/04-VLM专题/07-边缘VLM部署.md)** — Lightweighting,
   distillation, BLIP-2, and what survives an 8 GB budget.
-- **[General VLM Architecture and Vision Encoders](../../docs/04-VLM专题/05-通用VLM架构与视觉编码器.md)** —
+- **[General VLM Architecture and Vision Encoders](../../docs/04-VLM专题/01-通用VLM架构与视觉编码器.md)** —
   Four components, CLIP to native resolution, connectors, and the token budget.
-- **[VLM Instruction Tuning and Alignment](../../docs/04-VLM专题/06-VLM指令微调与对齐.md)** — Building
+- **[VLM Instruction Tuning and Alignment](../../docs/04-VLM专题/02-VLM指令微调与对齐.md)** — Building
   instruction data, the limits of LoRA, frozen versus joint training.
-- **[VLM Evaluation and Hallucination](../../docs/04-VLM专题/07-通用VLM评测与幻觉.md)** — MMMU,
+- **[VLM Evaluation and Hallucination](../../docs/04-VLM专题/03-通用VLM评测与幻觉.md)** — MMMU,
   MMBench, POPE, plus negative sampling and yes-bias.
 
 ## 5. Survey Close-Read

@@ -140,7 +140,7 @@ Nine sections, 59 documents. The Chinese title of each section is the directory 
 | 01 | Foundations — what a world model / VLM / VLA is | 5 | [什么是世界模型](docs/01-基础概念/01-什么是世界模型.md) |
 | 02 | World models — history, generative, model-based RL, 3D, long-horizon | 9 | [世界模型发展史](docs/02-世界模型专题/01-世界模型发展史.md) |
 | 03 | VLA — architecture, aerial models, action heads, data, RL post-training | 10 | [VLA 架构演进](docs/03-VLA专题/01-VLA架构演进.md) |
-| 04 | VLMs — remote sensing, aerial agents, edge deployment, evaluation | 7 | [遥感 VLM](docs/04-VLM专题/01-遥感VLM.md) |
+| 04 | VLMs — remote sensing, aerial agents, edge deployment, evaluation | 7 | [遥感 VLM](docs/04-VLM专题/04-遥感VLM.md) |
 | 05 | Close reading of one survey, section by section | 5 | [综述概览与结构](docs/05-综述论文精读/01-综述概览与结构.md) |
 | 06 | Paper cards — 45 papers, one card each | 4 | [世界模型论文卡片](docs/06-论文导读合集/world-model-papers.md) |
 | 07 | Hands-on guides — environment, 10 reproduction guides | 11 | [环境搭建](docs/07-实践指南/01-环境搭建.md) |

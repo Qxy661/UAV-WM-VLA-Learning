@@ -148,7 +148,7 @@ ollama pull llama3.1
 
 - [什么是VLA](../01-基础概念/03-什么是VLA.md) — 理解 VLA 与 LLM 控制的区别
 - [语言条件飞行控制](../03-VLA专题/03-语言条件飞行控制.md) — UAV-Flow 的理论背景
-- [LLM驱动的无人机Agent](../04-VLM专题/03-LLM驱动的无人机Agent.md) — LLM Agent 在无人机中的应用
+- [LLM驱动的无人机Agent](../04-VLM专题/06-LLM驱动的无人机Agent.md) — LLM Agent 在无人机中的应用
 
 ## 思考题
 

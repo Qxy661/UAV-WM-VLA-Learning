@@ -617,8 +617,8 @@ py -3.9 code/f_control_loop.py     # 约 12 秒，CPU 即可
 - [Agentic AI Meets Edge Computing in Autonomous UAV Swarms](https://arxiv.org/abs/2601.14437)
 - [Team Xiaomi EV-AD VLA: Caption-Guided Retrieval System for Cross-Modal Drone Navigation](https://arxiv.org/abs/2510.02728)
 - 相关章节：[什么是VLM](../01-基础概念/02-什么是VLM.md)
-- 相关章节：[./02-无人机场景理解.md](./02-无人机场景理解.md)
-- 相关章节：[./04-边缘VLM部署.md](./04-边缘VLM部署.md)
+- 相关章节：[./05-无人机场景理解.md](./05-无人机场景理解.md)
+- 相关章节：[./07-边缘VLM部署.md](./07-边缘VLM部署.md)
 
 ---
 
@@ -707,4 +707,4 @@ graph TB
 
 ---
 
-> **下一节**：[04-边缘VLM部署](./04-边缘VLM部署.md) — 计划再合理，也要落到机载算力与显存的预算里
+> **下一节**：[04-边缘VLM部署](./07-边缘VLM部署.md) — 计划再合理，也要落到机载算力与显存的预算里

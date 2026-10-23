@@ -154,8 +154,8 @@ top_k = similarities.topk(5).indices
 ## 延伸阅读
 
 - [什么是VLM](../01-基础概念/02-什么是VLM.md) — 理解视觉语言模型基础
-- [遥感VLM](../04-VLM专题/01-遥感VLM.md) — GeoChat 等遥感 VLM 详解
-- [无人机场景理解](../04-VLM专题/02-无人机场景理解.md) — 无人机 VLM 评估基准
+- [遥感VLM](../04-VLM专题/04-遥感VLM.md) — GeoChat 等遥感 VLM 详解
+- [无人机场景理解](../04-VLM专题/05-无人机场景理解.md) — 无人机 VLM 评估基准
 
 ## 思考题
 

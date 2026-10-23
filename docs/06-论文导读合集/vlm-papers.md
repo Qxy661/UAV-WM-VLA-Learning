@@ -175,7 +175,7 @@
 
 - [世界模型论文卡片](world-model-papers.md) — 世界模型论文导读
 - [VLA论文卡片](vla-papers.md) — VLA论文导读
-- [遥感VLM](../04-VLM专题/01-遥感VLM.md) — 遥感VLM详解
+- [遥感VLM](../04-VLM专题/04-遥感VLM.md) — 遥感VLM详解
 
 ## 思考题
 

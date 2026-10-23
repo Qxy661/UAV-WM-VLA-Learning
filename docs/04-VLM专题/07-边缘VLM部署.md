@@ -660,7 +660,7 @@ py -3.9 code/o_budget.py    # 约 2 分钟，CPU 即可，只需 torch 与 torch
 - [CARLA-Air: Fly Drones Inside a CARLA World](https://arxiv.org/abs/2603.28032)
 - [BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models](https://arxiv.org/abs/2301.12597) — 4.1 节参数规模的出处
 - 相关章节：[什么是VLM](../01-基础概念/02-什么是VLM.md) — VLM 基础架构
-- 相关章节：[LLM驱动的无人机Agent](./03-LLM驱动的无人机Agent.md)
+- 相关章节：[LLM驱动的无人机Agent](./06-LLM驱动的无人机Agent.md)
 - [研究空白与机会](../08-研究前沿与开放问题/02-研究空白与机会.md) — VLM方向的开放问题
 - [论文批判性阅读](../08-研究前沿与开放问题/03-论文批判性阅读.md) — 如何评价VLM论文
 - [可复现项目候选清单](../07-实践指南/08-可复现项目候选清单.md) — 选择复现项目
