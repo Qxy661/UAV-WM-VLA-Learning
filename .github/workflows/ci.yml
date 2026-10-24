@@ -68,6 +68,23 @@ jobs:
         run: python -c "import json;d=json.load(open('projects/uav-inspect/runs/m1_multi/metrics.json'));assert d['passed'],d;print('M1 passed', d['metrics']['min_separation_m'])"
       - name: 避让单元检查
         run: python projects/uav-inspect/scripts/check_avoidance.py
+      - name: M2 巡检录制两集
+        run: python projects/uav-inspect/scripts/m2_inspect.py --episodes 2 --backend rigid --out projects/uav-inspect/runs/m2_dataset
+      - name: M2 验收结果
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          root = pathlib.Path("projects/uav-inspect/runs/m2_dataset")
+          meta = [json.loads(p.read_text(encoding="utf-8"))
+                  for p in sorted(root.glob("episode_*/meta.json"))]
+          assert len(meta) == 2, meta
+          for m in meta:
+              assert m["coverage"] == 1.0, m["coverage"]
+              assert m["occluded_viewpoints"] == ["behind-rack"], m["occluded_viewpoints"]
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          assert len(manifest["episodes"]) == 2, manifest
+          print("M2 passed", [m["frames"] for m in meta])
+          PY
 
   docs:
     # 只在 main 上发布；PR 只跑上面的检查，不动线上站点

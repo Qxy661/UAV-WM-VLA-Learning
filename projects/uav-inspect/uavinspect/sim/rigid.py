@@ -58,6 +58,7 @@ class Box:
     center: np.ndarray
     rgba: tuple = (0.8, 0.5, 0.2, 1.0)
     index: int = 0
+    emissive: float = 0.0     # >0 表示自发光比例，用来标出巡检目标（见 camera.shade）
 
 
 class RigidQuad(QuadModel):
@@ -178,13 +179,15 @@ class RigidEngine:
         self.drones[name] = q
         return q
 
-    def add_box(self, half_extents, position, rgba=(0.8, 0.5, 0.2, 1.0), mass: float = 0.0) -> int:
+    def add_box(self, half_extents, position, rgba=(0.8, 0.5, 0.2, 1.0), mass: float = 0.0,
+                emissive: float = 0.0) -> int:
         """静态障碍。mass > 0 会被忽略并报错——本后端只支持静态墙体。"""
         if mass:
             raise ValueError("RigidEngine 只支持静态障碍（mass=0）")
         self._box_index += 1
         self.boxes.append(Box(np.asarray(half_extents, dtype=float),
-                              np.asarray(position, dtype=float), rgba, self._box_index))
+                              np.asarray(position, dtype=float), rgba, self._box_index,
+                              float(emissive)))
         return self._box_index
 
     def _resolve_drone_pairs(self) -> None:

@@ -56,9 +56,13 @@ projects/uav-inspect/
 │   │   └── world.py      后端选择（auto / rigid / pybullet）
 │   ├── control/        串级控制器 + 混控
 │   ├── planning/       多机避让（斥力 + 让步）
+│   ├── data/           录制器、划分、归一化统计
+│   ├── sim/            物理、场景、相机
+│   │   ├── camera.py     解析式针孔相机（射线 + 着色，无渲染依赖）
+│   │   └── scene.py      仓储场景：墙、货架、巡检目标、三个视点
 │   ├── util/           数学、延迟统计、日志
 │   └── ...
-├── scripts/            可直接运行的入口（m0_hover.py / m1_multi.py / check_*.py）
+├── scripts/            可直接运行的入口（m0_hover / m1_multi / m2_inspect / check_*）
 ├── tests/              契约测试（pytest）
 ├── runs/               运行产物（gitignore）
 └── docs/               ADR + 6–8 章逐模块讲解
@@ -70,7 +74,7 @@ projects/uav-inspect/
 |---|---|---|---|
 | M0 | 单机定点悬停 + 四层频率 + 延迟统计 | RMSE ≤ 0.20 m，不坠机，输出 P50/P99 延迟表 | ✅ 已跑：rigid 后端 20 s 悬停 RMSE 0.0117 m，最大倾角 0.00°，物理步 P50 0.74 ms，实时因子 23× |
 | M1 | 3–4 机同场 + 冲突避让 | 任意两机间距 ≥ 0.6 m 全时成立，冲突率可统计 | ✅ 已跑：4 机对角交叉 30 s，最小间距 1.165 m（未调参时 0.280 m），冲突步占比 10.6%，末 2 s 四机全部停在目标 0.000 m，实时因子 5.3× |
-| M2 | 脚本专家巡检 + 数据录制 | 生成 N episode LeRobot 格式数据集 + 直方图 | ⬜ |
+| M2 | 脚本专家巡检 + 数据录制 | N 集数据 + 划分 + 统计，覆盖率可判定 | ✅ 已跑：8 集 / 958 帧（64×64），可行视点覆盖率 100%，`behind-rack` 每集都被判为遮挡，train 6 / val 2；路由 12–14 s，单集墙钟 1.9–3.1 s |
 | M3 | 世界模型训练 + 遮挡补全 | 遮挡段跟踪误差 vs 无模型基线 | ⬜ |
 | M4 | VLA 训练 + 指令跟随 | 未见指令组合成功率 vs 随机基线 | ⬜ |
 | M5 | 安全层 + 四类故障注入 | 四类故障下零碰撞，降级动作可复现 | ⬜ |
@@ -89,12 +93,19 @@ py -3.9 projects/uav-inspect/scripts/m0_hover.py --backend pybullet
 
 # 契约测试（需要 pytest；CI 里跑）
 py -3.9 -m pytest projects/uav-inspect/tests -q
+
+# M2：录 8 集巡检数据（rigid 后端约 20 s 跑完）
+py -3.9 projects/uav-inspect/scripts/m2_inspect.py --episodes 8 --backend rigid
 ```
 
 `--backend auto`（默认）表示"导得进 pybullet 就用它，否则用自研积分"，实际选了哪个会写进
 `metrics.json` 的 `sim.backend` 和 `env.json` 的 `deps.pybullet`。产物在
 `projects/uav-inspect/runs/m0_hover/`：`metrics.json`（指标）、`env.json`（环境指纹）、
 `trace.csv`（逐帧轨迹）。
+
+M2 的产物在 `runs/m2_dataset/`：每集一个目录（`obs.npz` 存图像/位姿/动作/相位，`meta.json`
+存覆盖率与被挡视点），外加 `manifest.json`（划分）与 `stats.json`（**只用 train 划分**算的
+归一化参数——用 val 算统计量是最常见的一种泄漏）。
 
 ## 7. ADR（架构决策记录）
 
@@ -121,6 +132,14 @@ py -3.9 -m pytest projects/uav-inspect/tests -q
   最小间距 1.165 m。结论：**这类避让的通过与否主要由"提前量"决定，不是由斥力增益决定**。
   同一批设置下只加增益的对照（影响半径保持 1.5 m）：`k_rep=2.0` → 0.493 m、`k_rep=4.0` → 0.537 m，
   都不达标；而把影响半径放到 2.0 m（`k_rep=1.5`）就到 0.824 m，2.5 m 才到 1.165 m。
+- **ADR-010** 数据用 `obs.npz + manifest.json + stats.json`，不直接落 LeRobot 格式：
+  LeRobot 的 parquet + mp4 需要 `datasets`/`torchcodec` 依赖，本机装不上，而 M2 只需要
+  "能训练、能划分、能复现"三件事。语义上照抄它的两条规矩——**划分按 episode 不按帧**、
+  **归一化统计只用 train**；`manifest.json` 里保留 `split` 字段，将来要换格式时按目录搬即可。
+  相机是解析式针孔（射线求交 + 两盏灯的兰伯特着色），不依赖渲染后端；已知不真实：没有材质、
+  没有阴影、没有运动模糊，遮挡只由几何决定。巡检目标给了 0.55 的自发光比例，因为仓库通道侧
+  立面永远背光，纯兰伯特下红灯渲染出来接近黑色，世界模型什么也学不到——这是有意的可视化取舍，
+  不是"真实外观"。
 
 ## 8. 非目标（明确不做）
 

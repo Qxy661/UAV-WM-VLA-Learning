@@ -34,6 +34,11 @@ class State:
         """机体 z 轴与 world z 的夹角（rad）。悬停质量、倾角限制都看这个。"""
         return float(np.arccos(np.clip(self.R[2, 2], -1.0, 1.0)))
 
+    @property
+    def yaw(self) -> float:
+        """机体 x 轴在水平面的方位角（rad）。相机朝向就用它。"""
+        return float(np.arctan2(self.R[1, 0], self.R[0, 0]))
+
 
 class QuadModel:
     """X 型四旋翼的混控与电机。0/2 逆时针、1/3 顺时针。"""
