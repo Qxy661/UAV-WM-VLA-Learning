@@ -65,7 +65,7 @@ projects/uav-inspect/
 ├── scripts/            可直接运行的入口（m0_hover / m1_multi / m2_inspect / check_*）
 ├── tests/              契约测试（pytest）
 ├── runs/               运行产物（gitignore）
-└── docs/               ADR + 6–8 章逐模块讲解
+└── docs/               逐模块讲解，8 章，从 [docs/README.md](docs/README.md) 进
 ```
 
 ## 5. 里程碑
