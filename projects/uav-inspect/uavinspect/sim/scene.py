@@ -76,8 +76,15 @@ def build_warehouse(engine, seed: int = 0, *, with_target: bool = True) -> Scene
         (target_pos + np.array([-0.95, -0.85, 0.35]) * stand, "oblique"),
         (target_pos + np.array([0.40, 0.75, 0.35]), "behind-rack"),
     ]
+    # 视点必须落在可达空间里：贴着墙的"视点"机子飞不到，任务本身不可行。
+    # 留 0.55 m 余量（机体半径 0.08 + 控制超调），否则机体会被墙推着擦出碰撞。
     for pos, label in cand:
-        pos = np.asarray(pos, dtype=float)
+        pos = np.asarray(pos, dtype=float).copy()
+        lim_x = ROOM["x"] / 2 - ROOM["wall"] - 0.55
+        lim_y = ROOM["y"] / 2 - ROOM["wall"] - 0.55
+        pos[0] = float(np.clip(pos[0], -lim_x, lim_x))
+        pos[1] = float(np.clip(pos[1], -lim_y, lim_y))
+        pos[2] = float(np.clip(pos[2], 0.60, ROOM["h"] - 0.40))
         d = target_pos - pos
         yaw = float(np.arctan2(d[1], d[0]))
         scene.viewpoints.append((pos, yaw, label))

@@ -89,6 +89,18 @@ jobs:
         run: python projects/uav-inspect/scripts/check_safety.py
       - name: M5 四类故障注入
         run: python projects/uav-inspect/scripts/m5_faults.py
+      - name: M6 评测口径与三基线（小样本冒烟）
+        run: |
+          python projects/uav-inspect/scripts/m6_eval.py --episodes 2 --seeds 1
+          python - <<'PY'
+          import json, pathlib
+          d = json.loads(pathlib.Path("projects/uav-inspect/runs/m6_eval/metrics.json").read_text(encoding="utf-8"))
+          assert d["protocol"]["version"] == "m6-v1", d["protocol"]
+          got = {a["agent"]: a for a in d["agents"]}
+          assert got["scripted-waypoints"]["success"]["rate"] == 1.0, got["scripted-waypoints"]
+          assert got["hover-only"]["success"]["rate"] == 0.0, got["hover-only"]
+          print("M6 passed", {k: v["success"]["rate"] for k, v in got.items()})
+          PY
 
   docs:
     # 只在 main 上发布；PR 只跑上面的检查，不动线上站点
