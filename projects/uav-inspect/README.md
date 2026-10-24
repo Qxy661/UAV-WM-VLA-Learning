@@ -79,7 +79,7 @@ projects/uav-inspect/
 | M4 | VLA 训练 + 指令跟随 | 未见指令组合成功率 vs 随机基线 | ⬜ |
 | M5 | 安全层 + 四类故障注入 | 四类故障下零碰撞，降级动作可复现 | ✅ 已跑：断流 / 陈旧 / 越界 / 冲突四类全部通过；最高挡位 HOVER，回稳误差 ≤ 0.007 m，不合理指令被拒并记录 |
 | M6 | 评测 harness + 统一口径表 | 同口径下跑 3 个基线，出对比表 | ✅ 已跑：18 s / 每策略 60 集；scripted-waypoints 成功率 100% [100,100]、覆盖率 1.000、最小间距 0.654 m [0.611,0.697]、覆盖用时 5.5 s [5.0,6.0]；hover-only 与 random 均 0%，random 最小间距 0.058 m（撞墙）。口径不一致时 `compare()` 直接拒绝比较 |
-| M7 | ONNX 导出 + 延迟 P99 | CPU 上单次推理 ≤ 预算，P99 报告 | ⬜ |
+| M7 | 推理延迟 P99 + ONNX 导出 | CPU 上单次推理 P99 ≤ 100 ms（10 Hz） | ✅ 已跑：编码 P99 1.79 ms、GRU 单步 0.11 ms、解码 13.5 ms（不在关键路径），余量 55x / 888x；ONNX 导出被 `onnx` 包缺失挡住，见 ADR-014 |
 
 ## 6. 运行
 
@@ -103,6 +103,12 @@ py -3.9 projects/uav-inspect/wm/train.py --epochs 20 --device cuda
 # M5：四类故障注入 + 安全层契约检查（纯 numpy，几秒跑完）
 py -3.9 projects/uav-inspect/scripts/m5_faults.py
 py -3.9 projects/uav-inspect/scripts/check_safety.py
+
+# M6：三基线同口径评测（约 3 分钟）
+py -3.9 projects/uav-inspect/scripts/m6_eval.py --episodes 20 --seeds 3
+
+# M7：推理延迟 P99（单线程，200 次），加 --onnx 尝试导出
+py -3.9 projects/uav-inspect/deploy/bench.py --threads 1 --runs 200
 ```
 
 `--backend auto`（默认）表示"导得进 pybullet 就用它，否则用自研积分"，实际选了哪个会写进
@@ -110,7 +116,7 @@ py -3.9 projects/uav-inspect/scripts/check_safety.py
 `projects/uav-inspect/runs/m0_hover/`：`metrics.json`（指标）、`env.json`（环境指纹）、
 `trace.csv`（逐帧轨迹）。
 
-M5 的产物在 `runs/m5_faults/`：每个故障一个 `{kind}.json`（含 `checks`、`metrics`、`events`），汇总在 `metrics.json`。`events` 里记的是模式切换与裁决，比如 `4.04s NORMAL->HOLD`。`n`M2 的产物在 `runs/m2_dataset/`：每集一个目录（`obs.npz` 存图像/位姿/动作/相位，`meta.json`
+M5 的产物在 `runs/m5_faults/`：每个故障一个 `{kind}.json`（含 `checks`、`metrics`、`events`），汇总在 `metrics.json`。`events` 里记的是模式切换与裁决，比如 `4.04s NORMAL->HOLD`。M2 的产物在 `runs/m2_dataset/`：每集一个目录（`obs.npz` 存图像/位姿/动作/相位，`meta.json`
 存覆盖率与被挡视点），外加 `manifest.json`（划分）与 `stats.json`（**只用 train 划分**算的
 归一化参数——用 val 算统计量是最常见的一种泄漏）。
 
@@ -165,6 +171,11 @@ M5 的产物在 `runs/m5_faults/`：每个故障一个 `{kind}.json`（含 `chec
   检测抓出来的，不是事前想好的。代价：基线看起来"太弱"（hover 与 random 都是 0%），
   但弱基线的作用是证明 harness 能区分，不是刷分。
 
+- **ADR-014** 延迟只看 P99，且把解码挪出关键路径：编码 1.79 ms、GRU 单步 0.11 ms、
+  解码 13.5 ms（P99，单线程 200 次）。解码比单步贵 120 倍，但它只用于遥测，
+  部署时按"降频出图"处理。ONNX 导出暂时做不了：onnxruntime 1.19.0 已装，缺的是
+  onnx 包（torch 的导出器硬依赖它），所以 ench.py --onnx 会明确报错并给安装提示，
+  不静默跳过。代价：本仓库的延迟是 torch eager 的数字，不是 ORT 的数字，报告时必须写明。
 ## 8. 非目标（明确不做）
 
 - 不追求 SITL/真机联调（PX4、ROS2）——只留接口与文档说明，理由见 ADR-001 与主库 P7 卷。

@@ -17,7 +17,10 @@
   带宽到频率换算、动作表示选择、状态观测信念、数据泄漏与划分、世界模型诊断、安全层与降级、
   训练工程最小集、导出与尾部延迟。每篇一张判据表、一个反例、一次对本库既有 demo 的指认。
 - **`tools/kp.py`**：`derive`（从 H2 抽候选）、`check`（注册表 + 头部校验）、`stats`（覆盖率）。
-- **工程层骨架**（`projects/uav-inspect/`）：三机协同巡检的分层频率设计与 M0 悬停验收（尚未验证）。
+- **工程层骨架**（`projects/uav-inspect/`）：三机协同巡检的分层频率设计与 M0–M7 验收：M0 悬停 RMSE 0.0117 m，M1 四机最小间距 1.165 m，M2 8 集 958 帧，M5 四类故障全过，M6 三基线同口径评测。
+- **M6 评测 harness**（`projects/uav-inspect/uavinspect/eval/`）：`protocol` 版本化的任务规格、按 episode 的 bootstrap 置信区间、`compare()` 拒绝跨口径比较；三基线 smoke 进 CI。
+- **M7 推理延迟**（`projects/uav-inspect/deploy/bench.py`）：编码 / GRU 单步 / 解码三条路径分别报 P50/P90/P99/max；单线程实测 1.79 / 0.11 / 13.5 ms（P99），10 Hz 预算余量 55x。ONNX 导出因缺 `onnx` 包未做，失败信息写进 metrics 与 ADR-014。
+- **工程层讲解章**（`projects/uav-inspect/docs/`）：01–08 八篇约 5800 汉字，从为什么需要系统讲到怎么改参数，每章带代码位置与踩坑表。
 - **双物理后端**：`sim/dynamics.py` 抽出混控／电机滞后／悬停反解供两个后端共用，`sim/rigid.py` 是只依赖
   numpy 的 RK4 + 冲量式接触实现，`sim/world_pybullet.py` 保留引擎后端；`World(cfg, backend=auto|rigid|pybullet)`
   自动选。M0 已在 rigid 后端跑通：20 s 悬停 RMSE 0.0117 m，最大倾角 0.00°，物理步 P50 0.74 ms，实时因子 23×，
