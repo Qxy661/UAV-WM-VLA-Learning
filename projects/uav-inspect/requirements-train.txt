@@ -1,0 +1,4 @@
+# M3/M4 训练侧依赖（仿真与数据生成只需要 numpy / PyYAML）
+# 训练在开发机跑，见 wm/README.md
+numpy>=1.23
+torch>=2.0

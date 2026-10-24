@@ -33,6 +33,10 @@
   `sim/scene.py` 仓储场景（墙、货架、贴在通道侧的巡检目标、front/oblique/behind-rack 三个视点）、
   `data/recorder.py` 录制器与划分/统计、`scripts/m2_inspect.py` 脚本专家巡检。8 集 958 帧，
   可行视点覆盖率 100%，`behind-rack` 每集都被判为遮挡，train 6 / val 2。数据格式与已知不真实项见 ADR-010。
+- **M3 世界模型**：`wm/dataset.py`（窗口、红色像素可见性标签、只用 train 的归一化）、
+  `wm/model.py`（卷积编码 + GRU 潜动力学 + 残差解码 + 可见性头）、`wm/train.py`（训练 + persistence /
+  mean-frame 双基线 + `passed` 判定）。首轮本机 20 epoch：开环 10 步图像误差 0.290 对 persistence 0.334，
+  可见性 AUC 0.894 对 0.678。训练按 ADR-011 移到开发机，交接命令与已知坑见 `projects/uav-inspect/wm/README.md`。
 
 ### 变更
 
