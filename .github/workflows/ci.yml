@@ -62,6 +62,12 @@ jobs:
         run: python projects/uav-inspect/scripts/m0_hover.py --backend rigid
       - name: 验收结果
         run: python -c "import json;d=json.load(open('projects/uav-inspect/runs/m0_hover/metrics.json'));assert d['passed'],d;print('M0 passed', d['metrics']['rmse_m'])"
+      - name: M1 四机交叉避让
+        run: python projects/uav-inspect/scripts/m1_multi.py --backend rigid
+      - name: M1 验收结果
+        run: python -c "import json;d=json.load(open('projects/uav-inspect/runs/m1_multi/metrics.json'));assert d['passed'],d;print('M1 passed', d['metrics']['min_separation_m'])"
+      - name: 避让单元检查
+        run: python projects/uav-inspect/scripts/check_avoidance.py
 
   docs:
     # 只在 main 上发布；PR 只跑上面的检查，不动线上站点

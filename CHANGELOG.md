@@ -22,6 +22,9 @@
   numpy 的 RK4 + 冲量式接触实现，`sim/world_pybullet.py` 保留引擎后端；`World(cfg, backend=auto|rigid|pybullet)`
   自动选。M0 已在 rigid 后端跑通：20 s 悬停 RMSE 0.0117 m，最大倾角 0.00°，物理步 P50 0.74 ms，实时因子 23×，
   CI 新增 `project` job 跑契约测试与验收。
+- **多机避让（M1）**：`planning/avoidance.py` 的互惠斥力 + 单向让步，`scripts/m1_multi.py` 四机对角交叉
+  30 s。调参前后的差别记在 ADR-009：`d_influence=1.5 m` 时最近掉到 0.280 m（横向加速度不够，来不及躲），
+  放到 2.5 m 并降巡航到 1.2 m/s 后最小间距 1.165 m；只加增益不管用的对照也一并记了。
 - **数字对账**（`tools/check_numbers.py` + `code/expected/metrics.json`）：参与核对的六个 demo 用
   `common.metrics.emit` 打一行 `[metrics] k=v`，CI 单独一个 job 重跑并与基线逐项比（相对容差 1e-3）。
 - **论文卡片回指索引**：四册共 45 张卡片各配一张「回到正文」表，指向正文里讲它的那一节；
