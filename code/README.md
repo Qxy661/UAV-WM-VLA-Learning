@@ -46,33 +46,33 @@ code/
 ```bash
 pip install -r code/requirements.txt
 
-py -3.9 code/a_worldmodel_rssm.py    # ~90 秒
+py -3.9 code/a_worldmodel_rssm.py    # ~65 秒
 py -3.9 code/b_lang_cond_policy.py   # ~40 秒
-py -3.9 code/c_action_heads.py       # ~35 秒
-py -3.9 code/d_track_papers.py       # ~2 秒（纯标准库，不装 torch 也能跑）
-py -3.9 code/e_gsc_safety.py         # ~5 秒
-py -3.9 code/f_control_loop.py       # ~12 秒
+py -3.9 code/c_action_heads.py       # ~47 秒
+py -3.9 code/d_track_papers.py       # ~1 秒（纯标准库，不装 torch 也能跑）
+py -3.9 code/e_gsc_safety.py         # ~4 秒
+py -3.9 code/f_control_loop.py       # ~8 秒
 py -3.9 code/g_eval_metrics.py       # ~4 秒
-py -3.9 code/h_symlog.py             # ~30 秒
+py -3.9 code/h_symlog.py             # ~27 秒
 py -3.9 code/i_plucker.py            # ~1 秒
-py -3.9 code/j_render_cost.py        # ~5 秒
-py -3.9 code/k_physics_prior.py      # ~40 秒
+py -3.9 code/j_render_cost.py        # ~4 秒
+py -3.9 code/k_physics_prior.py      # ~42 秒
 py -3.9 code/l_seq_metrics.py        # ~1 秒
-py -3.9 code/m_exposure_bias.py      # ~90 秒
-py -3.9 code/n_quant_bits.py         # ~2 分钟
-py -3.9 code/o_budget.py             # ~1.5 分钟
-py -3.9 code/p_chunk_horizon.py      # ~10 秒
-py -3.9 code/q_rl_posttrain.py       # ~2 分钟
+py -3.9 code/m_exposure_bias.py      # ~59 秒
+py -3.9 code/n_quant_bits.py         # ~86 秒
+py -3.9 code/o_budget.py             # ~54 秒
+py -3.9 code/p_chunk_horizon.py      # ~12 秒
+py -3.9 code/q_rl_posttrain.py       # ~101 秒
 py -3.9 code/r_eval_protocol.py      # ~4 秒（纯 numpy）
-py -3.9 code/s_wm_data_source.py     # ~4 分钟
-py -3.9 code/t_wm_diagnostics.py     # ~7 秒
-py -3.9 code/u_jepa_probe.py         # ~1 秒
-py -3.9 code/v_longhorizon_memory.py # ~11 秒
-py -3.9 code/w_token_budget.py       # ~3 秒（纯 numpy）
-py -3.9 code/x_hallucination_metric.py # ~2 秒（纯 numpy）
+py -3.9 code/s_wm_data_source.py     # ~178 秒
+py -3.9 code/t_wm_diagnostics.py     # ~9 秒
+py -3.9 code/u_jepa_probe.py         # ~2 秒
+py -3.9 code/v_longhorizon_memory.py # ~15 秒
+py -3.9 code/w_token_budget.py       # ~2 秒（纯 numpy）
+py -3.9 code/x_hallucination_metric.py # ~1 秒（纯 numpy）
 ```
 
-纯 CPU 即可，全部跑完十六分钟左右（本机实测 944.8 秒）；D、I、L、U、W、X 几乎不耗时。每个脚本会打印指标表，
+纯 CPU 即可，全部跑完十三分钟左右（本机实测 765.9 秒）；D、I、L、U、W、X 几乎不耗时。每个脚本会打印指标表，
 并把图存到仓库根的 `figures/`。
 
 D 额外有一个可选开关：`--verify` 会联网去 arXiv API 核对内置的 51 个 ID

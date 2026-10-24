@@ -38,6 +38,11 @@
 - 修掉六个静默 bug：`r_eval_protocol` 抽样池越界、`x_hallucination_metric` 对抗档负样本混入正题类、
   `t_wm_diagnostics` 打印恒为 0 的净增量、`n_quant_bits` 图例与判据不一致、`u_jepa_probe` 测试集被截断、
   `a_worldmodel_rssm` 的 KL 方向混用与"开环"实际每步喂真观测。
+- 修掉五处转写产生的事实冲突：LLaVA-Instruct 的 41K 应为 77K（合计才对得上 15.8 万）、
+  DreamerV3 优化器由"论文未明确"改为 LaProp + AGC、free bits 改为整条 KL 的下限 1 nat（原先按维度相乘）、
+  `SkyAgentEval` 统一为 `SkyAgent-Eval`、Dream to Fly 的会议年份以论文清单为准；另把
+  "Jetson Nano 472 GFLOPS ~ Orin Nano 40 TOPS"标明是两种口径、4090 的 450 W 从 50–200 W 档里拎出来。
+- 全量重跑的耗时口径更新为 765.9 秒（原 944.8 秒），`code/README.md` 的单脚本估计改为实测值。
 
 ## [1.0.0] - 2026-10-10
 
