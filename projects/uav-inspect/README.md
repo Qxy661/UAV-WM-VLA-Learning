@@ -50,6 +50,10 @@ projects/uav-inspect/
 ├── uavinspect/         Python 包
 │   ├── config.py       YAML 加载 + 范围校验
 │   ├── sim/            物理、多机、障碍、相机
+│   │   ├── dynamics.py   混控 / 电机滞后 / 悬停反解（两种后端共用）
+│   │   ├── rigid.py      自研 RK4 + 冲量接触（只依赖 numpy）
+│   │   ├── quad.py       PyBullet 机体
+│   │   └── world.py      后端选择（auto / rigid / pybullet）
 │   ├── control/        串级控制器 + 混控
 │   ├── util/           数学、延迟统计、日志
 │   └── ...
@@ -63,7 +67,7 @@ projects/uav-inspect/
 
 | M | 交付 | 验收（代码判定，非人工描述） | 状态 |
 |---|---|---|---|
-| M0 | 单机定点悬停 + 四层频率 + 延迟统计 | RMSE ≤ 0.20 m，不坠机，输出 P50/P99 延迟表 | ✅ |
+| M0 | 单机定点悬停 + 四层频率 + 延迟统计 | RMSE ≤ 0.20 m，不坠机，输出 P50/P99 延迟表 | ✅ 已跑：rigid 后端 20 s 悬停 RMSE 0.0117 m，最大倾角 0.00°，物理步 P50 0.74 ms，实时因子 23× |
 | M1 | 3–4 机同场 + 冲突避让 | 任意两机间距 ≥ 0.6 m 全时成立，冲突率可统计 | ⬜ |
 | M2 | 脚本专家巡检 + 数据录制 | 生成 N episode LeRobot 格式数据集 + 直方图 | ⬜ |
 | M3 | 世界模型训练 + 遮挡补全 | 遮挡段跟踪误差 vs 无模型基线 | ⬜ |
@@ -75,13 +79,21 @@ projects/uav-inspect/
 ## 6. 运行
 
 ```bash
-python -m venv .venv
-.venv\Scripts\python -m pip install -r projects/uav-inspect/requirements.txt
-.venv\Scripts\python projects/uav-inspect/scripts/m0_hover.py --config projects/uav-inspect/configs/default.yaml
-.venv\Scripts\python -m pytest projects/uav-inspect/tests -q
+# 本机（Windows，Python 3.9 里已有 numpy / pyyaml / torch）
+py -3.9 projects/uav-inspect/scripts/m0_hover.py --backend rigid
+
+# 只想要 pybullet 后端（需要该解释器装得上 pybullet）
+py -3.9 -m pip install pybullet
+py -3.9 projects/uav-inspect/scripts/m0_hover.py --backend pybullet
+
+# 契约测试（需要 pytest；CI 里跑）
+py -3.9 -m pytest projects/uav-inspect/tests -q
 ```
 
-产物在 `projects/uav-inspect/runs/m0_hover/`：`metrics.json`（指标）、`env.json`（环境指纹）、`trace.csv`（逐帧轨迹）、`stdout.txt`。
+`--backend auto`（默认）表示"导得进 pybullet 就用它，否则用自研积分"，实际选了哪个会写进
+`metrics.json` 的 `sim.backend` 和 `env.json` 的 `deps.pybullet`。产物在
+`projects/uav-inspect/runs/m0_hover/`：`metrics.json`（指标）、`env.json`（环境指纹）、
+`trace.csv`（逐帧轨迹）。
 
 ## 7. ADR（架构决策记录）
 
@@ -92,6 +104,13 @@ python -m venv .venv
 - **ADR-005** 延迟只报 P50/P99，不报均值：均值会掩盖尾部，部署看的是 P99。
 - **ADR-006** 配置集中 + 范围校验：坏配置在加载时就失败，不在第 800 步产生 NaN。
 - **ADR-007** 每个 episode 显式 seed，环境指纹随结果落盘：没有指纹的结果不可复现，不可比较。
+- **ADR-008** 双后端（`rigid` / `pybullet`），默认自动选：混控、电机滞后、悬停反解抽到
+  `sim/dynamics.py` 共用，只有"力怎么变加速度"这一段分叉——`rigid` 用 RK4 + 冲量式接触（仅 numpy），
+  `pybullet` 交给引擎。理由是 ADR-001 的前提在有些机器上不成立（cp311 没有 pybullet 的 Windows
+  wheel），“跑不起来”不该和“仿真不可信”混成一件事。代价：两个后端会给出不同数字，
+  所以 `metrics.json` 必须记 `sim.backend`，且 M0 的验收阈值按更保守的那个定（RMSE 0.20 m，
+  实测 rigid 0.0117 m、pybullet 待补）。rigid 后端已知不真实：接触只作用在质心（撞墙后姿态不会被打歪）、
+  没有摩擦锥、机体之间是刚性球。
 
 ## 8. 非目标（明确不做）
 

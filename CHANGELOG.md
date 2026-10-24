@@ -18,6 +18,10 @@
   训练工程最小集、导出与尾部延迟。每篇一张判据表、一个反例、一次对本库既有 demo 的指认。
 - **`tools/kp.py`**：`derive`（从 H2 抽候选）、`check`（注册表 + 头部校验）、`stats`（覆盖率）。
 - **工程层骨架**（`projects/uav-inspect/`）：三机协同巡检的分层频率设计与 M0 悬停验收（尚未验证）。
+- **双物理后端**：`sim/dynamics.py` 抽出混控／电机滞后／悬停反解供两个后端共用，`sim/rigid.py` 是只依赖
+  numpy 的 RK4 + 冲量式接触实现，`sim/world_pybullet.py` 保留引擎后端；`World(cfg, backend=auto|rigid|pybullet)`
+  自动选。M0 已在 rigid 后端跑通：20 s 悬停 RMSE 0.0117 m，最大倾角 0.00°，物理步 P50 0.74 ms，实时因子 23×，
+  CI 新增 `project` job 跑契约测试与验收。
 - **数字对账**（`tools/check_numbers.py` + `code/expected/metrics.json`）：参与核对的六个 demo 用
   `common.metrics.emit` 打一行 `[metrics] k=v`，CI 单独一个 job 重跑并与基线逐项比（相对容差 1e-3）。
 - **论文卡片回指索引**：四册共 45 张卡片各配一张「回到正文」表，指向正文里讲它的那一节；

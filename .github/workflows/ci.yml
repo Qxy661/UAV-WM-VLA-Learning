@@ -45,6 +45,24 @@ jobs:
           MPLBACKEND: Agg
         run: python tools/check_numbers.py
 
+  project:
+    # 工程层的契约测试：不装 pybullet，跑 rigid 后端。
+    # 这正是 ADR-008 要证明的事——"没有引擎也跑得起来"。
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: 安装最小依赖
+        run: pip install numpy PyYAML pytest
+      - name: M0 契约测试（rigid 后端）
+        run: python -m pytest projects/uav-inspect/tests -q
+      - name: M0 验收跑一遍
+        run: python projects/uav-inspect/scripts/m0_hover.py --backend rigid
+      - name: 验收结果
+        run: python -c "import json;d=json.load(open('projects/uav-inspect/runs/m0_hover/metrics.json'));assert d['passed'],d;print('M0 passed', d['metrics']['rmse_m'])"
+
   docs:
     # 只在 main 上发布；PR 只跑上面的检查，不动线上站点
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

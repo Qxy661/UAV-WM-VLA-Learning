@@ -1,5 +1,9 @@
-﻿# 只列直接依赖；版本下限而非精确钉死，避免 Windows 上无 wheel 时卡死
-pybullet>=3.2.6
+# 只列直接依赖；版本下限而非精确钉死，避免 Windows 上无 wheel 时卡死。
+# pybullet 是可选的：没有它时 sim 后端自动退回自研的 rigid（只依赖 numpy）。
+# 想用引擎后端再单独装，不要把它塞进"必装"清单——cp311 的 Windows 上就没有 wheel。
 numpy>=1.24
 PyYAML>=6.0
 pytest>=7.0
+
+# 可选：引擎后端
+# pybullet>=3.2.6

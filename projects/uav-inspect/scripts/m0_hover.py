@@ -46,10 +46,13 @@ def _git_commit() -> str | None:
 
 
 def _dependency_versions() -> dict[str, str | None]:
-    import pybullet
+    vers = {"python": platform.python_version(), "numpy": np.__version__}
+    try:
+        import pybullet
 
-    vers = {"python": platform.python_version(), "numpy": np.__version__,
-            "pybullet": pybullet.getAPIVersion()}
+        vers["pybullet"] = pybullet.getAPIVersion()
+    except Exception:
+        vers["pybullet"] = None
     try:
         import yaml
 
@@ -64,6 +67,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--config", default=str(PKG_ROOT / "configs" / "default.yaml"))
     ap.add_argument("--out", default=str(PKG_ROOT / "runs" / "m0_hover"))
     ap.add_argument("--seed", type=int, default=None, help="覆盖配置里的 seed")
+    ap.add_argument(
+        "--backend", default="auto", choices=["auto", "rigid", "pybullet"],
+        help="物理后端；auto 表示有 pybullet 就用它，否则用自研积分")
     args = ap.parse_args(argv)
 
     cfg = load(args.config)
@@ -78,7 +84,8 @@ def main(argv: list[str] | None = None) -> int:
     rows: list[list[float]] = []
 
     wall0 = time.perf_counter()
-    with World(cfg) as world:
+    with World(cfg, backend=args.backend) as world:
+        backend = getattr(world, "backend", args.backend)
         quad = world.add_drone("uav0", (0.0, 0.0, 0.2))
         ctrl = CascadedController(cfg, quad)
 
@@ -142,6 +149,7 @@ def main(argv: list[str] | None = None) -> int:
         },
         "latency": timer.summary(),
         "sim": {
+            "backend": backend,
             "sim_time_s": sim_time, "wall_time_s": wall,
             "real_time_factor": sim_time / wall if wall > 0 else None,
             "physics_steps": steps, "control_steps": n_steps,

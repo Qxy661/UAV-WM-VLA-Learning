@@ -20,12 +20,12 @@ from __future__ import annotations
 import numpy as np
 
 from ..config import Config
-from ..sim.quad import Quadrotor, State
+from ..sim.dynamics import State
 from ..util.mathx import vee
 
 
 class CascadedController:
-    def __init__(self, cfg: Config, quad: Quadrotor) -> None:
+    def __init__(self, cfg: Config, quad) -> None:
         self.cfg = cfg
         self.mass = quad.cfg.mass
         self.inertia = quad.inertia
