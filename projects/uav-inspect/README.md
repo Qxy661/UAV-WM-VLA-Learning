@@ -77,7 +77,7 @@ projects/uav-inspect/
 | M2 | 脚本专家巡检 + 数据录制 | N 集数据 + 划分 + 统计，覆盖率可判定 | ✅ 已跑：8 集 / 958 帧（64×64），可行视点覆盖率 100%，`behind-rack` 每集都被判为遮挡，train 6 / val 2；路由 12–14 s，单集墙钟 1.9–3.1 s |
 | M3 | 世界模型训练 + 遮挡补全 | 开环 10 步图像误差低于 persistence，可见性 AUC 高于 persistence | 🟡 代码完成，首轮本机跑通（开环 0.290 对 persistence 0.334，可见性 AUC 0.894 对 0.678，2.1M 参数）；正式训练按约定放开发机，见 `wm/README.md` |
 | M4 | VLA 训练 + 指令跟随 | 未见指令组合成功率 vs 随机基线 | ⬜ |
-| M5 | 安全层 + 四类故障注入 | 四类故障下零碰撞，降级动作可复现 | ⬜ |
+| M5 | 安全层 + 四类故障注入 | 四类故障下零碰撞，降级动作可复现 | ✅ 已跑：断流 / 陈旧 / 越界 / 冲突四类全部通过；最高挡位 HOVER，回稳误差 ≤ 0.007 m，不合理指令被拒并记录 |
 | M6 | 评测 harness + 统一口径表 | 同口径下跑 3 个基线，出对比表 | ⬜ |
 | M7 | ONNX 导出 + 延迟 P99 | CPU 上单次推理 ≤ 预算，P99 报告 | ⬜ |
 
@@ -96,6 +96,13 @@ py -3.9 -m pytest projects/uav-inspect/tests -q
 
 # M2：录 8 集巡检数据（rigid 后端约 20 s 跑完）
 py -3.9 projects/uav-inspect/scripts/m2_inspect.py --episodes 8 --backend rigid
+
+# M3：世界模型（训练按 ADR-011 放开发机，命令见 wm/README.md）
+py -3.9 projects/uav-inspect/wm/train.py --epochs 20 --device cuda
+
+# M5：四类故障注入 + 安全层契约检查（纯 numpy，几秒跑完）
+py -3.9 projects/uav-inspect/scripts/m5_faults.py
+py -3.9 projects/uav-inspect/scripts/check_safety.py
 ```
 
 `--backend auto`（默认）表示"导得进 pybullet 就用它，否则用自研积分"，实际选了哪个会写进
@@ -103,7 +110,7 @@ py -3.9 projects/uav-inspect/scripts/m2_inspect.py --episodes 8 --backend rigid
 `projects/uav-inspect/runs/m0_hover/`：`metrics.json`（指标）、`env.json`（环境指纹）、
 `trace.csv`（逐帧轨迹）。
 
-M2 的产物在 `runs/m2_dataset/`：每集一个目录（`obs.npz` 存图像/位姿/动作/相位，`meta.json`
+M5 的产物在 `runs/m5_faults/`：每个故障一个 `{kind}.json`（含 `checks`、`metrics`、`events`），汇总在 `metrics.json`。`events` 里记的是模式切换与裁决，比如 `4.04s NORMAL->HOLD`。`n`M2 的产物在 `runs/m2_dataset/`：每集一个目录（`obs.npz` 存图像/位姿/动作/相位，`meta.json`
 存覆盖率与被挡视点），外加 `manifest.json`（划分）与 `stats.json`（**只用 train 划分**算的
 归一化参数——用 val 算统计量是最常见的一种泄漏）。
 
@@ -145,6 +152,10 @@ M2 的产物在 `runs/m2_dataset/`：每集一个目录（`obs.npz` 存图像/�
   理由是训练会反复调超参、占显卡，而"能不能训到指标"和"仓库里有没有这个能力"是两件事。
   代价：训练侧数字不由 CI 保证，所以 `wm/train.py` 必须自带基线（persistence / mean-frame）
   与 `passed` 判定，任何人拿同一份数据重跑都能自己判通过与否，不依赖谁的通知。
+- **ADR-012** 安全层判"物理可信"而不只是限幅：只做限幅时，一条 0.5 倍悬停推力的指令完全在
+  硬件范围内，却会让机子直接掉下去。所以 `SafetyGuard` 先看指令是否落在悬停推力的 0.65–1.35 倍、
+  力矩 ≤ 0.15 N·m，不合理就按故障处理（HOLD），不是老实执行。代价：真做大幅机动时必须显式放宽
+  这个带宽，否则正常的爬升/俯冲也会被拦。
 
 ## 8. 非目标（明确不做）
 

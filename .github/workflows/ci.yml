@@ -85,6 +85,10 @@ jobs:
           assert len(manifest["episodes"]) == 2, manifest
           print("M2 passed", [m["frames"] for m in meta])
           PY
+      - name: M5 安全层契约检查
+        run: python projects/uav-inspect/scripts/check_safety.py
+      - name: M5 四类故障注入
+        run: python projects/uav-inspect/scripts/m5_faults.py
 
   docs:
     # 只在 main 上发布；PR 只跑上面的检查，不动线上站点

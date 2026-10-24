@@ -33,6 +33,7 @@
   `sim/scene.py` 仓储场景（墙、货架、贴在通道侧的巡检目标、front/oblique/behind-rack 三个视点）、
   `data/recorder.py` 录制器与划分/统计、`scripts/m2_inspect.py` 脚本专家巡检。8 集 958 帧，
   可行视点覆盖率 100%，`behind-rack` 每集都被判为遮挡，train 6 / val 2。数据格式与已知不真实项见 ADR-010。
+- **M5 安全层与故障注入**：`uavinspect/safety/guard.py`（模式阶梯 NORMAL→HOLD→HOVER→RTL→LAND、进入 3 周期/退出 30 周期的迟滞、推力与力矩硬限幅、心跳陈旧判定、同周期多路指令按优先级裁决、悬停推力 0.65–1.35 倍与力矩 ≤ 0.15 N·m 的物理可信度检查）；`scripts/m5_faults.py` 四类故障（断流 / 陈旧 / 越界 / 冲突）全部通过，最高挡位 HOVER，回稳误差 ≤ 0.007 m；`scripts/check_safety.py` 七条接口级契约。已知代价见 ADR-012。
 - **M3 世界模型**：`wm/dataset.py`（窗口、红色像素可见性标签、只用 train 的归一化）、
   `wm/model.py`（卷积编码 + GRU 潜动力学 + 残差解码 + 可见性头）、`wm/train.py`（训练 + persistence /
   mean-frame 双基线 + `passed` 判定）。首轮本机 20 epoch：开环 10 步图像误差 0.290 对 persistence 0.334，
