@@ -72,6 +72,9 @@ class CascadedController:
 
         e_R = vee(R_des.T @ st.R - st.R.T @ R_des)
         omega_ref = -c.att_kp * e_R
+        # 期望角速率留一个出口：动作空间实验把它当"动作"记录下来，
+        # 再由低层速率环（rate_kp）转成力矩。控制器本身行为不变。
+        self.omega_ref = omega_ref
         torque = self.inertia * (c.rate_kp * (omega_ref - st.omega)) + np.cross(
             st.omega, self.inertia * st.omega
         )

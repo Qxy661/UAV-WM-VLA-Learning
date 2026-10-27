@@ -81,6 +81,7 @@ class RigidQuad(QuadModel):
         self.vel = np.zeros(3)
         self.quat = quat_from_yaw(yaw)
         self.omega = np.zeros(3)
+        self.wind = np.zeros(3)
         self.reset_rotors()
 
     # ---------- 状态 ----------
@@ -96,7 +97,17 @@ class RigidQuad(QuadModel):
         self.vel = np.zeros(3)
         self.quat = quat_from_yaw(yaw)
         self.omega = np.zeros(3)
+        self.wind = np.zeros(3)
         self.reset_rotors()
+
+    def set_perturbation(self, *, vel=(0.0, 0.0, 0.0), wind=(0.0, 0.0, 0.0)) -> None:
+        """恢复演示用：给非零初速与恒定风加速度。
+
+        位置由 `reset()` 决定，这里只改速度和风。专家从"偏了"的状态起步，
+        才能在数据里留下"拉回来"的示范——这正是专家从不犯错的数据集缺的东西。
+        """
+        self.vel = np.asarray(vel, dtype=float).copy()
+        self.wind = np.asarray(wind, dtype=float).copy()
 
     # ---------- 积分 ----------
     def _deriv(self, y: np.ndarray) -> np.ndarray:
@@ -105,7 +116,7 @@ class RigidQuad(QuadModel):
         fz, tau = self.rotor_wrench()          # 一个子步内转速不变
         acc = (R @ np.array([0.0, 0.0, fz]) + self.g_vec * self.cfg.mass) / self.cfg.mass
         speed = float(np.linalg.norm(vel))
-        acc = acc - self.cfg.drag_quadratic * speed * vel / self.cfg.mass
+        acc = acc - self.cfg.drag_quadratic * speed * vel / self.cfg.mass + np.asarray(self.wind, dtype=float)
         dquat = 0.5 * quat_mul(quat, np.array([0.0, *omega]))
         domega = self.inv_inertia * (tau - np.cross(omega, self.inertia * omega))
         return np.concatenate([vel, acc, dquat, domega])
