@@ -101,12 +101,23 @@ def main() -> int:
     ap.add_argument("--max-episodes", type=int, default=0)
     ap.add_argument("--require-coverage", type=float, default=0.5)
     ap.add_argument("--out", default=str(ROOT / "runs" / "subgoal"))
+    # 规范训练的四件事：固定种子、按验证集选点、早停、把整条曲线落盘。
+    # 没有这四样，两个数字之间差 5 个点分不清是方法差异还是随机数差异。
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--patience", type=int, default=0, help="验证集连续多少轮不降就停，0=不早停")
+    ap.add_argument("--warmup-epochs", type=int, default=0)
+    ap.add_argument("--val-stride", type=int, default=8, help="验证集抽帧间隔，固定不随训练 stride 变")
     a = ap.parse_args()
+
+    torch.manual_seed(a.seed)
+    np.random.seed(a.seed)
+    torch.backends.cudnn.benchmark = False
+    gen = torch.Generator().manual_seed(a.seed)
 
     t0 = time.time()
     tr = SubgoalFrames(Path(a.data), "train", stride=a.stride, max_episodes=a.max_episodes,
                        require_coverage=a.require_coverage)
-    va = SubgoalFrames(Path(a.data), "val", stride=max(a.stride, 8))
+    va = SubgoalFrames(Path(a.data), "val", stride=max(a.val_stride, 1))
     if not len(tr) or not len(va):
         raise SystemExit(f"数据为空：train {len(tr)} / val {len(va)}")
     goals = np.stack([r[3] for r in tr.rows])
@@ -129,8 +140,10 @@ def main() -> int:
     model = BCNet(horizon=1, action_dim=GOAL_DIM, state_dim=STATE_DIM).to(a.device)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
     lossf = nn.MSELoss()
-    dl_tr = DataLoader(tr, batch_size=a.batch, shuffle=True, num_workers=a.workers, drop_last=True)
+    dl_tr = DataLoader(tr, batch_size=a.batch, shuffle=True, num_workers=a.workers,
+                       drop_last=True, generator=gen)
     dl_va = DataLoader(va, batch_size=a.batch, shuffle=False, num_workers=a.workers)
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=max(a.epochs, 1))
 
     def run(dl, train: bool) -> tuple[float, float, list[float]]:
         tot_n, tot_m = 0.0, 0.0
@@ -156,22 +169,44 @@ def main() -> int:
         return tot_n / n, tot_m / n, (tot_a / n * 100).tolist()
 
     best = 1e9
+    best_ep, best_axis, since_best = 0, [0.0, 0.0, 0.0], 0
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    curve: list[dict] = []
     for ep in range(1, a.epochs + 1):
-        trl, trm, tra = run(dl_tr, True)
+        trl, trm, _ = run(dl_tr, True)
         val, vam, vaa = run(dl_va, False)
-        print(json.dumps({"epoch": ep, "train_mse_norm": round(trl, 5),
-                          "train_err_cm": round(trm * 100, 2),
-                          "val_mse_norm": round(val, 5), "val_err_cm": round(vam * 100, 2),
-                          "val_axis_cm": [round(x, 2) for x in vaa],
-                          "elapsed_s": round(time.time() - t0, 1)}))
+        lr_now = float(sched.get_last_lr()[0])
+        sched.step()
+        row = {"epoch": ep, "lr": round(lr_now, 6), "train_mse_norm": round(trl, 5),
+               "train_err_cm": round(trm * 100, 2), "val_mse_norm": round(val, 5),
+               "val_err_cm": round(vam * 100, 2),
+               "val_axis_cm": [round(x, 2) for x in vaa],
+               "elapsed_s": round(time.time() - t0, 1)}
+        curve.append(row)
+        print(json.dumps(row), flush=True)
         if vam < best:
-            best = vam
-            out = Path(a.out)
-            out.mkdir(parents=True, exist_ok=True)
+            best, best_ep, best_axis, since_best = vam, ep, vaa, 0
             torch.save({"state_dict": model.state_dict(), "goal_mean": mu, "goal_std": sd,
-                        "args": vars(a), "val_err_cm": vam}, out / "ckpt.pt")
-    print(json.dumps({"params": n_params(model), "best_val_err_cm": round(best * 100, 2),
-                      "wall_time_s": round(time.time() - t0, 1)}))
+                        "args": vars(a), "seed": a.seed, "epoch": ep,
+                        "val_err_cm": vam, "val_axis_cm": vaa}, out / "ckpt.pt")
+        else:
+            since_best += 1
+            if a.patience and since_best >= a.patience:
+                print(json.dumps({"early_stop": True, "epoch": ep, "since_best": since_best}))
+                break
+
+    summary = {"seed": a.seed, "params": n_params(model), "best_epoch": best_ep,
+               "best_val_err_cm": round(best * 100, 2),
+               "best_val_axis_cm": [round(x, 2) for x in best_axis],
+               "epochs_run": len(curve), "train_frames": len(tr), "val_frames": len(va),
+               "wall_time_s": round(time.time() - t0, 1), "args": vars(a)}
+    (out / "metrics.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2),
+                                      encoding="utf-8")
+    (out / "curve.jsonl").write_text(
+        "\n".join(json.dumps(r, ensure_ascii=False) for r in curve), encoding="utf-8")
+    print(json.dumps({k: summary[k] for k in ("seed", "params", "best_epoch",
+                                              "best_val_err_cm", "wall_time_s")}))
     return 0
 
 

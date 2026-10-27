@@ -40,8 +40,15 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--horizon", type=int, default=8, help="动作块长度，闭环时一次推理走这么多帧")
     ap.add_argument("--residual", action="store_true",
                     help="学习相对保高前馈的残差（动作 - base_action），缓解闭环沉底")
+    ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--max-episodes", type=int, default=0, help="只用前 N 条 train 轨迹（数据规模曲线用）")
     a = ap.parse_args(argv)
+
+    # 固定种子：同一条命令两次跑出来的曲线必须一致，否则"哪一档更好"分不清是方法还是随机数。
+    torch.manual_seed(a.seed)
+    np.random.seed(a.seed)
+    torch.backends.cudnn.benchmark = False
+    gen = torch.Generator().manual_seed(a.seed)
 
     root = Path(a.data)
     out = Path(a.out)
@@ -62,7 +69,7 @@ def main(argv: list[str] | None = None) -> int:
                       residual=a.residual)
     print(json.dumps({"train_samples": len(tr), "val_samples": len(va), "device": str(dev)}))
 
-    tl = DataLoader(tr, batch_size=a.batch, shuffle=True, num_workers=a.workers,
+    tl = DataLoader(tr, batch_size=a.batch, shuffle=True, num_workers=a.workers, generator=gen,
                     pin_memory=True, drop_last=True, persistent_workers=a.workers > 0)
     vl = DataLoader(va, batch_size=a.batch, shuffle=False, num_workers=2, pin_memory=True)
 
