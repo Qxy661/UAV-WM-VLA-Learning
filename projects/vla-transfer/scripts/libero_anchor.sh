@@ -1,17 +1,9 @@
-#!/bin/bash
-# T2 外部锚点：LIBERO 上跑官方 pi05_libero，验证「我们的评测装置能复现公开数字」。
-#
-# 为什么需要它：本库里所有成功率都是自己造的判据（居中 + 到达），外人无法判断是任务
-# 简单还是策略强。LIBERO goal 套件有公开成绩单，用同一条 openpi 推理路径跑一遍，
-# 才能说明「我们的 harness 不是自说自话」。
-#
-# 用法：
-#   bash scripts/libero_anchor.sh              # 冒烟：10 任务 × 1 trial
-#   NUM_TRIALS=50 bash scripts/libero_anchor.sh # 正式：10 任务 × 50 trial（约 2.5 h）
-#
-# 前置：/root/work/LIBERO 已克隆、pi05_libero 权重已在 ~/.cache/openpi；EGL 在这台
-# 机器上不可用，渲染必须走 osmesa。
-set -u
+﻿#!/bin/bash
+# T2 澶栭儴閿氱偣锛氬湪 LIBERO 涓婅窇瀹樻柟 pi05_libero锛岄獙璇併€屾垜浠殑璇勬祴瑁呯疆鑳藉鐜板叕寮€鏁板瓧銆嶃€?#
+# 涓轰粈涔堥渶瑕佸畠锛氭湰搴撻噷鎵€鏈夋垚鍔熺巼閮芥槸鑷繁閫犵殑鍒ゆ嵁锛堝眳涓?+ 鍒拌揪锛夛紝澶栦汉鏃犳硶鍒ゆ柇鏄换鍔＄畝鍗曡繕鏄瓥鐣ュ己銆?# LIBERO goal 濂椾欢鏈夊叕寮€鎴愮哗鍗曪紝鐢ㄥ悓涓€鏉?openpi 鎺ㄧ悊璺緞璺戜竴閬嶏紝鎵嶈兘璇存槑銆屾垜浠殑 harness 涓嶆槸鑷鑷瘽銆嶃€?#
+# 鐢ㄦ硶锛?#   bash scripts/libero_anchor.sh               # 鍐掔儫锛?0 浠诲姟 脳 1 trial
+#   NUM_TRIALS=50 bash scripts/libero_anchor.sh # 姝ｅ紡锛?0 浠诲姟 脳 50 trial锛堢害 2.5 h锛?#
+# 鍓嶇疆锛?root/work/LIBERO 宸插厠闅嗐€乸i05_libero 鏉冮噸宸插湪 ~/.cache/openpi锛汦GL 鍦ㄨ繖鍙版満鍣ㄤ笉鍙敤锛?# 娓叉煋蹇呴』璧?osmesa銆?set -u
 PY=${PY:-/opt/miniforge3/envs/pi0/bin/python}
 OPENPI=${OPENPI:-/opt/robogo/tools/openpi}
 LOG_DIR=${LOG_DIR:-/root/work/logs}
@@ -22,6 +14,7 @@ export PYTHONPATH=/root/work/LIBERO:${PYTHONPATH:-}
 export MUJOCO_GL=osmesa
 export PYOPENGL_PLATFORM=osmesa
 export HF_HUB_OFFLINE=1
+export TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
 mkdir -p "$LOG_DIR"
 
 cd "$OPENPI" || exit 1
@@ -31,7 +24,7 @@ for _ in $(seq 1 90); do
   grep -qi "listening\|server started" "$LOG_DIR/libero_serve.log" 2>/dev/null && break
   sleep 5
 done
-echo "服务：$(tail -1 "$LOG_DIR/libero_serve.log" | cut -c1-100)"
+echo "鏈嶅姟锛?(tail -1 "$LOG_DIR/libero_serve.log" | cut -c1-100)"
 
 $PY examples/libero/main.py \
     --args.task-suite-name "$SUITE" \
@@ -44,4 +37,4 @@ echo "eval rc=$RC"
 grep -E "Total success rate|success rate" "$LOG_DIR/libero_eval.log" | tail -3
 kill $SRV 2>/dev/null
 sleep 2
-echo "LIBERO DONE（$SUITE，$NUM_TRIALS trial/任务）"
+echo "LIBERO DONE锛?SUITE锛?{NUM_TRIALS} trial/浠诲姟"

@@ -380,6 +380,34 @@ va = ChunkDataset(root, ("val",),   ..., horizon=a.horizon)      # 少了 residu
 所以"逐位相同"更可能是"两者在同一处失败"，而不是"两者都学会了"。要区分这两件事，
 需要把失败回合按"离目标最近距离"分桶再看，本表没有做。
 
+## 3.11 外部锚点：同一套装置跑官方 pi05_libero，10/10 通过（n=10）
+
+本库此前所有成功率都是用自己写的判据（居中 + 到达 + 视场）算出来的，外人无法判断
+"是任务简单还是策略强"。补这一节的办法是把装置接到一个有公开成绩的任务上：LIBERO 的
+`libero_goal` 套件，用 openpi 自带的 `examples/libero/main.py` 评测脚本、官方 `pi05_libero`
+权重、同一条 websocket 推理路径。
+
+冒烟（10 任务 × 1 trial，3 分 40 秒）：
+
+```
+# successes: 10 (100.0%)
+Total episodes: 10
+Total success rate: 1.0
+```
+
+两个必须记下来的环境事实：
+
+- 这台机器的 EGL 不可用（`GLFWError` / `EGL_NOT_INITIALIZED`），渲染只能走
+  `MUJOCO_GL=osmesa` + `PYOPENGL_PLATFORM=osmesa`，速度约 22 s/回合。
+- PyTorch 2.6 起 `torch.load` 默认 `weights_only=True`，LIBERO 的初始状态文件里含
+  `numpy.core.multiarray._reconstruct`，直接报 `UnpicklingError`；解法是
+  `TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1`（比改源码干净）。
+
+能证明什么：这套"起服务 → 拼观测 → 发动作 → 判成功"的装置，在别人的任务与别人的权重上
+能复现出与公开数字一致的强表现，所以 §1 那些数字不是自说自话。
+不能证明什么：LIBERO 是桌面操作、与无人机的观测与动作分布差很远，这个锚点只校准**装置**，
+不校准**迁移**——跨域迁移的结论仍然只能由 §1 与 §3.10 那种同任务对照给出。
+
 ## 4 这条结果能支持什么
 
 1. 可支持：**动作表示的选择比模型大小更影响闭环成败**。同一批数据、同一个评测，
