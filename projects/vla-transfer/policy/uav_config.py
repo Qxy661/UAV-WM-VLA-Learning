@@ -99,9 +99,15 @@ def build_config(*, repo_id: str, tier: str = "a3", num_train_steps: int = 30000
     else:
         freeze = model.get_freeze_filter()
 
-    loader = (weight_loaders.NoOpWeightLoader() if dummy
-              else weight_loaders.CheckpointWeightLoader(
-                  "gs://openpi-assets/checkpoints/pi05_base/params"))
+    # 权重来源：dummy 用空加载器；设了 UAV_INIT 就从本项目自己的 ckpt 续训
+    # （跨仓库微调用，传 .../<exp>/<step>/params）；否则从 pi05_base 起。
+    if dummy:
+        loader = weight_loaders.NoOpWeightLoader()
+    elif os.environ.get("UAV_INIT"):
+        loader = weight_loaders.CheckpointWeightLoader(os.environ["UAV_INIT"])
+    else:
+        loader = weight_loaders.CheckpointWeightLoader(
+            "gs://openpi-assets/checkpoints/pi05_base/params")
     return _config.TrainConfig(
         # name 固定为 pi05_uav：归一化统计量按 name 存放在 assets/pi05_uav/ 下，
         # 三档消融共用同一份统计量；区分实验靠 exp_name。
