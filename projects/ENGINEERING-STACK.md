@@ -43,7 +43,8 @@
 - **交付**：`perception/detector.py`（0.5M 参数小检测器，检测红色目标与货架边缘）、`perception/calib.py`（内参/外参标定与重投影误差）、`scripts/e2_train_det.py`、`scripts/e2_report.py`（mAP、单帧延迟、遮挡分档）。
 - **验收**：`python scripts/e2_report.py` 输出 `mAP@0.5 ≥ 0.85`、`CPU 单帧 P99 ≤ 15 ms`、并按遮挡比例 0/25/50/75% 四档分别给召回。
 - **成本**：3–4 天（训练 20 分钟）。
-- **文档映射**：`docs/04-VLM专题/01-遥感VLM.md`、`docs/10-横切判据/02-算力与延迟预算.md`。
+- **状态（2026-10-28）**：🟡 反投影链路已落地并量出下限（`perception/detector.py` + `scripts/e2_perception.py`，见 `projects/uav-inspect/docs/13-感知与反投影.md`）。用阈值分割 + 针孔反投影（不训网络，量"感知下限"）：定位误差中位 6.7 cm、p90 18.3 cm，x 偏差 0.6 cm、z 偏差 5.9 cm；1.0–1.5 m 段 6.2 cm、1.5–2.5 m 段 10.7 cm，随距离增长但接近 96 px 下的理论下限。关键坑：存储帧是旋转 180° 的，不翻转会把中位误差从 6.2 cm 放大到 66 cm（约定型偏差，表现为整体平移而非变宽）。缺口：未训检测器、无 mAP、未做遮挡分档。
+- **文档映射**：`docs/04-VLM专题/01-遥感VLM.md`、`docs/10-横切判据/02-算力与延迟预算.md`、`projects/uav-inspect/docs/13-感知与反投影.md`。
 
 ### E3 状态估计与地图
 
