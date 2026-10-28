@@ -34,7 +34,21 @@ STEP_TO = 2.2
 STEP_X = 1.2
 
 
-def run(cfg, delay_steps: int, *, mode: str = "hover", duration: float = 20.0) -> dict:
+def _predicted(st, tau: float):
+    """把状态沿当前速度外推 tau 秒，喂给控制器——Smith 预测器的简化版。
+
+    延迟是已知的（delay_steps × dt），所以可以用测量状态 + 匀速外推补偿；
+    真实系统里延迟还是随机的，外推误差会成为新的扰动，这一层故意不做。
+    """
+    from types import SimpleNamespace
+    pos = st.pos + st.vel * tau
+    return SimpleNamespace(pos=pos, vel=st.vel, quat=st.quat, R=st.R, omega=st.omega,
+                           rotor_speed=getattr(st, "rotor_speed", None),
+                           tilt=st.tilt, yaw=st.yaw)
+
+
+def run(cfg, delay_steps: int, *, mode: str = "hover", duration: float = 20.0,
+        predict: bool = False) -> dict:
     dt = cfg.sim.control_dt
     n = int(round(duration / dt))
     buf: collections.deque = collections.deque()
@@ -52,7 +66,9 @@ def run(cfg, delay_steps: int, *, mode: str = "hover", duration: float = 20.0) -
             else:
                 ref = np.array([0.0 if t < 5.0 else STEP_X, 0.0, HOVER])
             st = quad.state()
-            thrust, torque = ctrl.compute(st, ref)
+            tau = delay_steps * dt if predict else 0.0
+            st_fb = _predicted(st, tau) if tau > 0 else st
+            thrust, torque = ctrl.compute(st_fb, ref)
             if delay_steps <= 0:
                 quad.set_wrench(thrust, torque)
             else:
@@ -101,15 +117,16 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="E5 延迟裕度")
     ap.add_argument("--config", default=str(PKG_ROOT / "configs" / "default.yaml"))
     ap.add_argument("--out", default=str(PKG_ROOT / "runs" / "e5_control"))
+    ap.add_argument("--predict", action="store_true", help="用外推状态补偿已知延迟")
     a = ap.parse_args(argv)
     cfg = load(a.config)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
 
     delays = [0, 1, 2, 4, 6, 8, 10, 14]
-    hover = [run(cfg, d, mode="hover") for d in delays]
-    step = [run(cfg, d, mode="step") for d in delays]
-    lat = [run(cfg, d, mode="lateral") for d in delays]
+    hover = [run(cfg, d, mode="hover", predict=a.predict) for d in delays]
+    step = [run(cfg, d, mode="step", predict=a.predict) for d in delays]
+    lat = [run(cfg, d, mode="lateral", predict=a.predict) for d in delays]
     res = {"control_dt_ms": round(cfg.sim.control_dt * 1000, 1), "hover": hover, "step": step, "lateral": lat}
     (out / "metrics.json").write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"{'delay_ms':>8} {'hover_rmse':>10} {'hover_tilt':>10} {'lat_tilt':>8} {'lat_over':>9} {'lat_settle':>10} {'lat_unstable':>12}")
