@@ -32,7 +32,9 @@
 - **接口**：`SensorSuite(cfg, seed).observe(state) -> {"image", "imu", "depth", "t"}`；`Scenario.sample(seed) -> Scene`。
 - **验收**：`python scripts/e1_report.py --seeds 8` 输出「同 seed 图像逐位相同=True；IMU 噪声 std 与配置偏差 <5%；场景族覆盖货架数 3–6、通道宽 0.8–1.6 m」。
 - **成本**：2–3 天，纯 CPU。
-- **文档映射**：`docs/02-世界模型专题/07-关键数据集与基准.md`（数据从哪来）。
+- **状态（2026-10-28）**：🟡 画质链路 + 步长收敛已落地（`sim/sensors.py` + `scripts/e1_fidelity.py`，见 `projects/uav-inspect/docs/12-仿真保真度.md`）。实测：physics_dt 0.02→0.0025（8× 细）RMSE 只差 0.11%，说明数值已收敛、误差来自模型形式；亮度 PSI 对曝光 ±20/−25% 给 6.90 alert，对噪声/模糊/掉帧不响（0.001–0.077），是选代表量的代价而非 bug。缺口：IMU 偏置/量化、场景族、深度量化未做。
+
+- **文档映射**：`docs/02-世界模型专题/07-关键数据集与基准.md`（数据从哪来）、`projects/uav-inspect/docs/12-仿真保真度.md`。
 
 ### E2 感知栈
 
