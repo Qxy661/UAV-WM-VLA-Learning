@@ -108,7 +108,8 @@
 - **交付**：`mlops/registry.py`（注册表：run_id、git sha、数据哈希、配置、指标、ckpt 路径）、`mlops/drift.py`（输入分布 PSI/KL 报警）、`scripts/e9_report.py`（列出所有 run 与最优）。
 - **验收**：`python scripts/e9_report.py --best success_rate` 给出 run 表；人为把测试集亮度整体 +20% 后 drift 报警触发；注册表里任意 run 能按 run_id 还原配置与数据哈希。
 - **成本**：2–3 天。
-- **文档映射**：`docs/10-横切判据/01-口径不可横比.md`。
+- **状态**：✅ 已跑（`docs/11-模型运维与漂移.md`）。登记 8 个既有 run（4 个判据型 `passed=True`，4 个无 `success_rate` 的如实标"—"）；漂移自检：同分布 PSI 0.000 stable，图像亮度 ×1.2 后 PSI 5.106 alert（均值 0.3869 → 0.4578）。
+- **文档映射**：`docs/10-横切判据/01-口径不可横比.md`、`projects/uav-inspect/docs/11-模型运维与漂移.md`。
 
 ### E10 集群协同
 
