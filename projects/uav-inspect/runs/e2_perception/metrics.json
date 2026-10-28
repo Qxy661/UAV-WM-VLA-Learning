@@ -1,0 +1,37 @@
+{
+  "frames": 247,
+  "detected": 161,
+  "detect_rate": 0.6518,
+  "localisation": {
+    "err_median_cm": 6.57,
+    "err_p90_cm": 23.36,
+    "err_max_cm": 142.01,
+    "bias_x_cm": 1.5,
+    "bias_z_cm": 5.63,
+    "dist_median_m": 1.365
+  },
+  "smoothing": {
+    "window": 3,
+    "raw_median_cm": 6.57,
+    "smoothed_median_cm": 6.57,
+    "jitter_median_cm": 0.68,
+    "jitter_p90_cm": 16.33
+  },
+  "by_distance": {
+    "1.0-1.5m": {
+      "n": 125,
+      "err_median_cm": 6.38,
+      "pixels_median": 210
+    },
+    "1.5-2.5m": {
+      "n": 31,
+      "err_median_cm": 9.99,
+      "pixels_median": 125
+    },
+    "2.5-99.0m": {
+      "n": 5,
+      "err_median_cm": 12.08,
+      "pixels_median": 58
+    }
+  }
+}

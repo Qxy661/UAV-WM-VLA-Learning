@@ -54,6 +54,7 @@ def main(argv=None) -> int:
             imgs, t, pos, quat = z["images"], z["t"], z["pos"], z["quat"]
             ft = z["frame_t"]
         idx = control_index(ft, t)
+        hist: list[np.ndarray] = []
         for i, k in enumerate(idx):
             total += 1
             est = detector.target_from_frame(imgs[i], pos=pos[k], rot=quat_to_rot(quat[k]),
@@ -61,11 +62,18 @@ def main(argv=None) -> int:
             if est is None:
                 misses += 1
                 continue
+            raw = np.asarray(est["xyz"], dtype=float)
+            hist.append(raw)
+            hist = hist[-3:]
+            sm = np.median(np.stack(hist), axis=0)
+            jitter = float(np.linalg.norm(raw - hist[-2])) if len(hist) > 1 else 0.0
             rows.append({
                 "dist_m": float(np.linalg.norm(pos[k] - tp)),
-                "err_m": float(np.linalg.norm(est["xyz"] - tp)),
-                "err_x_m": float(est["xyz"][0] - tp[0]),
-                "err_z_m": float(est["xyz"][2] - tp[2]),
+                "err_m": float(np.linalg.norm(raw - tp)),
+                "err_sm_m": float(np.linalg.norm(sm - tp)),
+                "jitter_m": jitter,
+                "err_x_m": float(raw[0] - tp[0]),
+                "err_z_m": float(raw[2] - tp[2]),
                 "pixels": est["pixels"],
             })
 
@@ -82,6 +90,15 @@ def main(argv=None) -> int:
             "bias_x_cm": round(float(ex.mean()) * 100, 2),
             "bias_z_cm": round(float(ez.mean()) * 100, 2),
             "dist_median_m": round(float(np.median(d)), 3),
+        }
+        esm = np.array([r["err_sm_m"] for r in rows])
+        jit = np.array([r["jitter_m"] for r in rows])
+        res["smoothing"] = {
+            "window": 3,
+            "raw_median_cm": round(float(np.median(e)) * 100, 2),
+            "smoothed_median_cm": round(float(np.median(esm)) * 100, 2),
+            "jitter_median_cm": round(float(np.median(jit)) * 100, 2),
+            "jitter_p90_cm": round(float(np.percentile(jit, 90)) * 100, 2),
         }
         # 误差随距离是否增长（针孔模型下应该近似线性）
         bins = [(0.0, 1.0), (1.0, 1.5), (1.5, 2.5), (2.5, 99.0)]
