@@ -32,7 +32,7 @@
 - **接口**：`SensorSuite(cfg, seed).observe(state) -> {"image", "imu", "depth", "t"}`；`Scenario.sample(seed) -> Scene`。
 - **验收**：`python scripts/e1_report.py --seeds 8` 输出「同 seed 图像逐位相同=True；IMU 噪声 std 与配置偏差 <5%；场景族覆盖货架数 3–6、通道宽 0.8–1.6 m」。
 - **成本**：2–3 天，纯 CPU。
-- **状态（2026-10-28）**：🟡 画质链路 + 步长收敛已落地（`sim/sensors.py` + `scripts/e1_fidelity.py`，见 `projects/uav-inspect/docs/12-仿真保真度.md`）。实测：physics_dt 0.02→0.0025（8× 细）RMSE 只差 0.11%，说明数值已收敛、误差来自模型形式；亮度 PSI 对曝光 ±20/−25% 给 6.90 alert，对噪声/模糊/掉帧不响（0.001–0.077），是选代表量的代价而非 bug。缺口：IMU 偏置/量化、场景族、深度量化未做。
+- **状态（2026-10-28）**：✅ 三条都量过了。数值收敛：物理步长 0.02→0.0025 s 时悬停 RMSE 0.32503→0.32539（差 0.11%），说明误差来自模型形式不是积分；画质链路：曝光 ±20%/−25% 的亮度 PSI 全部 6.9008（alert），噪声/模糊/掉帧 0.0012–0.0772（stable）；风与负载（scripts/e1_disturbance.py）：4 m/s 侧风 RMSE 0.0032 m 但倾角 24.1° 已贴 25° 判据，8 m/s 到 30.7° 超限，而 +0.2 kg 负载若控制器不知道质量则下沉 1.42 m 坠地、知道则 0.0000 m。边界：传感器只有相机侧，IMU/气压计在 M5 故障注入里；四种画质效应没有卷帘/畸变/AGC。见 docs/12-仿真保真度.md
 
 - **文档映射**：`docs/02-世界模型专题/07-关键数据集与基准.md`（数据从哪来）、`projects/uav-inspect/docs/12-仿真保真度.md`。
 
