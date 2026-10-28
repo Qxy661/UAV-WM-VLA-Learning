@@ -47,7 +47,8 @@ class SubgoalFrames(Dataset):
     """
 
     def __init__(self, root: Path, split: str, *, stride: int = 4, max_episodes: int = 0,
-                 require_coverage: float = 0.0) -> None:
+                 require_coverage: float = 0.0, blind: bool = False) -> None:
+        self.blind = blind
         self.rows: list[tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]] = []
         metas = sorted(Path(root).glob("shard_*/episode_*/meta.json"))
         if max_episodes:
@@ -86,6 +87,8 @@ class SubgoalFrames(Dataset):
     def __getitem__(self, i: int):
         img, st, tx, goal = self.rows[i]
         img = torch.from_numpy(np.asarray(img, np.float32) / 255.0).permute(2, 0, 1)
+        if self.blind:
+            img = torch.zeros_like(img)
         return img, torch.from_numpy(st), torch.from_numpy(tx), torch.from_numpy(goal)
 
 
@@ -100,6 +103,8 @@ def main() -> int:
     ap.add_argument("--stride", type=int, default=4)
     ap.add_argument("--max-episodes", type=int, default=0)
     ap.add_argument("--require-coverage", type=float, default=0.5)
+    ap.add_argument("--blind", action="store_true", help="训练时把图像置零，做视觉必要性对照")
+    ap.add_argument("--init-from", default=None, help="用另一份子目标 ckpt 初始化（跨仓库微调用）")
     ap.add_argument("--out", default=str(ROOT / "runs" / "subgoal"))
     # 规范训练的四件事：固定种子、按验证集选点、早停、把整条曲线落盘。
     # 没有这四样，两个数字之间差 5 个点分不清是方法差异还是随机数差异。
@@ -116,8 +121,9 @@ def main() -> int:
 
     t0 = time.time()
     tr = SubgoalFrames(Path(a.data), "train", stride=a.stride, max_episodes=a.max_episodes,
-                       require_coverage=a.require_coverage)
-    va = SubgoalFrames(Path(a.data), "val", stride=max(a.val_stride, 1))
+                       require_coverage=a.require_coverage, blind=a.blind)
+    va = SubgoalFrames(Path(a.data), "val", stride=max(a.val_stride, 1),
+                       require_coverage=a.require_coverage, blind=a.blind)
     if not len(tr) or not len(va):
         raise SystemExit(f"数据为空：train {len(tr)} / val {len(va)}")
     goals = np.stack([r[3] for r in tr.rows])
@@ -138,6 +144,10 @@ def main() -> int:
         return (g - mu_t) / sd_t
 
     model = BCNet(horizon=1, action_dim=GOAL_DIM, state_dim=STATE_DIM).to(a.device)
+    if a.init_from:
+        _pre = torch.load(a.init_from, map_location=a.device, weights_only=False)
+        model.load_state_dict(_pre["state_dict"])
+        print(json.dumps({"init_from": a.init_from, "init_val_err_cm": _pre.get("val_err_cm")}))
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
     lossf = nn.MSELoss()
     dl_tr = DataLoader(tr, batch_size=a.batch, shuffle=True, num_workers=a.workers,
