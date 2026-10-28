@@ -1,117 +1,81 @@
 # vla-transfer：把 π0.5 从机械臂搬到四旋翼上
 
-这个目录回答一个问题：**一个在大规模机械臂数据上预训练的视觉-语言-动作模型，换到
-四旋翼的四维动作空间、换到仓储巡检这个任务上，还剩多少能力？** 以及，如果掉了，
-掉在视觉域、动作表示，还是指令分布上。
+这个目录回答一个问题：**一个在大规模机械臂数据上预训练的视觉-语言-动作模型，换到四旋翼的
+动作空间、换到仓储巡检这个任务上，还剩多少能力？** 如果掉了，掉在视觉域、动作表示，还是
+指令分布上。
 
-它不是又跑一遍官方 benchmark，也不是把 π0.5 包一层界面。判据写在
-[`PLAN.md`](PLAN.md) 里，跑之前定死：同一条评测协议、同一批 episode、同一套统计口径，
-另加一条**行为克隆基线**——没有它，任何"预训练有用"的结论都可能只是"数据教会了它"。
+全部数字以 [`RESULTS.md`](RESULTS.md) 为准，进度与队列看 [`STATUS.md`](STATUS.md)，
+判据在 [`PLAN.md`](PLAN.md)、[`PLAN-v2`](PLAN-v2-恢复数据与重训.md)、
+[`PLAN-v3-分层动作接口.md`](PLAN-v3-分层动作接口.md) 里，跑之前定死。
 
 ## 三条线
 
 | 线 | 内容 | 状态 |
 |---|---|---|
-| T1 | 无人机 π0.5 适配：4 维动作、10 维状态、96×96 输入 | 🟡 A3 训练中（6000 步 / 6400 集） |
-| T2 | LIBERO 外部锚点：先复现官方 π0.5-LIBERO 分数，再谈迁移 | ⬜ 未开始 |
+| T1 | 无人机 π0.5 适配（4 维力矩 / 3 维子目标两种接口） | ✅ 主表定稿：0.3M 的 BC 0.333 打赢 8M 的 π0.5 0.183 |
+| T2 | LIBERO 外部锚点：官方 `pi05_libero` 在 `libero_goal` 上 | ✅ 冒烟 10/10；正式 50 trial/任务在跑 |
 | T3 | OpenVLA 对照（机械臂侧，条件启动） | ⬜ 未开始 |
 
-## 数据从哪来
+## 三条能直接引用的结论
 
-`projects/uav-inspect` 的 M2 管线现场生成，不下载：
+1. **接口比模型重要。** 同一批数据、同一条判据：4 维力矩接口下 π0.5（2B+LoRA）0.150、
+   残差 BC（315k）0.217；换成 3 维子目标接口后 π0.5 0.183、子目标 BC（311k）**0.333**。
+   换接口带来的提升（+0.18）比换模型（2B → 0.3M 参数差 2600 倍）大得多。
+2. **这个任务不需要大模型，也不需要长训练。** π0.5 三档（只训动作头 0.3M / 主干 LoRA /
+   全层 LoRA 8M）闭环全是 0.183；训练步数 6000 → 12000 后成功率、覆盖率、`min|u|`
+   逐位相同，配对 McNemar 0:0（p=1.0）。容量与时长的曲线都平了。
+3. **视觉是必要条件，但只值 18 个点。** 训练与推理都把图像置零，子目标 BC 从 0.333 掉到
+   0.183（配对 9:0，p=0.004）；剩下那 18 个点全是"按位姿飞到视点"。更早的两版判据里
+   这个差别根本测不出来——那是判据的问题，见 [`docs/02`](docs/02-判据-位置到达不算拍到.md)。
 
-```
-py -3.9 projects/uav-inspect/scripts/gen_dataset.py --total 8000 --shard 0 --shards 12 \
-    --img-size 96 --out /root/work/data/uav96 --backend rigid
-```
+## 怎么跑
 
-8000 集（train 6400 / val 800 / test 800），每集 96×96、约 9.6 Hz、含指令文本、位姿、
-速度、四元数与四维动作（推力 + 三轴力矩）。测试集的指令表述在训练集里**一句都不出现**
-（`uavinspect/data/instructions.py` 里的 `TEMPLATES_HELD_OUT`），测的是泛化不是记忆。
-
-转成 LeRobot v2.1 用手写转换器（lerobot 0.1.0 的 `LeRobotDataset.create()` 有
-`tuple != list` 的形状校验问题，绕开比改库便宜）：
-
-```bash
-python projects/vla-transfer/scripts/npz_to_lerobot_manual.py \
-    --src /root/work/data/uav96 --dst /root/work/hf_lerobot/uav/inspect96 \
-    --splits train --limit 6400 --flat
-```
-
-## 现在能跑出什么数
-
-同一套 harness（`uav-inspect` 的 `run_episode` + `TaskSpec`），同一批 test episode：
-
-| 策略 | 成功 | 覆盖率 | 说明 |
-|---|---|---|---|
-| scripted 专家 | 20/20 = 100% [83.9%, 100%] | 1.000 | 上界，说明任务本身可达 |
-| 行为克隆（315k 参数，3 epoch） | 0/20 = 0% [0%, 16.1%] | 0.000 | 见下面的诊断 |
-| π0.5 A3（6000 步 LoRA） | 待测 | — | 训练完成后同一批 episode 评测 |
-| hover-only / random | 0% / 0%（M6） | 0.000 | 早前 M6 三基线 |
-
-**行为克隆的 0% 值得单独说**，因为它同时暴露了数据集的问题：
-
-- 离线对齐后的单步误差很小：推力 RMSE 0.027 N，三轴力矩 RMSE 0.008 / 0.065 / 0.042 N·m。
-  只看这个数会以为策略学会了。
-- 闭环 20 集全败，且把"每步重规划"打开（`--policy-every 1`）也一样（0/8）。
-- 原因是训练数据里**没有恢复样本**。专家从不掉高度、从不被撞开，所以状态的分布很窄：
-  `pos.z` 只在 0.25–1.49 m 之间（均值 1.19、标准差 0.25），而闭环里一旦推力偏小，
-  飞行器掉到 0.25 m 以下就进入训练分布之外，策略没有可参考的行为，只能继续下沉。
-  离线误差小、闭环失败，这不是矛盾，是协变量漂移的标准形态。
-
-这条结论直接决定了后面的判据：**只比成功率不够，还要比"掉下去之后能不能回来"**。
-如果 π0.5 也是 0%，那么结论会是"预训练不能凭空造出恢复行为"，而不是"π0.5 不行"；
-如果它明显高于 0%，恢复能力就只能来自预训练分布，而不是这份数据。
-
-## 怎么复现
-
-训练在开发机（4090 24 GB）上跑，本机只写代码和看日志：
+数据在本机生成（numpy 后端，不需要 pybullet），训练与评测在开发机上跑。
 
 ```bash
-cd /opt/robogo/tools/openpi
-export HF_LEROBOT_HOME=/root/work/hf_lerobot UAV_DATASET_ROOT=/root/work/hf_lerobot/uav/inspect96
-export HF_HUB_OFFLINE=1 UAV_REPO=uav/inspect96 UAV_WORKERS=12
-export UAV_STEPS=6000 UAV_BATCH=6 UAV_EXP=a3_uav6000 UAV_TIER=a3
-nohup /opt/miniforge3/envs/pi0/bin/python /root/work/repo/projects/vla-transfer/policy/uav_config.py \
-    > /root/work/logs/a3_6000.log 2>&1 &
+# 1) 生成数据（本机，py -3.9）
+py -3.9 projects/uav-inspect/scripts/gen_dataset.py --total 4000 --shard 0 --shards 12 \
+    --img-size 96 --out /root/work/data/uav96c --backend rigid --perturb --perturb-scale 0.5
+
+# 2) 转 LeRobot v2.1（手写转换器，绕开 lerobot 0.1.0 的 tuple != list 校验）
+python projects/vla-transfer/scripts/npz_to_lerobot_manual.py --src /root/work/data/uav96c \
+    --dst /root/work/hf_lerobot/uav/inspect96c --flat --repo-id uav/inspect96c \
+    --action-mode subgoal --require-coverage 0.5 --splits train
+
+# 3) 归一化统计量（cwd 必须是 openpi，assets_dirs 是相对 cwd 的）
+cd /opt/robogo/tools/openpi && UAV_TIER=a3 UAV_REPO=uav/inspect96c UAV_WORKERS=12 \
+    python /root/work/repo/projects/vla-transfer/scripts/compute_norm_uav.py
+
+# 4) 训练（三档：a1 只训动作头 / a2 主干 LoRA / a3 全层 LoRA）
+UAV_STEPS=6000 UAV_BATCH=4 UAV_EXP=a3_96sg UAV_TIER=a3 \
+    python /root/work/repo/projects/vla-transfer/policy/uav_config.py
+
+# 5) 评测（服务端 + 客户端分离，客户端是 uav-inspect 的仿真）
+UAV_STEP=5999 UAV_EXP=a3_96sg python projects/vla-transfer/scripts/serve_uav.py &
+python projects/vla-transfer/scripts/eval_uav.py --data /root/work/data/uav96c \
+    --ckpt runs/sg_big/ckpt.pt --server 127.0.0.1:8000 --episodes 60 --subgoal --out runs/x
+
+# 6) 并表 + 配对检验（不要手抄数字，之前的三个口径 bug 都是手抄引入的）
+python projects/vla-transfer/scripts/make_tables.py runs/* --pair runs/A runs/B
 ```
 
-评测（服务端 + 客户端分离，客户端就是 `uav-inspect` 的仿真）：
-
-```bash
-# 服务端：从 ckpt 起 policy server
-UAV_EXP=a3_uav6000 UAV_STEP=6000 UAV_PORT=8001 \
-  python projects/vla-transfer/scripts/serve_uav.py &
-
-# 客户端：同一批 test episode，走 run_episode
-python projects/vla-transfer/scripts/eval_uav.py --server 127.0.0.1:8001 \
-    --data /root/work/data/uav96 --episodes 20 --out runs/a3_eval
-```
-
-并表：
-
-```bash
-python projects/vla-transfer/scripts/compare_policies.py \
-    --runs runs --names scripted_eval bc_eval a3_eval
-```
-
-## 文件
+## 目录
 
 ```
-policy/uav_config.py      TrainConfig（pi05_uav）：action_dim 32 + PadStatesAndActions 补零，A1/A2/A3 三档 freeze_filter
-policy/uav_policy.py      UavInputs / UavOutputs：把我们的观测拼成 π0.5 要的 image/state/prompt
-policy/pi05_client.py     websocket 客户端 + 分块执行器
-scripts/npz_to_lerobot_manual.py   手写 LeRobot v2.1（parquet + 逐帧 PNG）
-scripts/compute_norm_uav.py        归一化统计量
-scripts/train_bc.py                行为克隆基线（同数据、同预算）
-scripts/eval_uav.py                BC / π0.5 / 专家 三路评测，同一协议
-scripts/compare_policies.py        并表 + 配对 bootstrap
-scripts/serve_uav.py               从我们自己的 ckpt 起服务
+policy/       uav_config.py（TrainConfig：三档 freeze_filter、UAV_INIT 续训）、uav_policy.py（观测拼装）
+eval/         protocol.py（M6 拍摄判据 + 居中判据 + Wilson）、rollout.py（闭环与分块执行）
+bc/           315k 残差 BC 与 311k 子目标 BC 的模型与数据
+serving/      推理服务（攒批、过期标记、P99）
+scripts/      生成/转换/归一化/训练/评测/并表/诊断/DAgger
+tools/        saliency.py（遮挡法）、replay.py（回放）
+docs/         十来篇"为什么"，每篇都带"不能证明什么"
 ```
 
 ## 已知限制
 
-- 仿真器是自研的 numpy 刚体后端，接触只在质心、无摩擦锥，所以"撞墙"的判定偏乐观。
-- 96×96 输入是显存与速度的折中，目标在画面里只有几个像素；这也是 T1 想验证的一部分
-  （视觉带宽不够时，预训练还剩多少）。
-- 单卡 24 GB 下 A3 只能 batch 6（18.5 GB），A1/A2 的计划步数是 6000 而不是 12000。
+- 仿真器是自研 numpy 刚体后端：接触只作用在质心、没有摩擦锥，"撞墙"判定偏乐观。
+- 96×96 是显存与速度的折中，目标在画面里只有几十个像素；`min|u|` 中位常常落在 9.000
+  （多数回合没进到 0.7 m 内），所以"逐位相同"更可能是"两者在同一处失败"。
+- 三档 π0.5 与 12k 步都是 60 集单次评测；三 seed 协议（`scripts/run_protocol.sh`）
+  还没全跑完。
+- LIBERO 锚点只校准装置，不校准迁移：桌面操作与无人机观测的动作分布差很远。
