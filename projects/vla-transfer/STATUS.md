@@ -9,23 +9,40 @@
 距目标的距离），加上残差 BC 的归一化用错统计量。补上专家上界后专家 0/60 才暴露出来。
 现在唯一可引用的数字在 `RESULTS.md` §3.9。
 
-## 正在跑
+## 正在跑（2026-10-28）
 
-`/root/work/pi05_go.sh` → π0.5 A3（`a3_96c/5999`）在修好的判据下重评 60 集，
-产出 `runs/v_pi05`，日志 `/root/work/logs/v_pi05.log`、`/root/work/logs/pi05_go.out`。
-注意：服务必须从 `/opt/robogo/tools/openpi` 启动（`assets_dirs` 是相对 cwd 的），
-checkpoint 的步号是 **5999** 不是 6000。
+`/root/work/seq3.sh`：12k 步 a3_96sg（子目标接口，12000 步）→ 同判据 60 集 →
+三 seed 子目标协议（40 epoch / patience 6 / 余弦退火）→ 跨仓库微调（`uav96btr` →
+`uav96b`）。日志 `/root/work/logs/seq3.out`、每步单独日志同名 `.log`。
+
+`/root/work/auto2.sh`：等 seq3 打出 `SEQ2 DONE` 后自动接**盲训练三 seed**
+（训练与推理图像置零），汇总写 `runs/protocol_vision.md`。
+
+四个必须记住的启动条件（每一条都曾让队列整夜空转）：
+
+1. 入口是 `projects/vla-transfer/policy/uav_config.py`，不是 `scripts/train.py`。
+2. 训练与服务都要 `cd /opt/robogo/tools/openpi`——`assets_dirs` 相对 cwd。
+3. 需要 `UAV_DATASET_ROOT`、`HF_LEROBOT_HOME`、`HF_HUB_OFFLINE=1` 三个环境变量。
+4. checkpoint 步号是 **5999 / 11999**，不是 6000；起服务前先 `ls` 一下。
 
 ## 已完成（可引用）
 
 | 阶段 | 结果 |
 |---|---|
 | 专家上界（修判据后） | **1.000** [0.940, 1.000]，60 集 |
+| 专家上界（布局 b） | **1.000** [0.940, 1.000]，60 集 |
 | 相对位移子目标（看得见） | **0.317** [0.213, 0.442] |
 | 同上，盲 | 0.183 [0.106, 0.299] |
 | 配对 McNemar | 8:0，**p = 0.0078** |
 | 残差 BC（归一化修好） | 0.000 / 0.000（见/盲） |
-| 子目标定位误差（held-out） | 14.41 cm（容差约 9.7 cm） |
+| 子目标定位误差（held-out） | 8.26 cm（第 40 轮），横向/竖向 5.76 / 5.14 cm |
+| π0.5 子目标（A3，6000 步） | 0.183 [0.106, 0.299] |
+| π0.5 子目标（只训动作头 a1） | 0.183 [0.106, 0.299] |
+| π0.5 子目标（6400 集，12k 步） | 0.183 [0.106, 0.299] |
+| 跨仓库零样本（布局 a → b） | 0.183 [0.106, 0.299] |
+
+后四行合起来是一个结论：**在这个任务上，6 B 的 π0.5 无论怎么配（全层 LoRA / 只训动作头 /
+加数据 / 换布局）都停在 0.183**，与盲策略同值；0.3 M 的子目标 BC 是 0.317。
 
 ## 判定标准（写死不挪）
 
@@ -37,11 +54,25 @@ checkpoint 的步号是 **5999** 不是 6000。
 
 ## 队列（按代价从低到高）
 
-1. 读 `v_pi05`：π0.5 在修好的判据下是多少（与 BC 同协议）
-2. 子目标定位精度：加大 epoch/数据、或改报横向误差；目标把 14.41 cm 压到 10 cm 以下
-3. 若能压下去，重跑 60 集，看是否接近专家上界
-4. A1/A2 消融（`/root/work/a1a2.sh` 已上传，等 GPU 空）
-5. T2 LIBERO 锚点（py3.8 环境已建、`pi05_libero` 权重已在）
+1. 读 seq3：12k 与 6k 的配对差（同一批 60 集）
+2. 三 seed 协议的 mean±std，替代现在所有单 seed 数字
+3. 跨仓库微调 vs 零样本（0.183 是零样本的地板）
+4. 盲对照三 seed（auto2 自动跑）
+5. T2 LIBERO 锚点：环境已打通（osmesa 渲染 OK、96×96 obs、20 步零动作通过），
+   官方权重在 `/root/.cache/openpi/openpi-assets/checkpoints/pi05_libero`；
+   跑法见 `docs/11-LIBERO锚点.md`（待写）
+6. E 栈剩余子系统（见 `../ENGINEERING-STACK.md`）
+
+## 已知环境坑（省下次的排查时间）
+
+- 远端 python 只有 `/opt/miniforge3/envs/pi0/bin/python`；`python` 不在 PATH。
+- `pkill -f train_subgoal.py` 会连自己的 ssh shell 一起杀，用 `[t]rain_` 转义。
+- 失败的 `serve_uav.py` 会留下僵尸占 18 GB 显存，新训练直接 OOM；起训练前先查
+  `nvidia-smi --query-compute-apps`。
+- LIBERO 需要 `PYTHONPATH=/root/work/LIBERO MUJOCO_GL=osmesa PYOPENGL_PLATFORM=osmesa`；
+  EGL 在这台机器上不可用，osmesa 可以。
+- PowerShell 里不要用 `$(...)` 拼 ssh 命令、不要用 `Set-Content -Encoding utf8` 写源码
+  （会加 BOM / 破坏中文）；一律写 `.sh` → base64 → 远端 `base64 -d`。
 
 ## 复现命令
 
@@ -55,6 +86,6 @@ cd /root/work/repo && OMP_NUM_THREADS=1 /opt/miniforge3/envs/pi0/bin/python \
   projects/vla-transfer/scripts/eval_uav.py --scripted --data /root/work/data/uav96c \
   --episodes 60 --img-size 96 --device cpu --out runs/r_oracle
 
-# 子目标（训练 + 三组评测）
-bash /root/work/sg_rel.sh
+# 整套串行队列（12k → 三 seed → 微调 → 盲对照）
+bash /root/work/seq3.sh && bash /root/work/auto2.sh
 ```
