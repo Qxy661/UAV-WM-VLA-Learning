@@ -1,0 +1,5 @@
+# 三个 demo 的依赖。实测环境：Python 3.9 + torch 2.6.0+cu124 / numpy 2.0.2 / matplotlib 3.9.4
+# 纯 CPU 也能跑，三个脚本合计约 2-3 分钟。
+torch>=2.1
+numpy>=1.24
+matplotlib>=3.7
