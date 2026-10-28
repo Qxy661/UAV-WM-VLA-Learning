@@ -9,21 +9,30 @@
 距目标的距离），加上残差 BC 的归一化用错统计量。补上专家上界后专家 0/60 才暴露出来。
 现在唯一可引用的数字在 `RESULTS.md` §3.9。
 
-## 正在跑（2026-10-28）
+## 正在跑（2026-10-28 14:10）
 
-`/root/work/seq3.sh`：12k 步 a3_96sg（子目标接口，12000 步）→ 同判据 60 集 →
-三 seed 子目标协议（40 epoch / patience 6 / 余弦退火）→ 跨仓库微调（`uav96btr` →
-`uav96b`）。日志 `/root/work/logs/seq3.out`、每步单独日志同名 `.log`。
+**已收**：12k 步（a3_96sg_12k）在同判据 60 集上是 **0.183 [0.106, 0.299]**，与 6k 步逐位相同，
+配对 McNemar 0:0（p=1.0）——训练时长也在平台区，写进 `RESULTS.md` §3.10。
 
-`/root/work/auto2.sh`：等 seq3 打出 `SEQ2 DONE` 后自动接**盲训练三 seed**
-（训练与推理图像置零），汇总写 `runs/protocol_vision.md`。
+**跑着**：LIBERO 正式锚点（`libero_goal`、官方 `pi05_libero`、**50 trial/任务 = 500 回合**，约 3 h）。
+冒烟已过（10 任务 × 1 trial = 10/10，3 分 40 秒），日志 `/root/work/logs/libero_full.out`、
+`libero_eval.log`。这一项的作用是校准装置（我们的起服务/拼观测/判成功能不能复现公开成绩），
+不是校准迁移。
 
-四个必须记住的启动条件（每一条都曾让队列整夜空转）：
+**排队**：`/root/work/queue_t4.sh` 等 LIBERO 结束后自动跑 T4 跨仓库迁移——
+零样本评布局 b（`runs/t4_bt_zero`）→ 用 800 集布局 b 数据（子目标接口）微调 3000 步 →
+再评（`runs/t4_bt_ft`），用来回答「换一个没见过的仓库，微调能不能救回来」。
 
-1. 入口是 `projects/vla-transfer/policy/uav_config.py`，不是 `scripts/train.py`。
-2. 训练与服务都要 `cd /opt/robogo/tools/openpi`——`assets_dirs` 相对 cwd。
+**之后**：三 seed 协议（子目标 BC 的 mean±std）、A1/A2 在 4 维接口下补完、
+E1–E12 的收尾文档（E5 已提交，E12 可解释回放见 `docs/07`）。
+
+四个容易踩的坑（每次换会话都要重新确认）：
+
+1. 训练入口是 `projects/vla-transfer/policy/uav_config.py`，不是 `scripts/train.py`。
+2. 训练与服务都要 `cd /opt/robogo/tools/openpi`，`assets_dirs` 是相对 cwd 的。
 3. 需要 `UAV_DATASET_ROOT`、`HF_LEROBOT_HOME`、`HF_HUB_OFFLINE=1` 三个环境变量。
-4. checkpoint 步号是 **5999 / 11999**，不是 6000；起服务前先 `ls` 一下。
+4. checkpoint 步号是 **5999 / 11999**，不是 6000 / 12000；跑前先 `ls` 一次。
+
 
 ## 已完成（可引用）
 
@@ -40,6 +49,8 @@
 | π0.5 子目标（只训动作头 a1） | 0.183 [0.106, 0.299] |
 | π0.5 子目标（6400 集，12k 步） | 0.183 [0.106, 0.299] |
 | 跨仓库零样本（布局 a → b） | 0.183 [0.106, 0.299] |
+| 12k 步（同判据） | 0.183 [0.106, 0.299]，与 6k 逐位相同，配对 0:0 |
+| LIBERO 锚点冒烟 | 10/10（`libero_goal`，官方 pi05_libero，3 分 40 秒） |
 
 后四行合起来是一个结论：**在这个任务上，6 B 的 π0.5 无论怎么配（全层 LoRA / 只训动作头 /
 加数据 / 换布局）都停在 0.183**，与盲策略同值；0.3 M 的子目标 BC 是 0.317。
