@@ -131,8 +131,10 @@
 
 - **目的**：失败能被看见，而不是只看一个 0/20。
 - **现状**：轨迹图 + metrics.json。
-- **交付**：`tools/replay.py`（把 episode 渲成逐帧 PNG + 叠加动作/状态曲线，输出 HTML）、`tools/saliency.py`（对 VLA 输入图像做遮挡敏感度图）。
+- **交付**：`tools/replay.py`（单文件 HTML：逐帧画面 + 到目标距离 / 推力 / 画面红像素占比三条曲线）、`tools/saliency.py`（单点遮挡敏感度：把图切成 N×N 块逐块涂掉，看 3 维子目标预测位移多少米，并统计每块红色像素占比与两者的相关系数）。
 - **验收**：`python tools/replay.py --episode <dir> --out runs/replay/x.html` 产出可离线打开的单文件 HTML；saliency 图能指出「遮住货架区域时动作变化最大」。
+- **状态（2026-10-28）**：✅ 两个工具已落地并在小数据上跑通。replay：71 帧 / 900 控制步的一集渲成 114 KB 单文件 HTML，`red_max_pct` 2.91%、`dist_min` 1.43 m 打到 stdout 供回归比对。saliency：3 集 × 3 帧、4×4 网格，`sensitivity_max_cm` 3.13、`sensitivity_p90_cm` 2.54、`corr_heat_red` −0.016（该模型几乎不看红点，与「盲训练不掉分」一致；正式数字等 `runs/sg_rel2/ckpt.pt` 重跑）。
+- **为什么值得有**：盲消融回答「不看图能不能做」，遮挡敏感度回答「它在看哪里」。只有前者时，一次打平的盲消融既可能意味着视觉冗余，也可能意味着训练没学到；后者能把这两种解释分开。
 - **成本**：2–3 天。
 - **文档映射**：`projects/uav-inspect/docs/07-评测口径.md`。
 
