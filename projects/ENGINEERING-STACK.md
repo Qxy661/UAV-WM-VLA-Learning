@@ -83,6 +83,7 @@
 - **交付**：`data/registry.py`（数据集版本、内容哈希、字段 schema）、`data/validate.py`（十二条硬规则）、`scripts/e6_validate.py`（`--strict` 时非零退出）、`scripts/e6_stats.py`（分布报表）。
 - **校验规则（每条都要能失败）**：帧数与时间戳数一致；时间严格单调；图像 shape/dtype 固定；动作在 [-1,1]；四元数模长 ∈ [0.99,1.01]；state 无 NaN；episode 内无重复帧；划分按 episode 且无交叉；测试场景 seed 未出现在训练集；指令模板与划分一致；manifest 与磁盘一致；覆盖率字段存在。
 - **验收**：`python scripts/e6_validate.py --root /root/work/data/uav96 --strict` 在干净数据上退出码 0；故意注入三条坏数据（少一帧、时间回退、动作越界）后退出码非 0 且逐条指出。
+- **状态（2026-10-28）**：✅ 校验门（`data/validate.py` + `scripts/e6_validate.py`）与审计层（`scripts/e6_dataset_audit.py`）都已落地并在真实数据上跑过。审计实测：uav96c 4320 集 / 348636 帧 / train 4000 + val 160 + test 160，seed 泄漏 0、重复场景组 0、指令 145 种、可用率 0.755（带扰动 24.5% 轨迹被截断）；uav96b 800 集可用率 1.000；数据指纹 `43a9f6c763df6ee0`。两条如实记下的局限：val/test 各只有 160 集（生成份额算错，不是 800）、重复场景判据抓不到「差 1 cm 的近重复」。
 - **成本**：2–3 天。
 - **文档映射**：`docs/10-横切判据/06-数据泄漏与划分.md`。
 
